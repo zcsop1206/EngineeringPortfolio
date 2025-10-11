@@ -1,15 +1,15 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import tailwind from '@astrojs/tailwind';
+import starlightTailwind from '@astrojs/starlight-tailwind';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [
     starlight({
       title: 'Adit Bhargava - Engineering Portfolio',
+      plugins: [starlightTailwind()],  // Add Tailwind plugin here
       customCss: [
-        // Path to your Tailwind base styles:
         './src/styles/global.css'
       ],
       social: [
@@ -19,17 +19,13 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Projects',
-          autogenerate: { directory: 'projects' },
+          autogenerate: { directory: 'projects' },  // lowercase
         },
         {
           label: 'CAD',
-          autogenerate: { directory: 'cad' },
+          autogenerate: { directory: 'cad' },  // lowercase
         },
       ],
-    }),
-    tailwind({
-      // Disable the default base styles to avoid conflicts with Starlight
-      applyBaseStyles: false,
     }),
   ],
 
