@@ -26,7 +26,7 @@ export default defineConfig({
 	],
 	
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwind()],
   },
 
   site: 'https://zcsop1206.github.io',
