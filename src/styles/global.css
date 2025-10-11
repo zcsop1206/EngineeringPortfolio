@@ -587,3 +587,8 @@ starlight-theme-select {
     margin: 2.5rem 0 1.25rem;
   }
 }
+
+/* Hide "On This Page" on mobile for now*/
+#starlight__on-this-page--mobile {
+  display: none !important;
+}
