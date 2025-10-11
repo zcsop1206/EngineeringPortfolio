@@ -30,7 +30,7 @@ export default defineConfig({
   },
 
   site: 'https://zcsop1206.github.io',
-  base: '/EngineeringPortfolio/',
+  base: '/EngineeringPortfolio',
   output: 'static',
 });
 
