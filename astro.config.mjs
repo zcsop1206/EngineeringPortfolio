@@ -1,36 +1,38 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import tailwindcss from '@tailwindcss/vite';
+import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [
-      starlight({
-          title: 'Adit Bhargava - Engineering Portfolio',
-		  customCss: [
-	        // Path to your Tailwind base styles:
-    	    './src/styles/global.css'
-		  ],
-          social: [{icon: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/adit-bhargava-29509a200'}, { icon: 'github', label: 'GitHub', href: 'https://github.com/zcsop1206' }],
-          sidebar: [
-              {
-                  label: 'Projects',
-                  autogenerate: { directory: 'Projects' },
-              },
-              {
-                  label: 'CAD',
-                  autogenerate: { directory: 'CAD' },
-              },
-          ],
-      }),
-	],
-	
-  vite: {
-    plugins: [tailwindcss()],
-  },
+    starlight({
+      title: 'Adit Bhargava - Engineering Portfolio',
+      customCss: [
+        // Path to your Tailwind base styles:
+        './src/styles/global.css'
+      ],
+      social: [
+        {icon: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/adit-bhargava-29509a200'}, 
+        {icon: 'github', label: 'GitHub', href: 'https://github.com/zcsop1206'}
+      ],
+      sidebar: [
+        {
+          label: 'Projects',
+          autogenerate: { directory: 'projects' },
+        },
+        {
+          label: 'CAD',
+          autogenerate: { directory: 'cad' },
+        },
+      ],
+    }),
+    tailwind({
+      // Disable the default base styles to avoid conflicts with Starlight
+      applyBaseStyles: false,
+    }),
+  ],
 
-  site: 'https://zcsop1206.github.io/EngineeringPortfolio',
-
+  site: "https://zcsop1206.github.io",
+  base: "/EngineeringPortfolio/",
 });
-
