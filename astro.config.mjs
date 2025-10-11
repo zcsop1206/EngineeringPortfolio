@@ -1,14 +1,12 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import starlightTailwind from '@astrojs/starlight-tailwind';
+import tailwind from '@astrojs/tailwind';
 
-// https://astro.build/config
 export default defineConfig({
   integrations: [
     starlight({
       title: 'Adit Bhargava - Engineering Portfolio',
-      plugins: [starlightTailwind()],  // Add Tailwind plugin here
       customCss: [
         './src/styles/global.css'
       ],
@@ -19,16 +17,18 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Projects',
-          autogenerate: { directory: 'projects' },  // lowercase
+          autogenerate: { directory: 'projects' },
         },
         {
           label: 'CAD',
-          autogenerate: { directory: 'cad' },  // lowercase
+          autogenerate: { directory: 'cad' },
         },
       ],
     }),
+    tailwind({
+      applyBaseStyles: false,
+    }),
   ],
-
   site: "https://zcsop1206.github.io",
   base: "/EngineeringPortfolio/",
 });
