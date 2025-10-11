@@ -6,6 +6,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write    # <-- This grants write access needed for deploy
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
