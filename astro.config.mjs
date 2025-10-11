@@ -16,13 +16,16 @@ export default defineConfig({
               {
                   label: 'Projects',
                   items: [
-                    { label: 'Project Name 1', link: '/projects/neurosteady' }
+                    { label: 'Hand tremor stabilization in Neurosurgery (NeuroHack 2025)', link: '/projects/neurosteady' }
                     // add more projects
                   ],
               },
               {
                   label: 'CAD',
-                  autogenerate: { directory: '/cad' },
+                  items: [
+                    { label: 'My 3D Model Post', link: '/cad/example' }
+                    // add more projects
+                  ],
               },
           ],
       }),
