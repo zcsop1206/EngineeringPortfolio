@@ -1,0 +1,589 @@
+@layer base, starlight, theme, components, utilities;
+
+@import '@astrojs/starlight-tailwind';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/* ============================================
+   CUSTOM THEME - Dark mode by default
+   ============================================ */
+
+:root {
+  /* Typography */
+  --font-serif: 'Crimson Pro', 'Georgia', serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Dark mode colors (default) */
+  --sl-color-white: #fafaf9;
+  --sl-color-bg: #1c1917;
+  --sl-color-bg-nav: #292524;
+  --sl-color-bg-sidebar: #292524;
+  --sl-color-bg-inline-code: #292524;
+  
+  --sl-color-text: #fafaf9;
+  --sl-color-text-accent: #a78bfa;
+  
+  --sl-color-gray-1: #fafaf9;
+  --sl-color-gray-2: #d6d3d1;
+  --sl-color-gray-3: #a8a29e;
+  --sl-color-gray-4: #78716c;
+  --sl-color-gray-5: #57534e;
+  --sl-color-gray-6: #44403c;
+  
+  --sl-color-accent: #a78bfa;
+  --sl-color-accent-high: #c4b5fd;
+  --sl-color-accent-low: #6d28d9;
+  
+  /* Custom colors */
+  --color-text: #fafaf9;
+  --color-text-muted: #d6d3d1;
+  --color-text-light: #a8a29e;
+  --color-purple: #a78bfa;
+  --color-purple-dark: #c4b5fd;
+  --color-line: #44403c;
+  --color-line-dark: #57534e;
+  --color-surface: #292524;
+}
+
+/* Light mode */
+[data-theme='light'] {
+  --sl-color-white: #1c1917;
+  --sl-color-bg: #fafaf9;
+  --sl-color-bg-nav: #ffffff;
+  --sl-color-bg-sidebar: #ffffff;
+  --sl-color-bg-inline-code: #ffffff;
+  
+  --sl-color-text: #1c1917;
+  --sl-color-text-accent: #7c3aed;
+  
+  --sl-color-gray-1: #1c1917;
+  --sl-color-gray-2: #57534e;
+  --sl-color-gray-3: #78716c;
+  --sl-color-gray-4: #a8a29e;
+  --sl-color-gray-5: #d6d3d1;
+  --sl-color-gray-6: #e7e5e4;
+  
+  --sl-color-accent: #7c3aed;
+  --sl-color-accent-high: #6d28d9;
+  --sl-color-accent-low: #a78bfa;
+  
+  /* Custom colors */
+  --color-text: #1c1917;
+  --color-text-muted: #57534e;
+  --color-text-light: #78716c;
+  --color-purple: #7c3aed;
+  --color-purple-dark: #6d28d9;
+  --color-line: #e7e5e4;
+  --color-line-dark: #d6d3d1;
+  --color-surface: #ffffff;
+}
+
+/* ============================================
+   BASE STYLING
+   ============================================ */
+
+/* Background grid pattern */
+body {
+  background-image: 
+    linear-gradient(var(--color-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+/* Hide scrollbar */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+.content-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 3rem 6rem !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+hr {
+    display: none;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif) !important;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 64px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 36px !important;
+  font-weight: 600;
+  margin: 3rem 0 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: none !important;
+}
+
+h3 {
+  font-size: 28px !important;
+  margin: 2.5rem 0 1rem;
+}
+
+h4 {
+  font-size: 22px !important;
+  margin: 2rem 0 0.75rem;
+}
+
+/* Remove default heading borders except h2 */
+h1, h3, h4, h5, h6 {
+  border: none !important;
+}
+
+p {
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--color-text-muted);
+  max-width: 75ch;
+  margin: 0 0 1rem;
+}
+
+strong {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+em {
+  font-style: italic;
+  font-family: var(--font-serif);
+}
+
+a {
+  color: var(--color-text);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 200ms ease;
+}
+
+a:hover {
+  border-bottom-color: var(--color-purple);
+}
+
+/* Code */
+code {
+  font-family: var(--font-mono) !important;
+  font-size: 15px;
+  background: var(--color-surface);
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--color-line);
+}
+
+pre {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-line) !important;
+  border-radius: 6px !important;
+  padding: 1.5rem !important;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+pre code {
+  background: none !important;
+  border: none !important;
+  padding: 0;
+}
+
+/* ============================================
+   NAVIGATION & HEADER
+   ============================================ */
+
+.header {
+  background: var(--color-surface) !important;
+  border-bottom: none !important;
+  backdrop-filter: blur(10px);
+}
+
+.site-title {
+  font-family: var(--font-sans) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  color: var(--color-text) !important;
+}
+
+.social-icons a {
+  color: var(--color-text-muted) !important;
+  transition: color 200ms ease !important;
+}
+
+.social-icons a:hover {
+  color: var(--color-purple) !important;
+}
+
+/* ============================================
+   SIDEBARS
+   ============================================ */
+
+/* Left sidebar */
+.sidebar {
+  background: var(--color-surface) !important;
+  border-right: 2px solid var(--color-line) !important;
+  padding: 2rem 0 !important;
+}
+
+.sidebar a {
+  display: block !important;
+  padding: 0.75rem 1.5rem !important;
+  font-family: var(--font-sans) !important;
+  font-size: 15px !important;
+  color: var(--color-text-muted) !important;
+  border-left: 3px solid transparent !important;
+  transition: all 200ms ease !important;
+  text-decoration: none !important;
+}
+
+.sidebar a:hover {
+  color: var(--color-text) !important;
+  background: var(--sl-color-bg) !important;
+  border-left-color: var(--color-line-dark) !important;
+}
+
+.sidebar a[aria-current="page"] {
+  color: var(--color-purple) !important;
+  background: var(--sl-color-bg) !important;
+  border-left-color: var(--color-purple) !important;
+  font-weight: 600 !important;
+}
+
+.sidebar h2,
+.sidebar h3 {
+  font-family: var(--font-sans) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--color-text-light) !important;
+  padding: 1rem 1.5rem 0.5rem !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* Right sidebar (Table of Contents) */
+.right-sidebar {
+  background: transparent !important;
+  border-left: none !important;
+  padding: 2rem 0 !important;
+  position: sticky !important;
+  top: 1rem !important;
+  align-self: flex-start !important;
+  max-height: calc(100vh - 2rem) !important;
+  overflow-y: auto !important;
+}
+
+.right-sidebar-panel {
+  background: transparent !important;
+  border-left: none !important;
+  padding: 2rem 1.5rem !important;
+}
+
+.right-sidebar h2 {
+  font-family: var(--font-sans) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--color-text-light) !important;
+  margin: 0 0 1rem 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.right-sidebar a {
+  display: block !important;
+  padding: 0.5rem 0 !important;
+  font-family: var(--font-sans) !important;
+  font-size: 14px !important;
+  color: var(--color-text-muted) !important;
+  text-decoration: none !important;
+  transition: color 200ms ease !important;
+  border: none !important;
+}
+
+.right-sidebar a:hover {
+  color: var(--color-text) !important;
+  background: transparent !important;
+}
+
+.right-sidebar a[aria-current="true"] {
+  color: var(--color-purple) !important;
+  font-weight: 600 !important;
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+
+.hero {
+  text-align: left !important;
+  padding: 0 !important;
+  margin-bottom: 4rem !important;
+  max-width: 800px !important;
+}
+
+.hero h1 {
+  font-size: 72px !important;
+  font-weight: 500 !important;
+  line-height: 1.1 !important;
+  margin-bottom: 1.5rem !important;
+  color: var(--color-text) !important;
+}
+
+.hero p,
+.hero .tagline {
+  font-size: 24px !important;
+  line-height: 1.6 !important;
+  color: var(--color-text-muted) !important;
+  margin-bottom: 2rem !important;
+  font-family: var(--font-serif) !important;
+  font-weight: 400 !important;
+}
+
+.hero img {
+  display: none !important;
+}
+
+.hero .actions {
+  display: flex !important;
+  gap: 1rem !important;
+  margin-top: 2rem !important;
+  flex-wrap: wrap !important;
+}
+
+/* ============================================
+   BUTTONS - Industrial style
+   ============================================ */
+
+.actions a,
+a[class*="action"],
+.sl-link-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 14px 28px !important;
+  font-family: var(--font-sans) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: var(--color-text) !important;
+  background: transparent !important;
+  border: 2px solid var(--color-line-dark) !important;
+  border-radius: 4px !important;
+  text-decoration: none !important;
+  transition: all 200ms ease !important;
+  cursor: pointer !important;
+}
+
+.actions a:hover,
+a[class*="action"]:hover,
+.sl-link-button:hover {
+  border-color: var(--color-purple) !important;
+  color: var(--color-purple) !important;
+  background: transparent !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Minimal variant */
+a[data-variant="minimal"] {
+  border-color: var(--color-line) !important;
+  color: var(--color-text-muted) !important;
+}
+
+a[data-variant="minimal"]:hover {
+  border-color: var(--color-line-dark) !important;
+  color: var(--color-text) !important;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+.card {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-line) !important;
+  border-radius: 6px !important;
+  padding: 2rem !important;
+  transition: border-color 200ms ease !important;
+}
+
+.card:hover {
+  border-color: var(--color-purple) !important;
+}
+
+.card h2,
+.card h3 {
+  font-family: var(--font-serif) !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  margin: 0 0 0.75rem 0 !important;
+  border: none !important;
+  padding: 0 !important;
+  color: var(--color-text) !important;
+}
+
+.card p {
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  color: var(--color-text-muted) !important;
+  margin: 0 !important;
+}
+
+/* ============================================
+   LISTS
+   ============================================ */
+
+ul, ol {
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+li {
+  margin: 0.75rem 0;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+li::marker {
+  color: var(--color-purple);
+}
+
+/* ============================================
+   IMAGES
+   ============================================ */
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  border: 1px solid var(--color-line);
+}
+
+/* ============================================
+   BLOCKQUOTES
+   ============================================ */
+
+blockquote {
+  border-left: 3px solid var(--color-purple) !important;
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+}
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-line);
+}
+
+th {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+td {
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   THEME TOGGLE
+   ============================================ */
+
+.sl-theme-selector,
+starlight-theme-select {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 8px !important;
+}
+
+.sl-theme-selector:hover {
+  border-color: var(--color-purple) !important;
+}
+
+/* ============================================
+   MISC
+   ============================================ */
+
+/* Hide pagination */
+.pagination-links {
+  display: none !important;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--color-purple);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 48px !important;
+  }
+  
+  .hero h1 {
+    font-size: 52px !important;
+  }
+  
+  .hero p,
+  .hero .tagline {
+    font-size: 20px !important;
+  }
+  
+  h2 {
+    font-size: 32px !important;
+    margin: 2.5rem 0 1.25rem;
+  }
+}

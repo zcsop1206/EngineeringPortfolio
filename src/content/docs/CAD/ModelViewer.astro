@@ -1,0 +1,45 @@
+---
+// src/components/CADViewer.astro
+interface Props {
+  src: string
+  height?: string
+}
+const { src, height = '500px' } = Astro.props
+---
+
+<div class="model-container">
+  <model-viewer 
+    src={src}
+    alt="3D Model"
+    camera-controls 
+    auto-rotate
+    style={`width: 100%; height: ${height};`}
+    loading="eager"
+    reveal="auto"
+    environment-image="neutral"
+    shadow-intensity="1">
+    <div slot="progress-bar" style="display: none;"></div>
+  </model-viewer>
+</div>
+
+<script>
+  // Load model-viewer if not already loaded
+  if (!customElements.get('model-viewer')) {
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js';
+    document.head.appendChild(script);
+  }
+</script>
+
+<style>
+  .model-container {
+    width: 100%;
+    position: relative;
+  }
+  
+  model-viewer {
+    display: block;
+    background: transparent;
+  }
+</style>
