@@ -30,7 +30,8 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  site: 'https://zcsop1206.github.io/EngineeringPortfolio',
+  site: 'https://zcsop1206.github.io',
+  base: '/EngineeringPortfolio/',
 
 });
 
