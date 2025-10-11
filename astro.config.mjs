@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import tailwind from '@astrojs/tailwind';
+import tailwind from '@astrojs/starlight-tailwind';
 
 export default defineConfig({
   integrations: [
