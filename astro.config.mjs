@@ -15,7 +15,10 @@ export default defineConfig({
           sidebar: [
               {
                   label: 'Projects',
-                  autogenerate: { directory: '/projects' },
+                  items: [
+                    { label: 'Project Name 1', link: '/projects/neurosteady' }
+                    // add more projects
+                  ],
               },
               {
                   label: 'CAD',
