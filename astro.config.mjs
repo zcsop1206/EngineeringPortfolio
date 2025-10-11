@@ -16,11 +16,11 @@ export default defineConfig({
           sidebar: [
               {
                   label: 'Projects',
-                  autogenerate: { directory: 'Projects' },
+                  autogenerate: { directory: 'projects' },
               },
               {
                   label: 'CAD',
-                  autogenerate: { directory: 'CAD' },
+                  autogenerate: { directory: 'cad' },
               },
           ],
       }),
@@ -30,7 +30,8 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  site: 'https://zcsop1206.github.io/EngineeringPortfolio',
+  site: 'https://zcsop1206.github.io',
+  base: '/EngineeringPortfolio/',
 
 });
 
