@@ -9,7 +9,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       - name: Install, build, and upload site
-        uses: withastro/action@v4
+        uses: withastro/action@v2
   deploy:
     needs: build
     runs-on: ubuntu-latest
