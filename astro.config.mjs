@@ -15,11 +15,11 @@ export default defineConfig({
           sidebar: [
               {
                   label: 'Projects',
-                  autogenerate: { directory: 'projects' },
+                  autogenerate: { directory: '/projects' },
               },
               {
                   label: 'CAD',
-                  autogenerate: { directory: 'cad' },
+                  autogenerate: { directory: '/cad' },
               },
           ],
       }),
