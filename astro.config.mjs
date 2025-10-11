@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
+
 export default defineConfig({
   integrations: [
       starlight({
@@ -28,7 +29,8 @@ export default defineConfig({
     plugins: [],
   },
 
-  site: 'https://zcsop1206.github.io/EngineeringPortfolio/',
-
+  site: 'https://zcsop1206.github.io',
+  base: '/EngineeringPortfolio/',
+  output: 'static',
 });
 
