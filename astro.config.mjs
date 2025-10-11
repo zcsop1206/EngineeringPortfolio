@@ -28,8 +28,7 @@ export default defineConfig({
     plugins: [],
   },
 
-  site: 'https://zcsop1206.github.io',
-  base: '/EngineeringPortfolio/',
+  site: 'https://zcsop1206.github.io/EngineeringPortfolio/',
 
 });
 
