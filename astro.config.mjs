@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import tailwind from '@astrojs/starlight-tailwind';
 
 export default defineConfig({
   integrations: [
@@ -26,7 +25,7 @@ export default defineConfig({
 	],
 	
   vite: {
-    plugins: [tailwind()],
+    plugins: [],
   },
 
   site: 'https://zcsop1206.github.io',
