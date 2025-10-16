@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "0bb5ed4147da237b",
+        "id": "911b3b581e12781a",
         "type": "tabs",
         "children": [
           {
-            "id": "98f26a6e8e75eb6b",
+            "id": "62919c19cf1b2fd7",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "projects/neurosteady.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "neurosteady"
+              "title": "New tab"
             }
           }
         ]
@@ -166,16 +162,16 @@
       "bases:Create new base": false
     }
   },
-  "active": "0f633b1c8043db4b",
+  "active": "62919c19cf1b2fd7",
   "lastOpenFiles": [
+    "projects/eegcontroller.md",
+    "projects/pcbai.md",
+    "projects/device.png",
+    "projects/neurosteady.md",
     "projects/overview.png",
-    "projects/eegrobotictail.md",
-    "projects/neurosteady.md",
-    "projects/neurosteady.md",
     "Projects/NeuroSteady.md",
     "projects/tsne-lstm.png",
     "projects/stats.png",
-    "projects/device.png",
     "projects/cnnlstm.png",
     "projects",
     "cad/ModelViewer.astro",

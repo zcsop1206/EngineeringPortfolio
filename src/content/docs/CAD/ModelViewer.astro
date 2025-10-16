@@ -3,16 +3,29 @@
 interface Props {
   src: string
   height?: string
+  autoplay?: boolean
+  animationName?: string
+  showControls?: boolean
 }
-const { src, height = '500px' } = Astro.props
+const { 
+  src, 
+  height = '500px',
+  autoplay = false,
+  animationName,
+  showControls = false
+} = Astro.props
 ---
 
 <div class="model-container">
   <model-viewer 
+    id="cad-viewer"
     src={src}
     alt="3D Model"
     camera-controls 
     auto-rotate
+    autoplay={autoplay}
+    animation-name={animationName}
+    animation-crossfade-duration="300"
     style={`width: 100%; height: ${height};`}
     loading="eager"
     reveal="auto"
@@ -20,6 +33,14 @@ const { src, height = '500px' } = Astro.props
     shadow-intensity="1">
     <div slot="progress-bar" style="display: none;"></div>
   </model-viewer>
+  
+  {showControls && (
+    <div class="animation-controls">
+      <button id="play-btn">Play</button>
+      <button id="pause-btn">Pause</button>
+      <button id="reset-btn">Reset</button>
+    </div>
+  )}
 </div>
 
 <script>
@@ -30,6 +51,33 @@ const { src, height = '500px' } = Astro.props
     script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js';
     document.head.appendChild(script);
   }
+
+  // Animation controls
+  document.addEventListener('DOMContentLoaded', () => {
+    const modelViewer = document.querySelector('#cad-viewer');
+    const playBtn = document.querySelector('#play-btn');
+    const pauseBtn = document.querySelector('#pause-btn');
+    const resetBtn = document.querySelector('#reset-btn');
+
+    if (playBtn) {
+      playBtn.addEventListener('click', () => {
+        modelViewer.play();
+      });
+    }
+
+    if (pauseBtn) {
+      pauseBtn.addEventListener('click', () => {
+        modelViewer.pause();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        modelViewer.pause();
+        modelViewer.currentTime = 0;
+      });
+    }
+  });
 </script>
 
 <style>
@@ -41,5 +89,25 @@ const { src, height = '500px' } = Astro.props
   model-viewer {
     display: block;
     background: transparent;
+  }
+
+  .animation-controls {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .animation-controls button {
+    padding: 0.5rem 1rem;
+    background: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .animation-controls button:hover {
+    background: #0052a3;
   }
 </style>

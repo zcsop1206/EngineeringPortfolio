@@ -1,6 +1,6 @@
 ---
 title: EEG-controlled robotic tail
-description: EEG classified for stop-start motion, ~5 DOF tail
+description: "EEG classified for stop-start motion, ~5 DOF tail. integrates with multiple classes of actuators: robotic tail, web, drones, etc"
 date: 2025-10-01
 featured: true
 tags:

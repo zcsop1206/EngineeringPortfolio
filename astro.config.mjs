@@ -17,7 +17,7 @@ export default defineConfig({
                   label: 'Projects',
                   items: [
                     { label: 'Hand tremor stabilization in Neurosurgery (NeuroHack 2025)', link: '/projects/neurosteady' },
-                    { label: 'EEG-controlled robotic tail', link: '/projects/eegrobotictail' }
+                    { label: 'EEG-controller', link: '/projects/eegcontroller' }
                     // add more projects
                   ],
               },
