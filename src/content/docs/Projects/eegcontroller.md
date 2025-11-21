@@ -8,7 +8,8 @@ github:
 award:
 tech stack:
 ---
-
+# Story
+# Method
 ## EEG placement
 https://pmc.ncbi.nlm.nih.gov/articles/PMC7877609/#sec013
 https://www.acns.org/UserFiles/file/EEGGuideline3Montage.pdf
@@ -81,3 +82,6 @@ regular pcb
 - place parts
 - reflow
 ### debugging
+# Solution
+# Extension
+# Teamwork and my role
