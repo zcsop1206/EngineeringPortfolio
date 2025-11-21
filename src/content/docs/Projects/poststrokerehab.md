@@ -9,6 +9,7 @@ tech stack:
 ---
 # Story
 # Method
+![[Pasted image 20251121163246.png]]
 # Solution
 # Extension
 # Teamwork and my role

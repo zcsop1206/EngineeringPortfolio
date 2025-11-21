@@ -168,10 +168,11 @@
   },
   "active": "62919c19cf1b2fd7",
   "lastOpenFiles": [
-    "projects/pcbai.md",
-    "projects/poststrokerehab.md",
-    "projects/eegcontroller.md",
     "projects/neurosteady.md",
+    "projects/Pasted image 20251121163246.png",
+    "projects/poststrokerehab.md",
+    "projects/pcbai.md",
+    "projects/eegcontroller.md",
     "projects/cameramanipulator.md",
     "projects/device.png",
     "projects/overview.png",
@@ -196,7 +197,6 @@
     "Projects/device.png",
     "Projects/tsne-lstm.png",
     "Projects/stats.png",
-    "Projects/overview.png",
     "2001-02-20.md"
   ]
 }
