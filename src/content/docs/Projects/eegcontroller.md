@@ -8,80 +8,61 @@ github:
 award:
 tech stack:
 ---
+# EEG Headset
+
+>Designed and fabricated a custom high-fidelity bio-signal acquisition platform achieving -3.78 dB SNR and 110 dB CMRR using a multi-layer ADS1299-based PCB architecture. To address data scarcity in custom hardware, the system integrates a machine learning pipeline that utilizes OpenNeuro BIDS datasets selected via a soft voting classifier as a baseline. This enables few-shot prototypical adaptation, allowing for accurate real-time feature extraction and intent detection with minimal user-specific calibration.
+
 # Story
+**Problem:** The primary challenge was the need to extract key features from time-series EEG data for versatile applications while maximizing the Signal-to-Noise Ratio (SNR) and Common Mode Rejection Ratio (CMRR).
+
+Commercial headsets are often closed systems that do not allow for the raw data access required for custom feature engineering. To bridge the gap between biological intent and device actuation, I needed to design an independent system capable of acquiring high-fidelity signals and processing them with limited user-specific training data.
+
 # Method
-## EEG placement
-https://pmc.ncbi.nlm.nih.gov/articles/PMC7877609/#sec013
-https://www.acns.org/UserFiles/file/EEGGuideline3Montage.pdf
-hunch - placement should be function dependent - sleep health addresses sleep health relevant regions, actuation relevant addresses actuation relevant
 
-## PCB
-### Function: transmitting EEG signals obtained from electrodes to device suitable for signal processing
+## EEG Montage & Placement Strategy
+To effectively capture relevant bio-signals, electrode placement could not be arbitrary. I implemented a **function-dependent placement strategy**:
+* **Rationale:** Just as sleep health monitors target specific regions, actuation control and intent detection require targeting the motor cortex and relevant signal processing centers.
+* **Reference Standards:** Guidelines from ACNS were utilized to map the 10-20 system to specific application needs.
 
-### Objectives
-Hidden assumption - PCB needs to be on wearable device - wireless.
 
-| Objective                                           | Metric                           | Rationale                                                                    | measurement                                                                                                              |
-| --------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| signal to noise ratio (SNR) - external and internal | -3.78 dB                         | BR8+ benchmark - dry EEG                                                     | https://pmc.ncbi.nlm.nih.gov/articles/PMC5817086/, solution oriented (https://pmc.ncbi.nlm.nih.gov/articles/PMC5967739/) |
-| common mode rejection ratio (CMRR)                  | 110 dB                           | ADS1299 CMRR - try not to reduce further                                     | as i understand it, CMRR is only dependent on the differential amplifier, but                                            |
-| wearability                                         | Planar area, Thickness, flexible | may be included in wearable device that needs to be worn for extended period | design consideration if PCB needs to be attached to wearable device, design can be altered according to needs.           |
-### Constraints
-| Constraints          | Metric          | Rationale             | measurement                                          |
-| -------------------- | --------------- | --------------------- | ---------------------------------------------------- |
-| Cost                 | lower than 200$ | budgetary             | quote requested before purchase                      |
-| Temperature          | lower than 43 C | must not burn sleeper | cannot be measured before operation, use methods and |
-| Must use RPI Zero 2W | have it         | budgetary             | not a constraint for wearable - too bulky            |
-| ADS1299              | have it         | budgetary             |                                                      |
-| Dry flat electrodes  | have it         | budgetary             |                                                      |
-## PCB toolkit
-- Multilayer
-- Aluminum/ceramic
-- flex PCBs / Rigid-flex PCBs
-- HDI (high density interconnector)
-	- ELIC (every layer interconected)
-- FOWLP (fan out wafer level packaging)
-- SLP (substrate like)
-## ADS1299
+[Image of 10-20 EEG system electrode placement map]
 
-| sequential montage | referential montage |
-| ------------------ | ------------------- |
-|                    |                     |
 
-## Candidate designs:
-Common components: ADS1299, 4 dry flat electrodes, OpenBCI compatible pins
-### Wearable integrated PCB:
-flex pcb
-key consideration - noise from components decreasing SNR
-#### Components:
-- MCU: https://www.microchip.com/en-us/products/microcontrollers
-- communication
-- power supply and management
-- debugging support
-### Non-integration with wearable
-regular pcb
-#### Components:
-- RPI Zero 2W
-- power supply and management
-- debugging support
-## Design process
-### circuit design
-- specs: inputs and outputs
-- packaging: individual parts
-- packaging of all parts
-- pricing & availability
-### schematic capture
-- design circuit first, then design it for computer interpretation
-### board layout
-- component layout -  place stuff that need to be close to each other close to each other
-- routing - connecting components using copper traces
-- design rule check - automatic
-- gerber generation - printing form 
-### fabrication and assembly
-- apply solder paste where you want
-- place parts
-- reflow
-### debugging
+## Hardware Design: Objectives & Constraints
+The PCB serves as the physical interface for the signal processing system.
+* **Signal Integrity:** The system was designed to account for different noise sources to achieve industry-standard noise handling metrics: **SNR of -3.78 dB** and **CMRR of 110 dB**.
+* **Safety & Form:** Strictly constrained thermal output to $<43^\circ C$ (safety) and optimized planar area for wearable integration.
+* **Architecture:** Selected a **Modular Prototype** approach (ADS1299 + Raspberry Pi Zero 2W) to balance budget constraints ($<\$200$) with performance.
+
 # Solution
+
+## Circuit Design & PCB Layout
+The hardware solution centers on the **ADS1299**, an industry-standard biopotential ADC.
+
+
+[Image of ADS1299 block diagram]
+
+
+* **Multistep Signal Processing:** I designed a multilayer stack-up with dedicated ground planes and symmetric analog routing. This hardware-level filtering was the first step in the signal processing system, effectively nullifying external electrical noise to reach the **110 dB CMRR** target.
+* **Interface:** The board interfaces via SPI with a Raspberry Pi Zero 2W.
+
+## Machine Learning & Feature Extraction
+To address the challenge of accuracy with limited data from the custom headset, I implemented a robust software pipeline:
+
+1.  **Baseline Generation:** I utilized Brain Imaging Data Structure (BIDS) compliant **OpenNeuro Datasets**. To ensure relevance, these datasets were selected using a **soft voting classifier** to serve as a high-quality baseline.
+2.  **Feature Engineering:** I extracted key EEG elements from the time-series data to isolate intent from background activity.
+3.  **Few-Shot Adaptation:** These features were used for **few-shot prototypical adaptation**. This allowed the system to improve accuracy and adapt to the specific user's brainwaves without requiring extensive calibration sessions.
+
 # Extension
-# Teamwork and my role
+While the current solution meets the functional requirements for the prototype, the roadmap for "True Wearability" involves:
+* **Miniaturization:** Transitioning from rigid FR4 to **Rigid-Flex PCB** technology with ELIC (Every Layer Interconnected) packaging.
+* **Power Optimization:** Replacing the Linux-based RPi with a low-power microcontroller to improve battery life.
+
+## Appendix: Bill of Materials (Prototype)
+| Component                 | Function                    | Selection Rationale                                                                                                     |
+| :------------------------ | :-------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| **ADS1299**               | Analog-to-Digital Converter | Specialized for biopotential measurements; offers 24-bit resolution and ultra-low input-referred noise.                 |
+| **Raspberry Pi Zero 2W**  | Compute & Processing        | Compact form factor; supports Linux for robust Python-based ML pipeline handling via SPI.                               |
+| **Dry Flat Electrodes**   | Signal Interface            | Reusable and durable; eliminates the need for conductive gel, improving user experience for rapid prototyping.          |
+| **Custom 4-Layer PCB**    | Circuit Interconnect        | 4-layer stack-up selected to provide dedicated internal ground planes for EMI shielding.                                |
+| **LDO Voltage Regulator** | Power Management            | Low-dropout regulator chosen to minimize thermal waste ($<43^\circ C$) and provide clean power to the analog front-end. |

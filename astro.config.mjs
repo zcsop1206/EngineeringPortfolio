@@ -19,7 +19,7 @@ export default defineConfig({
                     { label: 'NeuroHack 2025: Hand tremor stabilization in Neurosurgery', link: '/projects/neurosteady' },
                     { label: 'MIE243: Camera manipulator robot', link: '/projects/cameramanipulator' },
                     { label: 'NeuroTech Fall 2025: sEMG + exoskeleton for hand rehabilitation', link: '/projects/poststrokerehab' },
-                    { label: 'EEG-based robotic actuation', link: '/projects/eegcontroller' },
+                    //{ label: 'EEG-based robotic actuation', link: '/projects/eegcontroller' },
                     { label: 'MIE243 dissection: 90 degree speed reducer', link: '/projects/gearbox' },
                     //{ label: 'EEG-controller', link: '/projects/eegcontroller' }
                     // add more projects
