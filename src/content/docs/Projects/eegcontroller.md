@@ -8,8 +8,6 @@ github:
 award:
 tech stack:
 ---
-# EEG Headset
-
 >Designed and fabricated a custom high-fidelity bio-signal acquisition platform achieving -3.78 dB SNR and 110 dB CMRR using a multi-layer ADS1299-based PCB architecture. To address data scarcity in custom hardware, the system integrates a machine learning pipeline that utilizes OpenNeuro BIDS datasets selected via a soft voting classifier as a baseline. This enables few-shot prototypical adaptation, allowing for accurate real-time feature extraction and intent detection with minimal user-specific calibration.
 
 # Story

@@ -8,8 +8,6 @@ github:
 award:
 tech stack:
 ---
-# 4-DOF Cinematography Arm
-
 >Designed and modeled a 4-degree-of-freedom (4-DOF) robotic camera arm capable of executing repeatable Pan, Tilt, and Dolly movements. The system features one redundant degree of freedom to optimize trajectory planning and avoid kinematic singularities. The project was governed by a rigorous Systems Engineering approach, utilizing a custom Traceability Matrix to ensure all engineering specifications were quantitative, prescriptive, and testable against the initial user needs of advanced hobbyist cinematographers.
 
 # Story

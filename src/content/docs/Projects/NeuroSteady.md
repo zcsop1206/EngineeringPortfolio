@@ -8,8 +8,6 @@ github: https://github.com/supreme-gg-gg/NeuroSteady
 award: Placed top 3 overall and won 'Best Prototype' award at NeuroHack 2025
 tech stack:
 ---
-# Surgical Hand Tremor Stabilizer (NeuroSteady)
-
 >Developed an end-to-end wearable prototype to stabilize nervousness-induced hand tremors using MPU6050 kinematics and servo-controlled string tension. The system features a CNN-LSTM architecture utilizing few-shot transfer learning (fine-tuned on Parkinson’s data) to detect tremors with 78% accuracy. To ensure robustness, the model is ensembled with sliding window time-frequency analysis. Awarded **Best Prototype** and placed in the **Top 3** at University of Toronto’s NeuroHack2025.
 
 **Github:** [https://github.com/supreme-gg-gg/NeuroSteady](https://github.com/supreme-gg-gg/NeuroSteady)

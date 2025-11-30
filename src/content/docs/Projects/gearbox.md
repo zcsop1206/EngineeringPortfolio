@@ -8,8 +8,6 @@ github:
 award:
 tech stack:
 ---
-# Computational Design & Optimization of FDM Gear Train
-
 >Formulated and solved a Mixed-Integer Nonlinear Programming (MINLP) problem to optimize a two-stage compound gear train for Fused Deposition Modeling (FDM). Utilizing a Differential Evolution algorithm with a "Maximin" objective function, the solution navigated a search space of ~$10^6$ combinations to maximize the minimum safety factor across the assembly. The resulting design achieved a 3:1 reduction ratio with a minimum safety factor of 951 (Hertzian contact), fitting within a 125mm build volume and a 2.8-hour print budget.
 
 # Story

@@ -7,8 +7,6 @@ github:
 award:
 tech stack:
 ---
-# Soft Robotic Exoskeleton for Post-Stroke Rehabilitation
-
 >Developed a compliant, tendon-driven robotic exoskeleton designed for dual-mode (assistive and resistive) stroke rehabilitation. The mechanical design features 3D-modeled bio-inspired joints to ensure safety and biocompatibility. The electrical architecture includes a custom schematic integrating signal acquisition, closed-loop actuation, and power management. Project execution involved strict inventory-based BOM optimization to minimize costs while maintaining clinical functionality.
 
 # Story
