@@ -8,71 +8,145 @@ github: https://github.com/supreme-gg-gg/NeuroSteady
 award: Placed top 3 overall and won 'Best Prototype' award at NeuroHack 2025
 tech stack:
 ---
->Developed an end-to-end wearable prototype to stabilize nervousness-induced hand tremors using MPU6050 kinematics and servo-controlled string tension. The system features a CNN-LSTM architecture utilizing few-shot transfer learning (fine-tuned on Parkinson’s data) to detect tremors with 78% accuracy. To ensure robustness, the model is ensembled with sliding window time-frequency analysis. Awarded **Best Prototype** and placed in the **Top 3** at University of Toronto’s NeuroHack2025.
+![Device Photo](device.png)
 
-**Github:** [https://github.com/supreme-gg-gg/NeuroSteady](https://github.com/supreme-gg-gg/NeuroSteady)
+> Built an end-to-end wearable prototype to stabilize nervousness-induced hand tremors using MPU6050 kinematics and servo-controlled string tension. The system uses a CNN-LSTM architecture with few-shot transfer learning (fine-tuned on Parkinson's data) achieving 78% tremor detection accuracy. Ensembled the neural network with sliding window time-frequency analysis to reduce false positives. Awarded **Best Prototype** and placed **Top 3** at University of Toronto's NeuroHack2025.
+> 
+> **Github:** [https://github.com/supreme-gg-gg/NeuroSteady](https://github.com/supreme-gg-gg/NeuroSteady)
+> 
+> **Link to career interests**: This project gave me hands-on experience building ML-driven medical devices under extreme resource constraints, which is directly applicable to my bioengineering career goals. The transfer learning approach I developed here is now informing my work on NeuroTech UofT's stroke rehabilitation exoskeleton, where we're adapting gait datasets to personalized patient motion patterns.
 
-# Story
-At NeuroHack2025 at the University of Toronto, we were tasked with making the surgical environment safer through more robust surgical instruments. We decided to make a hand tremor stabilizer for nervousness-induced tremors in surgeons. In hindsight, this is not really a problem making the operating room unsafe, but I am proud of the end-to-end working prototype my team was able to design.
+---
 
-> Our design won Best Prototype and placed in the Top 3 at the event.
+## Problem
 
-# Method and Solution
-We adapted our design process to prioritize flexibility and rapid prototyping over conceptual design given the constrained time frame and limited resources we were given. We decided to structure our design process around two core specifications: minimizing cost, and ensuring biocompatibility and seamless integration with surgical attire. We split our design into three phases: data acquisition, tremor detection, and tremor stabilization.
+At NeuroHack2025 (48-hour hackathon), we were tasked with improving surgical environment safety. We chose to tackle nervousness-induced hand tremors in surgeons. Looking back, there are bigger OR safety problems to solve. But the 48-hour constraint forced us to scope aggressively, and I'm proud we built a fully functional prototype that won Best Prototype and placed Top 3 overall.
 
-![overview](overview.png)
+The technical challenge: detect tremors in real-time with limited labeled data, then stabilize mechanically using only an Arduino starter kit.
 
-## Data Acquisition
-We used an MPU6050 as our accelerometer placed on the back of the user's hand in a wearable glove. It gave kinematic data of the user's hand as input for our tremor detection phase. We used this [Hand Tremor Dataset](https://www.kaggle.com/datasets/aaryapandya/hand-tremor-dataset-collected-using-mpu9250-sensor) for transfer learning, so we tried to mirror the data acquisition techniques to those used by the dataset as far as possible.
+> This project taught me to work within severe hardware and time constraints while maintaining system performance, which is exactly the skill set needed for rapid prototyping in medical device development where regulatory timelines demand quick iteration cycles.
 
-## Tremor Detection
+---
 
-### Dataset selection for few-shot transfer learning
-We chose a Parkinson's disease tremor dataset due to its relative availability compared to tremors in the operating room, and relative similarities with our application. Some differences we thought might be challenges to its use for few-shot transfer learning were different accelerometers used (MPU9250 vs MPU6050) and subtle differences in the tremor profile.
+## Method
 
-To test the viability of this proposed approach, we created a custom dataset by simulating tremors and collecting them using our accelerometer with an Arduino. Using t-distributed Stochastic Neighbor Embedding (t-SNE), a technique used to visualize high-dimensional data, we concluded that the source domain and target domain are close to each other despite the limitations. This confirmed the viability of few-shot transfer learning.
+We adapted our design process for the hackathon format, prioritizing rapid prototyping over conceptual exploration. Two core specs: minimize cost (we had $0 budget beyond the starter kit) and ensure biocompatibility with surgical gloves. Split the system into three subsystems: data acquisition, tremor detection, and tremor stabilization.
 
-![tsne-lstm](tsne-lstm.png)
+![System Overview](overview.png)
+### Data Acquisition
 
-### Model Architecture
-We implemented a Convolutional Neural Network - Long Short-Term Memory (CNN-LSTM) architecture with a few-shot transfer learning approach. We chose a 1D CNN due to its ability to extract features from the time series data and an LSTM since we needed to capture the temporal dependencies in the sequential tremor data.
+Used an **MPU6050** 6-axis accelerometer/gyroscope mounted on the back of the hand in a wearable glove. Chose this over the MPU9250 (used in our training dataset) due to Arduino kit limitations. Sampled at 100Hz to capture tremor frequency range (3-12 Hz for Parkinsonian tremors, we assumed similar for nervousness tremors).
 
-The feature mapping extracted from the CNN-LSTM layers overlapped significantly between the Parkinson's disease dataset and our custom dataset, further supporting the viability of few-shot transfer learning. Therefore, we decided to only fine-tune the feed-forward layers of the model on the custom dataset and freeze the CNN-LSTM layers derived from training on the Parkinson's disease dataset. This decision was also supported by the disparity in the sizes of the Parkinson's disease dataset and our custom dataset.
+We mirrored the [Hand Tremor Dataset](https://www.kaggle.com/datasets/aaryapandya/hand-tremor-dataset-collected-using-mpu9250-sensor) collection protocol as closely as possible to minimize domain shift in transfer learning.
 
-![model](cnnlstm.png)
+### Tremor Detection
 
-The base model achieved an accuracy of 85% with minor manual optimization and little overfitting. The final accuracy obtained on our own dataset is 78% in 50 epochs. This is without any data augmentation or other techniques to improve the model. For improvement, explicit feature engineering is needed that has been shown in literature to achieve 80-90% accuracy for Parkinson's disease tremors. Due to our time and resource constraints, we decided not to implement this.
+**Dataset Selection for Transfer Learning**
 
-![stats](stats.png)
+We used a Parkinson's disease tremor dataset because it was the only publicly available accelerometer tremor data we could find in 48 hours. Risky choice: the MPU9250 vs MPU6050 sensor difference and pathological tremors vs nervousness tremors might have different signatures.
 
-This model is then ensembled with a simple majority voting system with a sliding window time-frequency analysis. The model is run on the windowed data and the majority vote is taken. This helped us reduce the false positives and false negatives, given that the CNN-LSTM model is not perfect and quite sensitive to the input data, while traditional signal processing methods are not sensitive enough but are robust.
+To validate this approach, we quickly collected a custom dataset (20 minutes of simulated tremors from our 4-person team). Using **t-distributed Stochastic Neighbor Embedding (t-SNE)** to visualize the high-dimensional accelerometer data, we confirmed the source domain (Parkinson's) and target domain (our simulated tremors) clustered reasonably close.
 
-## Tremor Stabilization
-This phase was highly constrained by our limited resources, since we only had access to an Arduino starter kit. Our model inference had to run on a laptop as a result, confining the range of motion of our design which had to be connected to the laptop.
+![t-SNE Visualization](tsne-lstm.png)
 
-Despite this constraint, we stabilized the tremor along 1 degree of freedom—the up and down motion of the wrist—as tremors along this axis can cause the most damage during surgery. This was done through a wearable glove and sleeve mechanism. The majority vote from our tremor detection model, when above a threshold, triggered servos on top and bottom of the sleeve placed on the forearm. This put the arm in tension through strings tied to the glove and the servos, dampening the tremors until they stopped. The servo then returned to its original position, leaving the string in slack until the tremors began again.
+Not perfect, but good enough for a hackathon. In production, we'd need actual surgical tremor data.
 
-![device](device.png)
+**Model Architecture: CNN-LSTM with Frozen Layers**
 
-# Solution Overview
-Our design used an MPU6050 accelerometer to collect the user's hand movement data. It was also used to create a custom dataset for few-shot transfer learning with the Parkinson's disease dataset for tremor detection. The tremor detection used these datasets in a CNN-LSTM architecture, the Parkinson's disease dataset being used to train the model and our custom dataset being used to fine-tune it. This model was then ensembled with a simple majority voting system and a sliding window time-frequency analysis to balance the sensitivity and robustness of our model. The classification was then used to stabilize tremors by putting the hand in string tension using servo motors in our wearable system.
+Chose a **1D Convolutional Neural Network** stacked with **Long Short-Term Memory** layers for two reasons:
 
-# Extension
-### Data acquisition
-- [ ] Improve the latency of receiving and processing the signal.
+1. CNNs extract local features from time series (tremor frequency patterns)
+2. LSTMs capture temporal dependencies (tremor onset/offset dynamics)
 
-### Tremor detection
-- [ ] Improve the model with explicit feature engineering as carried out in literature.
-- [ ] Train 2D CNN on spectrogram data for better feature extraction.
-- [ ] Improve the time series model and ensemble with other techniques such as bagging or boosting to leverage the strength and weaknesses of different models.
-- [ ] Evaluate the trained models using 10-fold cross validation.
+We trained the full CNN-LSTM on the Parkinson's dataset (85% accuracy), then froze the CNN-LSTM layers and only fine-tuned the final feed-forward layers on our custom dataset. This freeze decision was driven by two factors:
 
-### Tremor stabilization
-- [ ] Migrate the model onto the microcontroller unit using TinyML.
-- [ ] Create a CAD housing and Flex PCB to ensure the design can integrate with surgical attire.
-- [ ] Use piezoelectric actuation using smart fabric for easier personalization, more precise, and multi-degree of freedom dampening of tremors.
+- Feature maps from CNN-LSTM layers overlapped significantly between domains (visualized using activation clustering)
+- Our custom dataset was tiny (20 minutes) compared to Parkinson's dataset (several hours)
 
-# Teamwork and My Role
-**Role: ML Engineer & System Integrator**
-* **Model Development:** I led the development of the CNN-LSTM architecture, specifically handling the transfer learning pipeline between the MPU9250 Parkinson's data and our MPU6050 live stream.
-* **Ensembling Strategy:** I implemented the sliding window time-frequency analysis to filter out false positives from the neural network, ensuring the servos didn't trigger falsely during steady hand movements.
+![CNN-LSTM Architecture](cnnlstm.png)
+
+Final accuracy on our test set: **78%** in 50 epochs. The 7% drop from 85% is expected given domain shift. We didn't have time for data augmentation or explicit feature engineering (literature shows hand-crafted frequency domain features can push this to 85-90%).
+
+![Training Statistics](stats.png)
+
+**Ensemble with Signal Processing**
+
+The CNN-LSTM alone was too sensitive to transient motion artifacts (scratching nose, adjusting mask). So we ensembled it with **sliding window time-frequency analysis** using a simple majority voting system. Run both methods on 2-second windows, only trigger stabilization if both agree.
+
+Traditional signal processing (FFT-based frequency analysis) is robust but not sensitive enough alone. The neural network is sensitive but generates false positives. Ensemble balances both. In 48 hours, this was the fastest way to improve precision without retraining.
+
+> Building this ensemble taught me that production ML systems rarely rely on neural networks alone. Hybrid approaches combining classical signal processing with modern ML often outperform either method individually, especially when dealing with noisy sensor data in medical applications.
+
+### Tremor Stabilization
+
+Highly constrained by the Arduino starter kit. Model inference had to run on a laptop (no TinyML time), so the device stayed tethered within USB cable range.
+
+We stabilized **1 degree of freedom**: up/down wrist motion. This axis causes the most surgical damage (scalpel depth control). The mechanism: wearable glove connected via strings to servo motors mounted on a forearm sleeve. When tremor detected (majority vote above threshold), servos pull strings taut, putting the forearm-hand system in tension and dampening motion. Once tremor stops, servos return to neutral, slackening strings.
+
+![Wearable Device](device.png)
+
+Tested on ourselves (no IRB, just hackathon demo). Subjectively reduced visible shaking, but we didn't have time for quantitative validation with IMU measurements during stabilization.
+
+> This mechanical design experience reinforced that hardware constraints often dominate system architecture in medical devices. The tether limitation would be unacceptable clinically, but for a proof-of-concept under extreme time pressure, we made the right tradeoff to demonstrate feasibility.
+
+---
+## Solution evaluation
+
+**Strengths:**
+
+- Transfer learning validated faster than expected (t-SNE analysis took 30 minutes)
+- Ensemble approach dramatically reduced false positives without retraining
+- Mechanical stabilization was simple enough to prototype in 6 hours
+
+**Limitations:**
+
+- Initial attempt at 2D CNN on spectrogram images failed (overfitting on tiny dataset, scrapped after 4 hours)
+- Servo response time (200ms) introduced latency; piezoelectric actuators would be faster but weren't in the kit
+- Single DOF stabilization meant tremors in other axes weren't addressed
+- No clinical validation; simulated tremors may not match real surgical nervousness
+
+If time was not a constraint, I'd prioritize collecting real surgical tremor data first, even if it meant delaying model development.
+
+---
+
+## Future Work
+
+To make this clinically viable:
+
+- [ ] **Model improvements**: Explicit feature engineering using wavelet transforms and spectral analysis (shown in literature to improve Parkinson's tremor detection to 85-90%). Train on real surgical data, not simulated tremors. Implement 10-fold cross-validation for robust accuracy estimates.
+
+- [ ] **Hardware migration**: Port model to ESP32 or similar microcontroller using **TinyML** (TensorFlow Lite Micro) to eliminate laptop tether. Design custom Flex PCB and 3D-printed housing for integration with surgical gloves.
+
+- [ ] **Multi-DOF stabilization**: Replace servo-string mechanism with **piezoelectric actuators** embedded in smart fabric. This enables stabilization along multiple axes simultaneously and reduces response latency to <50ms.
+
+- [ ] **Clinical validation**: Partner with surgical residents to collect real nervousness tremor data during simulated procedures. Measure stabilization effectiveness quantitatively using IMU during actuation.
+
+> These extensions matter because they address the gap between hackathon prototype and FDA-clearable medical device. Understanding this gap, especially the validation and safety requirements, is critical for my bioengineering career where I want to work on assistive technologies that actually reach patients.
+
+---
+
+## Teamwork and My Role
+
+**My role: ML Engineer & System Integrator**
+
+- **Transfer learning pipeline**: I led the CNN-LSTM development. Analyzed the Parkinson's dataset structure, implemented the model in PyTorch, ran the t-SNE validation, and made the decision to freeze layers based on feature map analysis.
+- **Data collection**: Helped design the custom dataset collection protocol. We all took turns simulating tremors (shaking hands intentionally) while wearing the MPU6050 to build the fine-tuning dataset.
+- **Wearable design and integration**: I designed the wearable system containing the MPU6050 and servos. Coordinated with the teammate who built the servo system to define the threshold and timing in the ensemble system for triggering stabilization.
+
+**Collaboration dynamics**: The biggest challenge was coordinating mechanical and ML subsystems when we were building them in parallel with no formal interface spec. We iterated the trigger threshold 5-6 times during final integration because the servo response was slower and more inconsistent than expected.
+
+> Working under this time pressure taught me to communicate design decisions quickly and adapt to changing constraints. In bioengineering, where mechanical, electrical, and software subsystems must integrate seamlessly, this rapid iteration skill is essential.
+
+---
+
+## Takeaways
+
+Built a working tremor stabilization system in 48 hours that won Best Prototype at a university hackathon. The transfer learning approach worked despite domain shift concerns, and the hybrid ML/signal-processing ensemble was the right call for the time constraint.
+
+Three things I learned:
+
+1. Validate transfer learning viability early with dimensionality reduction (t-SNE saved us from wasting time on incompatible datasets)
+2. Ensemble methods can rescue imperfect ML models faster than retraining, especially under time pressure
+3. Hardware constraints (Arduino kit, tether to laptop) force creative mechanical solutions
+
+>This project built my confidence in rapid ML prototyping for medical applications and gave me practical experience with the sensor-model-actuator pipeline that's central to assistive robotics. The skills I developed here directly enable my current work on NeuroTech's stroke rehabilitation exoskeleton, where we're solving similar problems with more time and better hardware.

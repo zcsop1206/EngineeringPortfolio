@@ -1,6 +1,6 @@
 ---
-title: Hi, I'm Adit
-description: Mechanical engineer
+title: Adit Bhargava Engineering Portfolio
+description: Mechanical engineering student at University of Toronto
 template: splash
 ---
 
@@ -8,12 +8,9 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 
 <div class="hero">
 
-I'm a mechanical engineer interested in cognitive science, bioengineering and mechatronics.
-
-<div class="actions">
-  <a href="/EngineeringPortfolio/projects/neurosteady">View my work</a>
-  <a href="mailto:adit.bhargava@mail.utoronto.ca" data-variant="minimal">Get in touch</a>
-</div>
+I'm a Mechanical engineering student at the University of Toronto. Current domains I am exploring are bioinspired robotics (specifically tendon-driven continuum robots), biosignal acquisition and processing (sEMGs and EEGs), and optimization techniques. Through my personal projects, course projects, and projects at NeuroTech UofT, I have pursued my career interests in cognitive science, bioengineering and mechatronics. 
+<br></br>
+My work is primarily driven by curiosity, and this portfolio highlights how my ideas evolve into solutions through design processes. It also reflects on my teamwork experiences, and how my projects shape my career interests.
 
 </div>
 
@@ -22,29 +19,42 @@ I'm a mechanical engineer interested in cognitive science, bioengineering and me
 ## Recent Projects
 
 <CardGrid>
-  <Card title="Precision Mechanisms">
-    Exploring the intersection of mechanical design and control systems. Building tools that extend human capability.
-  </Card>
   
-  <Card title="Creative Process">
-    Documentation of how ideas move from concept to reality. Sketches, prototypes, failures, and insights.
-  </Card>
-  
-  <Card title="Philosophical Notes">
-    Writing about craft, engineering, meaning, and the act of making. Thoughts on why we build.
-  </Card>
-  
-  <Card title="Technical Writing">
-    Deep dives into specific problems: materials, kinematics, control theory, and manufacturing processes.
-  </Card>
+  <a href="/EngineeringPortfolio/projects/cameramanipulator">
+    <Card title="MIE243 Project: 4-DOF cinematography robotic manipulator">
+      Automated camera manipulator for advanced hobbyist and beginner professional cinematographers.
+    </Card>
+  </a>
+
+  <a href="/EngineeringPortfolio/projects/gearbox">
+    <Card title="MIE243 Dissection: speed reducing gearbox">
+      3:1 speed reduction, 90 degree angular + linear offset
+    </Card>
+  </a>
+
+  <a href="/EngineeringPortfolio/projects/neurosteady">
+    <Card title="Hand tremor stabilization in Neurosurgery (NeuroHack 2025)">
+      Closed-loop hand tremor mitigation system: 76% tremor reduction.
+    </Card>
+  </a>
+
+  //<a href="/EngineeringPortfolio/projects/eegcontroller">
+  //  <Card title="EEG controller">
+  //    EEG classified for stop-start motion, enabling control of multiple types of actuators: robotic tail, drones, etc
+  //  </Card>
+  //</a>
+
+  //<a href="/EngineeringPortfolio/projects/poststrokerehab">
+  //  <Card title="NeuroTech Fall 2025: post stroke rehab hardware">
+  //    Exoskeleton and sEMG signal processing to facilitate post stroke rehabilitation
+  //  </Card>
+  //</a>
+
+  <a href="mailto:adit.bhargava@mail.utoronto.ca">
+    <Card title="Contact me!">
+      Feel free to reach out to me by email, I am always open to a conversation.
+    </Card>
+  </a>
 </CardGrid>
-
----
-
-## About This Space
-
-This is my workshop and gallery—a place to document what I'm learning and building. You'll find project breakdowns, process documentation, and occasional philosophical tangents.
-
-I believe in showing the messy middle, not just polished results. Engineering is as much about thinking as doing.
 
 ---

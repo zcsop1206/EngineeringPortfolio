@@ -27,16 +27,30 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "projects/poststrokerehab.md",
+                "file": "projects/neurosteady.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "poststrokerehab"
+              "title": "neurosteady"
+            }
+          },
+          {
+            "id": "98278b23d7565eae",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "projects/gearbox.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "gearbox"
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -181,22 +195,27 @@
       "bases:Create new base": false
     }
   },
-  "active": "1cf07a45e114f6c4",
+  "active": "98278b23d7565eae",
   "lastOpenFiles": [
-    "projects/overview.png",
-    "projects/Pasted image 20251121163246.png",
+    "projects/gearboxassem.png",
+    "Pasted image 20251203233248.png",
+    "projects/gearbox.md",
+    "projects/DFM_Gearboxassemblyinstructions.pdf",
     "projects/neurosteady.md",
-    "projects/eegcontroller.md",
     "projects/cameramanipulator.md",
     "projects/poststrokerehab.md",
-    "projects/stats.png",
-    "projects/gearbox.md",
+    "projects/esp2final.png",
+    "projects/esp2midpoint.png",
+    "projects/esp1final.png",
+    "projects/esp1midpoint.png",
+    "projects/tiltfea.png",
+    "Pasted image 20251203211646.png",
+    "projects/tiltassem.png",
+    "projects/redundantpanassem.png",
+    "projects/eegcontroller.md",
     "projects/eegcontroller 1.md",
-    "projects/device.png",
     "projects/pcbai.md",
     "Projects/NeuroSteady.md",
-    "projects/tsne-lstm.png",
-    "projects/cnnlstm.png",
     "projects",
     "cad/ModelViewer.astro",
     "cad/example.mdx",
@@ -208,12 +227,7 @@
     "CAD/models/Turbine_Assembly.gltf",
     "CAD/models/Assembly 1.gltf",
     "CAD/example.md",
-    "CAD/example.mdx",
     "Projects/ALTARS.md",
-    "Projects/cnnlstm.png",
-    "Projects/device.png",
-    "Projects/tsne-lstm.png",
-    "Projects/stats.png",
     "2001-02-20.md"
   ]
 }

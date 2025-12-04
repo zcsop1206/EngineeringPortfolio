@@ -14,17 +14,22 @@ export default defineConfig({
           social: [{icon: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/adit-bhargava-29509a200'}, { icon: 'github', label: 'GitHub', href: 'https://github.com/zcsop1206' }],
           sidebar: [
               {
-                  label: 'Projects',
+                  label: 'Completed projects',
                   items: [
-                    { label: 'NeuroHack 2025: Hand tremor stabilization in Neurosurgery', link: '/projects/neurosteady' },
                     { label: 'MIE243: Camera manipulator robot', link: '/projects/cameramanipulator' },
-                    { label: 'NeuroTech Fall 2025: sEMG + exoskeleton for hand rehabilitation', link: '/projects/poststrokerehab' },
-                    { label: 'EEG-based robotic actuation', link: '/projects/eegcontroller' },
                     { label: 'MIE243 dissection: 90 degree speed reducer', link: '/projects/gearbox' },
+                    { label: 'NeuroHack 2025: Hand tremor stabilization in Neurosurgery', link: '/projects/neurosteady' },
                     //{ label: 'EEG-controller', link: '/projects/eegcontroller' }
                     // add more projects
                   ],
               },
+              //{
+              //    label: 'Ongoing projects',
+              //    items: [
+                    //{ label: 'EEG controller', link: '/projects/eegcontroller' },
+                    //{ label: 'NeuroTech Fall 2025: sEMG + exoskeleton for hand rehabilitation', link: '/projects/poststrokerehab' },
+              //    ]
+              //}
               //{
                   //label: 'CAD',
                   //items: [

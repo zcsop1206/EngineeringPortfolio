@@ -108,7 +108,7 @@ html::-webkit-scrollbar {
   width: 100% !important;
   max-width: 100% !important;
   margin: 0 !important;
-  padding: 3rem 6rem !important;
+  padding: 1.5rem 3rem !important;
   background: transparent !important;
   border: none !important;
 }
@@ -129,28 +129,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 64px !important;
+  font-size: 48px !important;
   font-weight: 500 !important;
   letter-spacing: -0.03em;
-  margin-bottom: 1rem;
 }
 
 h2 {
   font-size: 36px !important;
   font-weight: 600;
-  margin: 3rem 0 1.5rem;
-  padding-bottom: 1rem;
+  margin: 2rem 0 1rem;
   border-bottom: none !important;
 }
 
 h3 {
   font-size: 28px !important;
-  margin: 2.5rem 0 1rem;
+  margin: 2rem 0 0.5rem;
 }
 
 h4 {
   font-size: 22px !important;
-  margin: 2rem 0 0.75rem;
+  margin: 1.5rem 0 0.5rem;
 }
 
 /* Remove default heading borders except h2 */
@@ -159,11 +157,10 @@ h1, h3, h4, h5, h6 {
 }
 
 p {
-  font-size: 17px;
-  line-height: 1.8;
+  font-size: 16px;
+  line-height: 1.6;
   color: var(--color-text-muted);
   max-width: 75ch;
-  margin: 0 0 1rem;
 }
 
 strong {
@@ -177,8 +174,8 @@ em {
 }
 
 a {
-  color: var(--color-text);
-  text-decoration: none;
+  color: var(--color-purple);
+  text-decoration: var(--color-purple);
   border-bottom: 1px solid transparent;
   transition: border-color 200ms ease;
 }
@@ -192,7 +189,7 @@ code {
   font-family: var(--font-mono) !important;
   font-size: 15px;
   background: var(--color-surface);
-  padding: 2px 6px;
+  padding: 1.5px 4px;
   border-radius: 3px;
   border: 1px solid var(--color-line);
 }
@@ -201,7 +198,7 @@ pre {
   background: var(--color-surface) !important;
   border: 1px solid var(--color-line) !important;
   border-radius: 6px !important;
-  padding: 1.5rem !important;
+  padding: 1rem !important;
   font-size: 15px;
   line-height: 1.6;
 }
@@ -247,7 +244,6 @@ pre code {
 /* Left sidebar */
 .sidebar {
   background: var(--color-surface) !important;
-  border-right: 2px solid var(--color-line) !important;
   padding: 2rem 0 !important;
 }
 
@@ -257,7 +253,6 @@ pre code {
   font-family: var(--font-sans) !important;
   font-size: 15px !important;
   color: var(--color-text-muted) !important;
-  border-left: 3px solid transparent !important;
   transition: all 200ms ease !important;
   text-decoration: none !important;
 }
@@ -265,13 +260,11 @@ pre code {
 .sidebar a:hover {
   color: var(--color-text) !important;
   background: var(--sl-color-bg) !important;
-  border-left-color: var(--color-line-dark) !important;
 }
 
 .sidebar a[aria-current="page"] {
   color: var(--color-purple) !important;
   background: var(--sl-color-bg) !important;
-  border-left-color: var(--color-purple) !important;
   font-weight: 600 !important;
 }
 
