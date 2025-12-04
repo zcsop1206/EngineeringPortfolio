@@ -152,7 +152,7 @@ The AGMA equations predict SF=951, but we haven't validated this with destructiv
 **3. Material Exploration**  
 PLA was chosen for availability, but other FDM materials might perform better. Nylon has higher impact resistance (better layer adhesion), PETG has better creep resistance (important for sustained loads). However, each material has different thermal expansion coefficients, which affects dimensional accuracy. Understanding this trade-off space would enable material selection optimization, not just geometric optimization.
 
-> These extensions matter because they represent the gap between academic optimization and deployable engineering. I'm interested in robotics and automated manufacturing, where computational design tools like this must integrate with physical validation, material science, and production scalability. Learning to bridge that gap—knowing when simulation is sufficient and when physical testing is required—is the skill I want to develop.
+> These extensions are critical in bridging the gap between academic optimization and deployable engineering. I'm interested in robotics and automated manufacturing, where computational design tools like this must integrate with physical validation, material science, and production scalability. Learning to bridge that gap by developing the discretion to choose simulation or prototyping is the skill I want to develop.
 
 ---
 ## Appendix: Design Variables and Constraints
