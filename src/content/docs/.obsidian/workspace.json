@@ -195,15 +195,15 @@
       "bases:Create new base": false
     }
   },
-  "active": "0f633b1c8043db4b",
+  "active": "98278b23d7565eae",
   "lastOpenFiles": [
+    "projects/neurosteady.md",
+    "projects/gearbox.md",
     "projects/asseminstructionsp2.png",
     "projects/asseminstructionsp1.png",
     "projects/gearboxassem.png",
     "Pasted image 20251203233248.png",
-    "projects/gearbox.md",
     "projects/DFM_Gearboxassemblyinstructions.pdf",
-    "projects/neurosteady.md",
     "projects/cameramanipulator.md",
     "projects/poststrokerehab.md",
     "projects/esp2final.png",
@@ -212,7 +212,6 @@
     "projects/esp1midpoint.png",
     "projects/tiltfea.png",
     "Pasted image 20251203211646.png",
-    "projects/tiltassem.png",
     "projects/eegcontroller.md",
     "projects/eegcontroller 1.md",
     "projects/pcbai.md",
