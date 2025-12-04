@@ -8,6 +8,7 @@ github:
 award:
 tech stack:
 ---
+![gearboxassem.png](gearboxassem.png)
 >Formulated and solved a Mixed-Integer Nonlinear Programming (MINLP) problem to optimize a two-stage compound gear train for 3D printing. Used a Differential Evolution algorithm with "maximin" objective function to navigate ~10^6 design combinations, maximizing the minimum safety factor across the assembly. The resulting design achieved a 3:1 reduction ratio with minimum safety factor of 951 (Hertzian contact stress), fitting within a 125mm build volume and 6-hour print budget.
 >**Link to career interests:** This project taught me computational design optimization for manufacturing constraints, which is directly applicable to my interest in robotics and automated manufacturing. The constraint-handling approach I developed here (balancing structural performance with build time and geometric limits) mirrors the multi-objective optimization problems I want to solve in production robotics, where cycle time, material cost, and reliability must all be simultaneously optimized.
 
