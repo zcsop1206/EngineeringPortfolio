@@ -134,7 +134,10 @@ I modeled all four gears in SolidWorks using the optimization output parameters.
 - My teammates designed the housing that encloses the gear train. They created the overall assembly in SolidWorks and managed version control. 
 - They also printed the parts and carried out DFMA optimization using the guidance in the deliverables document
 
-**Documentation work:** I created [assembly instructions](https://docs.google.com/document/d/1G6eaIqDjWRjSXjXO8OqMMjGxj0i5qIlwevrQheYqX7o/edit?tab=t.0) with step-by-step photos and torque specifications. This enabled assembly in 2.5 minutes. Writing clear technical documentation is something I hadn't prioritized before this project, but during testing we realized our design isn't fully intuitive and needs clearly defined assembly instructions
+**Documentation work:** I created [assembly instructions](https://docs.google.com/document/d/1G6eaIqDjWRjSXjXO8OqMMjGxj0i5qIlwevrQheYqX7o/edit?tab=t.0) with step-by-step photos and torque specifications. This enabled assembly in 2.5 minutes. Writing clear technical documentation is something I hadn't prioritized before this project, but during testing we realized our design isn't fully intuitive and needs clearly defined assembly instructions.
+
+![asseminstructionsp1.png](asseminstructionsp1.png)
+![asseminstructionsp2.png](asseminstructionsp2.png)
 ## Extension: Moving Toward Production
 
 Three developments needed before this design is production-ready:

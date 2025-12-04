@@ -195,8 +195,10 @@
       "bases:Create new base": false
     }
   },
-  "active": "98278b23d7565eae",
+  "active": "0f633b1c8043db4b",
   "lastOpenFiles": [
+    "projects/asseminstructionsp2.png",
+    "projects/asseminstructionsp1.png",
     "projects/gearboxassem.png",
     "Pasted image 20251203233248.png",
     "projects/gearbox.md",
@@ -211,7 +213,6 @@
     "projects/tiltfea.png",
     "Pasted image 20251203211646.png",
     "projects/tiltassem.png",
-    "projects/redundantpanassem.png",
     "projects/eegcontroller.md",
     "projects/eegcontroller 1.md",
     "projects/pcbai.md",
