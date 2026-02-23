@@ -1,3 +1,12 @@
+---
+title: BedDesk
+description: compartmentalization of work and rest using freestanding murphy bed and folding desk
+date: 2025-02-23
+featured: false
+github:
+award:
+tech stack:
+---
 ## Problem statement
 key goal: spatial compartmentalization of work mode and rest mode in limited living space.
 ### Functions
