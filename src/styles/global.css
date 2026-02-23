@@ -83,25 +83,10 @@
    BASE STYLING
    ============================================ */
 
-/* Background grid pattern */
 body {
-  background-image: 
-    linear-gradient(var(--color-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
-  background-size: 24px 24px;
   font-family: var(--font-sans);
   font-size: 17px;
   line-height: 1.7;
-}
-
-/* Hide scrollbar */
-html {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-html::-webkit-scrollbar {
-  display: none;
 }
 
 .content-panel {
@@ -114,7 +99,9 @@ html::-webkit-scrollbar {
 }
 
 hr {
-    display: none;
+  border: none;
+  border-top: 1px solid var(--color-line);
+  margin: 2.5rem 0;
 }
 
 /* ============================================
@@ -129,26 +116,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 48px !important;
+  font-size: 36px !important;
   font-weight: 500 !important;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 h2 {
-  font-size: 36px !important;
+  font-size: 28px !important;
   font-weight: 600;
-  margin: 2rem 0 1rem;
+  margin: 2rem 0 0.75rem;
   border-bottom: none !important;
 }
 
 h3 {
-  font-size: 28px !important;
-  margin: 2rem 0 0.5rem;
+  font-size: 22px !important;
+  margin: 1.5rem 0 0.5rem;
 }
 
 h4 {
-  font-size: 22px !important;
-  margin: 1.5rem 0 0.5rem;
+  font-size: 18px !important;
+  margin: 1.25rem 0 0.5rem;
 }
 
 /* Remove default heading borders except h2 */
@@ -157,10 +144,11 @@ h1, h3, h4, h5, h6 {
 }
 
 p {
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.7;
   color: var(--color-text-muted);
-  max-width: 75ch;
+  max-width: 68ch;
+  margin-bottom: 1rem;
 }
 
 strong {
@@ -339,25 +327,25 @@ pre code {
 .hero {
   text-align: left !important;
   padding: 0 !important;
-  margin-bottom: 4rem !important;
-  max-width: 800px !important;
+  margin-bottom: 3rem !important;
+  max-width: 700px !important;
 }
 
 .hero h1 {
-  font-size: 72px !important;
+  font-size: 44px !important;
   font-weight: 500 !important;
-  line-height: 1.1 !important;
-  margin-bottom: 1.5rem !important;
+  line-height: 1.15 !important;
+  margin-bottom: 1.25rem !important;
   color: var(--color-text) !important;
 }
 
 .hero p,
 .hero .tagline {
-  font-size: 24px !important;
-  line-height: 1.6 !important;
+  font-size: 18px !important;
+  line-height: 1.7 !important;
   color: var(--color-text-muted) !important;
-  margin-bottom: 2rem !important;
-  font-family: var(--font-serif) !important;
+  margin-bottom: 1.5rem !important;
+  font-family: var(--font-sans) !important;
   font-weight: 400 !important;
 }
 
@@ -382,16 +370,16 @@ a[class*="action"],
   display: inline-flex !important;
   align-items: center !important;
   gap: 0.5rem !important;
-  padding: 14px 28px !important;
+  padding: 10px 22px !important;
   font-family: var(--font-sans) !important;
-  font-size: 15px !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
   color: var(--color-text) !important;
   background: transparent !important;
-  border: 2px solid var(--color-line-dark) !important;
+  border: 1px solid var(--color-line-dark) !important;
   border-radius: 4px !important;
   text-decoration: none !important;
-  transition: all 200ms ease !important;
+  transition: color 200ms ease, border-color 200ms ease !important;
   cursor: pointer !important;
 }
 
@@ -401,7 +389,6 @@ a[class*="action"]:hover,
   border-color: var(--color-purple) !important;
   color: var(--color-purple) !important;
   background: transparent !important;
-  transform: translateY(-1px) !important;
 }
 
 /* Minimal variant */
@@ -423,27 +410,22 @@ a[data-variant="minimal"]:hover {
   background: var(--color-surface) !important;
   border: 1px solid var(--color-line) !important;
   border-radius: 6px !important;
-  padding: 2rem !important;
-  transition: border-color 200ms ease !important;
-}
-
-.card:hover {
-  border-color: var(--color-purple) !important;
+  padding: 1.5rem !important;
 }
 
 .card h2,
 .card h3 {
   font-family: var(--font-serif) !important;
-  font-size: 22px !important;
+  font-size: 20px !important;
   font-weight: 600 !important;
-  margin: 0 0 0.75rem 0 !important;
+  margin: 0 0 0.5rem 0 !important;
   border: none !important;
   padding: 0 !important;
   color: var(--color-text) !important;
 }
 
 .card p {
-  font-size: 16px !important;
+  font-size: 15px !important;
   line-height: 1.6 !important;
   color: var(--color-text-muted) !important;
   margin: 0 !important;
@@ -476,7 +458,6 @@ img {
   max-width: 100%;
   height: auto;
   border-radius: 4px;
-  border: 1px solid var(--color-line);
 }
 
 /* ============================================
@@ -538,9 +519,11 @@ starlight-theme-select {
    MISC
    ============================================ */
 
-/* Hide pagination */
+/* Pagination */
 .pagination-links {
-  display: none !important;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-line);
 }
 
 /* Focus styles */
@@ -563,21 +546,25 @@ starlight-theme-select {
 
 @media (max-width: 768px) {
   h1 {
-    font-size: 48px !important;
+    font-size: 28px !important;
   }
   
   .hero h1 {
-    font-size: 52px !important;
+    font-size: 32px !important;
   }
   
   .hero p,
   .hero .tagline {
-    font-size: 20px !important;
+    font-size: 16px !important;
   }
   
   h2 {
-    font-size: 32px !important;
-    margin: 2.5rem 0 1.25rem;
+    font-size: 24px !important;
+    margin: 2rem 0 0.75rem;
+  }
+
+  .content-panel {
+    padding: 1rem 1.25rem !important;
   }
 }
 
