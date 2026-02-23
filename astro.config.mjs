@@ -23,13 +23,13 @@ export default defineConfig({
                     // add more projects
                   ],
               },
-              //{
-              //    label: 'Ongoing projects',
-              //    items: [
+              {
+                  label: 'Ongoing projects',
+                  items: [
                     //{ label: 'EEG controller', link: '/projects/eegcontroller' },
-                    //{ label: 'NeuroTech Fall 2025: sEMG + exoskeleton for hand rehabilitation', link: '/projects/poststrokerehab' },
-              //    ]
-              //}
+                    { label: 'NeuroTech UofT: sEMG + exoskeleton for hand rehabilitation', link: '/projects/poststrokerehab' },
+                  ]
+              },
               //{
                   //label: 'CAD',
                   //items: [

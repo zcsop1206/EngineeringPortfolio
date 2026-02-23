@@ -65,13 +65,13 @@ The search space is non-convex (local minima exist), constrained (bed size, prin
 
 I implemented DE using SciPy with the following parameters:
 
-|Parameter|Value|Rationale|
-|---|---|---|
-|Strategy|`best1bin`|Exploitation-focused for convergence speed|
-|Population Size|105 individuals|15× problem dimension (7 variables) per DE literature|
-|Generations|300 iterations|Convergence plateau observed at ~250 iterations|
-|Mutation Factor (F)|0.8|Standard DE parameter|
-|Crossover Rate (CR)|0.7|Balances exploration vs exploitation|
+| Parameter           | Value           | Rationale                                             |
+| ------------------- | --------------- | ----------------------------------------------------- |
+| Strategy            | `best1bin`      | Exploitation-focused for convergence speed            |
+| Population Size     | 105 individuals | 15× problem dimension (7 variables) per DE literature |
+| Generations         | 300 iterations  | Convergence plateau observed at ~250 iterations       |
+| Mutation Factor (F) | 0.8             | Standard DE parameter                                 |
+| Crossover Rate (CR) | 0.7             | Balances exploration vs exploitation                  |
 
 **Constraint handling:** Implemented penalty method that degrades fitness score by 10^6 for any solution violating geometric boundaries (bed diameter >125mm) or build time >6 hours. This effectively removes infeasible solutions from the breeding pool.
 
