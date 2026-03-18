@@ -1,15 +1,21 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import remarkMath from 'remark-math';
+import rehypeMathJax from 'rehype-mathjax';
 
 
 export default defineConfig({
+  markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeMathJax],
+  },
   integrations: [
       starlight({
           title: 'Adit Bhargava - Engineering Portfolio',
 		  customCss: [
 	        // Path to your Tailwind base styles:
-    	    './src/styles/global.css'
+    	    './src/styles/global.css',
+          './src/mathjax.css'
 		  ],
           social: [{icon: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/adit-bhargava-29509a200'}, { icon: 'github', label: 'GitHub', href: 'https://github.com/zcsop1206' }],
           sidebar: [

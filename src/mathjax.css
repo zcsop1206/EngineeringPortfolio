@@ -1,0 +1,4 @@
+/* src/mathjax.css */
+mjx-container svg {
+  display: inline !important;
+}

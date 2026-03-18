@@ -13,6 +13,17 @@ tech stack:
 >
 > **Link to career interests:** Extracting a clean signal from raw, noisy, or physically constrained data streams is a fundamental challenge in vehicle dynamics and track engineering. Designing and tuning this DSP pipeline to mathematically overcome hardware limitations taught me how to handle noisy real-world telemetry and isolate actionable performance data.
 
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+  <iframe 
+    src="https://www.youtube.com/embed/aqkWe6JU3gI" 
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+  </iframe>
+</div>
+
+---
+
 ## Problem
 
 A 4-bit physical medium provides only 16 discrete amplitude levels, resulting in a signal-to-noise ratio (SNR) roughly equivalent to AM radio. This hardware limitation heavily restricts fidelity.
@@ -50,6 +61,15 @@ $$ x_{shaped}[n] = x[n] + 1.5 e[n-1] - 0.5 e[n-2] $$
 This process shapes the spectral density of the quantization error, pushing it into the upper frequency range (above 15kHz) where the human ear and the physical playback mechanism are much less sensitive.
 
 ![Plot C: Noise Shaped Spectrum](plot_c_noise_shaping.png)
+
+### Step 3: Mechanical Mapping (STL Generation)
+The final stage of the pipeline translates the conditioned waveform into physical geometry via an automated **Archimedean spiral mapping algorithm** (`src/wav_to_record.py`). 
+
+*   **Geometric Function:** The algorithm maps the 1-bit quantized signal into a 3D polar coordinate system ($r, \theta, z$) where the radial and angular positions are strictly bound by the custom rig’s 150 RPM velocity.
+*   **Kinematic Parameterization:** By dynamically scaling the groove modulation around a configurable RPM, I was able to maximize temporal resolution at the disc perimeter.
+*   **System Validation:** This mapping process mirrors the track engineering challenge of translating software-derived setup changes into physical test rig parameters.
+
+![STL Mesh](stl_mesh.png)
 
 ## Solution
 
