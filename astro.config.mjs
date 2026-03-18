@@ -28,6 +28,7 @@ export default defineConfig({
                   items: [
                     //{ label: 'EEG controller', link: '/projects/eegcontroller' },
                     { label: 'NeuroTech UofT: sEMG + exoskeleton for hand rehabilitation', link: '/projects/poststrokerehab' },
+                    { label: 'OpenVinyl: Mathematical signal recovery', link: '/projects/openvinyl' },
                   ]
               },
               //{

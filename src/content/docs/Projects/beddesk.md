@@ -379,3 +379,243 @@ The system now behaves like:
 > with a kinematic hinge connection.
 
 That is mechanically sound.  
+
+Good. Let’s consolidate everything into a clean, build-ready strategy.
+
+This is your **wood-to-wood structural fastening doctrine** for the project.
+
+No ambiguity. No improvisation on build day.
+
+---
+
+# 🔩 OVERALL PHILOSOPHY
+
+For structural members:
+
+- **Geometry carries shear**
+    
+- **Bolts provide clamping**
+    
+- **Wood bears on wood**
+    
+- **Fasteners are not primary bending elements**
+    
+
+You are building a load path system — not furniture held together by screws.
+
+---
+
+# 🪵 PRIMARY STRUCTURAL JOINT TYPE
+
+## Half-Lap + Through Bolt
+
+This is your default for:
+
+- Base rectangle corners
+    
+- Major frame intersections
+    
+- Any joint in the load path to ground
+    
+
+---
+
+# 📐 Lap Geometry
+
+For 1.5" thick lumber (2x material):
+
+### Use:
+
+**True 1/2–1/2 lap**
+
+Each member reduced to 0.75" at joint.
+
+Why:
+
+- Symmetric stiffness
+    
+- Predictable load transfer
+    
+- No weak 1/3 section
+    
+- Clean shear plane
+    
+
+Avoid 1/3–2/3 laps unless one member is clearly non-critical.
+
+---
+
+# 🔩 Bolt Specification
+
+### Diameter:
+
+**3/8" carriage bolts** (recommended structural sweet spot)
+
+5/16" only for light/non-critical members  
+1/2" unnecessary overkill
+
+---
+
+### Length:
+
+For 4.5" stack:  
+**6" bolt**
+
+Allows:
+
+- Wood thickness
+    
+- 2 washers
+    
+- Nut
+    
+- 1–2 threads exposed
+    
+
+---
+
+# 🧱 Washer Strategy (Very Important)
+
+Use:
+
+- Large fender washers  
+    OR
+    
+- Structural washers
+    
+
+On BOTH sides.
+
+Reason:
+
+Wood crushing under washer is often governing failure.
+
+The bolt itself is rarely the weak link.
+
+---
+
+# 📏 Bolt Placement Rules
+
+For 3/8" bolt:
+
+- Minimum edge distance: 3/4"
+    
+- Center in 1.5" member (0.75" from each side)
+    
+- At least 4× diameter (~1.5") between multiple bolts
+    
+
+For major joints:
+
+Use **2 bolts per joint**, vertically spaced.
+
+This prevents rotational slop.
+
+---
+
+# 🪵 Grain Strategy
+
+We eliminated end-grain dependence by:
+
+- Using half-laps (side-grain bearing surfaces)
+    
+- Using through bolts (no withdrawal reliance)
+    
+- Avoiding screws into end grain for structural joints
+    
+
+Dowels are NOT structural unless glued and oriented correctly.
+
+No structural reliance on end-grain pullout.
+
+---
+
+# 🏗 Load Transfer Logic
+
+Under load:
+
+1. Shear is resisted by wood bearing at lap interface.
+    
+2. Bolts clamp members to maintain contact.
+    
+3. Bolt shank provides backup shear capacity.
+    
+4. Washers prevent crushing.
+    
+
+The bolt is NOT carrying the full load alone.
+
+That’s intentional.
+
+---
+
+# 🚫 What We Are NOT Doing
+
+- No butt joints for structural load paths.
+    
+- No screws into end grain for main structure.
+    
+- No relying on gravity-held planks.
+    
+- No dowel-only unglued structural joints.
+    
+- No 45° miter primary structural joints.
+    
+
+---
+
+# 🧰 For Secondary / Non-Primary Members
+
+Acceptable:
+
+- Screws into side grain.
+    
+- 5/16" bolts.
+    
+- Dowels (glued) for bed frame perimeter.
+    
+
+But base and load loop = half-lap + 3/8" bolts.
+
+---
+
+# 🔁 Durability Considerations
+
+To prevent long-term loosening:
+
+- Tighten bolts after first week (wood compression set).
+    
+- Consider lock washers or nylon lock nuts.
+    
+- Do not overtighten and crush fibers.
+    
+
+Your joint will likely fail by wood crushing long before bolt shear.
+
+That’s good — it’s predictable.
+
+---
+
+# 🏛 Structural Identity of Your System
+
+You have effectively designed:
+
+A bolted timber frame base  
+With mechanical bearing joints  
+And clamped shear planes
+
+That is legitimate structural logic.
+
+---
+
+You now have a consistent fastening strategy.
+
+Next logical step:
+
+Do you want to:
+
+- Size number of bolts per joint?
+    
+- Close hinge fastener strategy?
+    
+- Or finalize desk support load path?
