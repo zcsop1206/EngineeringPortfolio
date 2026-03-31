@@ -11,7 +11,7 @@ tech stack:
 
 > Derived the complete signal chain for encoding audio as FDM-printable groove geometry from first principles, bounding every parameter from the nozzle's extrusion width up through stylus contact mechanics. Standard DSP techniques (noise shaping, high-order anti-aliasing) turned out to be inapplicable at the system's true bandwidth: a 681 Hz inner-radius Nyquist with zero spectral headroom. The final pipeline uses TPDF dithering, aggressive dynamic range compression, and missing-fundamental psychoacoustics to extract recognizable audio from a 4-bit, ~340 Hz bandwidth physical medium.
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+<!--<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
   <iframe 
     src="https://www.youtube.com/embed/aqkWe6JU3gI" 
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" 
@@ -19,7 +19,7 @@ tech stack:
     allowfullscreen>
   </iframe>
 </div>
-
+-->
 ---
 
 ## Problem
