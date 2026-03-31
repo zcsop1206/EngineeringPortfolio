@@ -24,9 +24,9 @@ tech stack:
 
 ## Problem
 
-FDM 3D printing cannot replicate lateral-cut vinyl grooves. The nozzle is the cutter, and XY feature size is bounded by the extrusion width ($w_e \approx 1.2 \times d_{\text{nozzle}}$). OpenVinyl instead encodes audio as vertical (Z-axis) modulation in discrete layer-height increments: each 0.08 mm step constitutes one quantization level, yielding 4-bit depth (16 levels, 24 dB dynamic range) before the Z-range exceeds tracking limits.
+FDM 3D printing cannot replicate lateral-cut vinyl grooves. The nozzle is the "cutter", and XY feature size is bounded by the extrusion width ($w_e \approx 1.2 \times d_{\text{nozzle}}$). OpenVinyl instead encodes audio as vertical (Z-axis) modulation in discrete layer-height increments: each 0.08 mm step constitutes one quantization level, yielding 4-bit depth (16 levels, 24 dB dynamic range) before the Z-range exceeds tracking limits.
 
-Every system parameter — bandwidth, dynamic range, groove geometry, playback fidelity — is coupled through the physical dimensions of the printed bead. Sample rate, aliasing boundary, slope tracking, and stylus contact mechanics all derive from the same extrusion width and layer height. The design space is defined entirely by what the FDM process actually produces at a given nozzle diameter and layer height, and the signal processing has to be built from those measured process parameters up.
+System parameters like bandwidth, dynamic range, groove geometry, playback fidelity are all dependent on the physical dimensions of the printed bead. Sample rate, aliasing boundary, slope tracking, and stylus contact mechanics all derive from the same extrusion width and layer height. The design space is defined entirely by what the FDM process can produce at a given nozzle diameter and layer height, and the signal processing has to be built from those measured process parameters up.
 
 **Design objective:** Derive the physical constraints from the print geometry, then design a signal conditioning pipeline that operates within them to produce recognizable audio from a 4-bit, bandwidth-limited physical medium.
 
@@ -71,11 +71,21 @@ The conditioned waveform is mapped to physical geometry via an Archimedean spira
 
 ![STL Mesh](stl_mesh.png)
 
+### Playback Hardware
+
+The turntable is not off-the-shelf. The initial version was built by Samantha Chan (mechanical CAD), and Niegel Fernandes (electronics). The next iteration is currently being built to accomodate more robust and compact electronics compatible with the derived constraints.
+
+The core hardware requirements derive from the constraint analysis and the validation protocol. RPM stability must stay within ~5%, because beyond that, measured fundamental frequency drifts past ±50 cents (the Level 3 validation threshold). This sets the motor control problem: motor selection, platter inertia sizing, and whether closed-loop speed regulation is necessary or whether a sufficiently high-inertia platter with an open-loop DC motor provides adequate stability. The redesign is working through this tradeoff.
+
+The ceramic cartridge output is a high-impedance, low-voltage signal that requires a preamplifier stage before any signal capture or measurement. A custom PCB integrates motor speed control and cartridge preamplification onto a single board. This PCB is being redesigned as part of the rebuild.
+
 ## Solution
 
-![Rig model](rig_model.png)
+![Initial turntable CAD (Samantha Chan)](rig_model.png)
 
-The system produces recognizable monophonic audio from a 3D-printed disc played on a custom 78 RPM mechanical rig. Every parameter in the pipeline traces back to a measurable property of the fabrication process or the playback hardware: nozzle diameter, layer height, stylus tip radius, PLA yield strength. Validation confirmed that the physically derived constraints predicted actual system behavior — the inner-radius bandwidth limit, the slope-induced amplitude ceiling, and the first-play plastic deformation all appeared where the analysis said they would. The playback transfer function $H(f)$ remains unmeasured, and the current pipeline uses a conservative global cutoff rather than per-turn adaptive filtering, so there is usable bandwidth on the outer grooves that the system leaves on the table.
+Initial validation on the first turntable confirmed that the physically derived constraints predicted actual system behavior: the inner-radius bandwidth limit, the slope-induced amplitude ceiling, and the first-play plastic deformation all appeared where the analysis said they would. Every parameter in the pipeline traces back to a measurable property of the fabrication process or the playback hardware — nozzle diameter, layer height, stylus tip radius, PLA yield strength.
+
+That turntable has since been disassembled. The redesigned version currently in progress targets proper closed-loop validation against the three-tier protocol defined below. The playback transfer function $H(f)$ remains unmeasured, and the current pipeline uses a conservative global cutoff rather than per-turn adaptive filtering, so there is usable bandwidth on the outer grooves that the system leaves on the table. Both are addressable once the rebuild is complete and producing recorded output.
 
 ## Extension
 
@@ -89,7 +99,7 @@ The playback transfer function $H(f)$ is currently unknown. A sine sweep test re
 
 ### 3. Closed-Loop Validation Protocol
 
-Three-tier success criteria defined:
+Three-tier success criteria, and the primary target for the turntable rebuild:
 
 | Level | Criterion | Requirement |
 |---|---|---|
