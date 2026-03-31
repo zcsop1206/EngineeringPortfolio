@@ -1,6 +1,6 @@
 ---
 title: "OpenVinyl: FDM-printable audio from first-principles groove geometry"
-description: Deriving the complete signal chain for encoding audio as 3D-printable groove geometry, from nozzle extrusion width through stylus contact mechanics.
+description: Generating a watertight, printable spiral mesh that encodes audio as groove geometry — derived from nozzle extrusion width, layer height, and stylus contact mechanics.
 tags:
 date:
 featured: true
@@ -9,7 +9,7 @@ award:
 tech stack:
 ---
 
-> Derived the complete signal chain for encoding audio as FDM-printable groove geometry from first principles, bounding every parameter from the nozzle's extrusion width up through stylus contact mechanics. Standard DSP techniques (noise shaping, high-order anti-aliasing) turned out to be inapplicable at the system's true bandwidth: a 681 Hz inner-radius Nyquist with zero spectral headroom. The final pipeline uses TPDF dithering, aggressive dynamic range compression, and missing-fundamental psychoacoustics to extract recognizable audio from a 4-bit, ~340 Hz bandwidth physical medium.
+> Designed and implemented a complete pipeline for encoding audio as FDM-printable groove geometry. The central problem is mesh generation: converting a continuous audio waveform into a valid, watertight, triangulated Archimedean spiral solid with correct manifold closure at four distinct boundary regions. Groove parameters are derived bottom-up from what the FDM process can physically resolve — extrusion width sets lateral feature size, layer height sets Z quantization, and land width must exceed one extrusion width or adjacent grooves bleed together. Hertzian contact analysis confirms the ceramic stylus plastically deforms the PLA groove floor on first play, bounding the useful geometric precision. The signal conditioning pipeline is a consequence of these physical constraints, not a design driver.
 
 <!--<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
   <iframe 
@@ -24,19 +24,69 @@ tech stack:
 
 ## Problem
 
-FDM 3D printing cannot replicate lateral-cut vinyl grooves. The nozzle is the "cutter", and XY feature size is bounded by the extrusion width ($w_e \approx 1.2 \times d_{\text{nozzle}}$). OpenVinyl instead encodes audio as vertical (Z-axis) modulation in discrete layer-height increments: each 0.08 mm step constitutes one quantization level, yielding 4-bit depth (16 levels, 24 dB dynamic range) before the Z-range exceeds tracking limits.
+FDM 3D printing cannot produce lateral-cut vinyl grooves. The nozzle deposits material as a bead with width $w_e \approx 1.2 \times d_{\text{nozzle}}$ — this is the minimum XY feature the process can resolve, and it is roughly 10× coarser than a conventional vinyl groove wall. V-cut geometry is not achievable. The only available modulation axis is Z: vertical displacement of the groove floor in discrete layer-height increments.
 
-System parameters like bandwidth, dynamic range, groove geometry, playback fidelity are all dependent on the physical dimensions of the printed bead. Sample rate, aliasing boundary, slope tracking, and stylus contact mechanics all derive from the same extrusion width and layer height. The design space is defined entirely by what the FDM process can produce at a given nozzle diameter and layer height, and the signal processing has to be built from those measured process parameters up.
+This axis change redefines the entire design problem. The groove is no longer a lateral wiggle in a flat plane — it is a helical trench whose floor height varies in 0.08 mm steps. Every downstream parameter (sample rate, bandwidth, dynamic range, groove pitch, land width, mesh topology) derives from two hardware inputs: nozzle diameter and layer height. The signal processing is the last thing designed, not the first, because what it must become is fully determined by what the fabrication process and the playback contact mechanics allow.
 
-**Design objective:** Derive the physical constraints from the print geometry, then design a signal conditioning pipeline that operates within them to produce recognizable audio from a 4-bit, bandwidth-limited physical medium.
+**Design objective:** Starting from the physical constraints of the FDM process and the stylus-groove contact, derive the groove geometry that satisfies both manufacturability and trackability, generate a valid watertight mesh encoding audio into that geometry, and design the minimal signal conditioning pipeline that operates within the resulting bandwidth and dynamic range.
 
 ## Method
 
-The angular resolution of the printed groove is set by the minimum distinguishable arc length, which equals the extrusion width $w_e$:
+### STL Mesh Generation and Groove Topology
+
+The hardest part of this project is turning a continuous audio waveform into a valid, watertight, printable triangulated solid. The groove follows an Archimedean spiral $r_c(\theta) = r_0 - \frac{p}{2\pi}\theta$, where $p$ is the groove pitch. At each angular step, the waveform sample sets the groove floor height. The mesh must be a closed 2-manifold — every edge shared by exactly two triangles, no holes, no self-intersections — or the slicer will reject it or produce unpredictable infill.
+
+**Vertex layout.** Each angular step generates six vertices defining the groove cross-section: outer wall top (at $Z_{\text{surface}}$), groove floor center (at $Z_{\text{base}} + (s + n_{\min}) \cdot h$, where $s$ is the quantized sample value), inner wall top (at $Z_{\text{surface}}$), outer wall bottom (at $Z = 0$), inner wall bottom (at $Z = 0$), and groove center projected to land height (at $Z_{\text{surface}}$). Between consecutive angular steps, these vertices form the quad strips that define the groove walls, floor, and land surfaces.
+
+**Face construction.** Each angular step produces approximately 10 triangles: two each for the outer groove wall, inner groove wall, and bottom face (three quad strips), plus two each for the outer and inner land surfaces at $Z_{\text{surface}}$. For a 60-second recording at 78 RPM with a 0.2 mm nozzle, this totals approximately 680,000 angular steps and ~6.8 million triangles.
+
+**The four manifold closure boundaries.** The spiral helix has no natural closure — it starts at the outer radius and terminates at the inner radius with open edges at both ends and along both radial boundaries. Each must be explicitly sealed:
+
+1. **Start cap** (spiral origin at outer radius): The cross-section at $\theta = 0$ is an open polygon. Three triangles close the groove profile — outer wall to floor, floor across the bottom, floor to inner wall — with face normals oriented outward along the starting tangent direction.
+
+2. **End cap** (spiral terminus at inner radius): Identical geometry to the start cap but at the final angular step, with reversed winding order so normals point in the opposite tangent direction. Getting the winding order wrong here produces an inward-facing cap that the slicer interprets as a hole.
+
+3. **Outer rim** (the flat annular region between the record's outer edge and the first groove turn): Triangulated as quad strips connecting the record's outer circumference to the first turn's outer groove wall, with corresponding bottom face and vertical outer wall closure. This region has uniform $Z_{\text{surface}}$ height — no modulation.
+
+4. **Inner disk** (the flat region between the last groove turn and the spindle hole): Connects the final turn's inner groove wall to the spindle hole circumference. Same construction as the outer rim but at the inner radius, closing the bottom face and the spindle hole wall.
+
+**Inter-turn land bridging.** Between adjacent turns of the spiral, the land surface (the flat region between one turn's inner wall and the next turn's outer wall) must be explicitly triangulated at $Z_{\text{surface}}$. This requires indexing back one full revolution ($i - \text{steps\_per\_rev}$) at each angular step to find the corresponding edge of the previous turn and constructing a bridging quad between the two edges. If this bridging is omitted, each turn is a separate shell floating in space — the mesh is not a solid and the slicer will either fail or fill the gaps with infill.
+
+**Sign convention.** The Z-mapping must guarantee $Z_{\text{floor}} < Z_{\text{surface}}$ for all valid sample values. Sample value $s \in [0, 2^n - 1]$ maps to $Z_{\text{floor}} = Z_{\text{base}} + (s + n_{\min}) \cdot h$, where $n_{\min}$ is a minimum thickness buffer (2 layers) preventing the groove floor from coinciding with the record base. Inverting the sign convention (mapping high sample values to high Z) would produce grooves that protrude above the land surface — the stylus rides over them instead of tracking in them. Self-intersection between turns is provably impossible given this mapping, since the maximum floor height is always below $Z_{\text{surface}}$.
+
+![STL Mesh](stl_mesh.png)
+
+### Stylus Contact Mechanics and Groove Degradation
+
+The printed groove must survive contact with the playback stylus. Hertzian contact analysis between a spherical stylus tip ($R = 0.5$ mm, typical ceramic cartridge) and the PLA groove floor predicts maximum contact pressure of 66–78 MPa, which exceeds PLA's compressive yield strength (~50 MPa). Plastic deformation of the groove floor is expected on first play.
+
+This is a materials problem with direct implications for how tight the geometry needs to be. If the first play permanently deforms the groove floor by a fraction of one layer height (0.08 mm), the effective bit depth degrades from 4 bits toward 3 bits. The geometry must be printed at full 4-bit resolution knowing that the first contact will partially collapse it.
+
+Archard wear modeling shows cumulative abrasive wear is negligible by comparison: approximately 32,000 plays would be required to wear away one quantization step at the upper-bound wear coefficient ($K = 10^{-4}$ for polymer-on-hard-material sliding). The groove deforms plastically on the first pass and then stabilizes — progressive wear is not the failure mode.
+
+A spherical stylus tip of radius $R$ also imposes a geometric bandwidth limit independent of print resolution. The tip cannot resolve groove floor features with spatial wavelength shorter than $2\pi R$, giving $f_{\text{geometric}} = r \cdot \text{RPM} / (60 \cdot R)$. At $R = 0.5$ mm, this limits bandwidth to 104–312 Hz across the disc, roughly 6.5× more restrictive than the Nyquist limit from print resolution. For a ceramic cartridge, the stylus tip — not the print resolution — sets the actual bandwidth floor. Standard vinyl styli ($R \approx 18$ µm) satisfy the requirement $R < 0.076$ mm for Nyquist to govern, but may rattle in the wider FDM groove.
+
+### FDM Manufacturing Constraints and Tolerances
+
+The fabrication process imposes hard floors on every geometric parameter. These are manufacturing realities, not design choices.
+
+**XY resolution.** Extrusion width $w_e = 1.2 \times d_{\text{nozzle}}$ sets the minimum lateral feature size. For a 0.2 mm nozzle, $w_e = 0.24$ mm. This is the groove width — it cannot be made narrower.
+
+**Z resolution.** Layer height (0.08 mm) is the quantization step size. Each step is one bit of depth resolution. At 4-bit depth (16 levels), total Z modulation range is $16 \times 0.08 = 1.28$ mm. Z positioning accuracy of $\pm 0.02$ mm means the bottom 1–2 bits may be unreliable — effective bit depth may be 3 bits (18 dB dynamic range) rather than 4 bits (24 dB).
+
+**Land width.** Groove pitch $p \geq 2 \times w_e$ ensures the land between adjacent grooves is at least one extrusion width. If land width falls below $w_e$, the slicer cannot deposit a distinct bead between grooves — they bleed together into a single trench.
+
+**Slicer segment merging.** At the inner radius (40 mm) with a 0.2 mm nozzle, the arc length per angular step is 0.24 mm. This approaches the slicer's minimum segment length threshold (0.1–0.4 mm in Bambu Studio). If the slicer merges adjacent segments, angular resolution at the inner radius degrades — steps are dropped from the G-code, and the groove floor loses sample points. This is a fabrication artifact that cannot be corrected downstream.
+
+**Staircase noise.** The Z-axis layer-height staircase produces a periodic surface texture with spatial period equal to the layer height. This generates a tonal noise component at $f = v / h$, where $v$ is the groove tangential velocity and $h$ is the layer height. At the inner radius, this falls at approximately 4,088 Hz — above the system's Nyquist but within the stylus's mechanical response. This is a mechanical noise source inherent to FDM; it is not removable by any signal processing applied to the input audio.
+
+### Bandwidth Derivation from Groove Geometry
+
+The angular resolution of the printed groove is set by the minimum distinguishable arc length, which equals $w_e$:
 
 $\text{steps\_per\_rev} \leq \frac{2\pi r}{w_e}$
 
-Sample rate follows directly as $f_s = \text{steps\_per\_rev} \times \text{RPM} / 60$. For a 0.2 mm nozzle ($w_e$ = 0.24 mm) at 78 RPM:
+Sample rate follows directly as $f_s = \text{steps\_per\_rev} \times \text{RPM} / 60$. For a 0.2 mm nozzle ($w_e = 0.24$ mm) at 78 RPM:
 
 | | Inner radius (40 mm) | Outer radius (120 mm) |
 |---|---|---|
@@ -44,17 +94,17 @@ Sample rate follows directly as $f_s = \text{steps\_per\_rev} \times \text{RPM} 
 | $f_s$ | 1,361 Hz | 4,085 Hz |
 | Nyquist | 681 Hz | 2,042 Hz |
 
-Bandwidth is radius-dependent: outer grooves encode 3× the frequency content of the inner grooves. This is a geometric consequence of the spiral, and it means the system's effective capability varies across the disc surface.
+Bandwidth is radius-dependent: outer grooves encode 3× the frequency content of inner grooves. This is a geometric consequence of the spiral — the system's effective capability varies continuously across the disc surface.
 
 A sinusoidal signal at frequency $f$ and amplitude $A$ has maximum groove floor slope $2\pi f A / v$. Setting this equal to the maximum trackable slope $\tan(\theta_{\max})$ gives the amplitude-frequency tradeoff:
 
 $A \cdot f \leq \frac{\tan(\theta_{\max}) \cdot r \cdot \text{RPM}}{60}$
 
-At 500 Hz, $\theta_{\max}$ = 45°, and $r$ = 40 mm, this yields $A_{\max}$ = 1.3 quantization levels. I initially expected bit depth to be the binding constraint on dynamic range everywhere, but at the inner radius, the slope limit dominates. Effective resolution is not a fixed 4 bits; it varies with both frequency and radial position.
+At 500 Hz, $\theta_{\max} = 45°$, and $r = 40$ mm, this yields $A_{\max} = 1.3$ quantization levels. At the inner radius, the slope limit — not the bit depth — is the binding constraint on dynamic range.
 
-A spherical stylus tip of radius $R$ cannot resolve groove floor features with spatial wavelength shorter than $2\pi R$, giving a geometric bandwidth limit of $f_{\text{geometric}} = r \cdot \text{RPM} / (60 \cdot R)$. At $R$ = 0.5 mm (a typical ceramic-cartridge stylus), this limits bandwidth to 104–312 Hz, roughly 6.5× more restrictive than the Nyquist limit. This was the most consequential result of the constraint analysis: for a ceramic stylus, the entire sample rate derivation becomes non-binding. The stylus tip, not the print resolution, sets the actual bandwidth floor. For Nyquist to govern, the stylus tip radius must satisfy $R < 0.076$ mm. Standard vinyl styli ($R$ ≈ 18 µm) meet this, but may rattle in the wider FDM groove.
+### Signal Conditioning Pipeline
 
-With the constraints established, I expected to apply standard quantization-noise reduction: Lipshitz-style noise shaping to redistribute quantization error out of the audio band. It doesn't work here. At the inner radius, the audio band (300–681 Hz) fills the entire Nyquist range. There is zero spectral headroom. Shaped noise has nowhere to go except back into the passband via aliasing. Noise shaping only becomes viable on outer grooves where the higher Nyquist frequency opens up headroom above the audio content. This forced a simpler pipeline:
+With every physical constraint established, the signal conditioning pipeline is whatever the remaining design space allows. At the inner radius, the audio band (300–681 Hz) fills the entire Nyquist range. There is zero spectral headroom. Lipshitz-style noise shaping, which redistributes quantization error out of the audio band, cannot work — shaped noise has nowhere to go except back into the passband via aliasing. This forced a minimal pipeline:
 
 | Stage | Parameter | Derivation |
 |---|---|---|
@@ -63,17 +113,11 @@ With the constraints established, I expected to apply standard quantization-nois
 | Dynamic range compression | ≥ 6:1 ratio | Compress 24 dB input to ≤ 18 dB to accommodate slope constraint |
 | Dithering | TPDF only (no noise shaping) | Zero Nyquist headroom precludes spectral redistribution |
 
-The 300–681 Hz passband means most musical fundamentals cannot be directly encoded. The auditory system, however, reconstructs pitch from harmonics 2–4 if the signal is monophonic and periodic. Harmonics 2–4 of a ~400–550 Hz fundamental (A4–C#5) fall within the bandwidth window, so this defines the optimal encoding range and was used to select input audio.
-
-Hertzian contact analysis between a spherical stylus tip ($R$ = 0.5 mm) and PLA groove floor predicts maximum contact pressure of 66–78 MPa, exceeding PLA's compressive yield (~50 MPa). Plastic deformation of the groove floor is expected on first play. Archard wear modeling, though, shows cumulative abrasive wear is negligible (~32,000 plays per quantization step at the upper-bound wear coefficient). The groove deforms plastically on the first pass and then stabilizes; progressive wear is not the concern.
-
-The conditioned waveform is mapped to physical geometry via an Archimedean spiral $r_c(\theta) = r_0 - \frac{p}{2\pi}\theta$. Five vertices per angular step define the groove cross-section (outer wall, inner wall, groove floor center, and two base vertices), producing ~10 triangles per step. The mesh requires explicit land surface triangulation between adjacent groove turns and manifold closure at the rim, inner disk, and spiral endpoints. Self-intersection is provably impossible given the Z-mapping constraints ($s \in [0, 2^n - 1]$ guarantees $Z_{\text{floor}} < Z_{\text{surface}}$ for all valid samples).
-
-![STL Mesh](stl_mesh.png)
+The 300–681 Hz passband means most musical fundamentals cannot be directly encoded. The auditory system, however, reconstructs pitch from harmonics 2–4 if the signal is monophonic and periodic. Harmonics 2–4 of a ~400–550 Hz fundamental (A4–C#5) fall within the bandwidth window, defining the optimal input selection range.
 
 ### Playback Hardware
 
-The turntable is not off-the-shelf. The initial version was built by Samantha Chan (mechanical CAD), and Niegel Fernandes (electronics). The next iteration is currently being built to accomodate more robust and compact electronics compatible with the derived constraints.
+The turntable is not off-the-shelf. The initial version was built by Samantha Chan (mechanical CAD), and Niegel Fernandes (electronics). The next iteration is currently being built to accommodate more robust and compact electronics compatible with the derived constraints.
 
 The core hardware requirements derive from the constraint analysis and the validation protocol. RPM stability must stay within ~5%, because beyond that, measured fundamental frequency drifts past ±50 cents (the Level 3 validation threshold). This sets the motor control problem: motor selection, platter inertia sizing, and whether closed-loop speed regulation is necessary or whether a sufficiently high-inertia platter with an open-loop DC motor provides adequate stability. The redesign is working through this tradeoff.
 
@@ -83,7 +127,7 @@ The ceramic cartridge output is a high-impedance, low-voltage signal that requir
 
 ![Initial turntable CAD (Samantha Chan)](rig_model.png)
 
-Initial validation on the first turntable confirmed that the physically derived constraints predicted actual system behavior: the inner-radius bandwidth limit, the slope-induced amplitude ceiling, and the first-play plastic deformation all appeared where the analysis said they would. Every parameter in the pipeline traces back to a measurable property of the fabrication process or the playback hardware — nozzle diameter, layer height, stylus tip radius, PLA yield strength.
+Initial validation on the first turntable confirmed that the physical constraints predicted actual system behavior. The inner-radius bandwidth limit, the slope-induced amplitude ceiling, and the first-play plastic deformation all appeared where the geometry analysis said they would. The mesh generation pipeline produces watertight STL files that slice without error and print as continuous groove geometry — inter-turn land bridging, manifold closure at all four boundaries, and correct sign convention are all verified by slicer import and visual G-code inspection.
 
 That turntable has since been disassembled. The redesigned version currently in progress targets proper closed-loop validation against the three-tier protocol defined below. The playback transfer function $H(f)$ remains unmeasured, and the current pipeline uses a conservative global cutoff rather than per-turn adaptive filtering, so there is usable bandwidth on the outer grooves that the system leaves on the table. Both are addressable once the rebuild is complete and producing recorded output.
 
