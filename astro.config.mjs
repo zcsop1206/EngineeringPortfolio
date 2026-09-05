@@ -25,6 +25,7 @@ export default defineConfig({
                     { label: 'MIE243: Camera manipulator robot', link: '/projects/cameramanipulator' },
                     { label: 'MIE243 dissection: 90 degree speed reducer', link: '/projects/gearbox' },
                     { label: 'NeuroHack 2025: Hand tremor stabilization in Neurosurgery', link: '/projects/neurosteady' },
+                    { label: 'Jane Street puzzle: Reverse engineering an ASIC from its GDS', link: '/projects/asicpuzzle2026' },
                     //{ label: 'EEG-controller', link: '/projects/eegcontroller' }
                     // add more projects
                   ],
