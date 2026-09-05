@@ -20,7 +20,7 @@ This post is about an ASIC reverse engineering puzzle Jane Street published. You
 >
 > I was confident in my GDS to netlist system though, so I decided to try using the extracted puzzle netlist to create a gate-level Python simulation. The simulator takes each cell's boolean function from the sky130 naming grammar documentation. It separates the cells into flip-flops and gates, then sorts the gates into evaluation order. One clock cycle involves evaluating every gate from the flip-flops' stored bits and the inputs, which fills every net including `O` and `success`. The flip-flops are then updated from their D inputs (or reset if the reset pin is low). To verify the simulator I replayed the example VCD inputs through it. The outputs from the simulator matched the VCD outputs, which proved the simulator, the extracted netlist and the GDS all agreed.
 >
-> Finding the key was a constraint problem: the inputs had to make `success` 1. I solved it using Z3. I reused the simulator to build a boolean formula of the chip: I ran it through the VCD's protocol I identified earlier with the 121 input bits left as unknowns. Z3 doesn't brute force all 2^121 inputs. It deduces the bits forced by the "success must be 1" requirement, guesses different eligible inputs, and rules out every input that leads to a contradiction. When the correct input was found I confirmed uniqueness by adding another constraint that the input cannot be the correct key. Uniqueness was proven when re-solving returned unsat.
+> Finding the correct inputs was a constraint problem: the inputs had to make `success` 1. I solved it using Z3. I reused the simulator to build a boolean formula of the chip: I ran it through the VCD's protocol I identified earlier with the 121 input bits left as unknowns. Z3 doesn't brute force all 2^121 inputs. It deduces the bits forced by the "success must be 1" requirement, guesses different eligible inputs, and rules out every input that leads to a contradiction. When the correct input was found I confirmed uniqueness by adding another constraint that the input cannot be the correct key. Uniqueness was proven when re-solving returned unsat.
 >
 > The string output from the correct input was `(* TWO STARS *)`, printed as 7-bit ASCII on `O[7:0]`, one character per clock.
 
@@ -71,7 +71,7 @@ P.S. I'm not quite sure how this approach would have turned out, I really only c
 
 Before starting I looked at the puzzle's hints for anything that could further refine and optimize this approach. I noticed that the example VCD has inputs `I`, `clk`, `rst_n` and `enable`, an 8-bit output `O` and a `success` wire, and the README says `success` goes high for the correct input. The smallest interval over which inputs changed looked like 4000 ps and the whole dump spans 3120000 ps, so I estimated something like 780 clock cycles and, since `I` is a single-bit wire, roughly 780 unknown bits. Brute force made no sense: 2^780 permutations for what the description implied was a single correct input. (I first wrote 2^(4×780) before realising `clk`, `rst_n` and `enable` are not unknowns.) This was only a Fermi estimate to size the problem, and it turned out to be wrong, as you will see, but the conclusion held.
 
-The shape of the I/O interface: a one-bit input per clock cycle and a `success` output suggested a shift register feeding some kind of comparator against a stored answer. The PNG hint pins down the port placement and says the region labelled "output generator" is safe to ignore during initial reverse engineering but has to be simulated to get the final answer. At the time I was really not sure what this simulation meant.
+The shape of the I/O interface, a one-bit input per clock cycle and a `success` output, made me guess at a shift register feeding some kind of comparator against a stored answer. That was only a guess from the port list, and I never went on to check it. The PNG hint pins down the port placement and says the region labelled "output generator" is safe to ignore during initial reverse engineering but has to be simulated to get the final answer. At the time I was really not sure what this simulation meant.
 
 ![The annotated die image from the puzzle, with the output generator box](./asiclayout.png)
 
@@ -133,9 +133,9 @@ Even after this success, I found that the puzzle netlist contained a single net 
 
 With a working model I could also try inputs. All zeros for 121 cycles prints `EMPTY SKY`. All ones prints `BIG BANG`. Everything else I tried printed `TRY AGAIN`.
 
-## Finding the key
+## Finding the correct inputs
 
-Finding the key is a constraint problem: 121 unknown bits, and the requirement that `success` be 1 afterwards. I used Z3, a solver for exactly this kind of problem.
+Finding the correct inputs is a constraint problem: 121 unknown bits, and the requirement that `success` be 1 afterwards. I used Z3, a solver for exactly this kind of problem.
 
 I did not have to write anything new to describe the chip to Z3. The simulator already evaluates every gate from its inputs, so I ran it through the VCD's protocol (reset, 121 enable cycles, 8 idle cycles) with the 121 input bits left as unknowns instead of concrete 0s and 1s. The value of `success` at the end is a boolean formula over those 121 unknowns, describing the whole chip across all 129 cycles. 
 
@@ -157,4 +157,4 @@ The key itself is:
 
 The general approach that helped me most is leveraging the information I had to create a general problem solving system, which I could use to explore the unknown. The GDS to netlist converter was checked against the warmup netlist. The simulator was checked against the puzzle's own VCD. The solver's answer was checked by replaying it through the simulator. The loose end I could not close, the undriven net, I tested both ways. 
 
-That approach gives a steady start, but it has a limit. When I got stuck on netlist clustering and visualisation, I made faster progress by experimenting with the incomplete tools I already had than by trying to finish an end-to-end system. The structural approach, recovering module boundaries and reading the design block by block, turned out to be unnecessary for this puzzle. Once I figured out how to simulate and solve the extracted netlist using the given VCD and its I/O protocol, I could skip the logic reverse engineering.
+That approach gives a steady start, but it has a limit. When I got stuck on netlist clustering and visualisation, I made faster progress by experimenting with the incomplete tools I already had than by trying to finish an end-to-end system. The structural approach, recovering module boundaries and reading the design block by block, turned out to be unnecessary for this puzzle. Once I figured out how to simulate and solve the extracted netlist using the given VCD and its I/O protocol, I could skip the logic reverse engineering entirely. I still do not know what the chip actually computes to decide whether an input is correct, and finding out is the natural next step.
