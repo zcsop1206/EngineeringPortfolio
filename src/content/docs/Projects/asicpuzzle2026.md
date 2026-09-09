@@ -1,6 +1,6 @@
 ---
 title: "Reverse engineering a chip from its layout: my first ASIC"
-description: Extracting a netlist from a GDS layout, validating a gate-level simulator against the puzzle's own waveform, and using Z3 to find the 121-bit key that unlocks the chip.
+description: Extracting a netlist from a GDS layout, validating a gate-level simulator against the puzzle's own waveform, and using Z3 to find the 121-bit key.
 date: 2026-09-05
 featured: true
 tags:
@@ -8,153 +8,387 @@ github:
 award:
 tech stack:
 ---
-This post is about an ASIC reverse engineering puzzle Jane Street published. You get a GDS file, the layout file used for fabrication, and you need to extract the string the chip prints by entering the right input. As a mechanical engineering student this was a challenging yet very engaging introduction to ASICs. This post covers the details of my reverse-engineering process and what they taught me.
+[Jane Street](https://blog.janestreet.com/can-you-reverse-engineer-an-asic/published) just a chip's layout. You had to find the string it prints when you enter the right input.
 
-> **TL;DR: if you are only interested in how I solved it**
->
-> I used the warmup section to formulate my method for tackling the puzzle since it was my first time dealing with ASICs. Having the source Verilog, the netlists and DEF files, it helped me verify the reverse engineering system I was building and ensure it generalized to the puzzle.
->
-> I started by converting the GDS to netlists to obtain an analyzable format of the chip using KLayout's Python API (`LayoutToNetlist`). For verification, I converted both the netlist extracted from the warmup GDS and the given one into graphs using NetworkX, checking for isomorphism. Once the script passed the isomorphism tests I used it on the puzzle GDS to convert it to a netlist.
->
-> Eventually I began hitting roadblocks in this warmup-guided reverse engineering system development (TL;DR I was running out of time and patience; the long version is below). I tried looking at different sources for more information: the answer form, the hints in the puzzle PNG and VCD. The form asked for a string as the final answer, which the GitHub README said I would get from the output generator block after simulation. So I knew to be on the lookout for a string in the VCD `O[7:0]` output. After tabulating the output values I realized they were ASCII for characters. Unsuccessful inputs that left `success` low returned the string `TRY AGAIN`, one character per clock. Looking at the VCD carefully also helped me understand the input protocol: the `enable` input was high for 121 clock cycles during which the key input `I` was fed, one bit per cycle, which told me the correct input was a 121-bit serial key.
->
-> I was confident in my GDS to netlist system though, so I decided to try using the extracted puzzle netlist to create a gate-level Python simulation. The simulator takes each cell's boolean function from the sky130 naming grammar documentation. It separates the cells into flip-flops and gates, then sorts the gates into evaluation order. One clock cycle involves evaluating every gate from the flip-flops' stored bits and the inputs, which fills every net including `O` and `success`. The flip-flops are then updated from their D inputs (or reset if the reset pin is low). To verify the simulator I replayed the example VCD inputs through it. The outputs from the simulator matched the VCD outputs, which proved the simulator, the extracted netlist and the GDS all agreed.
->
-> Finding the correct inputs was a constraint problem: the inputs had to make `success` 1. I solved it using Z3. I reused the simulator to build a boolean formula of the chip: I ran it through the VCD's protocol I identified earlier with the 121 input bits left as unknowns. Z3 doesn't brute force all 2^121 inputs. It deduces the bits forced by the "success must be 1" requirement, guesses different eligible inputs, and rules out every input that leads to a contradiction. When the correct input was found I confirmed uniqueness by adding another constraint that the input cannot be the correct key. Uniqueness was proven when re-solving returned unsat.
->
-> The string output from the correct input was `(* TWO STARS *)`, printed as 7-bit ASCII on `O[7:0]`, one character per clock.
+I am a mechanical engineering student and this was my first ASIC. I had worked with 3D printing file formats before and thought that would help with the layout file. It did not, but it was enough of a push to start.
 
-## Exploring the language
+<div style="margin:0 auto 1rem;max-width:640px">
+<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/docs/warmup_gds_3d.mp4" aria-label="3D render of the warmup chip GDS, slowly orbiting"></video>
+</div>
 
-I began by acquainting myself with Verilog syntax and the jargon I came across in the warmup section. The first file, `00_source.v`, is the human-written Verilog source. It took a while to see the structure: a main module that calls other modules as instances to carry out an intended function, each instance with inputs and outputs, and the outputs of one flowing into the inputs of the next. Two shift registers `sr_a` and `sr_b` take serial input, an adder `add0` adds their contents, and a comparator `cmp0` checks the result against a target.
+*The warmup chip's GDS in 3D. Standard cells along the bottom, metal wiring stacked above them, wide power straps on top. The puzzle chip is the same thing with a lot more cells.*
 
-Then I tried to track what changes occurred in files in the RTL to GDS pipeline. Converting source Verilog to netlist flattens the module encapsulation: the netlist `01_netlist.v` is one flat list of standard cell instances and the wires between them, with the module hierarchy gone. `02_netlist_with_power_rails.v` and the DEF file `03_post_place_and_route.def` add power + ground pins and x/y coordinates + orientations to every cell respectively. `04_final.gds` is the layout itself: the polygons on each mask layer, with the names gone, ready for fabrication.
+This post is the solve. [Part 2](/EngineeringPortfolio/projects/asicpuzzle2026-starbattle) is figuring out the chip's function.
 
-## Trying to understand cell placement
+## The puzzle
 
-I tried to understand the patterns in the placement of cells and what created them in the warmup files. My hypothesis was that cells belonging to the same instance would be placed close together to reduce latency: the further apart the gates of a function, the longer the wires and the longer the function takes. I wrote a script to group the DEF cells by the instance prefix in their names and compute a centroid and spread for each group:
+An ASIC is a chip built for one task. It is made in stages, and each step takes away hierarchical structure moving towards a manufacturable layout.
+
+| Stage           | What it is                                                                                                     | What is lost     |
+| --------------- | -------------------------------------------------------------------------------------------------------------- | ---------------- |
+| Verilog source  | Readable code with named modules and signals.                                                                  |                  |
+| Netlist         | The code mapped onto standard cells: NAND, NOR, XOR, muxes, and flip-flops. A flat list of cells and wires.    | Module hierarchy |
+| Place and route | Every cell gets coordinates and orientations on the die. Wires become metal on stacked layers, joined by vias. |                  |
+| GDS             | This is physical layout used by fabs for manufacturing.                                                        | All names        |
+
+The GDS is what the puzzle gives you. Everything the chip does is in there, and nothing is labelled.
+
+Also in the repo:
+
+- A recorded waveform, a VCD file, of sample inputs and outputs over a few hundred clock cycles.
+- A die image with one region marked "output generator".
+- A warmup: a small adder at every stage, Verilog through GDS. The only place to check your tools against a known answer.
+- Hints. The layout is arranged to suggest function. The output generator can be ignored while reverse engineering but must be simulated for the answer. Toggle `rst_n` before each attempt.
+
+The chip has a one-bit input `I`, a clock, a reset, an `enable`, an 8-bit output `O` and a one-bit `success`. Turn the polygons back into a netlist, work out what the chip checks, find the input that makes `success` go high, read the string on `O`.
+
+The cells are sky130, SkyWater's open 130 nm library. Every cell's design and name are public. 
+## TL;DR
+
+| Step                                       | Checked against                                | Result                       |
+| ------------------------------------------ | ---------------------------------------------- | ---------------------------- |
+| Polygons to netlist, with KLayout          | The warmup's given netlist, by graph isomorphism | Identical wiring           |
+| Netlist to a Python simulator              | The puzzle's own waveform                      | 312 clock edges, 0 mismatches |
+| Simulator to Z3, 121 input bits unknown    | Excluding the key and solving again            | Unsat. The key is unique     |
+| Key back through the simulator             |                                                | `(* TWO STARS *)`            |
+
+## Reading the warmup
+
+The warmup's Verilog took a while to read. A main module instantiates others, and the outputs of one feed the inputs of the next. Two shift registers `sr_a` and `sr_b` take serial input, an adder `add0` adds their contents, and a comparator `cmp0` checks the sum against 496.
+
+The five files are the five stages of the table above: `00_source.v`, `01_netlist.v`, `02_netlist_with_power_rails.v`, `03_post_place_and_route.def`, `04_final.gds`.
+
+## Placement is evidence
+
+Do cells from the same module sit together? I grouped the warmup's placed cells by instance name and computed a centroid and spread for each:
 
 ```text
-PHY_EDGE:          n=58, centroid=(49.220, 48.960) um, std=(39.100, 22.757) um
-TAP_TAPCELL:       n=93, centroid=(55.408, 48.960) um, std=(21.996, 24.042) um
-add0:              n=41, centroid=(69.135, 27.067) um, std=( 6.297,  6.066) um
-clkbuf_0_clk:      n=1,  centroid=(31.740, 48.960) um
-clkbuf_1_0__f_clk: n=1,  centroid=(30.820, 43.520) um
-clkbuf_1_1__f_clk: n=1,  centroid=(26.680, 62.560) um
-cmp0:              n=3,  centroid=(69.920, 48.960) um, std=( 0.000,  2.221) um
-sr_a:              n=16, centroid=(29.095, 69.700) um, std=( 4.787,  5.679) um
-sr_b:              n=16, centroid=(28.664, 29.920) um, std=( 4.867,  5.689) um
+add0:   n=41, centroid=(69.1, 27.1) um, std=(6.3, 6.1) um
+cmp0:   n=3,  centroid=(69.9, 49.0) um, std=(0.0, 2.2) um
+sr_a:   n=16, centroid=(29.1, 69.7) um, std=(4.8, 5.7) um
+sr_b:   n=16, centroid=(28.7, 29.9) um, std=(4.9, 5.7) um
 ```
 
 ![Scatter of the warmup DEF placement, coloured by instance](./asicplacement.png)
 
-So the instances are indeed clustered. The two shift registers sit on one vertical, the adder and comparator on another, the clock buffers spread between the shift registers, and the tap and edge cells form a fixed grid spanning the whole chip. I also realized the clusters aligned vertically and decided that was not necessarily logic-relevant; it could be a product of some optimization.
+Same module cells were indeed clustered. The two shift registers share one vertical, the adder and comparator another, the clock buffers sit between the shift registers, and the tap and edge cells form a fixed grid across the chip. Cells that are close share electrical context: `sr_a` and `sr_b` both take input from the same edge.
 
-This exploration indicated that spatial proximity is evidence of shared electrical context. E.g. `sr_a` and `sr_b` are close because they both take input from the same edge of the chip.
+## Picking an approach
 
-## Deciding on an approach
+Three options:
 
-While building this understanding I was weighing a few approaches:
+1. Rebuild the Verilog from structural hints.
+2. Treat the creation pipeline as transformations and reverse them one by one.
+3. Train a model to recognise basic structures.
 
-1. Try to replicate ASIC starting from Verilog using hints from its structure 
-2. Try to conceptualize conversion cycle in terms of transformations to reverse them
-3. Try ML recognition of different basic structures to reverse engineer
+I picked 2. I also spent a while looking at the problem through linear algebra and information theory. Neither really fit or was a helpful way of thinking.
 
-The second approach seemed the most tractable for me so I tried exploring in that direction. I also spent a while thinking about the problem through linear algebraic and information theoretic lenses. Neither turned out to be a very useful perspective, so I formulated the following execution plan:
+Before writing code I went through the hints for anything that would size the problem.
 
-1. Write script converting GDS to netlist for the warmup files, iterating on it and preparing it for the puzzle using the functional information as well as the netlist I already have for the warmup.
-2. Try to use the extracted netlist to understand chip function using clues for the warmup to design an approach for the puzzle: how best to organize the netlist information using a script to facilitate reverse engineering.
-3. Reconstruct chip function when the only thing I can do is manual analysis, see if automation is worth it. I see it looking like minesweeper on steroids.
-4. Edit: use the information about the chip you gain from structural reverse engineering to design simulation of output to get the string that the puzzle asks for. Be discretional about where you dedicate reverse engineering effort, I'm not sure how the simulation will work just yet but i think the structural reverse engineering should give insights into that
+The VCD's input seemed to change every 4000 ps and the dump spans 3,120,000 ps. About 780 clock cycles, and since `I` is one bit, about 780 unknown bits. (I first wrote $2^{4 \times 780}$ before realising `clk`, `rst_n` and `enable` are not unknowns.) The estimate turned out six times too high, but the conclusion held: brute force was out.
 
-P.S. I'm not quite sure how this approach would have turned out, I really only completed steps 1 and 4. I hope verbatim extracts like these from my notes convey how my understanding evolved over the course of this project.
+One bit per clock in and a `success` out looked like a shift register feeding a comparator against a stored answer. I did not test that guess until after the solve. It was wrong. There is no stored answer in this chip.
 
-Before starting I looked at the puzzle's hints for anything that could further refine and optimize this approach. I noticed that the example VCD has inputs `I`, `clk`, `rst_n` and `enable`, an 8-bit output `O` and a `success` wire, and the README says `success` goes high for the correct input. The smallest interval over which inputs changed looked like 4000 ps and the whole dump spans 3120000 ps, so I estimated something like 780 clock cycles and, since `I` is a single-bit wire, roughly 780 unknown bits. Brute force made no sense: 2^780 permutations for what the description implied was a single correct input. (I first wrote 2^(4×780) before realising `clk`, `rst_n` and `enable` are not unknowns.) This was only a Fermi estimate to size the problem, and it turned out to be wrong, as you will see, but the conclusion held.
-
-The shape of the I/O interface, a one-bit input per clock cycle and a `success` output, made me guess at a shift register feeding some kind of comparator against a stored answer. That was only a guess from the port list, and I never went on to check it. The PNG hint pins down the port placement and says the region labelled "output generator" is safe to ignore during initial reverse engineering but has to be simulated to get the final answer. At the time I was really not sure what this simulation meant.
+The die image marks an "output generator", and the repo says it can be simulated instead of reverse engineered. I did not understand what that meant yet. It turned out to be the approach that solved the puzzle.
 
 ![The annotated die image from the puzzle, with the output generator box](./asiclayout.png)
 
-## GDS to netlist
+My plan, from my notes at the time:
 
-I initially planned to reconstruct the netlist using a custom script with geometric overlap checks, with an overlap tolerance for shapes that only just touch. KLayout's `LayoutToNetlist` made it much easier. It traces electrical connectivity through the drawn shapes: overlapping metal on one layer is one net, and a via joins the net on one layer to the net on the next.
+> 1. Write a GDS to netlist script. Develop it on the warmup, where I already have the true netlist to check against.
+> 2. Organize the extracted netlist so a human can reverse engineer it.
+> 3. Reconstruct chip function by hand. Minesweeper on steroids.
+> 4. Use what I learn to simulate the output and get the string. Not sure what the simulation looks like yet.
 
-The cells are treated as black boxes. The chip uses the open sky130 standard cell library, and each cell keeps its library name in the GDS as a hierarchy label. Those names follow a grammar: `a21oi`, for example, is an AND-OR-invert with a 2-input AND and a 1-input OR feeding a NOR. I generated a cell library from that grammar and the pin labels in the GDS, and the script looks up each cell's name in it to find its pins.
+I only ever completed steps 1 and 4.
 
-The biggest asset of using the warmup to develop the reverse engineering system was the availability of ground truth files earlier in the RTL to GDS pipeline. This allowed me to compare the given netlist with the extracted one. I converted both the extracted netlist and the given `01_netlist.v` into graphs in NetworkX, cell instances as nodes labelled by cell type and wires as edges labelled by pin, dropped the power nets, and checked for graph isomorphism. This method of verification is ideal because instance names cannot be derived from the GDS, limiting any text-based comparison. After pruning the tap and decap filler cells the warmup netlist has 79 logic cells (16 flip-flops, 16 muxes, 44 gates, 3 clock buffers). The extraction had exactly the same 79 with the same types, the graphs had the same 163 nodes and 285 edges, and the isomorphism check found a full match.
+## Polygons back into wires
 
-I was confident in the extracted puzzle netlist since the GDS to netlist pipeline is deterministic and objective and has a reliable verification source and method. So I used the same script for puzzle netlist extraction. The puzzle netlist has 728 logic cells across 69 cell types: 92 flip-flops and 636 gates, with a single clock tree and no combinational loops.
+I planned to write my own overlap checker. KLayout's `LayoutToNetlist` made that unnecessary. It traces connectivity through the drawn shapes: overlapping metal on one layer is one net, and a via joins a net on one layer to the next.
 
-## Major roadblocks
+Cells are black boxes. Each keeps its sky130 name in the GDS as a hierarchy label, and the names are a grammar:
 
-Step two of the plan was to organize the netlist for reverse engineering. I tried a bunch of methods to cluster the extracted cells into instance-shaped groups, using the warmup's instance names as ground truth to score against. After a handful of experiments the clustering looked like this:
+```text
+a 2 1 o i
+│ │ │ │ └─ i:  output inverted
+│ │ │ └─── o:  ...then OR'd together
+│ │ └───── 1:  ...with one more input
+│ └─────── 2:  ...of 2 inputs
+└───────── a:  first stage is an AND
+           => AND-OR-invert, a21oi
+```
 
-| Method | Clusters | Misassigned out of 79 |
-| --- | --- | --- |
-| Louvain, unweighted | 7 | ~19 |
-| Bit-slice seed and propagate | 8 | 33 |
-| Spectral clustering, k=6 | 6 | 16 |
-| Pin-weighted Louvain | 6 | 34 |
-| Fluid communities, k=2 | 2 | not scored |
+I generated a cell library from that grammar plus the pin labels in the GDS. The extractor looks each cell up by name to find its pins.
 
-Sixteen out of 79 was the best, and I could not tell whether even that would generalize to the puzzle. Every parameter had been chosen while looking at scores against the warmup answer, and the puzzle has no answer to score against, so a method tuned to the small sized warmup files would just produce a confident wrong clustering in the larger puzzle with no way to verify. The visualisation system I started for the netlist did not get far either; it wasn't facilitating reverse engineering at all so I abandoned it halfway.
+Instance names do not survive into a GDS, so comparing my netlist to the warmup's by text is useless. Compare the shape instead. Both netlists become graphs: a node per cell labelled by type, a node per net, and an edge for every pin labelled by pin name, with power nets dropped. Then ask whether the two graphs are isomorphic: is there a relabelling of one that makes it identical to the other?
 
-I realised manual reverse engineering was impossible with the time and experience I had, so I went looking in the repo for any information I might have missed.
+Here is the comparator, `cmp0`, in both. It checks the 9-bit sum against 496, which in binary is five ones then four zeros, so it is three AND gates:
 
-## Reading the hints properly
+<svg viewBox="0 0 660 236" width="660" height="236" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The warmup comparator as two graphs: the given netlist with names on the left, the netlist extracted from the GDS without names on the right, same three AND cells and same wiring" style="display:block;margin:0 auto 1rem;max-width:100%;height:auto">
+<text x="160" y="14" text-anchor="middle" style="font-family:var(--font-sans);font-size:11px;font-weight:600;fill:var(--sl-color-text)">Given netlist</text>
+<line x1="68" y1="28" x2="130" y2="34" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="68" y1="52" x2="130" y2="48" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="68" y1="76" x2="130" y2="62" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="68" y1="100" x2="130" y2="112" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="68" y1="124" x2="130" y2="130" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="68" y1="148" x2="130" y2="148" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="68" y1="172" x2="130" y2="166" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<path d="M194,48 L212,48 L212,132 L230,132" style="fill:none;stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<path d="M194,136 L212,136 L212,150 L230,150" style="fill:none;stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="68" y1="196" x2="230" y2="168" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="68" y1="220" x2="230" y2="186" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<rect x="130" y="20" width="64" height="56" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="162.0" y="48.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">and3_2</text>
+<text x="162.0" y="60.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">cmp0/_2_</text>
+<text x="133" y="37" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">C</text>
+<text x="133" y="51" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">B</text>
+<text x="133" y="65" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">A</text>
+<line x1="194" y1="48.0" x2="206" y2="48.0" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<rect x="130" y="100" width="64" height="72" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="162.0" y="136.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">and4bb_2</text>
+<text x="162.0" y="148.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">cmp0/_3_</text>
+<text x="133" y="115" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">D</text>
+<text x="133" y="133" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">C</text>
+<text x="133" y="151" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">A_N</text>
+<text x="133" y="169" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">B_N</text>
+<line x1="194" y1="136.0" x2="206" y2="136.0" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<rect x="230" y="120" width="64" height="72" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="262.0" y="156.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">and4bb_2</text>
+<text x="262.0" y="168.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">cmp0/_4_</text>
+<text x="233" y="135" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">C</text>
+<text x="233" y="153" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">D</text>
+<text x="233" y="171" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">A_N</text>
+<text x="233" y="189" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">B_N</text>
+<line x1="294" y1="156.0" x2="306" y2="156.0" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<circle cx="68" cy="28" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="60" y="31" text-anchor="end" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">sum[8]</text>
+<circle cx="68" cy="52" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="60" y="55" text-anchor="end" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">sum[7]</text>
+<circle cx="68" cy="76" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="60" y="79" text-anchor="end" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">sum[6]</text>
+<circle cx="68" cy="100" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="60" y="103" text-anchor="end" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">sum[5]</text>
+<circle cx="68" cy="124" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="60" y="127" text-anchor="end" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">sum[4]</text>
+<circle cx="68" cy="148" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="60" y="151" text-anchor="end" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">sum[3]</text>
+<circle cx="68" cy="172" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="60" y="175" text-anchor="end" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">sum[2]</text>
+<circle cx="68" cy="196" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="60" y="199" text-anchor="end" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">sum[1]</text>
+<circle cx="68" cy="220" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="60" y="223" text-anchor="end" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">sum[0]</text>
+<circle cx="206" cy="48" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="206" y="42" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">_0_</text>
+<circle cx="206" cy="136" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="206" y="130" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">_1_</text>
+<circle cx="306" cy="156" r="3" style="fill:var(--sl-color-accent)"/>
+<text x="306" y="148" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">S</text>
+<text x="330" y="126" text-anchor="middle" style="font-family:var(--font-sans);font-size:26px;fill:var(--sl-color-text)">≅</text>
+<text x="500" y="14" text-anchor="middle" style="font-family:var(--font-sans);font-size:11px;font-weight:600;fill:var(--sl-color-text)">Extracted from GDS</text>
+<line x1="408" y1="28" x2="470" y2="34" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="408" y1="52" x2="470" y2="48" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="408" y1="76" x2="470" y2="62" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="408" y1="100" x2="470" y2="112" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="408" y1="124" x2="470" y2="130" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="408" y1="148" x2="470" y2="148" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="408" y1="172" x2="470" y2="166" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<path d="M534,48 L552,48 L552,132 L570,132" style="fill:none;stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<path d="M534,136 L552,136 L552,150 L570,150" style="fill:none;stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="408" y1="196" x2="570" y2="168" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<line x1="408" y1="220" x2="570" y2="186" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<rect x="470" y="20" width="64" height="56" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="502.0" y="52.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">and3_2</text>
+<text x="473" y="37" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">C</text>
+<text x="473" y="51" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">B</text>
+<text x="473" y="65" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">A</text>
+<line x1="534" y1="48.0" x2="546" y2="48.0" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<rect x="470" y="100" width="64" height="72" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="502.0" y="140.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">and4bb_2</text>
+<text x="473" y="115" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">D</text>
+<text x="473" y="133" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">C</text>
+<text x="473" y="151" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">A_N</text>
+<text x="473" y="169" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">B_N</text>
+<line x1="534" y1="136.0" x2="546" y2="136.0" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<rect x="570" y="120" width="64" height="72" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="602.0" y="160.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">and4bb_2</text>
+<text x="573" y="135" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">C</text>
+<text x="573" y="153" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">D</text>
+<text x="573" y="171" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">A_N</text>
+<text x="573" y="189" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">B_N</text>
+<line x1="634" y1="156.0" x2="646" y2="156.0" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
+<circle cx="408" cy="28" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="408" cy="52" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="408" cy="76" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="408" cy="100" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="408" cy="124" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="408" cy="148" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="408" cy="172" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="408" cy="196" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="408" cy="220" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="546" cy="48" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="546" cy="136" r="3" style="fill:var(--sl-color-accent)"/>
+<circle cx="646" cy="156" r="3" style="fill:var(--sl-color-accent)"/>
+</svg>
 
-Two sources gave me the information I needed to make progress: the answer form and the example VCD.
+*Left, the warmup's given netlist. Right, the same cells pulled out of the polygons with identical wiring. The script does this for the whole chip.*
 
-The form asks for a string extracted from the chip. The README says this string comes out of the output generator after simulation. So the thing to look for is text on `O[7:0]`.
+|                                            | Given netlist    | Extracted from GDS |
+| ------------------------------------------ | ---------------- | ------------------ |
+| Logic cells                                | 79               | 79                 |
+| Flip-flops / muxes / gates / clock buffers | 16 / 16 / 44 / 3 | 16 / 16 / 44 / 3   |
+| Graph nodes / edges                        | 163 / 285        | 163 / 285          |
+| Isomorphic                                 |                  | yes                |
 
-I opened the VCD in Surfer, and then tabulated `O` at every rising clock edge in a script. The values were ASCII. One character comes out per clock. The example contains two attempts, not one long one, which is where my 780-bit estimate had gone wrong. Each attempt ends with the chip printing `TRY AGAIN` and `success` staying low.
+Same script on the puzzle GDS: 728 logic cells across 69 types, 92 flip-flops and 636 gates, one clock tree, no combinational loops.
 
-![Surfer showing the O bus spelling TRY AGAIN with success low](./asicsurfer.png)
+## Where I got stuck
 
-The VCD also fixed the input protocol. Hold `rst_n` low for a few cycles and release it. Hold `enable` high for exactly 121 rising clock edges, presenting one bit per edge on `I`. Drop `enable`. So the key is to find the 121 bits that make `success` go high, then read the string that follows.
+Step 2 of the plan was clustering the netlist back into modules, scored against the warmup's instance names:
 
-Here I started to understand what the simulator would look like: it would be a software equivalent of the chip designed using the netlist I extracted. It would also collect inputs and give outputs conforming to the VCD protocol. The example VCD gave me a free test for this simulator: a correct simulator driven with the same inputs has to print `TRY AGAIN` at the same clock edges.
+| Method                       | Clusters | Misassigned of 79 |
+| ---------------------------- | -------- | ----------------- |
+| Louvain, unweighted          | 7        | ~19               |
+| Bit-slice seed and propagate | 8        | 33                |
+| Spectral clustering, k=6     | 6        | 16                |
+| Pin-weighted Louvain         | 6        | 34                |
+| Fluid communities, k=2       | 2        | not scored        |
 
-## The simulator
+Sixteen wrong out of 79 was the best. Every parameter had been tuned against the warmup answer, and the puzzle has no answer to tune against. On the real chip this would produce a confident, wrong clustering with no way to tell. A netlist visualiser I started went nowhere either.
 
-The simulator is a Python equivalent of the extracted netlist. Each cell's boolean function comes from the sky130 naming grammar, the same grammar that generated the netlist extractor's cell library (which needed to be expanded to include cells that weren't in the warmup).
+Manual reverse engineering was out of reach in the time I had. So I went back to the repo for anything I had missed.
 
-The model separates the 728 cells into flip-flops and gates and sorts the gates into evaluation order, so every gate is evaluated after the gates it receives input from. One clock cycle is: evaluate every gate from the current flip-flop contents and the current inputs, which fills every net including `O` and `success`; then update every flip-flop from its D input, or reset it if its reset pin is low.
+## The waveform had the answer's shape all along
 
-Then the check: replay the VCD's inputs through the model and compare `O` and `success` at each of its 312 rising clock edges.
+The example VCD had been in my repo for about a week. Two sources gave me what I needed: the answer form and that file.
 
-The first run had 20 mismatches. The model printed T, R, Y, space, A, G, A, I, N, exactly right, one clock edge late. This was because the VCD records each value at the timestamp of the clock edge, meaning after the flip-flops have updated, and I was comparing the value from before the edge.
+The form asks for a string. The README says the string comes out of the output generator after simulation. So look for text on `O`.
 
-The second run was worse: 26 mismatches, and the model printed only R, space, G, I during the second attempt and nothing at all during the first. Moving the flip-flop update before the comparison had left the original update call at the bottom of the loop, so the model was running two clock cycles per VCD edge. The input was shifted in twice per bit and the message came out at half rate.
+I opened the VCD in Surfer. The whole dump fits on one screen:
 
-With that removed: 312 edges, 0 mismatches, both `TRY AGAIN` bursts at the right edges. The model reproduced the example waveform, which means the GDS, the extracted netlist and the simulator are consistent with one another.
+![The example VCD in Surfer: two enable windows with input bits on I, a reset pulse between them, a burst on O after each window, success flat](./asicsurfer.png)
 
-Even after this success, I found that the puzzle netlist contained a single net with no driver: nothing sets its value, yet it feeds two AND-OR-invert cells in the output generator. I never found out why in the geometry. Instead I tried to see its effect on the output by running everything twice, once with the net forced to 0 and once forced to 1. The VCD replay came out identical both ways, and so did the final answer later. Since the net has no effect on the output, I left it unresolved.
+*Two `enable` windows, each with a stream of bits on `I`. A `rst_n` pulse between them. A short burst on `O` after each window. `success` never moves. The cursor sits on one character of the first burst, 0x47, which is a G.*
 
-With a working model I could also try inputs. All zeros for 121 cycles prints `EMPTY SKY`. All ones prints `BIG BANG`. Everything else I tried printed `TRY AGAIN`.
+Tabulating `O` at every rising clock edge turned the bursts into text. ASCII, one character per clock:
 
-## Finding the correct inputs
+| Clock edge | `O[7:0]`   | ASCII |
+| ---------- | ---------- | ----- |
+| 125        | `01010100` | T     |
+| 126        | `01010010` | R     |
+| 127        | `01011001` | Y     |
+| 128        | `00100000` | space |
+| 129        | `01000001` | A     |
+| 130        | `01000111` | G     |
+| 131        | `01000001` | A     |
+| 132        | `01001001` | I     |
+| 133        | `01001110` | N     |
 
-Finding the correct inputs is a constraint problem: 121 unknown bits, and the requirement that `success` be 1 afterwards. I used Z3, a solver for exactly this kind of problem.
+The dump holds two attempts, not one long one. That is where the 780-bit estimate went wrong. Each attempt ends with `TRY AGAIN` and `success` low.
 
-I did not have to write anything new to describe the chip to Z3. The simulator already evaluates every gate from its inputs, so I ran it through the VCD's protocol (reset, 121 enable cycles, 8 idle cycles) with the 121 input bits left as unknowns instead of concrete 0s and 1s. The value of `success` at the end is a boolean formula over those 121 unknowns, describing the whole chip across all 129 cycles. 
+The screenshot also fixes the protocol. Hold `rst_n` low for a few cycles, release it. Hold `enable` high for exactly 121 rising edges, one key bit per edge on `I`. Drop `enable`. A few cycles later the chip prints its verdict.
 
-Z3 does not try all 2^121 inputs. It deduces the bits that are forced by the requirement that `success` must be 1, guesses an input within this constraint, and whenever a guess leads to a contradiction it rules out every input that shares that contradiction.
+So the key is 121 bits. And the VCD is a free test: a correct simulator driven with the same inputs must print `TRY AGAIN` at the same edges.
 
-When I found a successful input, I checked for uniqueness by adding a constraint that the input must not equal the one I just found and solved again. Z3 returned unsat: no other 121-bit input works under this protocol, so the key is unique. Then I fed the key through the ordinary concrete simulator. `success` goes high on the edge after the 121st enable cycle and the chip prints, one character per clock:
+## A software twin of the chip
+
+The simulator is a Python equivalent of the extracted netlist. Each cell's boolean function comes from the sky130 naming grammar, the same grammar that built the extractor's cell library.
+
+The model splits the 728 cells into flip-flops and gates and sorts the gates so each is evaluated after the gates feeding it. One clock cycle:
+
+1. Evaluate every gate from the flip-flop contents and the inputs. This fills every net, including `O` and `success`.
+2. Update every flip-flop from its D input, or reset it if its reset pin is low.
+
+Then replay the VCD's inputs and compare `O` and `success` at all 312 rising edges.
+
+First run: 20 mismatches. The model printed T, R, Y, space, A, G, A, I, N exactly right, one edge late. The VCD records each value at the edge's timestamp, after the flip-flops update. I was comparing the value from before.
+
+Second run: 26 mismatches, worse. Moving the update before the compare left the old update call at the bottom of the loop. Two cycles per edge, so the input was shifted in twice per bit and the message came out at half rate.
+
+Third run: 312 edges, 0 mismatches, both `TRY AGAIN` bursts at the right edges. GDS, netlist and simulator agree.
+
+One loose end. A net in the puzzle has no driver, yet feeds two AND-OR-invert cells in the output generator. I never found out why. I ran everything twice, net forced to 0 and to 1. Same replay, same final answer.
+
+With a working model I could try inputs. All zeros prints `EMPTY SKY`. All ones prints `BIG BANG`. Everything else I tried printed `TRY AGAIN`.
+
+## Letting Z3 find the key
+
+Finding the input is a constraint problem: 121 unknown bits, and `success` must be 1 at the end. Z3 is a solver for exactly this.
+
+I did not describe the chip to Z3 separately. The simulator already computes every gate from its inputs, so I ran it through the protocol, reset, 121 enable cycles, 8 idle cycles, with the 121 input bits as symbols instead of numbers. Every gate output becomes an expression. Every flip-flop at every cycle becomes a fresh boolean tied to the expression feeding it. After 129 cycles, `success` is one formula over the 121 input bits.
+
+<svg viewBox="0 0 640 372" width="640" height="372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="How the key was found: the chip unrolled into 129 copies of its gates, giving one formula for success over the 121 input bits, then Z3 deducing forced bits, guessing, propagating, learning from contradictions until every bit is fixed" style="display:block;margin:0 auto 1rem;max-width:100%;height:auto">
+<defs><marker id="z3arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--sl-color-text)"/></marker></defs>
+<text x="10" y="16" style="font-family:var(--font-sans);font-size:11px;font-weight:600;fill:var(--sl-color-text)">1. Unroll the chip in time</text>
+<rect x="20" y="56" width="84" height="46" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="62.0" y="76.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">reset</text>
+<text x="62.0" y="89.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">636 gates</text>
+<line x1="105" y1="79.0" x2="117" y2="79.0" style="stroke:var(--sl-color-text);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<rect x="118" y="56" width="84" height="46" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="160.0" y="76.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">cycle 1</text>
+<text x="160.0" y="89.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">636 gates</text>
+<line x1="203" y1="79.0" x2="215" y2="79.0" style="stroke:var(--sl-color-text);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<rect x="216" y="56" width="84" height="46" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="258.0" y="76.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">cycle 2</text>
+<text x="258.0" y="89.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">636 gates</text>
+<line x1="301" y1="79.0" x2="313" y2="79.0" style="stroke:var(--sl-color-text);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<text x="356.0" y="84.0" text-anchor="middle" style="font-family:var(--font-sans);font-size:16px;fill:var(--sl-color-gray-3)">…</text>
+<line x1="399" y1="79.0" x2="411" y2="79.0" style="stroke:var(--sl-color-text);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<rect x="412" y="56" width="84" height="46" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="454.0" y="76.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">cycle 121</text>
+<text x="454.0" y="89.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">636 gates</text>
+<line x1="497" y1="79.0" x2="509" y2="79.0" style="stroke:var(--sl-color-text);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<rect x="510" y="56" width="84" height="46" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="552.0" y="76.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">idle × 8</text>
+<text x="552.0" y="89.0" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">636 gates</text>
+<text x="111.0" y="114" text-anchor="middle" style="font-family:var(--font-mono);font-size:7px;fill:var(--sl-color-gray-3)">92 flops</text>
+<text x="160.0" y="40" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-accent)">I_0</text>
+<line x1="160.0" y1="44" x2="160.0" y2="55" style="stroke:var(--sl-color-accent);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<text x="258.0" y="40" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-accent)">I_1</text>
+<line x1="258.0" y1="44" x2="258.0" y2="55" style="stroke:var(--sl-color-accent);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<text x="454.0" y="40" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-accent)">I_120</text>
+<line x1="454.0" y1="44" x2="454.0" y2="55" style="stroke:var(--sl-color-accent);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<line x1="552.0" y1="103" x2="552.0" y2="124" style="stroke:var(--sl-color-text);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<text x="552.0" y="138" text-anchor="end" style="font-family:var(--font-mono);font-size:10px;fill:var(--sl-color-text)">success = one formula over I_0 … I_120</text>
+<text x="10" y="164" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">121 input symbols · 92 × 129 = 11,868 flip-flop symbols · built in 11 s</text>
+<text x="10" y="186" style="font-family:var(--font-sans);font-size:11px;font-weight:600;fill:var(--sl-color-text)">2. Let Z3 search the formula</text>
+<rect x="20" y="200" width="300" height="32" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="170.0" y="219.5" text-anchor="middle" style="font-family:var(--font-sans);font-size:10px;fill:var(--sl-color-text)">deduce every bit that success = 1 forces</text>
+<line x1="170" y1="233" x2="170" y2="254" style="stroke:var(--sl-color-text);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<rect x="20" y="256" width="300" height="32" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="170.0" y="275.5" text-anchor="middle" style="font-family:var(--font-sans);font-size:10px;fill:var(--sl-color-text)">guess one free bit and propagate</text>
+<line x1="321" y1="272" x2="368" y2="218" style="stroke:var(--sl-color-text);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<line x1="321" y1="272" x2="368" y2="272" style="stroke:var(--sl-color-text);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<line x1="321" y1="272" x2="368" y2="326" style="stroke:var(--sl-color-text);stroke-width:1.2" marker-end="url(#z3arrow)"/>
+<rect x="370" y="200" width="250" height="36" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-red);stroke-width:1"/>
+<text x="495.0" y="215.0" text-anchor="middle" style="font-family:var(--font-sans);font-size:10px;fill:var(--sl-color-text)">contradiction: learn the failing</text>
+<text x="495.0" y="228.0" text-anchor="middle" style="font-family:var(--font-sans);font-size:10px;fill:var(--sl-color-text)">combination, back up, guess again</text>
+<rect x="370" y="254" width="250" height="36" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>
+<text x="495.0" y="269.0" text-anchor="middle" style="font-family:var(--font-sans);font-size:10px;fill:var(--sl-color-text)">consistent: more bits fixed,</text>
+<text x="495.0" y="282.0" text-anchor="middle" style="font-family:var(--font-sans);font-size:10px;fill:var(--sl-color-text)">guess again</text>
+<rect x="370" y="308" width="250" height="36" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-accent);stroke-width:1"/>
+<text x="495.0" y="323.0" text-anchor="middle" style="font-family:var(--font-sans);font-size:10px;fill:var(--sl-color-text)">no free bits left: sat.</text>
+<text x="495.0" y="336.0" text-anchor="middle" style="font-family:var(--font-sans);font-size:10px;fill:var(--sl-color-text)">the 121 bits are the key</text>
+<text x="10" y="364" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">solved in 0.4 s · add "not this key", solve again: unsat, so the key is unique</text>
+</svg>
+
+*Top: the chip unrolled in time, one copy of the gates per clock cycle, the flip-flops carried between copies. Bottom: how Z3 works through the formula.*
+
+Z3 does not try all $2^{121}$ inputs. It deduces the bits that `success = 1` forces outright. It guesses one of the rest and propagates what that guess forces. When a guess leads to a contradiction, it records the combination that caused it and eliminates it from the possible solution set.
+
+Uniqueness is one more question. Remove the correct input from possible inputs and solve again for `success = 1`. Unsat. No other 121-bit input works under this protocol.
+
+Fed through the plain simulator, `success` goes high on the edge after the 121st enable cycle and the chip prints:
 
 ```text
 (* TWO STARS *)
 ```
 
-The key itself is:
-
-```text
-0000000101010000100000000000010101010000000000001010000001000001000000100000101000010000000100000010000010010001010000000
-```
-
+The key, as 121 bits and as an 11 by 11 grid. It is not ASCII under any grouping or bit order I tried. I submitted the string and moved on.
 ## What I learnt
 
-The general approach that helped me most is leveraging the information I had to create a general problem solving system, which I could use to explore the unknown. The GDS to netlist converter was checked against the warmup netlist. The simulator was checked against the puzzle's own VCD. The solver's answer was checked by replaying it through the simulator. The loose end I could not close, the undriven net, I tested both ways. 
+Check every step against something you already trust. The extractor against the warmup netlist. The simulator against the puzzle's own VCD. The solver's answer against the simulator. The loose end, both ways.
 
-That approach gives a steady start, but it has a limit. When I got stuck on netlist clustering and visualisation, I made faster progress by experimenting with the incomplete tools I already had than by trying to finish an end-to-end system. The structural approach, recovering module boundaries and reading the design block by block, turned out to be unnecessary for this puzzle. Once I figured out how to simulate and solve the extracted netlist using the given VCD and its I/O protocol, I could skip the logic reverse engineering entirely. I still do not know what the chip actually computes to decide whether an input is correct, and finding out is the natural next step.
+Then stop building and start running. I spent most of my time trying to generalise the one tool I trusted. Once I started experimenting with the incomplete tools I had, the rest took about 35 minutes by my notes: reading the VCD properly, the simulator and its two bugs, the solver, the answer.
+
+I still did not know what the chip computes to decide whether an input is correct. I found out in [part 2](/EngineeringPortfolio/projects/asicpuzzle2026-starbattle).
