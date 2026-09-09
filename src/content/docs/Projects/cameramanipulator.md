@@ -10,8 +10,8 @@ tech stack:
 ---
 ![Final Cinema Manipulator](finalcinemanipulatorpromo.png)
 
->Led requirements engineering and design space exploration for a robotic camera arm enabling repeatable Pan, Tilt, and Dolly movements for advanced hobbyist cinematographers. The system features four degrees of freedom (three independent DOFs for core movements and one redundant DOF for maintaining subject focus while panning) demonstrating kinematic optimization principles critical to my mechatronics career path. Managed the project through an ISO/IEC/IEEE 29148:2018-compliant Systems Requirements Specification (SRS) framework, achieving a $1,435 bill of materials (28% under budget) while meeting all critical performance specifications.
->**Link to career interests**: While my tendon-driven continuum robot candidate wasn't selected for final implementation, it catalyzed my interest in biomimetic robotics and compliant mechanisms, which I've since applied to NeuroTech UofT's post-stroke rehabilitation project and plan to leverage in future mechatronics and bioengineering pursuits. This project served as my introduction to formal robotics design methodology.
+>Led requirements engineering and design space exploration for a robotic camera arm enabling repeatable Pan, Tilt, and Dolly movements for advanced hobbyist cinematographers. The system features four degrees of freedom (three independent DOFs for core movements and one redundant DOF for maintaining subject focus while panning) Managed the project through an ISO/IEC/IEEE 29148:2018-compliant Systems Requirements Specification (SRS) framework, achieving a $1,435 bill of materials (28% under budget) while meeting all critical performance specifications.
+>While my tendon-driven continuum robot candidate wasn't selected for final implementation, it catalyzed my interest in compliant mechanisms, which I've since applied to the flexure joint for NeuroTech UofT's rehabilitation glove. This project was my introduction to formal robotics design methodology.
 
 ---
 
@@ -21,7 +21,7 @@ Professional motion control rigs cost $8,000–$10,000, creating a barrier for a
 
 I led the requirements engineering process to scope a solution balancing precision, safety, and affordability. After benchmarking five state-of-the-art systems and researching three international safety standards, I established a formal SRS framework managing complexity across mechanical, electrical, and safety domains, ensuring every design decision was quantified, traceable, and verifiable.
 
->This project taught me how systems engineering frameworks scale complex multi-domain problems. The same traceability principles I'll need when designing integrated electromechanical systems for medical devices or autonomous systems, where failure modes must be rigorously tracked from user requirements through verification testing.
+>This project taught me how systems engineering frameworks scale complex multi-domain problems: failure modes tracked from user requirements through verification testing.
 
 ---
 
@@ -50,7 +50,6 @@ Assigning team members as requirement owners automatically populated their perso
 
 While the framework elevated our work to industry standards, its complexity exceeded our team's experience level. We leveraged it primarily for specification rigor rather than full project management potential. In the future, I will make sure that framework sophistication matches team capability.
 
->This experience with formal requirements engineering directly prepares me for medical device development, where FDA compliance demands identical traceability from clinical needs through design controls to verification testing.
 
 ---
 
@@ -70,7 +69,7 @@ This research directly informed our iteration from an initial 5-DOF requirement 
 | **Our Target**          | **$2,000** | **5kg** | **0.8m** | **±0.02mm**   |
 Analysis revealed payload-reach tradeoffs are driven by motor torque limitations, guiding our NEMA 23 stepper motor selection and 20:1 gearbox requirement.
 
->This user-centered research methodology mirrors clinical needs assessment in medical device design. Understanding _why_ clinicians need specific features, not just _what_ features they request, leads to better solutions, which I'm trying to implement in NeuroTech UofT's stroke rehabilitation exoskeleton work.
+>Understanding _why_ users need specific features, not just _what_ features they request, led to the redundant DOF and is a habit I have kept in later projects.
 
 ---
 
@@ -95,8 +94,7 @@ While not selected, this exploration:
 1. Reinforced self-weight minimization as a design objective team-wide
 2. Demonstrated feasibility limits of novel approaches given our constraints
 
->Taking lead on cutting-edge design outside my comfort zone built confidence in exploring unconventional solutions, which is critical for innovation in mechatronics where cross-disciplinary inspiration (biomimetics, materials science, control theory) drives breakthroughs.
->**Career Impact**: This CAD work directly sparked my biomimetic robotics interest, leading me to design compliant finger joints for NeuroTech's rehabilitation glove. The SolidWorks skills I developed modeling elastic deformation and cable routing now enable my contributions to soft robotics and wearable device projects.
+>Taking lead on a design outside my comfort zone built confidence in exploring unconventional solutions before converging. The SolidWorks work modeling elastic deformation and cable routing fed directly into the compliant finger joint I designed afterwards.
 
 #### Candidate 2 & 3: Team Contributions
 
@@ -123,14 +121,12 @@ Our selected design synthesizes insights across all candidate explorations:
 **Material Selection: PETG for FDM Manufacturing**
 Chose PETG over PLA despite slightly lower tensile strength (40–50 MPa vs. 50–60 MPa) due to superior impact resistance and strength-to-flexibility ratio under dynamic loading. This cost-effective approach enabled complex geometries impossible with metal fabrication within our budget.
 
->Understanding material property tradeoffs for additive manufacturing is essential for rapid prototyping in product development, which is a critical skill for my intended career path.
 
 **Safety Integration: ISO 10218-1 Compliance**
 - Shrouded all moving gears to prevent pinch points
 - Filleted all accessible edges (minimum 3mm radii) to eliminate cutting hazards
 - Designed for <140N transient contact force (ISO/TS 15066 pain threshold)
 
->This experience helped me learn to design with complete compliance with standards, which is especially important for medical device work where patient safety is paramount.
 
 **FEA Structural Validation** (Led by teammate Lena Eys) ![FEA Analysis of Tilt Arm](tiltfea.png) 
 Simulated worst-case loading: 5kg payload at maximum tilt angle. Large fillets at camera mount base reduced strain concentrations by 60%, validating load-bearing capability. This iterative CAD→FEA→redesign loop exemplifies the engineering design cycle I've now internalized.
@@ -192,7 +188,7 @@ The spider charts below track my teammate effectiveness across two prior team pr
 **Key Patterns Identified**:
 1. **Increasing Value Delivery**: As I gained experience, I better aligned effort with collective needs. Implementing heuristic-based communication (e.g., "always convey more information than you think necessary") kept teams synchronized and enabled rapid action—tactics I replicated successfully in the camera arm project.
 2. **Capability Blind Spot**: Consistently underestimating my abilities sometimes limited value contribution. In this project, I deliberately addressed this by leading outside my comfort zone: managing the SRS framework (project management skill gap) and designing the tendon-driven robot (cutting-edge technology gap).
->Taking project management leadership forced me to bridge my capability blind spot. The SRS framework intimidated me initially, but delivering it successfully built confidence I'll carry into future technical leadership roles in mechatronics teams.
+>Taking project management leadership forced me to bridge my capability blind spot. The SRS framework intimidated me initially, but delivering it successfully built confidence I'll carry into future technical leadership roles.
 
 ---
 ## Extension & Future Work
@@ -203,7 +199,7 @@ The spider charts below track my teammate effectiveness across two prior team pr
 - [ ] **Computer Vision Integration**
     - Real-time object tracking for autonomous subject-following
     - Reduces operator cognitive load during complex shots
-    - _Aligns with my bioengineering interest in vision-guided medical robotics_
+    - _Connects to my interest in vision-guided robotics_
 - [ ] **Dynamic Load Optimization**
     - Current design validated for static loads only
     - Conduct fatigue analysis and motor torque verification under acceleration
@@ -215,7 +211,7 @@ The spider charts below track my teammate effectiveness across two prior team pr
 
 ---
 
-## Key Takeaways for Mechatronics Career
+## Key Takeaways
 
 This project demonstrated how formal systems engineering frameworks enable aggressive innovation within severe constraint, achieving 3× cost reduction versus commercial alternatives while maintaining professional-grade specifications. Three insights I'll carry forward:
 
@@ -223,4 +219,4 @@ This project demonstrated how formal systems engineering frameworks enable aggre
 2. **Design space exploration pays dividends**: My "failed" continuum robot sparked biomimetic interests now central to my career direction
 3. **User research drives better design**: Understanding _why_ cinematographers need features, not just _what_ they request, led to our redundant DOF innovation.
 
->The systems engineering rigor, CAD proficiency, and teamwork leadership I developed here directly enable my contributions to NeuroTech's rehabilitation robotics and my long-term goal of designing accessible assistive technologies. This project set a high bar for documentation and traceability that I'll maintain throughout my engineering career.
+>This project set a high bar for documentation and traceability that I have kept in the projects since.

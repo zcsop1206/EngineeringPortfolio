@@ -2,7 +2,8 @@
 title: EEG controller
 description: "EEG classified for stop-start motion, enabling control of multiple types of actuators: robotic tail, drones, etc"
 date: 2025-10-01
-featured: true
+featured: false
+draft: true
 tags:
 github:
 award:

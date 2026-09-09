@@ -20,13 +20,13 @@ export default defineConfig({
           social: [{icon: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/adit-bhargava-29509a200'}, { icon: 'github', label: 'GitHub', href: 'https://github.com/zcsop1206' }],
           sidebar: [
               {
-                  label: 'Completed projects',
+                  label: 'Built and tested',
                   items: [
-                    { label: 'MIE243: Camera manipulator robot', link: '/projects/cameramanipulator' },
-                    { label: 'MIE243 dissection: 90 degree speed reducer', link: '/projects/gearbox' },
-                    { label: 'NeuroHack 2025: Hand tremor stabilization in Neurosurgery', link: '/projects/neurosteady' },
-                    //{ label: 'EEG-controller', link: '/projects/eegcontroller' }
-                    // add more projects
+                    { label: 'CACT: copper condenser for a wickless flat-plate heat pipe', link: '/projects/cact' },
+                    { label: 'OpenVinyl: 3D-printed audio records and turntable', link: '/projects/openvinyl' },
+                    { label: 'NeuroTech UofT: compliant tendon-driven finger joint', link: '/projects/poststrokerehab' },
+                    { label: 'MIE243: optimized 3D-printed 3:1 speed reducer', link: '/projects/gearbox' },
+                    { label: 'NeuroHack 2025: hand tremor stabilizer', link: '/projects/neurosteady' },
                   ],
               },
               {
@@ -37,11 +37,10 @@ export default defineConfig({
                   ],
               },
               {
-                  label: 'Ongoing projects',
+                  label: 'Analysis and design studies',
                   items: [
+                    { label: 'MIE243: 4-DOF camera manipulator', link: '/projects/cameramanipulator' },
                     //{ label: 'EEG controller', link: '/projects/eegcontroller' },
-                    { label: 'NeuroTech UofT: sEMG + exoskeleton for hand rehabilitation', link: '/projects/poststrokerehab' },
-                    { label: 'OpenVinyl: Mathematical signal recovery', link: '/projects/openvinyl' },
                   ]
               },
               //{

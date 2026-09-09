@@ -13,8 +13,6 @@ tech stack:
 > Built an end-to-end wearable prototype to stabilize nervousness-induced hand tremors using MPU6050 kinematics and servo-controlled string tension. The system uses a CNN-LSTM architecture with few-shot transfer learning (fine-tuned on Parkinson's data) achieving 78% tremor detection accuracy. Ensembled the neural network with sliding window time-frequency analysis to reduce false positives. Awarded **Best Prototype** and placed **Top 3** at University of Toronto's NeuroHack2025.
 > 
 > **Github:** [https://github.com/supreme-gg-gg/NeuroSteady](https://github.com/supreme-gg-gg/NeuroSteady)
-> 
-> **Link to career interests**: This project gave me hands-on experience building ML-driven medical devices under extreme resource constraints, which is directly applicable to my bioengineering career goals. The transfer learning approach I developed here is now informing my work on NeuroTech UofT's stroke rehabilitation exoskeleton, where we're adapting gait datasets to personalized patient motion patterns.
 
 ---
 
@@ -24,7 +22,7 @@ At NeuroHack2025 (48-hour hackathon), we were tasked with improving surgical env
 
 The technical challenge: detect tremors in real-time with limited labeled data, then stabilize mechanically using only an Arduino starter kit.
 
-> This project taught me to work within severe hardware and time constraints while maintaining system performance, which is exactly the skill set needed for rapid prototyping in medical device development where regulatory timelines demand quick iteration cycles.
+> This project taught me to work within severe hardware and time constraints while still shipping something that works end to end.
 
 ---
 
@@ -75,7 +73,7 @@ The CNN-LSTM alone was too sensitive to transient motion artifacts (scratching n
 
 Traditional signal processing (FFT-based frequency analysis) is robust but not sensitive enough alone. The neural network is sensitive but generates false positives. Ensemble balances both. In 48 hours, this was the fastest way to improve precision without retraining.
 
-> Building this ensemble taught me that production ML systems rarely rely on neural networks alone. Hybrid approaches combining classical signal processing with modern ML often outperform either method individually, especially when dealing with noisy sensor data in medical applications.
+> Building this ensemble taught me that production ML systems rarely rely on neural networks alone. Hybrid approaches combining classical signal processing with modern ML often outperform either method individually, especially with noisy sensor data.
 
 ### Tremor Stabilization
 
@@ -87,7 +85,7 @@ We stabilized **1 degree of freedom**: up/down wrist motion. This axis causes th
 
 Tested on ourselves (no IRB, just hackathon demo). Subjectively reduced visible shaking, but we didn't have time for quantitative validation with IMU measurements during stabilization.
 
-> This mechanical design experience reinforced that hardware constraints often dominate system architecture in medical devices. The tether limitation would be unacceptable clinically, but for a proof-of-concept under extreme time pressure, we made the right tradeoff to demonstrate feasibility.
+> This mechanical design experience reinforced that hardware constraints often dominate system architecture. The tether limitation would be unacceptable clinically, but for a proof-of-concept under extreme time pressure, we made the right tradeoff to demonstrate feasibility.
 
 ---
 ## Solution evaluation
@@ -121,7 +119,7 @@ To make this clinically viable:
 
 - [ ] **Clinical validation**: Partner with surgical residents to collect real nervousness tremor data during simulated procedures. Measure stabilization effectiveness quantitatively using IMU during actuation.
 
-> These extensions matter because they address the gap between hackathon prototype and FDA-clearable medical device. Understanding this gap, especially the validation and safety requirements, is critical for my bioengineering career where I want to work on assistive technologies that actually reach patients.
+> These extensions matter because they address the gap between a hackathon prototype and a device someone could rely on, which is mostly validation and safety work rather than new features.
 
 ---
 
@@ -135,7 +133,7 @@ To make this clinically viable:
 
 **Collaboration dynamics**: The biggest challenge was coordinating mechanical and ML subsystems when we were building them in parallel with no formal interface spec. We iterated the trigger threshold 5-6 times during final integration because the servo response was slower and more inconsistent than expected.
 
-> Working under this time pressure taught me to communicate design decisions quickly and adapt to changing constraints. In bioengineering, where mechanical, electrical, and software subsystems must integrate seamlessly, this rapid iteration skill is essential.
+> Working under this time pressure taught me to communicate design decisions quickly and adapt to changing constraints while mechanical, electrical, and software subsystems were all changing at once.
 
 ---
 
@@ -149,4 +147,4 @@ Three things I learned:
 2. Ensemble methods can rescue imperfect ML models faster than retraining, especially under time pressure
 3. Hardware constraints (Arduino kit, tether to laptop) force creative mechanical solutions
 
->This project built my confidence in rapid ML prototyping for medical applications and gave me practical experience with the sensor-model-actuator pipeline that's central to assistive robotics. The skills I developed here directly enable my current work on NeuroTech's stroke rehabilitation exoskeleton, where we're solving similar problems with more time and better hardware.
+>This project built my confidence in rapid prototyping of a full sensor-model-actuator pipeline. The same problems came back, with more time and better hardware, in the NeuroTech rehabilitation glove.

@@ -1,6 +1,6 @@
 ---
 title: Adit Bhargava Engineering Portfolio
-description: Mechanical engineering student at University of Toronto
+description: Mechanical engineering student at the University of Toronto who builds electromechanical hardware and the analysis behind it
 template: splash
 ---
 
@@ -8,45 +8,39 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 
 <div class="hero">
 
-I'm a Mechanical engineering student at the University of Toronto. Current domains I am exploring are bioinspired robotics (specifically tendon-driven continuum robots), biosignal acquisition and processing (sEMGs and EEGs), and optimization techniques. Through my personal projects, course projects, and projects at NeuroTech UofT, I have pursued my career interests in cognitive science, bioengineering and mechatronics.
+I'm a third-year Mechanical Engineering student at the University of Toronto. I build electromechanical hardware and the analysis that justifies it: a machined copper condenser and test rig for a wickless vapor chamber at the Centre for Advanced Coating Technologies, a 3D-printed audio record and turntable designed from FDM resolution and stylus contact limits, a compliant tendon-driven finger joint for a rehabilitation glove, an optimized 3D-printed gearbox, a wearable tremor stabilizer built in 48 hours, and a custom biopotential acquisition PCB. Most recently I reverse-engineered a chip from its GDS layout.
 
-My work is primarily driven by curiosity, and this portfolio highlights how my ideas evolve into solutions through design processes. It also reflects on my teamwork experiences, and how my projects shape my career interests.
+I work from physical constraints first: what the process can resolve, what the material can survive, and what a measurement can actually confirm. Each writeup below states the problem, the numbers that drove the design, what was built and tested, and what I would do next. My interests sit at the intersection of mechatronics, precision mechanisms, and the manufacturing processes that limit them.
 
 </div>
 
 ---
 
-## Recent Projects
+## Projects
 
 <CardGrid>
-  
-  <a href="/EngineeringPortfolio/projects/cameramanipulator">
-    <Card title="MIE243 Project: 4-DOF cinematography robotic manipulator">
-      Automated camera manipulator for advanced hobbyist and beginner professional cinematographers.
-    </Card>
-  </a>
 
-  <a href="/EngineeringPortfolio/projects/gearbox">
-    <Card title="MIE243 Dissection: speed reducing gearbox">
-      3:1 speed reduction, 90 degree angular + linear offset
-    </Card>
-  </a>
-
-  <a href="/EngineeringPortfolio/projects/neurosteady">
-    <Card title="Hand tremor stabilization in Neurosurgery (NeuroHack 2025)">
-      Closed-loop hand tremor mitigation system: 76% tremor reduction.
-    </Card>
-  </a>
-
-  <a href="/EngineeringPortfolio/projects/poststrokerehab">
-    <Card title="Compliant tendon-driven joint for NeuroTech UofT Post stroke rehabilitation exoskeleton">
-      Parametrizable mechanism for adaptability.
+  <a href="/EngineeringPortfolio/projects/cact">
+    <Card title="CACT: copper condenser for a wickless vapor chamber">
+      Machined a C110 condenser to a GD&T drawing (NPT ports, deep thermocouple bores, sealing face flatness), calibrated 14 thermocouples on a DAQ, ran the first heater-to-chiller test.
     </Card>
   </a>
 
   <a href="/EngineeringPortfolio/projects/openvinyl">
-    <Card title="OpenVinyl: Mathematical signal recovery">
-      Implemented sub-Nyquist filtering and Lipshitz noise shaping to extract high-fidelity audio from a physically constrained 4-bit limit.
+    <Card title="OpenVinyl: 3D-printed audio records and turntable">
+      v1 hill-and-dale record printed and played. v2 cuts the groove sideways by writing the printer's G-code directly, with feedrate scheduled from the audio. Every parameter derived from bead width, stylus contact and printer acceleration.
+    </Card>
+  </a>
+
+  <a href="/EngineeringPortfolio/projects/poststrokerehab">
+    <Card title="Compliant tendon-driven finger joint (NeuroTech UofT)">
+      Parametric Onshape flexure array validated with nonlinear displacement-controlled FEA to 90° and printed in PLA. Restoring torque sized against the estimated Bowden and joint friction floor.
+    </Card>
+  </a>
+
+  <a href="/EngineeringPortfolio/projects/gearbox">
+    <Card title="Optimized 3D-printed 3:1 speed reducer">
+      Mixed-integer gear train optimization (differential evolution, AGMA stresses adapted for PLA), involute CAD, printed and assembled with photo instructions.
     </Card>
   </a>
 
@@ -62,9 +56,21 @@ My work is primarily driven by curiosity, and this portfolio highlights how my i
     </Card>
   </a>
 
+  <a href="/EngineeringPortfolio/projects/neurosteady">
+    <Card title="Hand tremor stabilizer (NeuroHack 2025, Best Prototype)">
+      Closed-loop wearable: IMU sensing, CNN-LSTM plus spectral ensemble, servo-tensioned strings. Built and demonstrated in 48 hours.
+    </Card>
+  </a>
+
+  <a href="/EngineeringPortfolio/projects/cameramanipulator">
+    <Card title="4-DOF cinematography manipulator (MIE243, design study)">
+      Requirements engineering, benchmarking and CAD for a stepper-driven pan/tilt/dolly arm at $1,435 BOM. Design and FEA stage, not built.
+    </Card>
+  </a>
+
   <a href="mailto:adit.bhargava@mail.utoronto.ca">
-    <Card title="Contact me!">
-      Feel free to reach out to me by email, I am always open to a conversation.
+    <Card title="Contact me">
+      Feel free to reach out by email. I am always open to a conversation.
     </Card>
   </a>
 </CardGrid>
