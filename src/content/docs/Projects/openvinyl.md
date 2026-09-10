@@ -8,7 +8,7 @@ github:
 award:
 tech stack:
 ---
-OpenVinyl turns digital audio into groove geometry on records printed on a hobby FDM printer, played back on a turntable I designed with two collaborators. v1 worked, barely. This month I went back to first principles and reversed its central design decision.
+OpenVinyl turns digital audio into groove geometry on records printed on a hobby FDM printer, played back on a turntable I designed with two collaborators. v1 worked, barely. This month I went back to first principles and reversed its central design decision. v2 is still a work-in-progress, and I plan to print it and run tests in September 2026.
 
 ## The pivot
 
@@ -16,7 +16,7 @@ OpenVinyl turns digital audio into groove geometry on records printed on a hobby
 
 v1 encoded audio as groove depth because an FDM bead is 0.48 mm wide, so a lateral wiggle looked impossible at 10 to 20 times the width of a real vinyl groove. That argument was right about the bead and wrong about the conclusion. It assumed the geometry would go through a slicer, and a slicer can only reproduce what a mesh describes at bead resolution. If the encoder writes the G-code itself, the bead can be placed to about 0.01 mm even though it is 0.48 mm wide. Modulation is displacement, not feature size.
 
-So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and precise XY axes. Layer-height quantization disappears, slicer segment merging disappears, the staircase noise disappears, the ceramic cartridge works in its designed direction, and the groove pass prints in about 25 minutes instead of hours. The constraint was in the FDM slicer. v2 goes one level lower, so printer precision, fidelity, and FDM physics are constraints.
+So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and precise XY axes. Layer-height quantization disappears, slicer segment merging disappears, the staircase noise disappears, the ceramic cartridge works in its designed direction, and the groove pass prints in about 25 minutes instead of hours. The constraint was in the FDM slicer. v2 goes one level lower, so printer precision, and FDM physics are constraints.
 
 ## What v1 got right
 
