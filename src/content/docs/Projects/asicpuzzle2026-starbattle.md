@@ -562,6 +562,244 @@ A flip-flop is one bit of memory; it takes a new value on every clock edge. A ga
 
 That already kills the design I guessed in part 1, a stored answer compared against the input. 92 bits cannot hold a 121-bit key, or the 121-cell grid being checked. The chip has to judge the grid as it streams past, keeping running counts.
 
+<svg viewBox="0 0 640 236" width="640" height="236" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left, the 121-cell grid that arrives one bit per clock. Right, the chip's 92 flip-flops drawn as squares and grouped by role: 9 for position, 22 column tallies, 22 region tallies, 12 for the last input bits plus a touch flag, 3 for the row tally and its error latch, 8 for the total, 15 for the output generator." style="display:block;margin:0 auto 1rem;max-width:100%;height:auto">
+<text x="20" y="16" text-anchor="start" style="font-family:var(--font-sans);font-size:11px;fill:var(--sl-color-text);font-weight:600">What comes in</text>
+<rect x="20" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="45" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="60" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="75" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="90" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="105" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="120" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="135" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="150" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="165" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="35" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="50" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="65" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="80" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="95" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="110" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="125" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="140" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="155" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="170" y="180" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<text x="101.5" y="211" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">121 cells, one bit each, one per clock</text>
+<text x="222" y="16" text-anchor="start" style="font-family:var(--font-sans);font-size:11px;fill:var(--sl-color-text);font-weight:600">What the chip can remember</text>
+<rect x="222" y="30" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="231" y="30" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="240" y="30" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="249" y="30" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="258" y="30" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="267" y="30" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="276" y="30" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="285" y="30" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="294" y="30" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<text x="428" y="38" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)"> 9</text>
+<text x="448" y="38" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">position: row and column</text>
+<rect x="222" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="231" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="240" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="249" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="258" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="267" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="276" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="285" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="294" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="303" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="312" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="321" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="330" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="339" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="348" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="357" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="366" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="375" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="384" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="393" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="402" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="411" y="54" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<text x="428" y="62" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">22</text>
+<text x="448" y="62" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">column tallies, 11 × 2 bits</text>
+<rect x="222" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="231" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="240" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="249" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="258" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="267" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="276" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="285" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="294" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="303" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="312" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="321" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="330" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="339" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="348" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="357" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="366" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="375" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="384" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="393" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="402" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="411" y="78" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<text x="428" y="86" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">22</text>
+<text x="448" y="86" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">region tallies, 11 × 2 bits</text>
+<rect x="222" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="231" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="240" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="249" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="258" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="267" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="276" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="285" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="294" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="303" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="312" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="321" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="330" y="102" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<text x="428" y="110" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">13</text>
+<text x="448" y="110" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">last 12 input bits + touch flag</text>
+<rect x="222" y="126" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="231" y="126" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="240" y="126" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<text x="428" y="134" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)"> 3</text>
+<text x="448" y="134" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">row tally + row-error latch</text>
+<rect x="222" y="150" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="231" y="150" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="240" y="150" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="249" y="150" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="258" y="150" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="267" y="150" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="276" y="150" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="285" y="150" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<text x="428" y="158" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)"> 8</text>
+<text x="448" y="158" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">total star count</text>
+<rect x="222" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="231" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="240" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="249" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="258" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="267" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="276" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="285" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="294" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="303" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="312" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="321" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="330" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="339" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<rect x="348" y="174" width="7" height="7" rx="1.5" style="fill:var(--sl-color-gray-6)"/>
+<text x="428" y="182" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">15</text>
+<text x="448" y="182" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">output generator</text>
+<line x1="222" y1="192" x2="418" y2="192" style="stroke:var(--sl-color-gray-3);stroke-width:0.8"/>
+<text x="428" y="204" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">92</text>
+<text x="448" y="204" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">flip-flops. 121 does not fit.</text>
+</svg>
+
+*The whole state of the chip is the 92 squares on the right. The grouping is what the rest of this section works out.*
+
 So think about what a Star Battle checker has to keep, and look for it. Where the current cell sits: a row number and a column number. Stars per row, per column, per region. Whether a star has landed next to another. The total.
 
 During the solve I had sorted the 92 flip-flops by their input cones, the gates between a flip-flop's input and the flip-flops and pins that feed it. The size of a cone says how much logic decides that bit; its sources say what the bit depends on. With the checklist above, the groups read off:
@@ -569,10 +807,10 @@ During the solve I had sorted the 92 flip-flops by their input cones, the gates 
 - 9 flip-flops that depend only on `enable` and each other. A 5-bit counter that runs 0 to 10 and wraps, and a 4-bit counter that steps on each wrap. The column and row of the current cell.
 - 22 flip-flops in eleven pairs, a handful of gates each, fed by the input bit and the column counter. A 2-bit tally per column.
 - 22 flip-flops in eleven pairs, about 150 gates each, fed by the input bit and both counters. A 2-bit tally per region. The 150 gates in front of each pair decide, from row and column, whether the current cell belongs to that region. Eleven of those is a 121-entry lookup table. The region map, written in gates.
-- 12 flip-flops in a chain fed from the input pin, plus one flag. The last twelve bits, and a bit that remembers whether a star ever landed next to another. Twelve is exactly the window that check needs on an 11-wide grid: the cell to the left is 1 bit back, and up-right, up and up-left are 10, 11 and 12 back.
+- 12 flip-flops in a chain fed from the input pin, plus one flag. The last twelve bits, and a bit that remembers whether a star ever landed next to another. Why twelve is [below](#the-touch-check-in-12-bits).
 - 3 flip-flops: a row tally, cleared at each row end, and a latch that remembers if a row ever ended with a count other than 2.
 - 8 flip-flops: the total star count.
-- 23 flip-flops at the far end of the die: the output generator. A character counter, the 8-bit register that drives `O`, and `success`.
+- 15 flip-flops at the far end of the die: the output generator. A character counter, the 8-bit register that drives `O`, and `success`.
 
 Placement backs the reading. Across the die, about 180 um wide:
 
@@ -594,9 +832,15 @@ Left to right: position, then the window and counts, then the tallies, then the 
 
 ## Watching it run
 
-All of that was a reading, not a proof. The simulator can print every flip-flop after every clock, so I fed the key and watched the groups. The bit order inside each counter was unknown, so the script tries every permutation of a group's flops and keeps the one under which it counts up by one most often.
+The simulator can print every flip-flop after every clock, so I fed the key and watched the groups. The bit order inside each counter was unknown, so the script tries every permutation of a group's flops and keeps the one under which it counts up by one most often.
 
-The first two rows of the key:
+<div style="margin:0 auto 1rem;max-width:420px">
+<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/docs/key_streaming.mp4" aria-label="The key entering the chip one bit per frame. Beside the grid the column tally, region tally, 12-bit window, touch flag and total are read from the flip-flops after every clock edge, ending at total 22 and the success message."></video>
+</div>
+
+*The key going in one bit per frame. Every number beside the grid is read from the flip-flops after that clock edge, nothing is computed by the animation.*
+
+The first two rows in detail:
 
 | Edge | Cell    | Bit | Column tally | Region tally | Last 12 bits, newest left | Row tally   | Total |
 | ---- | ------- | --- | ------------ | ------------ | ------------------------- | ----------- | ----- |
@@ -608,19 +852,124 @@ The first two rows of the key:
 | 20   | (1, 5)  | 1   | column 5: 1  | B: 1         | `100001010100`            | 2           | 4     |
 | 25   | (2, 0)  | 0   |              |              | `000001000010`            | 0, row done | 4     |
 
-*Decoded state while the key's first two rows go in. Region letters are the ones assigned in the next section.*
+*Decoded state while the key's first two rows go in. Region letters are the ones assigned when the [regions are recovered](#recovering-the-regions).*
 
 The position counters behave as read. After cell 120 the column counter jumps to 16 and stays: done.
 
 On every star the column tally, the region tally, the row tally and the total go up together, and the bit enters the chain. The row tally is checked against 2 and cleared at each row end. The total reads 22 at the end.
 
-The chain is the touch check. When a star arrives, the flag sets if there is a star 1, 10, 11 or 12 cells back. Two stars that touch are always seen from whichever comes second, so those four directions cover all eight. A star in column 10 followed by one in column 0 of the next row is 1 bit back but not a neighbour, and the column counter excludes it. I probed two stars at every offset up to 13 against the plain rule, 1542 inputs: no disagreements. For the key the flag never sets. What the chip says when it does is in [an appendix](#appendix-the-fifth-message).
-
 Edge 125: `enable` has dropped, `success` goes high, and `O` shows `(`. One character per clock after that.
+
+## The touch check in 12 bits
+
+The no-touching rule looks like it needs the whole grid. It needs twelve bits.
+
+<svg viewBox="0 0 640 248" width="640" height="248" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three rows of an 11-wide grid read one cell per clock. The current cell is marked. Every earlier cell is numbered by how many bits back it sits in the stream. The four earlier neighbours of the current cell are 1, 10, 11 and 12 back, all inside the 12-bit window the chip keeps; the four later neighbours are checked when their own star arrives. Below, the 12-bit chain with positions 1, 10, 11 and 12 outlined." style="display:block;margin:0 auto 1rem;max-width:100%;height:auto">
+<text x="20" y="16" text-anchor="start" style="font-family:var(--font-sans);font-size:11px;fill:var(--sl-color-text);font-weight:600">Reading the grid one cell per clock</text>
+<rect x="20" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<text x="32.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">16</text>
+<rect x="46" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<text x="58.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">15</text>
+<rect x="72" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<text x="84.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">14</text>
+<rect x="98" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<text x="110.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">13</text>
+<rect x="124" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-accent);stroke-width:1.5"/>
+<text x="136.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text);font-weight:600">12</text>
+<rect x="150" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-accent);stroke-width:1.5"/>
+<text x="162.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text);font-weight:600">11</text>
+<rect x="176" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-accent);stroke-width:1.5"/>
+<text x="188.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text);font-weight:600">10</text>
+<rect x="202" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="214.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">9</text>
+<rect x="228" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="240.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">8</text>
+<rect x="254" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="266.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">7</text>
+<rect x="280" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="292.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">6</text>
+<rect x="20" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="32.0" y="71.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">5</text>
+<rect x="46" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="58.0" y="71.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">4</text>
+<rect x="72" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="84.0" y="71.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">3</text>
+<rect x="98" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="110.0" y="71.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">2</text>
+<rect x="124" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-accent);stroke-width:1.5"/>
+<text x="136.0" y="71.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text);font-weight:600">1</text>
+<rect x="150" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-accent);stroke:var(--sl-color-text);stroke-width:2"/>
+<rect x="176" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-gray-3);stroke-width:1;stroke-dasharray:3 2"/>
+<rect x="202" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="228" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="254" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="280" y="56" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="20" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="46" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="72" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="98" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="124" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-gray-3);stroke-width:1;stroke-dasharray:3 2"/>
+<rect x="150" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-gray-3);stroke-width:1;stroke-dasharray:3 2"/>
+<rect x="176" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-gray-3);stroke-width:1;stroke-dasharray:3 2"/>
+<rect x="202" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="228" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="254" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="280" y="82" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
+<rect x="322" y="32" width="12" height="12" rx="2" style="fill:var(--sl-color-accent);stroke:var(--sl-color-text);stroke-width:1.5"/>
+<text x="340" y="42" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">the star arriving now</text>
+<rect x="322" y="52" width="12" height="12" rx="2" style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-accent);stroke-width:1.5"/>
+<text x="340" y="62" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text)">its earlier neighbours: 1, 10, 11, 12 back</text>
+<rect x="322" y="72" width="12" height="12" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="340" y="82" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">still in the 12-bit window</text>
+<rect x="322" y="92" width="12" height="12" rx="2" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-gray-3);stroke-width:1;stroke-dasharray:3 2"/>
+<text x="340" y="102" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">later neighbours: checked when their star arrives</text>
+<text x="20" y="122" text-anchor="start" style="font-family:var(--font-mono);font-size:8.5px;fill:var(--sl-color-gray-3)">numbers: how many bits back each cell sits in the stream. shifting one row up is 11 back, so up-left, up, up-right are 12, 11, 10.</text>
+<text x="20" y="156" text-anchor="start" style="font-family:var(--font-sans);font-size:11px;fill:var(--sl-color-text);font-weight:600">What the chip keeps</text>
+<text x="170" y="156" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">the last 12 bits, newest on the left, plus one flag</text>
+<rect x="20" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-accent);stroke-width:1.5"/>
+<text x="32.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text);font-weight:600">1</text>
+<rect x="46" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="58.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">2</text>
+<rect x="72" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="84.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">3</text>
+<rect x="98" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="110.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">4</text>
+<rect x="124" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="136.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">5</text>
+<rect x="150" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="162.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">6</text>
+<rect x="176" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="188.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">7</text>
+<rect x="202" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="214.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">8</text>
+<rect x="228" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5)"/>
+<text x="240.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">9</text>
+<rect x="254" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-accent);stroke-width:1.5"/>
+<text x="266.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text);font-weight:600">10</text>
+<rect x="280" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-accent);stroke-width:1.5"/>
+<text x="292.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text);font-weight:600">11</text>
+<rect x="306" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-accent);stroke-width:1.5"/>
+<text x="318.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-text);font-weight:600">12</text>
+<rect x="346" y="166" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-red);stroke-width:1.5"/>
+<text x="358.0" y="181.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:7.5px;fill:var(--sl-color-text)">flag</text>
+<text x="380" y="176" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">sets when a star arrives and</text>
+<text x="380" y="188" text-anchor="start" style="font-family:var(--font-mono);font-size:9px;fill:var(--sl-color-gray-3)">any outlined bit holds one. never clears.</text>
+<text x="20" y="208" text-anchor="start" style="font-family:var(--font-mono);font-size:8.5px;fill:var(--sl-color-gray-3)">a star in column 10 followed by one in column 0 is 1 bit back but not a neighbour; the column counter rules it out.</text>
+</svg>
+
+*Where a star's earlier neighbours sit in the stream. Moving up one row is eleven cells back, so the three cells above are 10, 11 and 12 back, and the cell to the left is 1 back.*
+
+The 12-flop chain is that window. When a star arrives, the flag sets if there is a star 1, 10, 11 or 12 cells back. Two stars that touch are always seen from whichever comes second, so those four directions cover all eight. A star in column 10 followed by one in column 0 of the next row is 1 bit back but not a neighbour, and the column counter excludes it. I probed two stars at every offset up to 13 against the plain rule, 1542 inputs: no disagreements. For the key the flag never sets. What the chip says when it does is in [an appendix](#appendix-the-fifth-message).
 
 ## Recovering the regions
 
 Reading the 150-gate lookups was unnecessary. Feeding the chip a grid with a single star shows which region tally moves, so that cell belongs to that region. 121 runs, one per cell, gave the whole map.
+
+<div style="margin:0 auto 1rem;max-width:420px">
+<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/docs/region_recovery.mp4" aria-label="121 simulator runs with one star each. After every run the one region tally that moved lights up and the cell takes that region's letter, until all eleven regions are coloured in."></video>
+</div>
+
+*One star per cell, 121 runs. After each run the tally that moved names the cell's region.*
 
 ```text
 AAAAABBCDDE
@@ -652,7 +1001,7 @@ Step 3 of my plan in part 1 was "reconstruct chip function by hand, Minesweeper 
 
 The tools were enough on the day of the solve. The question was not. Once a comment on a post supplied the hypothesis, the same simulator gave the counters, the touch window, the message table and the region map, one experiment at a time. None of it came from reading the layout.
 
-Rich Sutton's [Bitter Lesson](http://www.incompleteideas.net/IncIdeas/BitterLesson.html) says general methods that leverage computation beat methods built from human understanding of a domain, and that the second kind plateaus. This was a small instance. Clustering the netlist into modules stalled at sixteen wrong out of 79. Simulating every gate and letting a solver search found the key, and then the function.
+Each step was checked against something that did not depend on it. The extractor against the warmup and the simulator against the waveform in part 1. Here, the flop roles against the trace, the touch flag against the plain rule, and the regions against a solve that never mentions a gate.
 
 ## Appendix: why the key does not fix the regions
 
