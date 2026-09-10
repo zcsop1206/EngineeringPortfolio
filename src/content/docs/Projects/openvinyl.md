@@ -10,60 +10,13 @@ tech stack:
 ---
 OpenVinyl turns digital audio into groove geometry on records printed on a hobby FDM printer, played back on a turntable I designed with two collaborators. v1 worked, barely. This month I went back to first principles and reversed its central design decision.
 
-**Status, so this page claims exactly what has been shown:**
+## The pivot
 
-| Claim | Status |
-| --- | --- |
-| v1 hill-and-dale records printed and played on the first turntable | Done, 2025. That turntable has since been disassembled. |
-| v2 lateral-cut encoder emits G-code directly, with a validation gate | Done in software. 15 tests pass, round trip verified. |
-| v2 disc printed on the P1S | Not yet |
-| v2 disc played | Not yet. Turntable rebuild in progress, PCB and CAD being redone. |
-| Simulator beyond first order (bead deposition, virtual stylus) | Not yet, Phase 2 |
-
-## The pivot in one paragraph
-
-**v1 put the audio in groove depth because the bead looked too wide for a sideways wiggle. The bead was the wrong thing to be afraid of.**
+**v1 put the audio in groove depth because the bead looked too wide for a sideways wiggle. The bead was the wrong thing to be worried about.**
 
 v1 encoded audio as groove depth because an FDM bead is 0.48 mm wide, so a lateral wiggle looked impossible at 10 to 20 times the width of a real vinyl groove. That argument was right about the bead and wrong about the conclusion. It assumed the geometry would go through a slicer, and a slicer can only reproduce what a mesh describes at bead resolution. If the encoder writes the G-code itself, the bead can be placed to about 0.01 mm even though it is 0.48 mm wide. Modulation is displacement, not feature size.
 
-So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and precise XY axes. Layer-height quantization disappears, slicer segment merging disappears, the staircase noise disappears, the ceramic cartridge works in its designed direction, and the groove pass prints in about 25 minutes instead of hours. The constraint was in the toolchain, not in the physics.
-
-<svg viewBox="0 0 784 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cross-sections of the v1 hill-and-dale groove and the v2 lateral-cut bead pair, to the same scale" style="width:100%;max-width:784px;display:block;margin:0 auto;font-family:var(--font-sans),sans-serif;font-size:11px">
-
-<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--sl-color-accent)"/></marker></defs>
-<text style="fill:var(--sl-color-white);font-weight:600;font-size:12px" x="0" y="14">v1: hill-and-dale (printed, played)</text>
-<text style="fill:var(--sl-color-gray-3)" x="0" y="28">trench 480 µm wide, floor stepped in 80 µm layers</text>
-<path style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-gray-3);stroke-width:1" d="M10.0,70.0 L82.0,70.0 L82.0,150.0 L106.0,150.0 L106.0,134.0 L130.0,134.0 L130.0,150.0 L154.0,150.0 L154.0,166.0 L178.0,166.0 L178.0,70.0 L250.0,70.0 L250.0,190.0 L10.0,190.0 Z"/>
-<line style="stroke:var(--sl-color-gray-3);stroke-width:1;fill:none" x1="10" y1="86.0" x2="250" y2="86.0" stroke-dasharray="2,3" opacity=".5"/>
-<line style="stroke:var(--sl-color-gray-3);stroke-width:1;fill:none" x1="10" y1="102.0" x2="250" y2="102.0" stroke-dasharray="2,3" opacity=".5"/>
-<line style="stroke:var(--sl-color-gray-3);stroke-width:1;fill:none" x1="10" y1="118.0" x2="250" y2="118.0" stroke-dasharray="2,3" opacity=".5"/>
-<line style="stroke:var(--sl-color-gray-3);stroke-width:1;fill:none" x1="10" y1="134.0" x2="250" y2="134.0" stroke-dasharray="2,3" opacity=".5"/>
-<line style="stroke:var(--sl-color-gray-3);stroke-width:1;fill:none" x1="10" y1="150.0" x2="250" y2="150.0" stroke-dasharray="2,3" opacity=".5"/>
-<line style="stroke:var(--sl-color-gray-3);stroke-width:1;fill:none" x1="10" y1="166.0" x2="250" y2="166.0" stroke-dasharray="2,3" opacity=".5"/>
-<line style="stroke:var(--sl-color-gray-3);stroke-width:1;fill:none" x1="10" y1="182.0" x2="250" y2="182.0" stroke-dasharray="2,3" opacity=".5"/>
-<circle style="fill:var(--sl-color-accent);opacity:.9" cx="118.0" cy="130.4" r="3.6"/>
-<line style="stroke:var(--sl-color-gray-3);stroke-width:1;fill:none" x1="118.0" y1="126.8" x2="118.0" y2="102.4" stroke="var(--sl-color-accent)"/>
-<text style="fill:var(--sl-color-text)" x="122.0" y="100.4">stylus, R = 18 µm</text>
-<line style="stroke:var(--sl-color-accent);stroke-width:1.6;fill:none" x1="272" y1="102.0" x2="272" y2="182.0" marker-start="url(#ah)" marker-end="url(#ah)"/>
-<text style="fill:var(--sl-color-text)" x="280" y="134.0">audio = floor</text>
-<text style="fill:var(--sl-color-text)" x="280" y="147.0">height, 16 levels,</text>
-<text style="fill:var(--sl-color-gray-3)" x="280" y="160.0">one layer each</text>
-<text style="fill:var(--sl-color-white);font-weight:600;font-size:12px" x="404" y="14">v2: lateral cut (designed, not yet printed)</text>
-<text style="fill:var(--sl-color-gray-3)" x="404" y="28">two 480 µm beads, centres 528 µm apart, on a flat disc</text>
-<rect style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-gray-3);stroke-width:1" x="414" y="118.0" width="360" height="72.0"/>
-<path style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-gray-2);stroke-width:1" d="M493.2,118.0 A48.0,40.0 0 0 1 589.2,118.0 Z"/>
-<path style="fill:var(--sl-color-gray-5);stroke:var(--sl-color-gray-2);stroke-width:1" d="M598.8,118.0 A48.0,40.0 0 0 1 694.8,118.0 Z"/>
-<circle style="fill:var(--sl-color-accent);opacity:.9" cx="594.0" cy="94.0" r="15.2"/>
-<line style="stroke:var(--sl-color-gray-3);stroke-width:1;fill:none" x1="594.0" y1="78.8" x2="594.0" y2="64.8" stroke="var(--sl-color-accent)"/>
-<text style="fill:var(--sl-color-text)" x="598.0" y="62.8">stylus, R = 76 µm (3 mil)</text>
-<line style="stroke:var(--sl-color-accent);stroke-width:1.6;fill:none" x1="534.0" y1="172.0" x2="654.0" y2="172.0" marker-start="url(#ah)" marker-end="url(#ah)"/>
-<text style="fill:var(--sl-color-text)" x="594.0" y="188.0" text-anchor="middle">audio = sideways offset of both beads, x = A·audio(t)</text>
-<text style="fill:var(--sl-color-gray-3)" x="594.0" y="201.0" text-anchor="middle">continuous; placement repeatability ~10 µm, not feature size</text>
-<line style="stroke:var(--sl-color-gray-3);stroke-width:1;fill:none" x1="10" y1="240" x2="110.0" y2="240" stroke="var(--sl-color-text)" stroke-width="2"/>
-<text style="fill:var(--sl-color-gray-3)" x="116.0" y="244">0.5 mm, both panels</text>
-</svg>
-
-*Same scale, same 4 g on the stylus. v1 modulated the one axis the slicer quantizes. v2 modulates the two axes the printer positions best.*
+So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and precise XY axes. Layer-height quantization disappears, slicer segment merging disappears, the staircase noise disappears, the ceramic cartridge works in its designed direction, and the groove pass prints in about 25 minutes instead of hours. The constraint was in the FDM slicer. v2 goes one level lower, so printer precision, fidelity, and FDM physics are constraints.
 
 ## What v1 got right
 
@@ -75,9 +28,9 @@ So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and pr
 - **The compressor** to fit the amplitude budget, and the three-tier validation: melody recognition, SNR, pitch accuracy.
 - **The habit** of deriving every parameter from two hardware inputs and listing what is unmeasured in a living parameters file.
 
-## What v1 inherited without checking
+## Slicer constraint based assumptions in v1
 
-**Half of v1's parameters were consequences of the slicer, not the physics. Each one was re-derived or dropped.**
+**Half of v1's parameters were consequences of the slicer. Each one was re-derived or dropped.**
 
 | v1 item | v2 verdict | Reason |
 | --- | --- | --- |
@@ -255,7 +208,7 @@ A spherical tip also cannot resolve floor features shorter than $2\pi R$ along t
 - **Slicer segment merging.** Inner-radius steps of 0.24 mm sat at the slicer's minimum segment length and were dropped from the G-code.
 - **Staircase noise.** The layer staircase produced a tone at $v / h$, about 4 kHz at the inner radius.
 
-All three vanish once the groove is written as G-code on the XY plane.
+All three are not relevant once the groove is written as G-code on the XY plane.
 
 ## References
 
