@@ -19,3 +19,8 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# local-only notes and editor state
+interview-prep/
+drafts/
+src/content/docs/.obsidian/workspace.json

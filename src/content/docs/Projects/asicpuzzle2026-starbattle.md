@@ -858,6 +858,8 @@ The position counters behave as read. After cell 120 the column counter jumps to
 
 On every star the column tally, the region tally, the row tally and the total go up together, and the bit enters the chain. The row tally is checked against 2 and cleared at each row end. The total reads 22 at the end.
 
+The key never puts a third star anywhere, so it cannot show what a 2-bit tally does past 2. A grid with row 0 and column 0 filled does. Column 0 takes eleven stars and reads 1, 2, 3, then 3 for the rest. The region and row tallies do the same. The tallies saturate. Otherwise six stars in a column would wrap round to 2 and pass.
+
 Edge 125: `enable` has dropped, `success` goes high, and `O` shows `(`. One character per clock after that.
 
 ## The touch check in 12 bits
