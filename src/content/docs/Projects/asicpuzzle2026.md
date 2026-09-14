@@ -8,7 +8,7 @@ github:
 award:
 tech stack:
 ---
-[Jane Street](https://blog.janestreet.com/can-you-reverse-engineer-an-asic/published) just a chip's layout. You had to find the string it prints when you enter the right input.
+[Jane Street](https://blog.janestreet.com/can-you-reverse-engineer-an-asic/published)'s puzzle gave just a chip's layout. You had to find the string it prints when you enter the right input.
 
 I am a mechanical engineering student and this was my first ASIC. I had worked with 3D printing file formats before and thought that would help with the layout file. It did not, but it was enough of a push to start.
 
