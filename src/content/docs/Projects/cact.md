@@ -10,7 +10,7 @@ tech stack:
 ---
 ![Machined C110 copper condenser block with 1/4 NPT ports, thermocouple holes and bolt pattern](cact_condenser.jpeg)
 
-*Figure 1. The condenser block as machined: two 1/4 NPT water ports, ten clamp holes on the 85 mm pattern, and the thermocouple bores entering from the side faces.*
+*Figure 1. The condenser block as machined: two of the four 1/4 NPT water ports, ten clamp holes on the 85 mm pattern, and the thermocouple bores entering from the side faces.*
 
 ## Summary
 
@@ -54,7 +54,7 @@ The condenser combines two earlier designs from the lab: the polycarbonate top p
 | Feature | Specification | Purpose |
 | --- | --- | --- |
 | Block | 90 × 90 × 17.7 mm, C110 copper | Matches the substrate footprint; copper for the condensing surface |
-| Water channels | 2 × Ø11.92 mm, 55.86 mm deep, entering from opposite faces | Chiller loop close to the vapor-side face |
+| Water channels | 2 × Ø11.92 mm, straight through the block on the mid-plane; each tapped 1/4 NPT at both ends, with 55.86 mm of plain bore between the ports | Chiller loop close to the vapor-side face |
 | Ports | 1/4 NPT: Ø11.13 mm tap drill, 17.07 mm deep, 100° countersink | Push-to-connect fittings seal on the taper without a gasket |
 | Clamp holes | 10 × Ø5.30 mm through, on the 85 mm bolt pattern | Clamps the stack against the existing plate |
 | Thermocouple bores | 2 × Ø1.20 mm, 25 mm deep | Beads on known lines between the vapor-side face and the water channels |

@@ -9,7 +9,7 @@ award:
 tech stack:
 ---
 ![gearboxassem.png](gearboxassem.png)
->Formulated and solved a Mixed-Integer Nonlinear Programming (MINLP) problem to optimize a two-stage compound gear train for 3D printing. Used a Differential Evolution algorithm with "maximin" objective function to navigate ~10^6 design combinations, maximizing the minimum safety factor across the assembly. The resulting design achieved a 3:1 reduction ratio with minimum safety factor of 951 (Hertzian contact stress), fitting within a 125mm build volume and 6-hour print budget.
+>Formulated and solved a Mixed-Integer Nonlinear Programming (MINLP) problem to optimize a two-stage compound gear train for 3D printing. Used a Differential Evolution algorithm with "maximin" objective function to navigate ~10^6 design combinations, maximizing the minimum safety factor across the assembly. The resulting design achieved an exact 3:1 reduction ratio, fitting within a 125mm build volume and 6-hour print budget. The safety factors the optimizer reported did not survive a hand check: at the specified 5 Nm input the teeth are overstressed (see [the correction below](#hand-check-of-the-safety-factors)).
 >
 >**Link to career interests:** This project taught me computational design optimization for manufacturing constraints, which is directly applicable to my interest in robotics and automated manufacturing. The constraint-handling approach I developed here (balancing structural performance with build time and geometric limits) mirrors the multi-objective optimization problems I want to solve in production robotics, where cycle time, material cost, and reliability must all be simultaneously optimized.
 
@@ -92,21 +92,23 @@ Final gearbox assembly with DFMA optimized housing designed by teammates:
 |Parameter|Result|% of Limit|
 |---|---|---|
 |Reduction Ratio|3.000:1|100% (exact target)|
-|Minimum Safety Factor|951.93 (Contact, Stage 2)|-|
-|Bending Safety Factor|>11,000,000|-|
+|Bending Safety Factor, hand check at 5 Nm|0.09 (Stage 1), 0.04 (Stage 2)|-|
+|Contact Safety Factor, hand check at 5 Nm|about 0.2 (Stage 1), 0.1 (Stage 2)|-|
 |Maximum Diameter|30.0 mm|24% of 125mm limit|
 |Print Time|2.82 hours|47% of 6hr budget|
 |Material Used|28g PLA|-|
 
-**Limiting factor:** The design is constrained by Hertzian contact stress at Stage 2 with SF=951. Bending stress has SF>10 million, meaning tooth breakage is statistically impossible under the specified 5 Nm input torque.
+### Hand check of the safety factors
 
-**Safety margin rationale:** A safety factor of 951 seems excessive compared to typical steel gears (SF=2-3). However, FDM parts exhibit high variability:
+The optimizer reported a minimum safety factor of 951 (contact, Stage 2) and over 11,000,000 in bending. Those numbers are wrong. Checked by hand at the specified 5 Nm input:
 
-- Void percentage varies ±15% depending on print settings
-- Moisture absorption degrades PLA strength by 10-25%
-- Layer adhesion depends on bed temperature, which drifts ±5°C
+- Tangential tooth load, $F_t = 2T/d$: 833 N on the Stage 1 pinion (24 teeth, d = 12 mm), and 1,667 N on the Stage 2 pinion (18 teeth, d = 9 mm, carrying 7.5 Nm after the first 1.5:1 stage).
+- Lewis bending, $\sigma = F_t/(b\,m\,Y)$ with $Y \approx 0.34$ and $0.31$: about 410 MPa and 900 MPa against PLA's 37 MPa. Safety factors of 0.09 and 0.04.
+- Hertz contact, $\sigma_H = C_p\sqrt{F_t/(b\,d\,I)}$ with E = 3.5 GPa and ν = 0.36: about 200 MPa and 300 MPa. Safety factors of about 0.2 and 0.1 against the same 37 MPa.
 
-The high SF accommodates this uncertainty. Physical testing would determine if this margin can be reduced.
+At 5 Nm these teeth would fail. The size of the error points to one scale slip, such as millimetres fed into SI formulas: bending stress is linear in load and contact stress goes as its square root, and the reported factors are high by roughly $10^8$ and $10^4$. The optimizer ranked designs on these safety factors, so the choice of design needs to be rerun with the corrected model before it is trusted.
+
+I published the optimizer's output without one hand calculation. $F_t = 2T/d$ takes thirty seconds and would have caught it.
 
 ### Design Features from Optimization
 
@@ -147,7 +149,7 @@ Three developments needed before this design is production-ready:
 Currently, the gear webs use simple 6-spoke designs I chose empirically. Topology optimization (using FEM solvers like Altair OptiStruct) could remove additional material from low-stress regions without affecting structural performance. Literature suggests 20-30% mass reduction is achievable, which would proportionally reduce print time. I want to learn this technique because it's standard practice in aerospace and automotive lightweighting.
 
 **2. Physical Validation Testing**  
-The AGMA equations predict SF=951, but we haven't validated this with destructive testing. Planned test: mount the gearbox on a torque test stand, incrementally increase load until failure, and measure actual failure torque vs predicted failure torque. This would either validate our material property assumptions or reveal that we need better characterization of FDM PLA under cyclic loading.
+The corrected hand check predicts tooth failure well below 5 Nm, and the gearbox has not been load tested. Planned test: mount the gearbox on a torque test stand, incrementally increase load until failure, and measure actual failure torque vs predicted failure torque. This would either validate our material property assumptions or reveal that we need better characterization of FDM PLA under cyclic loading.
 
 **3. Material Exploration**  
 PLA was chosen for availability, but other FDM materials might perform better. Nylon has higher impact resistance (better layer adhesion), PETG has better creep resistance (important for sustained loads). However, each material has different thermal expansion coefficients, which affects dimensional accuracy. Understanding this trade-off space would enable material selection optimization, not just geometric optimization.

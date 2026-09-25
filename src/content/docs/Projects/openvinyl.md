@@ -22,7 +22,7 @@ So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and pr
 
 **The contact mechanics, the slope limit and the habit of deriving everything from two hardware numbers all carry over unchanged.**
 
-- **Hertzian contact.** A stylus at 4 g on PLA exceeds the yield stress by 4 to 5x. First play plastically sets the groove. A 3 mil (76 µm) 78-RPM tip cuts peak pressure by about 2.6x versus an 18 µm LP tip, because pressure scales as $R^{-2/3}$.
+- **Hertzian contact.** An 18 µm LP stylus at 4 g on PLA peaks near 700 MPa, about 14x the yield stress. First play plastically sets the groove. A 3 mil (76 µm) 78-RPM tip cuts peak pressure by about 2.6x, to about 270 MPa, because pressure scales as $R^{-2/3}$. That is still over 5x yield.
 - **Slope constraint.** $A \cdot f \leq \tan(\theta_{\max}) \cdot v / 2\pi$. At 78 RPM, $r = 40$ mm and 45°, this is $A \cdot f \leq 52$ mm·Hz.
 - **Radius-dependent bandwidth.** Outer turns get 3x the inner turns on a 10 inch disc.
 - **The compressor** to fit the amplitude budget, and the three-tier validation: melody recognition, SNR, pitch accuracy.
@@ -198,7 +198,7 @@ The hard part of v1 was turning a waveform into a watertight, printable solid. T
 
 ### Stylus contact
 
-Hertzian contact between an 18 µm tip and PLA at 4 g: contact radius about 5.2 µm, peak pressure 230 to 280 MPa, which is 4 to 5x PLA's yield. The first play plastically sets the groove floor and effective depth resolution drops from 4 bits toward 3. Abrasive wear is a separate, much slower mechanism.
+Hertzian contact between an 18 µm tip and PLA at 4 g: contact radius about 5.2 µm, peak pressure about 700 MPa, roughly 14x PLA's yield of about 50 MPa. The first play plastically sets the groove floor and effective depth resolution drops from 4 bits toward 3. Abrasive wear is a separate, much slower mechanism.
 
 A spherical tip also cannot resolve floor features shorter than $2\pi R$ along the groove. For an 18 µm tip that limit sits about 4x above the print-limited Nyquist, so in v1 the printer, not the stylus, was the bottleneck. With a 3 mil tip in v2 the two limits coincide.
 

@@ -11,7 +11,7 @@ tech stack:
 
 # Parametric Compliant Tendon-Driven PIP Joint Array for Post-Stroke Rehabilitation Glove
 
-> Designed and validated a geometrically nonlinear compliant joint array to replace discrete torsional springs in a tendon-driven post-stroke rehabilitation glove. Developed a parametric CAD framework and nonlinear FEA workflow using displacement-controlled loading to ensure 90° elastic survivability, distributed strain behavior, and restoring torque sufficient to overcome lumped Bowden and anatomical friction while preserving backdrivability.
+> Designed a geometrically nonlinear compliant joint array to replace discrete torsional springs in a tendon-driven post-stroke rehabilitation glove. Developed a parametric CAD framework and nonlinear FEA workflow using displacement-controlled loading to check 90° elastic survivability, distributed strain behavior, and restoring torque sufficient to overcome lumped Bowden and anatomical friction while preserving backdrivability.
 
 **Project Context:** NeuroTechUofT – Post-Stroke Rehabilitation Exoskeleton  
 **Role:** Hardware associate  

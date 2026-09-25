@@ -1,6 +1,6 @@
 ---
 title: Hand tremor stabilization in Neurosurgery (NeuroHack 2025)
-description: "Engineered a closed-loop hand tremor mitigation system: real-time transfer learning model to detect tremors and servo-based actuators to counteract them. Achieved 76% tremor reduction in simulated neurosurgeries."
+description: "Engineered a closed-loop hand tremor mitigation system: real-time transfer learning model to detect tremors and servo-based actuators to counteract them. Built and demonstrated in 48 hours; tremor reduction was not quantified."
 date: 2025-02-01
 featured: true
 tags:
@@ -33,7 +33,7 @@ We adapted our design process for the hackathon format, prioritizing rapid proto
 ![System Overview](overview.png)
 ### Data Acquisition
 
-Used an **MPU6050** 6-axis accelerometer/gyroscope mounted on the back of the hand in a wearable glove. Chose this over the MPU9250 (used in our training dataset) due to Arduino kit limitations. Sampled at 100Hz to capture tremor frequency range (3-12 Hz for Parkinsonian tremors, we assumed similar for nervousness tremors).
+Used an **MPU6050** 6-axis accelerometer/gyroscope mounted on the back of the hand in a wearable glove. Chose this over the MPU9250 (used in our training dataset) due to Arduino kit limitations. The logging firmware sampled at 20 Hz (a 50 ms loop) for a tremor range of 3-12 Hz (Parkinsonian tremors; we assumed similar for nervousness tremors). In hindsight that was too slow: 20 Hz only resolves content below 10 Hz, so the top of the band aliased, and a 12 Hz tremor shows up at 8 Hz. 100 Hz would have been the right choice.
 
 We mirrored the [Hand Tremor Dataset](https://www.kaggle.com/datasets/aaryapandya/hand-tremor-dataset-collected-using-mpu9250-sensor) collection protocol as closely as possible to minimize domain shift in transfer learning.
 
@@ -99,7 +99,7 @@ Tested on ourselves (no IRB, just hackathon demo). Subjectively reduced visible 
 **Limitations:**
 
 - Initial attempt at 2D CNN on spectrogram images failed (overfitting on tiny dataset, scrapped after 4 hours)
-- Servo response time (200ms) introduced latency; piezoelectric actuators would be faster but weren't in the kit
+- Actuation was slow: a 3-of-5 vote on 50 ms updates, then each servo sweeping 90° at 1° per 3 ms, one after the other, so the strings were taut about 0.7 s after the first detection. That is several tremor cycles, so the device stiffens the wrist for a sustained episode rather than cancelling individual oscillations. Piezoelectric actuators would be faster but weren't in the kit
 - Single DOF stabilization meant tremors in other axes weren't addressed
 - No clinical validation; simulated tremors may not match real surgical nervousness
 
