@@ -19,7 +19,7 @@ A wickless flat-plate heat pipe under development at the Centre for Advanced Coa
 | Item | Detail |
 | --- | --- |
 | Organisation | Centre for Advanced Coating Technologies (CACT), University of Toronto |
-| Period | May 2026, summer research placement |
+| Period | May 2026 to present, research placement |
 | Role | Design, machining, instrumentation and first test of the condenser |
 | Deliverables | Drawing FPHPM2601 (Appendix A), the machined block, a calibrated 14-channel thermocouple map, the first test log |
 | Tools | SolidWorks with GD&T, manual mill and drill press, NPT tapping, Omega OMB-DAQ-56 with thermocouple expansion modules, chiller, DC power supply |
