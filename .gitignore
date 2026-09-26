@@ -23,4 +23,8 @@ pnpm-debug.log*
 # local-only notes and editor state
 interview-prep/
 drafts/
-src/content/docs/.obsidian/workspace.json
+**/.obsidian/workspace*.json
+
+# notebook spike: recordings stay on the device that made them
+**/_spike/**/audio-*
+**/_spike/**/parts-*/
