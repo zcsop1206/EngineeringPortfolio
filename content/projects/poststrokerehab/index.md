@@ -6,7 +6,6 @@ start: 2025-09-01
 end: 2025-11-21
 cover: compliantjointbent.jpg
 publish: true
-tech stack:
 ---
 ![joint photo](compliantjointbent.jpg)
 

@@ -6,7 +6,6 @@ start: 2026-08-28
 end: 2026-09-05
 cover: asiclayout.png
 publish: true
-tech stack:
 ---
 [Jane Street](https://blog.janestreet.com/can-you-reverse-engineer-an-asic/published)'s puzzle gave just a chip's layout. You had to find the string it prints when you enter the right input.
 

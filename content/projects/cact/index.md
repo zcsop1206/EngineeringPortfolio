@@ -5,7 +5,6 @@ status: in-progress
 start: 2026-05-01
 cover: cact_condenser.jpeg
 publish: true
-tech stack:
 ---
 ![Machined C110 copper condenser block with 1/4 NPT ports, thermocouple holes and bolt pattern](cact_condenser.jpeg)
 

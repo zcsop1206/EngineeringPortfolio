@@ -5,7 +5,6 @@ status: design-study
 start: 2025-02-23
 end: 2025-02-23
 publish: false
-tech stack:
 ---
 ## Problem statement
 key goal: spatial compartmentalization of work mode and rest mode in limited living space.
