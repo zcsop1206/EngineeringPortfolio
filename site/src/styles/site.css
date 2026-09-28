@@ -287,6 +287,22 @@ main { padding-bottom: 3rem; }
 .notebook .plain { margin: 0; }
 .notebook .plain li { margin: 0 0 0.2rem; }
 
+/* Ink pages: one <img> per page, as wide as the page (816 px) when the viewport allows.
+   The SVG switches its own colours with prefers-color-scheme, so the paper follows the
+   same media query. */
+.ink-page {
+  display: block;
+  width: min(816px, 100vw - 2 * var(--gutter));
+  max-width: none;
+  height: auto;
+  margin: 1rem 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  .ink-page { background: #111111; }
+}
+
 /* Search */
 
 #search { margin-top: 1rem; }

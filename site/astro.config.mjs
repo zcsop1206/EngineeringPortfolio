@@ -9,6 +9,7 @@ import copyAssets from './src/build/copy-assets.mjs';
 import remarkAssetUrls from './src/build/remark-asset-urls.mjs';
 import rehypeFigureClass from './src/build/rehype-figure-class.mjs';
 import { resolveContentDir } from './src/build/visibility.mjs';
+import { remarkInk, inkTransform } from './src/ink/index.mjs';
 
 const siteRoot = fileURLToPath(new URL('.', import.meta.url));
 const contentDir = resolveContentDir(siteRoot);
@@ -27,12 +28,14 @@ export default defineConfig({
   image: { layout: 'constrained', responsiveStyles: false },
   markdown: {
     syntaxHighlight: false, // code stays black on white
-    remarkPlugins: [remarkMath, [remarkAssetUrls, { contentDir, base }]],
+    // remarkInk runs before remarkAssetUrls so ink page embeds become plain <img> tags
+    // with alt text and lazy loading; remarkAssetUrls then handles any other SVG.
+    remarkPlugins: [remarkMath, remarkInk({ contentDir, base }), [remarkAssetUrls, { contentDir, base }]],
     rehypePlugins: [rehypeMathJax, rehypeFigureClass],
   },
   integrations: [
-    // transforms: the ink page SVG metadata stripper is wired here later.
-    copyAssets({ contentDir, transforms: [] }),
+    // Ink page SVGs lose their raw stroke data (<metadata>) on the way to dist/.
+    copyAssets({ contentDir, transforms: [inkTransform()] }),
     // With a base and no trailing slash the sitemap lists the home page twice,
     // once without the "/"; keep directory URLs only.
     sitemap({ filter: (page) => page.endsWith('/') && !page.endsWith('/404/') }),

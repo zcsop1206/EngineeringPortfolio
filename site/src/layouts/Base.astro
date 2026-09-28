@@ -31,7 +31,7 @@ const imageUrl = absoluteUrl(ogImage ?? ogUrl(DEFAULT_OG), Astro.site);
     <link rel="canonical" href={pageUrl} />
     <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href={url('/rss.xml')} />
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
-    <link rel="icon" href="data:," />
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <meta property="og:title" content={title ?? SITE_NAME} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={ogType} />
