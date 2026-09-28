@@ -21,6 +21,7 @@ export async function getStaticPaths() {
   const projects = await getProjects();
   const entries = await getEntries(projects);
   const byId = new Map(projects.map((p) => [p.id, p]));
+  const nav = projects.map((p) => ({ title: p.data.title, href: projectUrl(p), slug: p.id }));
   return entries.map((entry) => {
     const slug = entryProject(entry);
     // entries are newest first; within a project, index + 1 is older
@@ -33,20 +34,24 @@ export async function getStaticPaths() {
         project: byId.get(slug)!,
         newer: siblings[i - 1],
         older: siblings[i + 1],
+        nav,
       },
     };
   });
 }
 
-const { entry, project, newer, older } = Astro.props as {
+const { entry, project, newer, older, nav: navAll } = Astro.props as {
   entry: Entry;
   project: Project;
   newer?: Entry;
   older?: Entry;
+  nav: { title: string; href: string; slug: string }[];
 };
+const nav = navAll.map((n) => ({ title: n.title, href: n.href, current: n.slug === project.id }));
 const title = entryTitle(entry);
 const date = isoDate(entry.data.date);
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+const outline = headings.filter((h) => h.depth === 2).map((h) => ({ slug: h.slug, text: h.text }));
 
 const ownOg = entryOgFile(entry);
 let ogImage: string | undefined = ownOg ? ogUrl(ownOg) : undefined;
@@ -55,7 +60,7 @@ if (!ogImage && project.data.cover) {
 }
 const description = excerpt(entry.body) || `${entry.data.type}, ${date}, ${project.data.title}`;
 ---
-<Base title={`${title} · ${project.data.title}`} description={description} ogImage={ogImage} ogType="article">
+<Base title={`${title} · ${project.data.title}`} description={description} ogImage={ogImage} ogType="article" nav={nav} outline={outline}>
   <article class="page" data-pagefind-body>
     <header class="page-head">
       <p class="crumb"><a href={projectUrl(project)}>{project.data.title}</a></p>

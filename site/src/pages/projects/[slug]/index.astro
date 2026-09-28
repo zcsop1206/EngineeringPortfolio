@@ -11,30 +11,35 @@ import {
   getEntries,
   getProjects,
   isoDate,
+  projectUrl,
   type Project,
 } from '../../../lib/content';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
   const entries = await getEntries(projects);
+  const nav = projects.map((p) => ({ title: p.data.title, href: projectUrl(p), slug: p.id }));
   return projects.map((project) => ({
     params: { slug: project.id },
-    props: { project, entries: entries.filter((e) => entryProject(e) === project.id) },
+    props: { project, entries: entries.filter((e) => entryProject(e) === project.id), nav },
   }));
 }
 
-const { project, entries } = Astro.props as {
+const { project, entries, nav: navAll } = Astro.props as {
   project: Project;
   entries: Awaited<ReturnType<typeof getEntries>>;
+  nav: { title: string; href: string; slug: string }[];
 };
+const nav = navAll.map((n) => ({ title: n.title, href: n.href, current: n.slug === project.id }));
 const { title, description, status, start, end, cover } = project.data;
-const { Content } = await render(project);
-const showCover = cover && !bodyOpensWithCover(project);
+const { Content, headings } = await render(project);
+const outline = headings.filter((h) => h.depth === 2).map((h) => ({ slug: h.slug, text: h.text }));
+const showCover = cover && project.data.cover_on_page !== false && !bodyOpensWithCover(project);
 const og = cover
   ? await getImage({ src: cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' })
   : undefined;
 ---
-<Base title={title} description={description} ogImage={og?.src} ogType="article">
+<Base title={title} description={description} ogImage={og?.src} ogType="article" nav={nav} outline={outline}>
   <article class="page" data-pagefind-body>
     <header class="page-head">
       <h1>{title}</h1>

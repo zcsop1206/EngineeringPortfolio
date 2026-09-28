@@ -10,9 +10,14 @@ interface Props {
   /** Site-relative or absolute URL of a PNG or JPEG. Defaults to the site card. */
   ogImage?: string;
   ogType?: 'website' | 'article';
+  /** Left sidebar: the project list, with the current one marked. */
+  nav?: { title: string; href: string; current?: boolean }[];
+  /** Right sidebar: the page outline (h2 headings). */
+  outline?: { slug: string; text: string }[];
 }
 
-const { title, description, ogImage, ogType = 'website' } = Astro.props;
+const { title, description, ogImage, ogType = 'website', nav, outline } = Astro.props;
+const hasSidebars = Boolean(nav?.length || outline?.length);
 const fullTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME;
 // Directory-format URLs end in "/"; Astro reports the home page without it.
 const path = Astro.url.pathname;
@@ -42,7 +47,7 @@ const imageUrl = absoluteUrl(ogImage ?? ogUrl(DEFAULT_OG), Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
     <slot name="head" />
   </head>
-  <body>
+  <body class={hasSidebars ? 'with-sidebars' : undefined}>
     <header class="site-header">
       {isHome ? (
         <h1 class="site-title">{SITE_NAME}</h1>
@@ -51,9 +56,31 @@ const imageUrl = absoluteUrl(ogImage ?? ogUrl(DEFAULT_OG), Astro.site);
       )}
       <a href={url('/search/')}>Search</a>
     </header>
-    <main>
-      <slot />
-    </main>
+    <div class="frame">
+      {nav?.length ? (
+        <nav class="sidebar sidebar-left" aria-label="Projects">
+          <p class="sidebar-title">Projects</p>
+          <ul class="plain">
+            {nav.map((n) => (
+              <li><a href={n.href} aria-current={n.current ? 'page' : undefined}>{n.title}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
+      <main>
+        <slot />
+      </main>
+      {outline?.length ? (
+        <nav class="sidebar sidebar-right" aria-label="On this page">
+          <p class="sidebar-title">On this page</p>
+          <ul class="plain">
+            {outline.map((h) => (
+              <li><a href={'#' + h.slug}>{h.text}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
+    </div>
     <footer class="site-footer">
       <a href="https://github.com/zcsop1206">GitHub</a>
       <a href="https://www.linkedin.com/in/adit-bhargava-29509a200">LinkedIn</a>

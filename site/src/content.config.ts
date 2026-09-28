@@ -35,6 +35,7 @@ const projects = defineCollection({
         start: z.coerce.date(),
         end: optionalDate,
         cover: image().optional(),
+        cover_on_page: z.boolean().default(true),
         publish: z.boolean().default(true),
       })
       .passthrough(),
