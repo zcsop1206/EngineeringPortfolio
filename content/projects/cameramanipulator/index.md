@@ -1,11 +1,11 @@
 ---
 title: "MIE243 Project: 4-DOF cinematography robotic manipulator"
 description: Automated camera manipulator for advanced hobbyist and beginner professional cinematographers
-date: 2025-11-21
-featured: true
-tags:
-github:
-award:
+status: design-study
+start: 2025-09-01
+end: 2025-11-21
+cover: finalcinemanipulatorpromo.png
+publish: true
 tech stack:
 ---
 ![Final Cinema Manipulator](finalcinemanipulatorpromo.png)

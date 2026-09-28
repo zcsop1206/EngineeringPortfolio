@@ -1,11 +1,11 @@
 ---
 title: "Reverse engineering a chip from its layout: my first ASIC"
 description: Extracting a netlist from a GDS layout, validating a gate-level simulator against the puzzle's own waveform, and using Z3 to find the 121-bit key.
-date: 2026-09-05
-featured: true
-tags:
-github:
-award:
+status: built-and-tested
+start: 2026-08-28
+end: 2026-09-05
+cover: asiclayout.png
+publish: true
 tech stack:
 ---
 [Jane Street](https://blog.janestreet.com/can-you-reverse-engineer-an-asic/published)'s puzzle gave just a chip's layout. You had to find the string it prints when you enter the right input.
@@ -13,7 +13,7 @@ tech stack:
 I am a mechanical engineering student and this was my first ASIC. I had worked with 3D printing file formats before and thought that would help with the layout file. It did not, but it was enough of a push to start.
 
 <div style="margin:0 auto 1rem;max-width:640px">
-<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/docs/warmup_gds_3d.mp4" aria-label="3D render of the warmup chip GDS, slowly orbiting"></video>
+<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/projects/asicpuzzle2026/warmup_gds_3d.mp4" aria-label="3D render of the warmup chip GDS, slowly orbiting"></video>
 </div>
 
 *The warmup chip's GDS in 3D. Standard cells along the bottom, metal wiring stacked above them, wide power straps on top. The puzzle chip is the same thing with a lot more cells.*

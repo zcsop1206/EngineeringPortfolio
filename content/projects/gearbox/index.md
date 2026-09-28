@@ -1,11 +1,11 @@
 ---
 title: "MIE243 Dissection: speed reducing gearbox"
 description: 3:1 speed reduction, 90 degree angular + linear offset
-tags:
-date:
-featured: true
-github:
-award:
+status: built-and-tested
+start: 2025-09-01
+end: 2025-12-03
+cover: gearboxassem.png
+publish: true
 tech stack:
 ---
 ![gearboxassem.png](gearboxassem.png)
