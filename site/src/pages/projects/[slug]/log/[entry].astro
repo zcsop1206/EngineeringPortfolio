@@ -1,0 +1,88 @@
+---
+import { getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../../../layouts/Base.astro';
+import {
+  entryProject,
+  entryStem,
+  entryTitle,
+  entryUrl,
+  excerpt,
+  getEntries,
+  getProjects,
+  isoDate,
+  projectUrl,
+  type Entry,
+  type Project,
+} from '../../../../lib/content';
+import { entryOgFile, ogUrl } from '../../../../lib/og';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  const entries = await getEntries(projects);
+  const byId = new Map(projects.map((p) => [p.id, p]));
+  return entries.map((entry) => {
+    const slug = entryProject(entry);
+    // entries are newest first; within a project, index + 1 is older
+    const siblings = entries.filter((e) => entryProject(e) === slug);
+    const i = siblings.indexOf(entry);
+    return {
+      params: { slug, entry: entryStem(entry) },
+      props: {
+        entry,
+        project: byId.get(slug)!,
+        newer: siblings[i - 1],
+        older: siblings[i + 1],
+      },
+    };
+  });
+}
+
+const { entry, project, newer, older } = Astro.props as {
+  entry: Entry;
+  project: Project;
+  newer?: Entry;
+  older?: Entry;
+};
+const title = entryTitle(entry);
+const date = isoDate(entry.data.date);
+const { Content } = await render(entry);
+
+const ownOg = entryOgFile(entry);
+let ogImage: string | undefined = ownOg ? ogUrl(ownOg) : undefined;
+if (!ogImage && project.data.cover) {
+  ogImage = (await getImage({ src: project.data.cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' })).src;
+}
+const description = excerpt(entry.body) || `${entry.data.type}, ${date}, ${project.data.title}`;
+---
+<Base title={`${title} · ${project.data.title}`} description={description} ogImage={ogImage} ogType="article">
+  <article class="page" data-pagefind-body>
+    <header class="page-head">
+      <p class="crumb"><a href={projectUrl(project)}>{project.data.title}</a></p>
+      <h1>{title}</h1>
+      <p class="meta mono">
+        <time datetime={date}>{date}</time>
+        <span aria-hidden="true">{' · '}</span>
+        {entry.data.type}
+      </p>
+    </header>
+    <div class={entry.data.ink ? 'prose ink' : 'prose'}>
+      <Content />
+    </div>
+  </article>
+  <nav class="pager" aria-label="Working notes">
+    {older ? (
+      <a href={entryUrl(older)} rel="prev">
+        <span class="muted">Previous</span>
+        <span>{entryTitle(older)}</span>
+      </a>
+    ) : <span />}
+    {newer && (
+      <a href={entryUrl(newer)} rel="next" class="next">
+        <span class="muted">Next</span>
+        <span>{entryTitle(newer)}</span>
+      </a>
+    )}
+  </nav>
+  <p class="back"><a href={projectUrl(project)}>Back to {project.data.title}</a></p>
+</Base>

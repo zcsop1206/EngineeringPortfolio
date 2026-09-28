@@ -1,30 +1,60 @@
-# build output
+# Build output and caches, wherever a build was run from.
 dist/
-# generated types
 .astro/
-
-# dependencies
 node_modules/
-
-# logs
+.vite/
+.cache/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Obsidian vault settings: track only the shared settings files listed below.
+**/.obsidian/*
+!**/.obsidian/app.json
+!**/.obsidian/appearance.json
+!**/.obsidian/core-plugins.json
+!**/.obsidian/community-plugins.json
+!**/.obsidian/hotkeys.json
+!**/.obsidian/types.json
 
-# environment variables
-.env
-.env.production
-
-# macOS-specific files
-.DS_Store
-
-# local-only notes and editor state
-interview-prep/
-drafts/
+# Obsidian per-device state, listed again so it stays ignored if the list above is loosened.
 **/.obsidian/workspace*.json
+**/.obsidian/cache
+**/.obsidian/plugins/
 
-# notebook spike: recordings stay on the device that made them
-**/_spike/**/audio-*
-**/_spike/**/parts-*/
+# The sync plugin and BRAT keep a GitHub token in their data.json; never commit one.
+**/.obsidian/plugins/*/data.json
+
+# Vault folders that are not published: trash, the private escape hatch, spikes, learning notes.
+.trash/
+private/
+_spike/
+/content/learning/
+
+# Audio recordings stay on the device that made them; no clips are published yet.
+*.m4a
+*.webm
+*.ogg
+*.mp3
+*.wav
+
+# OS and editor files.
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+*.tmp
+.vscode/
+
+# Environment variables and secrets.
+.env*
+
+# Local-only work: X post drafts and media, resume drafts, interview prep.
+/social/
+/drafts/
+/interview-prep/
+
+# Sync conflict copies ("name (conflict <device> <date>).ext") are deliberately not
+# ignored. They must be resolved by hand, and scripts/guard.mjs fails while one exists.

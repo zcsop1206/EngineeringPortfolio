@@ -1,0 +1,64 @@
+---
+import '../styles/site.css';
+import { SITE_NAME, absoluteUrl, url } from '../lib/content';
+import { DEFAULT_OG, ogUrl } from '../lib/og';
+
+interface Props {
+  /** Page title; the site name is appended unless this is the home page. */
+  title?: string;
+  description: string;
+  /** Site-relative or absolute URL of a PNG or JPEG. Defaults to the site card. */
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+}
+
+const { title, description, ogImage, ogType = 'website' } = Astro.props;
+const fullTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME;
+// Directory-format URLs end in "/"; Astro reports the home page without it.
+const path = Astro.url.pathname;
+const isHome = path.replace(/\/$/, '') === url('/').replace(/\/$/, '');
+const canonical = /\/404\/?$/.test(path) ? url('/404.html') : /\/$|\.\w+$/.test(path) ? path : `${path}/`;
+const pageUrl = absoluteUrl(canonical, Astro.site);
+const imageUrl = absoluteUrl(ogImage ?? ogUrl(DEFAULT_OG), Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={pageUrl} />
+    <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href={url('/rss.xml')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <meta property="og:title" content={title ?? SITE_NAME} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <slot name="head" />
+  </head>
+  <body>
+    <header class="site-header">
+      {isHome ? (
+        <h1 class="site-title">{SITE_NAME}</h1>
+      ) : (
+        <a class="site-title" href={url('/')}>{SITE_NAME}</a>
+      )}
+      <a href={url('/search/')}>Search</a>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <a href="https://github.com/zcsop1206">GitHub</a>
+      <a href="https://www.linkedin.com/in/adit-bhargava-29509a200">LinkedIn</a>
+      <a href="mailto:adit.bhargava@mail.utoronto.ca">adit.bhargava@mail.utoronto.ca</a>
+      <a href={url('/rss.xml')}>RSS</a>
+    </footer>
+  </body>
+</html>
