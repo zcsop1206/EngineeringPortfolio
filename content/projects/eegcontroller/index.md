@@ -1,12 +1,9 @@
 ---
 title: EEG controller
 description: "EEG classified for stop-start motion, enabling control of multiple types of actuators: robotic tail, drones, etc"
-date: 2025-10-01
-featured: false
-draft: true
-tags:
-github:
-award:
+status: in-progress
+start: 2025-10-01
+publish: false
 tech stack:
 ---
 >Designed and fabricated a custom high-fidelity bio-signal acquisition platform achieving -3.78 dB SNR and 110 dB CMRR using a multi-layer ADS1299-based PCB architecture. To address data scarcity in custom hardware, the system integrates a machine learning pipeline that utilizes OpenNeuro BIDS datasets selected via a soft voting classifier as a baseline. This enables few-shot prototypical adaptation, allowing for accurate real-time feature extraction and intent detection with minimal user-specific calibration.

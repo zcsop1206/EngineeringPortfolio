@@ -1,11 +1,10 @@
 ---
 title: "CACT: copper condenser and first test of a wickless flat-plate heat pipe"
 description: Machined a C110 copper condenser block to GD&T for an asymmetric-sawtooth vapor chamber, instrumented it with thermocouples and a DAQ, and ran the first heat-block-to-chiller test.
-date: 2026-05-30
-featured: true
-tags:
-github:
-award:
+status: in-progress
+start: 2026-05-01
+cover: cact_condenser.jpeg
+publish: true
 tech stack:
 ---
 ![Machined C110 copper condenser block with 1/4 NPT ports, thermocouple holes and bolt pattern](cact_condenser.jpeg)
@@ -143,4 +142,4 @@ This was the first part I made to a drawing I wrote, with tolerances that came f
 
 ## Appendix A. Condenser drawing
 
-[Drawing FPHPM2601, PDF](/EngineeringPortfolio/docs/cact_condenser_drawing.pdf). The drawing defines datum A as the vapor-side face, the Ø0.5 mm positional tolerances on the bolt pattern and ports, and the general tolerances of 0.1 mm and 0.5°.
+[Drawing FPHPM2601, PDF](/EngineeringPortfolio/projects/cact/cact_condenser_drawing.pdf). The drawing defines datum A as the vapor-side face, the Ø0.5 mm positional tolerances on the bolt pattern and ports, and the general tolerances of 0.1 mm and 0.5°.

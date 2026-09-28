@@ -1,11 +1,10 @@
 ---
 title: BedDesk
 description: compartmentalization of work and rest using freestanding murphy bed and folding desk
-date: 2025-02-23
-featured: false
-draft: true
-github:
-award:
+status: design-study
+start: 2025-02-23
+end: 2025-02-23
+publish: false
 tech stack:
 ---
 ## Problem statement

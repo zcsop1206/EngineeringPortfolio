@@ -1,10 +1,11 @@
 ---
 title: "NeuroTech Fall 2025: post stroke rehab hardware"
 description: Exoskeleton and sEMG signal processing to facilitate post stroke rehabilitation
-date: 2025-11-21
-featured: true
-github:
-award:
+status: built-and-tested
+start: 2025-09-01
+end: 2025-11-21
+cover: compliantjointbent.jpg
+publish: true
 tech stack:
 ---
 ![joint photo](compliantjointbent.jpg)

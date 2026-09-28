@@ -1,14 +1,16 @@
 ---
 title: Hand tremor stabilization in Neurosurgery (NeuroHack 2025)
 description: "Engineered a closed-loop hand tremor mitigation system: real-time transfer learning model to detect tremors and servo-based actuators to counteract them. Built and demonstrated in 48 hours; tremor reduction was not quantified."
-date: 2025-02-01
-featured: true
-tags:
+status: built-and-tested
+start: 2025-01-31
+end: 2025-02-02
+cover: device.jpg
+publish: true
 github: https://github.com/supreme-gg-gg/NeuroSteady
 award: Placed top 3 overall and won 'Best Prototype' award at NeuroHack 2025
 tech stack:
 ---
-![Device Photo](device.png)
+![Device Photo](device.jpg)
 
 > Built an end-to-end wearable prototype to stabilize nervousness-induced hand tremors using MPU6050 kinematics and servo-controlled string tension. The system uses a CNN-LSTM architecture with few-shot transfer learning (fine-tuned on Parkinson's data) achieving 78% tremor detection accuracy. Ensembled the neural network with sliding window time-frequency analysis to reduce false positives. Awarded **Best Prototype** and placed **Top 3** at University of Toronto's NeuroHack2025.
 > 
@@ -81,7 +83,7 @@ Highly constrained by the Arduino starter kit. Model inference had to run on a l
 
 We stabilized **1 degree of freedom**: up/down wrist motion. This axis causes the most surgical damage (scalpel depth control). The mechanism: wearable glove connected via strings to servo motors mounted on a forearm sleeve. When tremor detected (majority vote above threshold), servos pull strings taut, putting the forearm-hand system in tension and dampening motion. Once tremor stops, servos return to neutral, slackening strings.
 
-![Wearable Device](device.png)
+![Wearable Device](device.jpg)
 
 Tested on ourselves (no IRB, just hackathon demo). Subjectively reduced visible shaking, but we didn't have time for quantitative validation with IMU measurements during stabilization.
 
