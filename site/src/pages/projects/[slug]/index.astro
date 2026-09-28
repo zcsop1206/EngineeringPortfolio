@@ -1,0 +1,80 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import {
+  STATUS_LABEL,
+  entryProject,
+  entryTitle,
+  entryUrl,
+  getEntries,
+  getProjects,
+  isoDate,
+  type Project,
+} from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  const entries = await getEntries(projects);
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project, entries: entries.filter((e) => entryProject(e) === project.id) },
+  }));
+}
+
+const { project, entries } = Astro.props as {
+  project: Project;
+  entries: Awaited<ReturnType<typeof getEntries>>;
+};
+const { title, description, status, start, end, cover } = project.data;
+const { Content } = await render(project);
+const og = cover
+  ? await getImage({ src: cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' })
+  : undefined;
+---
+<Base title={title} description={description} ogImage={og?.src} ogType="article">
+  <article class="page" data-pagefind-body>
+    <header class="page-head">
+      <h1>{title}</h1>
+      <p class="lede">{description}</p>
+      <p class="meta mono">
+        {STATUS_LABEL[status]}
+        <span aria-hidden="true">{' · '}</span>
+        <time datetime={isoDate(start)}>{isoDate(start)}</time>
+        {' – '}
+        {end ? <time datetime={isoDate(end)}>{isoDate(end)}</time> : 'present'}
+      </p>
+    </header>
+    {cover && (
+      <Image
+        src={cover}
+        alt=""
+        width={1360}
+        widths={[480, 680, 1024, 1360]}
+        sizes="(min-width: 712px) 680px, calc(100vw - 32px)"
+        format="webp"
+        loading="eager"
+        class="page-cover"
+      />
+    )}
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+  {entries.length > 0 && (
+    <section class="notes" aria-labelledby="notes-heading">
+      <h2 id="notes-heading">Working notes</h2>
+      <ul class="log-list">
+        {entries.map((e) => (
+          <li>
+            <a href={entryUrl(e)}>
+              <time class="mono" datetime={isoDate(e.data.date)}>{isoDate(e.data.date)}</time>
+              <span class="mono type">{e.data.type}</span>
+              <span class="log-title">{entryTitle(e)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</Base>
