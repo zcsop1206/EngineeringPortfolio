@@ -6,9 +6,6 @@ start: 2025-01-31
 end: 2025-02-02
 cover: device.jpg
 publish: true
-github: https://github.com/supreme-gg-gg/NeuroSteady
-award: Placed top 3 overall and won 'Best Prototype' award at NeuroHack 2025
-tech stack:
 ---
 ![Device Photo](device.jpg)
 
