@@ -34,7 +34,7 @@ Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `c
 ## Content rules
 
 - URLs: a project is at `/EngineeringPortfolio/projects/<slug>/`, where the slug is the folder name. These links were shared on LinkedIn and X and must not change. Entries are at `/projects/<slug>/log/<file stem>/`. Every non-markdown file under `content/projects/<slug>/` is served at `/EngineeringPortfolio/projects/<slug>/<relative path>`.
-- Writeup frontmatter: `title`, `description` (one line, the result), `status` (built-and-tested, design-study, in-progress, abandoned), `start`, `end` (omit while ongoing), `cover` (an image next to index.md), `publish` (default true).
+- Writeup frontmatter: `title`, `description` (one line, the result), `status` (built-and-tested, design-study, in-progress, abandoned), `start`, `end` (omit while ongoing), `cover` (an image next to index.md), `publish` (default true). `cover_on_page: false` keeps the cover for the home page and link previews but leaves it off the top of the writeup (part 2 of the ASIC puzzle uses it, so the solved grid doesn't spoil the puzzle).
 - Entry frontmatter: `date`, `type` (log, test, decision, sketch; default log), `title` (optional), `publish` (default true). `project` is derived from the folder. Handwritten entries carry `ink: 1` and are written by the ink plugin.
 - Hidden from the site: `publish: false`, `status: abandoned`, and every entry of a hidden project. Hidden media is not copied to `dist/`.
 - Prose is the owner's. Edits by tools change only frontmatter, paths and links. Never regenerate a note from a template.

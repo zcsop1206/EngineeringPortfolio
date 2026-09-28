@@ -183,16 +183,43 @@ main { padding-bottom: 3rem; }
   font-size: 0.92rem;
 }
 
-/* Wide elements break out of the text column, centred, up to --wide-col. */
-.wide, .prose > .figure, .prose > video, .prose > figure, .prose > table {
-  width: min(var(--wide-col), 100vw - 2 * var(--gutter));
-  max-width: none;
-  margin-left: 50%;
-  transform: translateX(-50%);
+/* Media stays inside the text column. Anything wider scrolls inside its box. */
+.prose img, .prose video, .prose svg, .prose iframe { max-width: 100%; height: auto; }
+.prose > table, .prose > .figure { max-width: 100%; }
+.prose pre, .prose > table { overflow-x: auto; }
+
+/* Sidebars: the project list on the left and the page outline on the right,
+   beside the text column on wide screens; hidden below 1100 px. */
+.frame { display: block; }
+.sidebar { display: none; }
+@media (min-width: 1100px) {
+  body.with-sidebars .site-header,
+  body.with-sidebars .site-footer,
+  body.with-sidebars .frame {
+    width: min(var(--text-col) + 2 * 240px, 100% - 2 * var(--gutter));
+  }
+  body.with-sidebars .frame {
+    display: grid;
+    grid-template-columns: 200px var(--text-col) 200px;
+    justify-content: space-between;
+    align-items: start;
+  }
+  body.with-sidebars main { width: auto; margin: 0; min-width: 0; }
+  body.with-sidebars .sidebar {
+    display: block;
+    position: sticky;
+    top: 1.5rem;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+  .sidebar-title { margin: 0 0 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+  .sidebar li { margin: 0 0 0.45rem; }
+  .sidebar a { text-decoration: none; color: var(--muted); }
+  .sidebar a:hover { text-decoration: underline; color: var(--text); }
+  .sidebar a[aria-current="page"] { color: var(--text); font-weight: 600; }
 }
-/* The --gutter absorbs a desktop scrollbar, so 100vw here does not cause
-   horizontal scroll. Raw HTML blocks with their own inline width or margin
-   (video wrappers, the Star Battle widget) stay in the text column. */
 
 /* Home */
 
@@ -237,7 +264,7 @@ main { padding-bottom: 3rem; }
 .prose > :first-child { margin-top: 0; }
 .prose img { display: block; margin: 0 auto; }
 .prose > .figure { text-align: center; }
-.prose > table { display: block; overflow-x: auto; width: max-content; max-width: min(var(--wide-col), 100vw - 2 * var(--gutter)); }
+.prose > table { display: block; width: max-content; }
 
 .notes { margin-top: 3rem; }
 .log-list { list-style: none; padding: 0; }
@@ -294,11 +321,9 @@ main { padding-bottom: 3rem; }
    same media query. */
 .ink-page {
   display: block;
-  width: min(816px, 100vw - 2 * var(--gutter));
-  max-width: none;
+  width: 100%;
   height: auto;
-  margin: 1rem 50%;
-  transform: translateX(-50%);
+  margin: 1rem 0;
   background: #ffffff;
 }
 @media (prefers-color-scheme: dark) {
