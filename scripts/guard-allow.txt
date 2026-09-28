@@ -1,0 +1,6 @@
+# Files allowed to exceed the guard's size limit, one repo-relative path per line.
+
+# NeuroSteady device photo, about 10 MB. Re-encode it to a smaller JPEG or WebP,
+# then remove both lines.
+src/content/docs/Projects/device.png
+content/projects/neurosteady/device.png
