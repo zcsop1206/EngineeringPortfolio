@@ -1,0 +1,33 @@
+---
+// Reachable by URL and RSS only; not linked from the home page or header.
+import Base from '../layouts/Base.astro';
+import { entryProject, entryTitle, entryUrl, getEntries, getProjects, isoDate, type Entry } from '../lib/content';
+
+const projects = await getProjects();
+const titles = new Map(projects.map((p) => [p.id, p.data.title]));
+const groups: { date: string; entries: Entry[] }[] = [];
+for (const e of await getEntries(projects)) {
+  const date = isoDate(e.data.date);
+  const last = groups.at(-1);
+  if (last?.date === date) last.entries.push(e);
+  else groups.push({ date, entries: [e] });
+}
+---
+<Base title="Notebook" description="Working notes from all projects, newest first.">
+  <h1>Notebook</h1>
+  {groups.length === 0 && <p>No entries yet.</p>}
+  <ul class="notebook">
+    {groups.map((g) => (
+      <li>
+        <time class="mono" datetime={g.date}>{g.date}</time>
+        <ul class="plain">
+          {g.entries.map((e) => (
+            <li>
+              <a href={entryUrl(e)}>{titles.get(entryProject(e))}: {entryTitle(e)}</a>
+            </li>
+          ))}
+        </ul>
+      </li>
+    ))}
+  </ul>
+</Base>

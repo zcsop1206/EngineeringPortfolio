@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import {
+  getEntries,
+  getProjects,
+  isoDate,
+  latestEntryByProject,
+  projectUrl,
+} from '../lib/content';
+
+const projects = await getProjects();
+const latest = latestEntryByProject(await getEntries(projects));
+const now = projects
+  .filter((p) => p.data.status === 'in-progress')
+  .map((p) => ({ p, last: latest.get(p.id) }))
+  .sort(
+    (a, b) =>
+      (b.last?.data.date ?? b.p.data.start).getTime() - (a.last?.data.date ?? a.p.data.start).getTime(),
+  );
+---
+<Base description="I'm a third-year Mechanical Engineering student at the University of Toronto. I build electromechanical hardware and the analysis that justifies it.">
+  <div class="intro">
+    <p>I'm a third-year Mechanical Engineering student at the University of Toronto. I build electromechanical hardware and the analysis that justifies it.</p>
+    <p>I work from physical constraints first: what the process can resolve, what the material can survive, and what a measurement can actually confirm.</p>
+  </div>
+
+  {now.length > 0 && (
+    <section class="now">
+      <h2>Now</h2>
+      <ul class="plain">
+        {now.map(({ p, last }) => (
+          <li>
+            <a href={projectUrl(p)}>{p.data.title}</a>
+            <span class="mono muted">
+              {' · '}
+              {last ? (
+                <>last entry <time datetime={isoDate(last.data.date)}>{isoDate(last.data.date)}</time></>
+              ) : (
+                <>started <time datetime={isoDate(p.data.start)}>{isoDate(p.data.start)}</time></>
+              )}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section class="projects wide" aria-labelledby="projects-heading">
+    <h2 id="projects-heading">Projects</h2>
+    <ul class="project-grid">
+      {projects.map((p, i) => (
+        <li>
+          <a href={projectUrl(p)} class="project-link">
+            {p.data.cover && (
+              <Image
+                src={p.data.cover}
+                alt=""
+                width={640}
+                widths={[320, 480, 640, 960]}
+                sizes="(min-width: 760px) 464px, calc(100vw - 32px)"
+                format="webp"
+                loading={i === 0 ? 'eager' : 'lazy'}
+                fetchpriority={i === 0 ? 'high' : 'auto'}
+                class="cover"
+              />
+            )}
+            <span class="project-title">{p.data.title}</span>
+          </a>
+          <p class="project-desc">{p.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

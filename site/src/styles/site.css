@@ -1,0 +1,305 @@
+/* One stylesheet for the whole site. Black on white; dark mode follows the OS. */
+
+:root {
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --text: #111111;
+  --bg: #ffffff;
+  --muted: #5c5c5c;
+  --rule: #d4d4d4;
+  --code-bg: #f3f3f3;
+
+  --text-col: 680px;
+  --wide-col: 960px;
+  --gutter: 16px;
+
+  /* Variables referenced by inline SVG and HTML in the markdown bodies,
+     carried over from Starlight. Grayscale except red, which marks a
+     near-miss pair in a figure. gray-1 is closest to the text, gray-6 to
+     the background. */
+  --sl-color-text: var(--text);
+  --sl-color-bg: var(--bg);
+  --sl-color-bg-nav: #f4f4f4;
+  --sl-color-bg-sidebar: #f4f4f4;
+  --sl-color-bg-inline-code: var(--code-bg);
+  --sl-color-white: var(--text);
+  --sl-color-black: var(--bg);
+  --sl-color-gray-1: #262626;
+  --sl-color-gray-2: #404040;
+  --sl-color-gray-3: #6b6b6b;
+  --sl-color-gray-4: #9a9a9a;
+  --sl-color-gray-5: #c6c6c6;
+  --sl-color-gray-6: #ebebeb;
+  --sl-color-gray-7: #f6f6f6;
+  --sl-color-hairline: var(--rule);
+  --sl-color-hairline-light: #e6e6e6;
+  --sl-color-hairline-shade: #bdbdbd;
+  --sl-color-accent: var(--text);
+  --sl-color-accent-low: #e6e6e6;
+  --sl-color-accent-high: #8c8c8c;
+  --sl-color-text-accent: var(--text);
+  --sl-color-red: #c8102e;
+  --sl-color-red-low: #f6d6d9;
+  --sl-color-red-high: #8a0b20;
+  --sl-font: var(--font-sans);
+  --sl-font-mono: var(--font-mono);
+
+  /* Pagefind UI, black on white, no colour, square corners. */
+  --pagefind-ui-scale: 0.9;
+  --pagefind-ui-primary: var(--text);
+  --pagefind-ui-text: var(--text);
+  --pagefind-ui-background: var(--bg);
+  --pagefind-ui-border: var(--rule);
+  --pagefind-ui-tag: var(--code-bg);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 0;
+  --pagefind-ui-image-border-radius: 0;
+  --pagefind-ui-font: var(--font-sans);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #e8e8e8;
+    --bg: #121212;
+    --muted: #a3a3a3;
+    --rule: #3a3a3a;
+    --code-bg: #1e1e1e;
+
+    --sl-color-bg-nav: #1b1b1b;
+    --sl-color-bg-sidebar: #1b1b1b;
+    --sl-color-gray-1: #dadada;
+    --sl-color-gray-2: #bdbdbd;
+    --sl-color-gray-3: #8e8e8e;
+    --sl-color-gray-4: #666666;
+    --sl-color-gray-5: #454545;
+    --sl-color-gray-6: #262626;
+    --sl-color-gray-7: #1a1a1a;
+    --sl-color-hairline-light: #2c2c2c;
+    --sl-color-hairline-shade: #4a4a4a;
+    --sl-color-accent-low: #2a2a2a;
+    --sl-color-accent-high: #9a9a9a;
+    --sl-color-red: #ff6b6b;
+    --sl-color-red-low: #3d1a1d;
+    --sl-color-red-high: #ffb3b3;
+  }
+}
+
+/* Base */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 100%;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1.0625rem;
+  overflow-wrap: break-word;
+}
+
+a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+img, video, svg, canvas, iframe { max-width: 100%; }
+img, video { height: auto; }
+video { display: block; }
+
+h1, h2, h3, h4 { font-family: var(--font-sans); font-weight: 600; line-height: 1.25; }
+h1 { font-size: 1.75rem; margin: 0 0 0.5rem; }
+h2 { font-size: 1.3rem; margin: 2.25rem 0 0.75rem; }
+h3 { font-size: 1.1rem; margin: 1.75rem 0 0.5rem; }
+h4 { font-size: 1rem; margin: 1.5rem 0 0.5rem; }
+
+p, ul, ol, table, pre, blockquote, figure { margin: 0 0 1rem; }
+ul, ol { padding-left: 1.4rem; }
+li { margin: 0.2rem 0; }
+
+hr { border: 0; border-top: 1px solid var(--rule); margin: 2rem 0; }
+
+code, kbd, samp, pre, .mono, time {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+time { white-space: nowrap; }
+code { font-size: 0.9em; background: var(--code-bg); padding: 0.05em 0.25em; }
+pre { font-size: 0.85rem; line-height: 1.5; background: var(--code-bg); padding: 0.75rem 1rem; overflow-x: auto; }
+pre code { background: none; padding: 0; font-size: inherit; }
+
+blockquote { margin-left: 0; padding-left: 1rem; border-left: 1px solid var(--rule); color: var(--muted); }
+
+table { border-collapse: collapse; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: 0.35rem 0.75rem 0.35rem 0; border-bottom: 1px solid var(--rule); }
+th:last-child, td:last-child { padding-right: 0; }
+thead th { font-weight: 600; border-bottom-color: var(--text); }
+
+.muted { color: var(--muted); }
+.plain { list-style: none; padding: 0; }
+
+/* MathJax SVG output (carried over from src/mathjax.css) */
+mjx-container svg { display: inline !important; }
+mjx-container[display="true"] { display: block; overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+
+/* Page frame */
+
+.site-header, main, .site-footer {
+  width: min(var(--text-col), 100% - 2 * var(--gutter));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 2.5rem;
+}
+.site-title { font-weight: 600; text-decoration: none; }
+.site-title:hover { text-decoration: underline; }
+
+main { padding-bottom: 3rem; }
+
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  padding-top: 1.5rem;
+  padding-bottom: 2.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.92rem;
+}
+
+/* Wide elements break out of the text column, centred, up to --wide-col. */
+.wide, .prose > .figure, .prose > video, .prose > figure, .prose > table {
+  width: min(var(--wide-col), 100vw - 2 * var(--gutter));
+  max-width: none;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+/* The --gutter absorbs a desktop scrollbar, so 100vw here does not cause
+   horizontal scroll. Raw HTML blocks with their own inline width or margin
+   (video wrappers, the Star Battle widget) stay in the text column. */
+
+/* Home */
+
+.intro p { font-size: 1.15rem; line-height: 1.55; }
+.now h2, .projects h2 { font-size: 1rem; margin: 2.5rem 0 0.75rem; }
+.now li { margin: 0.35rem 0; }
+.now .mono { font-size: 0.88rem; white-space: nowrap; }
+
+.project-grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.25rem 2rem;
+}
+@media (min-width: 760px) {
+  .project-grid { grid-template-columns: 1fr 1fr; }
+}
+.project-grid li { margin: 0; }
+.project-link { display: block; text-decoration: none; }
+.project-link:hover .project-title { text-decoration-thickness: 2px; }
+.project-grid .cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+  margin-bottom: 0.6rem;
+}
+.project-title { font-weight: 600; text-decoration: underline; text-underline-offset: 0.15em; text-decoration-thickness: 1px; }
+.project-desc { margin: 0.3rem 0 0; color: var(--muted); font-size: 0.95rem; }
+
+/* Project and entry pages */
+
+.page-head { margin-bottom: 1.5rem; }
+.lede { font-size: 1.1rem; margin: 0 0 0.5rem; }
+.meta { font-size: 0.85rem; color: var(--muted); margin: 0; }
+.crumb { margin: 0 0 0.5rem; font-size: 0.95rem; }
+.page-cover { display: block; width: 100%; height: auto; margin: 0 0 2rem; }
+
+.prose > :first-child { margin-top: 0; }
+.prose img { display: block; margin: 0 auto; }
+.prose > .figure { text-align: center; }
+.prose > table { display: block; overflow-x: auto; width: max-content; max-width: min(var(--wide-col), 100vw - 2 * var(--gutter)); }
+
+.notes { margin-top: 3rem; }
+.log-list { list-style: none; padding: 0; }
+.log-list li { margin: 0; border-top: 1px solid var(--rule); }
+.log-list li:last-child { border-bottom: 1px solid var(--rule); }
+.log-list a {
+  display: grid;
+  grid-template-columns: max-content 5.5rem 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.45rem 0;
+  text-decoration: none;
+}
+.log-list .log-title { text-decoration: underline; text-underline-offset: 0.15em; text-decoration-thickness: 1px; }
+.log-list a:hover .log-title { text-decoration-thickness: 2px; }
+.log-list .mono { font-size: 0.85rem; }
+.log-list .type { color: var(--muted); }
+@media (max-width: 480px) {
+  .log-list a { grid-template-columns: max-content 1fr; gap: 0 1rem; }
+  .log-list .log-title { grid-column: 1 / -1; }
+}
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+.pager a { display: flex; flex-direction: column; max-width: 48%; }
+.pager .next { text-align: right; margin-left: auto; }
+.pager .muted { font-size: 0.85rem; }
+.back { margin-top: 1.5rem; }
+
+/* Notebook */
+
+.notebook { list-style: none; padding: 0; }
+.notebook > li {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0 1.25rem;
+  margin: 0;
+  padding: 0.45rem 0;
+  border-top: 1px solid var(--rule);
+}
+.notebook > li:last-child { border-bottom: 1px solid var(--rule); }
+.notebook time { font-size: 0.85rem; line-height: 1.9; }
+.notebook .plain { margin: 0; }
+.notebook .plain li { margin: 0 0 0.2rem; }
+
+/* Search */
+
+#search { margin-top: 1rem; }
+#search .pagefind-ui {
+  --pagefind-ui-primary: var(--text);
+  --pagefind-ui-text: var(--text);
+  --pagefind-ui-background: var(--bg);
+  --pagefind-ui-border: var(--rule);
+  --pagefind-ui-tag: var(--code-bg);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 0;
+  --pagefind-ui-image-border-radius: 0;
+  --pagefind-ui-font: var(--font-sans);
+}
+#search .pagefind-ui__result-link { color: var(--text); text-decoration: underline; text-underline-offset: 0.15em; }
+#search mark { background: none; color: inherit; font-weight: 600; }

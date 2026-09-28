@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/content';
+
+const bundle = url('/pagefind/');
+---
+<Base title="Search" description="Search the project writeups and working notes.">
+  <link slot="head" rel="stylesheet" href={`${bundle}pagefind-ui.css`} />
+  <h1>Search</h1>
+  <div id="search" data-bundle={bundle} data-base={url('/')}>
+    <noscript><p>Search needs JavaScript.</p></noscript>
+  </div>
+  <script is:inline src={`${bundle}pagefind-ui.js`}></script>
+  <script is:inline>
+    (function () {
+      var el = document.getElementById('search');
+      if (typeof PagefindUI === 'undefined') {
+        el.insertAdjacentHTML('beforeend', '<p>The search index is built with the site and is not available here.</p>');
+        return;
+      }
+      new PagefindUI({
+        element: '#search',
+        bundlePath: el.dataset.bundle,
+        baseUrl: el.dataset.base,
+        showImages: false,
+        showSubResults: true,
+        resetStyles: false,
+      });
+    })();
+  </script>
+</Base>
