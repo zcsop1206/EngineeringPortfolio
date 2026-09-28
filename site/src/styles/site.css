@@ -168,6 +168,7 @@ mjx-container[display="true"] { display: block; overflow-x: auto; overflow-y: hi
   padding-bottom: 2.5rem;
 }
 .site-title { font-weight: 600; text-decoration: none; }
+h1.site-title { font-size: inherit; margin: 0; }
 .site-title:hover { text-decoration: underline; }
 
 main { padding-bottom: 3rem; }
@@ -223,6 +224,7 @@ main { padding-bottom: 3rem; }
 }
 .project-title { font-weight: 600; text-decoration: underline; text-underline-offset: 0.15em; text-decoration-thickness: 1px; }
 .project-desc { margin: 0.3rem 0 0; color: var(--muted); font-size: 0.95rem; }
+.project-status { margin: 0.25rem 0 0; font-size: 0.8rem; }
 
 /* Project and entry pages */
 

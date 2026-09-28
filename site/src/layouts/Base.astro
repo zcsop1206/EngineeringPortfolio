@@ -16,6 +16,7 @@ const { title, description, ogImage, ogType = 'website' } = Astro.props;
 const fullTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME;
 // Directory-format URLs end in "/"; Astro reports the home page without it.
 const path = Astro.url.pathname;
+const isHome = path.replace(/\/$/, '') === url('/').replace(/\/$/, '');
 const canonical = /\/404\/?$/.test(path) ? url('/404.html') : /\/$|\.\w+$/.test(path) ? path : `${path}/`;
 const pageUrl = absoluteUrl(canonical, Astro.site);
 const imageUrl = absoluteUrl(ogImage ?? ogUrl(DEFAULT_OG), Astro.site);
@@ -43,7 +44,11 @@ const imageUrl = absoluteUrl(ogImage ?? ogUrl(DEFAULT_OG), Astro.site);
   </head>
   <body>
     <header class="site-header">
-      <a class="site-title" href={url('/')}>{SITE_NAME}</a>
+      {isHome ? (
+        <h1 class="site-title">{SITE_NAME}</h1>
+      ) : (
+        <a class="site-title" href={url('/')}>{SITE_NAME}</a>
+      )}
       <a href={url('/search/')}>Search</a>
     </header>
     <main>

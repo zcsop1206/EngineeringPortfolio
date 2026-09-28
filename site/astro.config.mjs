@@ -38,7 +38,7 @@ export default defineConfig({
     copyAssets({ contentDir, transforms: [inkTransform()] }),
     // With a base and no trailing slash the sitemap lists the home page twice,
     // once without the "/"; keep directory URLs only.
-    sitemap({ filter: (page) => page.endsWith('/') && !page.endsWith('/404/') }),
+    sitemap({ filter: (page) => page.endsWith('/') && !page.endsWith('/404/') && !page.endsWith('/search/') }),
   ],
   vite: {
     server: { fs: { allow: [siteRoot, contentDir] } },

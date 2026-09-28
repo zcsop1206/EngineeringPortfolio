@@ -4,6 +4,7 @@ import { render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import {
   STATUS_LABEL,
+  bodyOpensWithCover,
   entryProject,
   entryTitle,
   entryUrl,
@@ -28,6 +29,7 @@ const { project, entries } = Astro.props as {
 };
 const { title, description, status, start, end, cover } = project.data;
 const { Content } = await render(project);
+const showCover = cover && !bodyOpensWithCover(project);
 const og = cover
   ? await getImage({ src: cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' })
   : undefined;
@@ -45,7 +47,7 @@ const og = cover
         {end ? <time datetime={isoDate(end)}>{isoDate(end)}</time> : 'present'}
       </p>
     </header>
-    {cover && (
+    {showCover && (
       <Image
         src={cover}
         alt=""

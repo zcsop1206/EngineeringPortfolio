@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import {
+  STATUS_LABEL,
   getEntries,
   getProjects,
   isoDate,
@@ -68,6 +69,7 @@ const now = projects
             <span class="project-title">{p.data.title}</span>
           </a>
           <p class="project-desc">{p.data.description}</p>
+          <p class="project-status mono muted">{STATUS_LABEL[p.data.status]}</p>
         </li>
       ))}
     </ul>

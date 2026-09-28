@@ -114,6 +114,20 @@ export function firstImageFile(e: Entry): string | undefined {
   return undefined;
 }
 
+/**
+ * Whether a writeup's body opens with its cover image (the first markdown image
+ * embed has the cover's file name). Then the page does not render the cover again.
+ */
+export function bodyOpensWithCover(p: Project): boolean {
+  const cover = p.data.cover?.src;
+  if (!cover) return false;
+  // Astro rewrites the src to /_astro/<name>.<hash>.<ext>; keep the name before the hash.
+  const coverName = path.posix.basename(cover.split('?')[0]).replace(/\.[A-Za-z0-9_-]+(\.[a-z0-9]+)$/i, '$1');
+  const m = /!\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/.exec(p.body ?? '');
+  if (!m) return false;
+  return path.posix.basename(m[1].replace(/^\.\//, '')) === coverName;
+}
+
 /** First paragraph of plain text from a markdown body, for descriptions. */
 export function excerpt(body: string | undefined, max = 200): string {
   const paras = (body ?? '')
