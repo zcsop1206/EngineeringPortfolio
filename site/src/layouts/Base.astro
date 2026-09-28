@@ -56,6 +56,30 @@ const imageUrl = absoluteUrl(ogImage ?? ogUrl(DEFAULT_OG), Astro.site);
       )}
       <a href={url('/search/')}>Search</a>
     </header>
+    {hasSidebars ? (
+      <div class="nav-mobile">
+        {nav?.length ? (
+          <details>
+            <summary>Projects</summary>
+            <ul class="plain">
+              {nav.map((n) => (
+                <li><a href={n.href} aria-current={n.current ? 'page' : undefined}>{n.title}</a></li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
+        {outline?.length ? (
+          <details>
+            <summary>On this page</summary>
+            <ul class="plain">
+              {outline.map((h) => (
+                <li><a href={'#' + h.slug}>{h.text}</a></li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
+      </div>
+    ) : null}
     <div class="frame">
       {nav?.length ? (
         <nav class="sidebar sidebar-left" aria-label="Projects">
