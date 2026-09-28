@@ -51,7 +51,37 @@ Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `c
 ## Sync plugin settings for the iPad
 
 - Repo `zcsop1206/EngineeringPortfolio`, branch `main`, vault folder empty (the whole iPad vault), repo folder `content`.
-- The plugin's own ignore list stays at its defaults plus the folders git ignores under `content/`; the exact text is in the pull request that introduced this layout. With the plugin's "Honour the repo's .gitignore" setting on, the root `.gitignore` applies as well.
+- The plugin's own ignore list is the text below (its defaults plus the folders git ignores under `content/`). With the plugin's "Honour the repo's .gitignore" setting on (branch `honour-gitignore` of `zcsop1206/obsidian-github-sync`, not yet released), the root `.gitignore` applies as well.
+
+  ```
+  .obsidian/
+  private/
+  .trash/
+  _spike/
+  learning/
+  drafts/
+  interview-prep/
+  node_modules/
+  .astro/
+  dist/
+  .vite/
+  .cache/
+  .vscode/
+  *.m4a
+  *.webm
+  *.ogg
+  *.mp3
+  *.wav
+  *.log
+  *.tmp
+  *.swp
+  .DS_Store
+  Thumbs.db
+  desktop.ini
+  .env
+  .env.local
+  .env.production
+  ```
 - The token lives in `.obsidian/plugins/github-api-sync/data.json`, which is gitignored and never synced.
 
 ## Checks before pushing
