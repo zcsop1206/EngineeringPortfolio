@@ -192,13 +192,32 @@ main { padding-bottom: 3rem; }
    beside the text column on wide screens; hidden below 1100 px. */
 .frame { display: block; }
 .sidebar { display: none; }
+
+/* Below the sidebar breakpoint, the same two lists are disclosure menus above the text. */
+.nav-mobile {
+  width: min(var(--text-col), 100% - 2 * var(--gutter));
+  margin: -1rem auto 1.5rem;
+  font-size: 0.92rem;
+}
+.nav-mobile details { border-top: 1px solid var(--rule); }
+.nav-mobile details:last-child { border-bottom: 1px solid var(--rule); }
+.nav-mobile summary { cursor: pointer; padding: 0.5rem 0; font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+.nav-mobile summary:hover { color: var(--text); }
+.nav-mobile ul { margin: 0 0 0.75rem; }
+.nav-mobile li { margin: 0.35rem 0; }
+.nav-mobile a { text-decoration: none; color: var(--muted); }
+.nav-mobile a:hover { text-decoration: underline; color: var(--text); }
+.nav-mobile a[aria-current="page"] { color: var(--text); font-weight: 600; }
 @media (min-width: 1100px) {
   body.with-sidebars .site-header,
   body.with-sidebars .site-footer,
   body.with-sidebars .frame {
     width: min(var(--text-col) + 2 * 240px, 100% - 2 * var(--gutter));
   }
+  .nav-mobile { display: none; }
   body.with-sidebars .frame {
+    margin-left: auto;
+    margin-right: auto;
     display: grid;
     grid-template-columns: 200px var(--text-col) 200px;
     justify-content: space-between;
