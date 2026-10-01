@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" width="760" height="340" role="img" aria-label="Section through the heater block, substrate and condenser, and plan of the substrate, with thermocouple positions">
+<style>
+.bg{fill:#fff}.cu{fill:#ececec;stroke:#111;stroke-width:1.2}.hole{fill:#fff;stroke:#111;stroke-width:1.2}
+.pocket{fill:#fff;stroke:#111;stroke-width:1}.dash{fill:none;stroke:#111;stroke-width:1;stroke-dasharray:4 3}
+.bore{stroke:#9a9a9a;stroke-width:1}.bead{fill:#111}.open{fill:#fff;stroke:#111;stroke-width:1.2}.wall{fill:#9a9a9a}.lead{stroke:#9a9a9a;stroke-width:1;fill:none}
+text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:12px;fill:#111}
+.mut{fill:#5c5c5c}
+@media (prefers-color-scheme:dark){.bg{fill:#111}.cu{fill:#2a2a2a;stroke:#ececec}.hole,.pocket{fill:#111;stroke:#ececec}
+.dash{stroke:#ececec}.bore,.lead{stroke:#6b6b6b}.bead{fill:#ececec}.open{fill:#111;stroke:#ececec}.wall{fill:#6b6b6b}text{fill:#ececec}.mut{fill:#a8a8a8}}
+</style>
+<rect class="bg" width="760" height="340"/>
+<text class="" x="24.0" y="30.0" text-anchor="start">Section through the stack</text>
+<rect class="cu" x="24.0" y="70.0" width="306.0" height="60.2" />
+<circle class="hole" cx="88.0" cy="100.1" r="20.3"/>
+<circle class="hole" cx="266.0" cy="100.1" r="20.3"/>
+<circle class="bead" cx="139.7" cy="112.5" r="3"/>
+<circle class="bead" cx="214.3" cy="112.5" r="3"/>
+<rect class="cu" x="58.0" y="130.2" width="238.0" height="20.4" />
+<rect class="pocket" x="75.0" y="130.2" width="204.0" height="3.4" />
+<circle class="bead" cx="92.0" cy="140.4" r="3"/>
+<circle class="bead" cx="262.0" cy="140.4" r="3"/>
+<circle class="bead" cx="143.0" cy="140.4" r="3"/>
+<circle class="bead" cx="211.0" cy="140.4" r="3"/>
+<rect class="cu" x="126.0" y="150.6" width="102.0" height="51.0" />
+<circle class="hole" cx="177.0" cy="177.8" r="16.1"/>
+<circle class="bead" cx="163.4" cy="155.7" r="3"/>
+<circle class="bead" cx="190.6" cy="155.7" r="3"/>
+<text class="" x="344.0" y="104.1" text-anchor="start">Condenser</text>
+<text class="mut" x="344.0" y="119.1" text-anchor="start">90 × 17.7 mm</text>
+<path class="lead" d="M298.0,140.4 L340.0,154.4"/>
+<text class="" x="344.0" y="158.4" text-anchor="start">Substrate</text>
+<text class="mut" x="344.0" y="173.4" text-anchor="start">70 × 6 mm</text>
+<path class="lead" d="M230.0,177.8 L258.0,195.8"/>
+<text class="" x="262.0" y="199.8" text-anchor="start">Heater block</text>
+<text class="mut" x="262.0" y="214.8" text-anchor="start">30 × 30 mm face</text>
+<text class="mut" x="88.0" y="62.0" text-anchor="middle">water channels</text>
+<path class="lead" d="M87.0,131.9 L26.0,180.6"/>
+<text class="mut" x="20.0" y="194.6" text-anchor="start">1 mm pocket</text>
+<text class="mut" x="20.0" y="209.6" text-anchor="start">60 × 60 mm</text>
+<text class="" x="500.0" y="30.0" text-anchor="start">Plan of the substrate</text>
+<rect class="cu" x="500.0" y="70.0" width="238.0" height="238.0" />
+<rect class="pocket" x="517.0" y="87.0" width="204.0" height="204.0" rx="21.6"/>
+<rect class="dash" x="568.0" y="138.0" width="102.0" height="102.0" />
+<rect class="wall" x="530.6" y="138.0" width="5.1" height="102.0" />
+<rect class="wall" x="549.3" y="138.0" width="5.1" height="102.0" />
+<rect class="wall" x="683.6" y="138.0" width="5.1" height="102.0" />
+<rect class="wall" x="702.3" y="138.0" width="5.1" height="102.0" />
+<circle class="open" cx="605.4" cy="189.0" r="3"/>
+<circle class="open" cx="632.6" cy="189.0" r="3"/>
+<line class="bore" x1="534.0" y1="70.0" x2="534.0" y2="104.0"/>
+<line class="bore" x1="602.0" y1="70.0" x2="602.0" y2="155.0"/>
+<line class="bore" x1="738.0" y1="104.0" x2="704.0" y2="104.0"/>
+<line class="bore" x1="738.0" y1="172.0" x2="653.0" y2="172.0"/>
+<line class="bore" x1="704.0" y1="308.0" x2="704.0" y2="274.0"/>
+<line class="bore" x1="636.0" y1="308.0" x2="636.0" y2="223.0"/>
+<line class="bore" x1="500.0" y1="274.0" x2="534.0" y2="274.0"/>
+<line class="bore" x1="500.0" y1="206.0" x2="585.0" y2="206.0"/>
+<circle class="bead" cx="534.0" cy="104.0" r="3"/>
+<text class="" x="542.0" y="108.0" text-anchor="start">TE</text>
+<circle class="bead" cx="602.0" cy="155.0" r="3"/>
+<text class="" x="610.0" y="159.0" text-anchor="start">TC</text>
+<circle class="bead" cx="704.0" cy="104.0" r="3"/>
+<text class="" x="696.0" y="122.0" text-anchor="end">RE</text>
+<circle class="bead" cx="653.0" cy="172.0" r="3"/>
+<text class="" x="653.0" y="163.0" text-anchor="middle">RC</text>
+<circle class="bead" cx="704.0" cy="274.0" r="3"/>
+<text class="" x="696.0" y="278.0" text-anchor="end">BE</text>
+<circle class="bead" cx="636.0" cy="223.0" r="3"/>
+<text class="" x="628.0" y="227.0" text-anchor="end">BC</text>
+<circle class="bead" cx="534.0" cy="274.0" r="3"/>
+<text class="" x="542.0" y="266.0" text-anchor="start">LE</text>
+<circle class="bead" cx="585.0" cy="206.0" r="3"/>
+<text class="" x="583.0" y="197.0" text-anchor="middle">LC</text>
+<text class="mut" x="619.0" y="326.0" text-anchor="middle">dashed: heater face and coating</text>
+<text class="mut" x="619.0" y="62.0" text-anchor="middle">top</text>
+<text class="mut" x="492.0" y="193.0" text-anchor="end">left</text>
+</svg>
