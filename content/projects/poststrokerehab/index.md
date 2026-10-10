@@ -6,6 +6,8 @@ start: 2025-09-01
 end: 2025-11-21
 cover: compliantjointbent.jpg
 publish: true
+short: Compliant finger joint
+result: "A printed compliant joint for a rehab glove: elastic to 90° in nonlinear FEA, restoring torque above the 0.012–0.015 N·m friction floor."
 ---
 ![joint photo](compliantjointbent.jpg)
 

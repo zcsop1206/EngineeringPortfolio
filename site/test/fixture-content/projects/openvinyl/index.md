@@ -7,7 +7,12 @@ cover: stl_mesh.png
 publish: true
 tags:
 date: 2026-09-07
-featured: true
+featured: 1
+short: OpenVinyl
+result: "A record printed on a hobby FDM printer that plays on a turntable, and a v2 encoder that writes lateral grooves straight to G-code with a 0.4 mm bead."
+hook:
+  label: Next
+  text: Print the v2 test record and measure groove survival under the stylus.
 github:
 award:
 tech stack:

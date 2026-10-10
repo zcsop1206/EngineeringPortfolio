@@ -65,6 +65,56 @@ export async function getProjects(): Promise<Project[]> {
   );
 }
 
+/** Short title for home rows and the sidebar; the full title elsewhere. */
+export function shortTitle(p: Project): string {
+  return p.data.short ?? p.data.title;
+}
+
+/**
+ * Parts of a project: visible projects whose `parent` is another visible project,
+ * keyed by the parent's slug, oldest first. A project whose parent is hidden or
+ * missing is treated as top level.
+ */
+export function childrenByParent(projects: Project[]): Map<string, Project[]> {
+  const ids = new Set(projects.map((p) => p.id));
+  const m = new Map<string, Project[]>();
+  for (const p of projects) {
+    const parent = p.data.parent;
+    if (!parent || parent === p.id || !ids.has(parent)) continue;
+    m.set(parent, [...(m.get(parent) ?? []), p]);
+  }
+  for (const list of m.values()) {
+    list.sort((a, b) => a.data.start.getTime() - b.data.start.getTime() || a.id.localeCompare(b.id));
+  }
+  return m;
+}
+
+/**
+ * Home page split: featured projects in `featured` order, then the rest in the
+ * given order. Parts (projects with a visible parent) are in neither list; their
+ * parent's row links to them.
+ */
+export function homeProjects(projects: Project[]) {
+  const children = childrenByParent(projects);
+  const parts = new Set([...children.values()].flat().map((p) => p.id));
+  const top = projects.filter((p) => !parts.has(p.id));
+  const featured = top
+    .filter((p) => p.data.featured !== undefined)
+    .sort((a, b) => a.data.featured! - b.data.featured! || a.id.localeCompare(b.id));
+  const rest = top.filter((p) => p.data.featured === undefined);
+  return { featured, rest, children };
+}
+
+/** Sidebar list: each project followed by its parts, which are marked as children. */
+export function projectNav(projects: Project[]): { title: string; href: string; slug: string; child: boolean }[] {
+  const children = childrenByParent(projects);
+  const parts = new Set([...children.values()].flat().map((p) => p.id));
+  const item = (p: Project, child: boolean) => ({ title: shortTitle(p), href: projectUrl(p), slug: p.id, child });
+  return projects
+    .filter((p) => !parts.has(p.id))
+    .flatMap((p) => [item(p, false), ...(children.get(p.id) ?? []).map((c) => item(c, true))]);
+}
+
 /** Visible entries of visible projects, newest first. */
 export async function getEntries(projects?: Project[]): Promise<Entry[]> {
   const visible = new Set((projects ?? (await getProjects())).map((p) => p.id));

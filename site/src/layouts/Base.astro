@@ -10,8 +10,8 @@ interface Props {
   /** Site-relative or absolute URL of a PNG or JPEG. Defaults to the site card. */
   ogImage?: string;
   ogType?: 'website' | 'article';
-  /** Left sidebar: the project list, with the current one marked. */
-  nav?: { title: string; href: string; current?: boolean }[];
+  /** Left sidebar: the project list, with the current one marked and parts indented. */
+  nav?: { title: string; href: string; current?: boolean; child?: boolean }[];
   /** Right sidebar: the page outline (h2 headings). */
   outline?: { slug: string; text: string }[];
 }
@@ -63,7 +63,7 @@ const imageUrl = absoluteUrl(ogImage ?? ogUrl(DEFAULT_OG), Astro.site);
             <summary>Projects</summary>
             <ul class="plain">
               {nav.map((n) => (
-                <li><a href={n.href} aria-current={n.current ? 'page' : undefined}>{n.title}</a></li>
+                <li class={n.child ? 'nav-child' : undefined}><a href={n.href} aria-current={n.current ? 'page' : undefined}>{n.title}</a></li>
               ))}
             </ul>
           </details>
@@ -86,7 +86,7 @@ const imageUrl = absoluteUrl(ogImage ?? ogUrl(DEFAULT_OG), Astro.site);
           <p class="sidebar-title">Projects</p>
           <ul class="plain">
             {nav.map((n) => (
-              <li><a href={n.href} aria-current={n.current ? 'page' : undefined}>{n.title}</a></li>
+              <li class={n.child ? 'nav-child' : undefined}><a href={n.href} aria-current={n.current ? 'page' : undefined}>{n.title}</a></li>
             ))}
           </ul>
         </nav>

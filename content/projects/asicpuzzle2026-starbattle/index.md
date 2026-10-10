@@ -7,6 +7,8 @@ end: 2026-09-10
 cover: regions.png
 cover_on_page: false
 publish: true
+short: What the chip computes
+parent: asicpuzzle2026
 ---
 [Part 1](/EngineeringPortfolio/projects/asicpuzzle2026) found the 121 bits that make the Jane Street puzzle chip print `(* TWO STARS *)`. This post is about what those bits mean.
 

@@ -11,14 +11,14 @@ import {
   getEntries,
   getProjects,
   isoDate,
-  projectUrl,
+  projectNav,
   type Project,
 } from '../../../lib/content';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
   const entries = await getEntries(projects);
-  const nav = projects.map((p) => ({ title: p.data.title, href: projectUrl(p), slug: p.id }));
+  const nav = projectNav(projects);
   return projects.map((project) => ({
     params: { slug: project.id },
     props: { project, entries: entries.filter((e) => entryProject(e) === project.id), nav },
@@ -28,9 +28,9 @@ export async function getStaticPaths() {
 const { project, entries, nav: navAll } = Astro.props as {
   project: Project;
   entries: Awaited<ReturnType<typeof getEntries>>;
-  nav: { title: string; href: string; slug: string }[];
+  nav: ReturnType<typeof projectNav>;
 };
-const nav = navAll.map((n) => ({ title: n.title, href: n.href, current: n.slug === project.id }));
+const nav = navAll.map((n) => ({ title: n.title, href: n.href, child: n.child, current: n.slug === project.id }));
 const { title, description, status, start, end, cover } = project.data;
 const { Content, headings } = await render(project);
 const outline = headings.filter((h) => h.depth === 2).map((h) => ({ slug: h.slug, text: h.text }));

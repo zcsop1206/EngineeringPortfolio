@@ -3,8 +3,14 @@ title: "OpenVinyl: 3D-printed records, and why v2 cuts the groove sideways"
 description: A hill-and-dale record printed and played on a hobby FDM printer (v1), and a lateral-cut encoder that writes the printer's G-code directly (v2, verified in software, not yet printed). Every groove parameter is derived from bead width, stylus contact and printer acceleration.
 status: in-progress
 start: 2026-03-01
-cover: stl_mesh.png
+cover: openvinyl_v1_record.jpg
 publish: true
+short: OpenVinyl
+result: "A 3D-printed record that plays. v2 writes the groove as G-code and round-trips a 440 Hz tone to 100.5 µm against 100 commanded."
+featured: 3
+hook:
+  label: Wrong turn
+  text: "v1 cut depth because a 0.48 mm bead seemed too wide to wiggle. Written as G-code directly, it places to about 0.01 mm."
 ---
 OpenVinyl turns digital audio into groove geometry on records printed on a hobby FDM printer, played back on a turntable I designed with two collaborators. v1 worked, barely. This month I went back to first principles and reversed its central design decision. v2 is still a work-in-progress, and I plan to print it and run tests in September 2026.
 

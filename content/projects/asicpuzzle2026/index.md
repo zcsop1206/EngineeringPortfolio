@@ -4,8 +4,15 @@ description: Extracting a netlist from a GDS layout, validating a gate-level sim
 status: built-and-tested
 start: 2026-08-28
 end: 2026-09-05
-cover: asiclayout.png
+cover: asic_gds_3d.jpg
+cover_on_page: false
 publish: true
+short: Jane Street ASIC puzzle
+result: "Recovered the unique 121-bit key from the chip's layout and one sample waveform, then showed the chip is an 11×11 Star Battle checker."
+featured: 2
+hook:
+  label: What it prints
+  text: "(* TWO STARS *) for the key. All zeros prints EMPTY SKY, all ones BIG BANG, everything else TRY AGAIN."
 ---
 [Jane Street](https://blog.janestreet.com/can-you-reverse-engineer-an-asic/published)'s puzzle gave just a chip's layout. You had to find the string it prints when you enter the right input.
 

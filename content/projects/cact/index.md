@@ -5,6 +5,12 @@ status: in-progress
 start: 2026-05-01
 cover: cact_condenser.jpeg
 publish: true
+short: Heat pipe condenser
+result: "Machined a copper condenser for a wickless heat pipe and tested it charged and dry: 0.074 K/W against 0.26–0.28, steady at 410 W."
+featured: 1
+hook:
+  label: Still open
+  text: "The centre ran 18 °C above the edge, and that gradient per watt was the same charged and dry."
 ---
 ![Machined C110 copper condenser block with 1/4 NPT ports, thermocouple holes and bolt pattern](cact_condenser.jpeg)
 

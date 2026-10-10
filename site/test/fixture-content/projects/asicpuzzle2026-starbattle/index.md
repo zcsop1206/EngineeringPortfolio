@@ -7,7 +7,8 @@ end: 2026-09-10
 cover: cover.png
 publish: true
 date: 2026-09-08
-featured: true
+parent: asicpuzzle2026
+short: The Star Battle checker
 tags:
 github:
 award:

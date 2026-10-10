@@ -6,6 +6,8 @@ start: 2025-09-01
 end: 2025-12-03
 cover: gearboxassem.png
 publish: true
+short: "3:1 printed gearbox"
+result: "An optimizer-sized 3D-printed 3:1 gearbox, exact 3:1 with gears at most 30 mm across. A hand check later found its safety factors wrong."
 ---
 ![gearboxassem.png](gearboxassem.png)
 >Formulated and solved a Mixed-Integer Nonlinear Programming (MINLP) problem to optimize a two-stage compound gear train for 3D printing. Used a Differential Evolution algorithm with "maximin" objective function to navigate ~10^6 design combinations, maximizing the minimum safety factor across the assembly. The resulting design achieved an exact 3:1 reduction ratio, fitting within a 125mm build volume and 6-hour print budget. The safety factors the optimizer reported did not survive a hand check: at the specified 5 Nm input the teeth are overstressed (see [the correction below](#hand-check-of-the-safety-factors)).

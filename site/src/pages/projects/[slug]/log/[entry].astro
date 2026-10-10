@@ -11,6 +11,7 @@ import {
   getEntries,
   getProjects,
   isoDate,
+  projectNav,
   projectUrl,
   type Entry,
   type Project,
@@ -21,7 +22,7 @@ export async function getStaticPaths() {
   const projects = await getProjects();
   const entries = await getEntries(projects);
   const byId = new Map(projects.map((p) => [p.id, p]));
-  const nav = projects.map((p) => ({ title: p.data.title, href: projectUrl(p), slug: p.id }));
+  const nav = projectNav(projects);
   return entries.map((entry) => {
     const slug = entryProject(entry);
     // entries are newest first; within a project, index + 1 is older
@@ -45,9 +46,9 @@ const { entry, project, newer, older, nav: navAll } = Astro.props as {
   project: Project;
   newer?: Entry;
   older?: Entry;
-  nav: { title: string; href: string; slug: string }[];
+  nav: ReturnType<typeof projectNav>;
 };
-const nav = navAll.map((n) => ({ title: n.title, href: n.href, current: n.slug === project.id }));
+const nav = navAll.map((n) => ({ title: n.title, href: n.href, child: n.child, current: n.slug === project.id }));
 const title = entryTitle(entry);
 const date = isoDate(entry.data.date);
 const { Content, headings } = await render(entry);
