@@ -37,6 +37,13 @@ const projects = defineCollection({
         cover: image().optional(),
         cover_on_page: z.boolean().default(true),
         publish: z.boolean().default(true),
+        // Home page and sidebar (added 2026-10-10). All optional: a project with none
+        // of them still renders as before.
+        short: z.string().optional(), // short title for rows and the sidebar
+        result: z.string().optional(), // one line: what was built and the number that proves it
+        hook: z.object({ label: z.string(), text: z.string() }).optional(), // featured rows only
+        featured: z.number().int().positive().optional(), // 1, 2, 3: order of the featured rows
+        parent: z.string().optional(), // slug of the project this one is a part of (ASIC part 2)
       })
       .passthrough(),
 });
