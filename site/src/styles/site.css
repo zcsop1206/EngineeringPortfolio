@@ -18,48 +18,15 @@
   --small: 0.85rem;
   --lede: 1.15rem;
 
-  /* Variables referenced by inline SVG and HTML in the markdown bodies,
-     carried over from Starlight. Grayscale except red, which marks a
-     near-miss pair in a figure. gray-1 is closest to the text, gray-6 to
-     the background. */
+  /* Variables referenced by the inline SVG in the two ASIC posts, named after
+     Starlight's. gray-3 is closest to the text, gray-6 to the background; red
+     marks a near-miss pair in a figure. */
   --sl-color-text: var(--text);
-  --sl-color-bg: var(--bg);
-  --sl-color-bg-nav: #f4f4f4;
-  --sl-color-bg-sidebar: #f4f4f4;
-  --sl-color-bg-inline-code: var(--code-bg);
-  --sl-color-white: var(--text);
-  --sl-color-black: var(--bg);
-  --sl-color-gray-1: #262626;
-  --sl-color-gray-2: #404040;
+  --sl-color-accent: var(--text);
   --sl-color-gray-3: #6b6b6b;
-  --sl-color-gray-4: #9a9a9a;
   --sl-color-gray-5: #c6c6c6;
   --sl-color-gray-6: #ebebeb;
-  --sl-color-gray-7: #f6f6f6;
-  --sl-color-hairline: var(--rule);
-  --sl-color-hairline-light: #e6e6e6;
-  --sl-color-hairline-shade: #bdbdbd;
-  --sl-color-accent: var(--text);
-  --sl-color-accent-low: #e6e6e6;
-  --sl-color-accent-high: #8c8c8c;
-  --sl-color-text-accent: var(--text);
   --sl-color-red: #c8102e;
-  --sl-color-red-low: #f6d6d9;
-  --sl-color-red-high: #8a0b20;
-  --sl-font: var(--font-sans);
-  --sl-font-mono: var(--font-mono);
-
-  /* Pagefind UI, black on white, no colour, square corners. */
-  --pagefind-ui-scale: 0.85;
-  --pagefind-ui-primary: var(--text);
-  --pagefind-ui-text: var(--text);
-  --pagefind-ui-background: var(--bg);
-  --pagefind-ui-border: var(--rule);
-  --pagefind-ui-tag: var(--code-bg);
-  --pagefind-ui-border-width: 1px;
-  --pagefind-ui-border-radius: 0;
-  --pagefind-ui-image-border-radius: 0;
-  --pagefind-ui-font: var(--font-sans);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -70,22 +37,10 @@
     --rule: #3a3a3a;
     --code-bg: #1e1e1e;
 
-    --sl-color-bg-nav: #1b1b1b;
-    --sl-color-bg-sidebar: #1b1b1b;
-    --sl-color-gray-1: #dadada;
-    --sl-color-gray-2: #bdbdbd;
     --sl-color-gray-3: #8e8e8e;
-    --sl-color-gray-4: #666666;
     --sl-color-gray-5: #454545;
     --sl-color-gray-6: #262626;
-    --sl-color-gray-7: #1a1a1a;
-    --sl-color-hairline-light: #2c2c2c;
-    --sl-color-hairline-shade: #4a4a4a;
-    --sl-color-accent-low: #2a2a2a;
-    --sl-color-accent-high: #9a9a9a;
     --sl-color-red: #ff6b6b;
-    --sl-color-red-low: #3d1a1d;
-    --sl-color-red-high: #ffb3b3;
   }
 }
 
@@ -113,6 +68,10 @@ body {
 
 a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; text-decoration-thickness: 1px; }
 a:hover { text-decoration-thickness: 2px; }
+
+/* Skip link: off screen until focused, then on the page's left edge. */
+.skip { position: absolute; left: -999px; }
+.skip:focus { position: static; display: inline-block; margin: 0.5rem var(--gutter); }
 
 :focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 
@@ -155,7 +114,7 @@ thead th { font-weight: 600; border-bottom-color: var(--text); }
 .prose button { font: inherit; font-size: var(--small); color: var(--text); background: var(--bg); border: 1px solid var(--rule); border-radius: 0; padding: 0.25rem 0.6rem; cursor: pointer; }
 .prose button:hover { border-color: var(--text); }
 
-/* MathJax SVG output (carried over from src/mathjax.css) */
+/* MathJax SVG output: inline in text, display equations scroll sideways if too wide. */
 mjx-container svg { display: inline !important; }
 mjx-container[display="true"] { display: block; overflow-x: auto; overflow-y: hidden; max-width: 100%; }
 
@@ -192,13 +151,12 @@ main { padding-bottom: 3rem; }
 }
 
 /* Media stays inside the text column. Anything wider scrolls inside its box. */
-.prose img, .prose video, .prose svg, .prose iframe { max-width: 100%; height: auto; }
-.prose > table, .prose > .figure { max-width: 100%; }
+.prose img, .prose video, .prose svg { max-width: 100%; height: auto; }
+.prose > table { max-width: 100%; }
 .prose pre, .prose > table { overflow-x: auto; }
 
 /* Sidebars: the project list on the left and the page outline on the right,
    beside the text column on wide screens; hidden below 1100 px. */
-.frame { display: block; }
 .sidebar { display: none; }
 
 /* Below the sidebar breakpoint, the same two lists are disclosure menus above the text. */
@@ -214,9 +172,9 @@ main { padding-bottom: 3rem; }
 .nav-mobile ul { margin: 0 0 0.75rem; }
 .nav-mobile li { margin: 0.35rem 0; }
 .nav-child { padding-left: 0.85rem; }
-.nav-mobile a { text-decoration: none; color: var(--muted); }
-.nav-mobile a:hover { text-decoration: underline; color: var(--text); }
-.nav-mobile a[aria-current="page"] { color: var(--text); font-weight: 600; }
+.nav-mobile a, .sidebar a { text-decoration: none; color: var(--muted); }
+.nav-mobile a:hover, .sidebar a:hover { text-decoration: underline; color: var(--text); }
+.nav-mobile a[aria-current="page"], .sidebar a[aria-current="page"] { color: var(--text); font-weight: 600; }
 @media (min-width: 1100px) {
   body.with-sidebars .site-header,
   body.with-sidebars .site-footer,
@@ -244,9 +202,6 @@ main { padding-bottom: 3rem; }
   }
   .sidebar-title { margin: 0 0 0.5rem; font-family: var(--font-mono); color: var(--muted); }
   .sidebar li { margin: 0 0 0.45rem; }
-  .sidebar a { text-decoration: none; color: var(--muted); }
-  .sidebar a:hover { text-decoration: underline; color: var(--text); }
-  .sidebar a[aria-current="page"] { color: var(--text); font-weight: 600; }
 }
 
 /* Home: the intro, then one row per project, all on the text column. The only
@@ -332,9 +287,8 @@ main { padding-bottom: 3rem; }
 .notebook .plain { margin: 0; }
 .notebook .plain li { margin: 0 0 0.2rem; }
 
-/* Ink pages: one <img> per page, as wide as the page (816 px) when the viewport allows.
-   The SVG switches its own colours with prefers-color-scheme, so the paper follows the
-   same media query. */
+/* Ink pages: one <img> per page, the width of the text column. The SVG switches
+   its own colours with prefers-color-scheme, so the paper follows the same media query. */
 .ink-page {
   display: block;
   width: 100%;
@@ -350,6 +304,7 @@ main { padding-bottom: 3rem; }
 
 #search { margin-top: 1rem; }
 #search .pagefind-ui {
+  --pagefind-ui-scale: 0.85;
   --pagefind-ui-primary: var(--text);
   --pagefind-ui-text: var(--text);
   --pagefind-ui-background: var(--bg);

@@ -16,9 +16,9 @@ const projects = await getProjects();
 const latest = latestEntryByProject(await getEntries(projects));
 // Every project is one row in the text column: cover at left, then title, result, status.
 // The featured ones (in `featured` order) get a larger cover and a hook line; nothing else differs.
-// Parts are linked from their parent's block.
+// Parts are linked from their parent's row.
 const { featured, rest, children } = homeProjects(projects);
-const blocks = [...featured.map((p) => ({ p, featured: true })), ...rest.map((p) => ({ p, featured: false }))];
+const rows = [...featured, ...rest];
 ---
 <Base description="I'm a third-year Mechanical Engineering student at the University of Toronto. I build end-to-end electromechanical systems.">
   <div class="intro">
@@ -27,7 +27,8 @@ const blocks = [...featured.map((p) => ({ p, featured: true })), ...rest.map((p)
   </div>
 
   <section class="projects" aria-label="Projects">
-    {blocks.map(({ p, featured: isFeatured }, i) => {
+    {rows.map((p, i) => {
+      const isFeatured = i < featured.length;
       const href = projectUrl(p);
       const parts = children.get(p.id) ?? [];
       const last = latest.get(p.id);

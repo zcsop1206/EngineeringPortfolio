@@ -1,5 +1,4 @@
 ---
-import { getImage } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../../../../layouts/Base.astro';
 import {
@@ -11,18 +10,18 @@ import {
   getEntries,
   getProjects,
   isoDate,
+  outline,
   projectNav,
   projectUrl,
   type Entry,
   type Project,
 } from '../../../../lib/content';
-import { entryOgFile, ogUrl } from '../../../../lib/og';
+import { coverOg, entryOgFile, ogUrl } from '../../../../lib/og';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
   const entries = await getEntries(projects);
   const byId = new Map(projects.map((p) => [p.id, p]));
-  const nav = projectNav(projects);
   return entries.map((entry) => {
     const slug = entryProject(entry);
     // entries are newest first; within a project, index + 1 is older
@@ -35,33 +34,27 @@ export async function getStaticPaths() {
         project: byId.get(slug)!,
         newer: siblings[i - 1],
         older: siblings[i + 1],
-        nav,
+        projects,
       },
     };
   });
 }
 
-const { entry, project, newer, older, nav: navAll } = Astro.props as {
+const { entry, project, newer, older, projects } = Astro.props as {
   entry: Entry;
   project: Project;
   newer?: Entry;
   older?: Entry;
-  nav: ReturnType<typeof projectNav>;
+  projects: Project[];
 };
-const nav = navAll.map((n) => ({ title: n.title, href: n.href, child: n.child, current: n.slug === project.id }));
 const title = entryTitle(entry);
 const date = isoDate(entry.data.date);
 const { Content, headings } = await render(entry);
-const outline = headings.filter((h) => h.depth === 2).map((h) => ({ slug: h.slug, text: h.text }));
-
 const ownOg = entryOgFile(entry);
-let ogImage: string | undefined = ownOg ? ogUrl(ownOg) : undefined;
-if (!ogImage && project.data.cover) {
-  ogImage = (await getImage({ src: project.data.cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' })).src;
-}
+const ogImage = ownOg ? ogUrl(ownOg) : await coverOg(project);
 const description = excerpt(entry.body) || `${entry.data.type}, ${date}, ${project.data.title}`;
 ---
-<Base title={`${title} · ${project.data.title}`} description={description} ogImage={ogImage} ogType="article" nav={nav} outline={outline}>
+<Base title={`${title} · ${project.data.title}`} description={description} ogImage={ogImage} ogType="article" nav={projectNav(projects, project.id)} outline={outline(headings)}>
   <article class="page" data-pagefind-body>
     <header class="page-head">
       <p class="crumb"><a href={projectUrl(project)}>{project.data.title}</a></p>

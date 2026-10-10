@@ -1,12 +1,16 @@
-// Open Graph images that Astro's image pipeline does not cover: the site
-// default card and entry images taken from the entry body. Rendered by the
-// static endpoint src/pages/og/[...file].ts into dist/og/.
+// Open Graph images, all 1200x630. Project covers at least that large go
+// through Astro's image pipeline. The rest are rendered with sharp by the
+// static endpoint src/pages/og/[...file].ts into dist/og/: the site default
+// card, entry images taken from the entry body, and covers too small for
+// Astro, which does not upscale.
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
 import fs from 'node:fs';
 import sharp from 'sharp';
-import { entryProject, entryStem, firstImageFile, url, type Entry } from './content';
+import { entryProject, entryStem, firstImageFile, url, type Entry, type Project } from './content';
 
-export const OG_W = 1200;
-export const OG_H = 630;
+const OG_W = 1200;
+const OG_H = 630;
 const WHITE = { r: 255, g: 255, b: 255, alpha: 1 };
 
 export const DEFAULT_OG = 'default.png';
@@ -21,6 +25,32 @@ export function entryOgFile(e: Entry): string | undefined {
 
 export function ogUrl(file: string): string {
   return url(`/og/${file}`);
+}
+
+/** Whether Astro can crop the cover to 1200x630 without upscaling. */
+function coverFitsAstro(cover: ImageMetadata): boolean {
+  return cover.width >= OG_W && cover.height >= OG_H;
+}
+
+/** og/ file name and source file of each cover too small for Astro, for the og/ endpoint. */
+export function smallCoverOgs(projects: Project[]): { file: string; src: string }[] {
+  return projects.flatMap((p) => {
+    const cover = p.data.cover;
+    if (!cover || coverFitsAstro(cover)) return [];
+    // Astro's image proxy exposes the source file as fsPath.
+    const src = (cover as ImageMetadata & { fsPath?: string }).fsPath;
+    if (!src) throw new Error(`src/lib/og.ts: no file path for the cover of ${p.id}; read it from the frontmatter instead.`);
+    return [{ file: `${p.id}.jpg`, src }];
+  });
+}
+
+/** Site-relative URL of a project's 1200x630 Open Graph image, made from its cover. */
+export async function coverOg(p: Project): Promise<string | undefined> {
+  const cover = p.data.cover;
+  if (!cover) return undefined;
+  if (!coverFitsAstro(cover)) return ogUrl(`${p.id}.jpg`);
+  // layout 'none': one JPEG, not the srcset the site-wide 'constrained' layout would add.
+  return (await getImage({ src: cover, width: OG_W, height: OG_H, fit: 'cover', format: 'jpg', layout: 'none' })).src;
 }
 
 /** The default card: white, "Adit Bhargava" and "engineering notebook" in a system face. */

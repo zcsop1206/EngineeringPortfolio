@@ -1,6 +1,9 @@
+import type { MarkdownHeading } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import fs from 'node:fs';
 import path from 'node:path';
+import { resolveContentDir } from '../build/visibility.mjs';
+import { homeProjects as homeOrder, navOrder, shortTitle as shortTitleOf } from './order.mjs';
 
 export type Project = CollectionEntry<'projects'>;
 export type Entry = CollectionEntry<'entries'>;
@@ -30,7 +33,7 @@ export const STATUS_LABEL: Record<string, string> = {
   abandoned: 'abandoned',
 };
 
-export function isVisibleProject(p: Project): boolean {
+function isVisibleProject(p: Project): boolean {
   return p.data.publish !== false && p.data.status !== 'abandoned';
 }
 
@@ -67,52 +70,34 @@ export async function getProjects(): Promise<Project[]> {
 
 /** Short title for home rows and the sidebar; the full title elsewhere. */
 export function shortTitle(p: Project): string {
-  return p.data.short ?? p.data.title;
-}
-
-/**
- * Parts of a project: visible projects whose `parent` is another visible project,
- * keyed by the parent's slug, oldest first. A project whose parent is hidden or
- * missing is treated as top level.
- */
-export function childrenByParent(projects: Project[]): Map<string, Project[]> {
-  const ids = new Set(projects.map((p) => p.id));
-  const m = new Map<string, Project[]>();
-  for (const p of projects) {
-    const parent = p.data.parent;
-    if (!parent || parent === p.id || !ids.has(parent)) continue;
-    m.set(parent, [...(m.get(parent) ?? []), p]);
-  }
-  for (const list of m.values()) {
-    list.sort((a, b) => a.data.start.getTime() - b.data.start.getTime() || a.id.localeCompare(b.id));
-  }
-  return m;
+  return shortTitleOf(p);
 }
 
 /**
  * Home page split: featured projects in `featured` order, then the rest in the
- * given order. Parts (projects with a visible parent) are in neither list; their
- * parent's row links to them.
+ * given order, and each parent's parts. See lib/order.mjs.
  */
-export function homeProjects(projects: Project[]) {
-  const children = childrenByParent(projects);
-  const parts = new Set([...children.values()].flat().map((p) => p.id));
-  const top = projects.filter((p) => !parts.has(p.id));
-  const featured = top
-    .filter((p) => p.data.featured !== undefined)
-    .sort((a, b) => a.data.featured! - b.data.featured! || a.id.localeCompare(b.id));
-  const rest = top.filter((p) => p.data.featured === undefined);
-  return { featured, rest, children };
+export function homeProjects(projects: Project[]): {
+  featured: Project[];
+  rest: Project[];
+  children: Map<string, Project[]>;
+} {
+  return homeOrder(projects);
 }
 
 /** Sidebar list: each project followed by its parts, which are marked as children. */
-export function projectNav(projects: Project[]): { title: string; href: string; slug: string; child: boolean }[] {
-  const children = childrenByParent(projects);
-  const parts = new Set([...children.values()].flat().map((p) => p.id));
-  const item = (p: Project, child: boolean) => ({ title: shortTitle(p), href: projectUrl(p), slug: p.id, child });
-  return projects
-    .filter((p) => !parts.has(p.id))
-    .flatMap((p) => [item(p, false), ...(children.get(p.id) ?? []).map((c) => item(c, true))]);
+export function projectNav(projects: Project[], currentSlug: string) {
+  return (navOrder(projects) as { p: Project; child: boolean }[]).map(({ p, child }) => ({
+    title: shortTitle(p),
+    href: projectUrl(p),
+    child,
+    current: p.id === currentSlug,
+  }));
+}
+
+/** The page outline for the right sidebar: h2 headings only. */
+export function outline(headings: MarkdownHeading[]): { slug: string; text: string }[] {
+  return headings.filter((h) => h.depth === 2).map((h) => ({ slug: h.slug, text: h.text }));
 }
 
 /** Visible entries of visible projects, newest first. */
@@ -140,20 +125,23 @@ export function projectUrl(p: Project | string): string {
   return url(`/projects/${typeof p === 'string' ? p : p.id}/`);
 }
 
+// astro.config.mjs sets CONTENT_DIR_ABS; the fallback assumes astro runs from site/.
 function contentDir(): string {
-  return process.env.CONTENT_DIR_ABS || path.resolve(process.cwd(), process.env.CONTENT_DIR || '../content');
+  return process.env.CONTENT_DIR_ABS || resolveContentDir(process.cwd());
 }
 
+/** A markdown image embed; group 1 is the URL. */
+const MD_IMAGE = /!\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g;
+
 /** Absolute path of an entry's markdown file. */
-export function entryFile(e: Entry): string {
+function entryFile(e: Entry): string {
   return path.join(contentDir(), 'projects', ...e.id.split('/')) + '.md';
 }
 
 /** Absolute path of the first relative image embedded in an entry body, if it exists. */
 export function firstImageFile(e: Entry): string | undefined {
   const body = e.body ?? '';
-  const re = /!\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g;
-  for (const m of body.matchAll(re)) {
+  for (const m of body.matchAll(MD_IMAGE)) {
     const src = m[1];
     if (src.startsWith('/') || /^[a-z]+:/i.test(src)) continue;
     let rel = src;
@@ -165,31 +153,46 @@ export function firstImageFile(e: Entry): string | undefined {
 }
 
 /**
- * Whether a writeup's body opens with its cover image (the first markdown image
- * embed has the cover's file name). Then the page does not render the cover again.
+ * Whether a writeup's body opens with its cover image (the body's first
+ * non-blank line starts with an embed of the cover's file name). Then the page
+ * does not render the cover again.
  */
 export function bodyOpensWithCover(p: Project): boolean {
   const cover = p.data.cover?.src;
   if (!cover) return false;
   // Astro rewrites the src to /_astro/<name>.<hash>.<ext>; keep the name before the hash.
   const coverName = path.posix.basename(cover.split('?')[0]).replace(/\.[A-Za-z0-9_-]+(\.[a-z0-9]+)$/i, '$1');
-  const m = /!\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/.exec(p.body ?? '');
-  if (!m) return false;
+  const m = [...(p.body ?? '').trimStart().matchAll(MD_IMAGE)][0];
+  if (!m || m.index !== 0) return false;
   return path.posix.basename(m[1].replace(/^\.\//, '')) === coverName;
+}
+
+/** Markdown emphasis (`*a*`, `**a**`, `_a_`, `__a__`) to its text; code spans keep theirs as is. */
+function stripEmphasis(text: string): string {
+  return text
+    .split(/(`[^`]*`)/)
+    .map((part, i) =>
+      i % 2
+        ? part.slice(1, -1)
+        : part
+            .replace(/\*\*?([^*\s](?:[^*]*[^*\s])?)\*\*?/g, '$1')
+            .replace(/(^|\W)__?([^_\s](?:[^_]*[^_\s])?)__?(?=\W|$)/g, '$1$2'),
+    )
+    .join('');
 }
 
 /** First paragraph of plain text from a markdown body, for descriptions. */
 export function excerpt(body: string | undefined, max = 200): string {
   const paras = (body ?? '')
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<(script|style|svg)\b[\s\S]*?<\/\1\s*>/gi, '')
+    .replace(/^(```|\$\$)[\s\S]*?^\1/gm, '')
     .replace(/<[^>]+>/g, ' ')
     .split(/\r?\n\s*\r?\n/)
     .map((p) => p.trim())
-    .filter((p) => p && !p.startsWith('#') && !p.startsWith('![') && !p.startsWith('|'));
-  const text = (paras[0] ?? '')
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/[*_`]/g, '')
+    .filter((p) => p && !/^(#|!\[|\||```|\$\$)/.test(p));
+  const text = stripEmphasis(
+    (paras[0] ?? '').replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1'),
+  )
     .replace(/\s+/g, ' ')
     .trim();
   return text.length > max ? `${text.slice(0, max - 1).replace(/\s+\S*$/, '')}…` : text;

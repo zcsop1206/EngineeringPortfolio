@@ -8,7 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-export function readFrontmatter(file) {
+function readFrontmatter(file) {
   const text = fs.readFileSync(file, 'utf8');
   const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
   const out = {};
@@ -25,11 +25,11 @@ export function readFrontmatter(file) {
   return out;
 }
 
-export function isHiddenProject(fm) {
+function isHiddenProject(fm) {
   return fm.publish === false || fm.status === 'abandoned';
 }
 
-export function isHiddenEntry(fm) {
+function isHiddenEntry(fm) {
   return fm.publish === false;
 }
 

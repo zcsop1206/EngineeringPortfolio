@@ -1,5 +1,5 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import {
@@ -11,35 +11,31 @@ import {
   getEntries,
   getProjects,
   isoDate,
+  outline,
   projectNav,
   type Project,
 } from '../../../lib/content';
+import { coverOg } from '../../../lib/og';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
   const entries = await getEntries(projects);
-  const nav = projectNav(projects);
   return projects.map((project) => ({
     params: { slug: project.id },
-    props: { project, entries: entries.filter((e) => entryProject(e) === project.id), nav },
+    props: { project, projects, entries: entries.filter((e) => entryProject(e) === project.id) },
   }));
 }
 
-const { project, entries, nav: navAll } = Astro.props as {
+const { project, projects, entries } = Astro.props as {
   project: Project;
+  projects: Project[];
   entries: Awaited<ReturnType<typeof getEntries>>;
-  nav: ReturnType<typeof projectNav>;
 };
-const nav = navAll.map((n) => ({ title: n.title, href: n.href, child: n.child, current: n.slug === project.id }));
 const { title, description, status, start, end, cover } = project.data;
 const { Content, headings } = await render(project);
-const outline = headings.filter((h) => h.depth === 2).map((h) => ({ slug: h.slug, text: h.text }));
 const showCover = cover && project.data.cover_on_page !== false && !bodyOpensWithCover(project);
-const og = cover
-  ? await getImage({ src: cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' })
-  : undefined;
 ---
-<Base title={title} description={description} ogImage={og?.src} ogType="article" nav={nav} outline={outline}>
+<Base title={title} description={description} ogImage={await coverOg(project)} ogType="article" nav={projectNav(projects, project.id)} outline={outline(headings)}>
   <article class="page" data-pagefind-body>
     <header class="page-head">
       <h1>{title}</h1>
