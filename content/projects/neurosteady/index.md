@@ -9,7 +9,7 @@ publish: true
 short: Tremor stabilizer glove
 result: "A tremor-damping glove built in 48 h: Best Prototype and Top 3 at NeuroHack 2025. Tremor reduction not quantified."
 ---
-![Device Photo](device.jpg)
+![Labelled prototype: two servos on a taped cardboard mount, strings to a black glove with an MPU6050, wired to an Arduino Uno](device.jpg)
 
 > Built an end-to-end wearable prototype to stabilize nervousness-induced hand tremors using MPU6050 kinematics and servo-controlled string tension. The system uses a CNN-LSTM architecture with few-shot transfer learning (fine-tuned on Parkinson's data) achieving 78% tremor detection accuracy. Ensembled the neural network with sliding window time-frequency analysis to reduce false positives. Awarded **Best Prototype** and placed **Top 3** at University of Toronto's NeuroHack2025.
 > 

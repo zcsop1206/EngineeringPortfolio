@@ -159,7 +159,8 @@ Level 0 is new to the validation tiers: the stylus tracks the full disc without 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin-bottom: 1.5rem;">
   <iframe
-    src="https://www.youtube.com/embed/aqkWe6JU3gI"
+    src="https://www.youtube-nocookie.com/embed/aqkWe6JU3gI"
+    loading="lazy"
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;"
     title="OpenVinyl v1 demo"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -190,15 +191,15 @@ The 300 to 681 Hz passband means most musical fundamentals could not be encoded 
 
 ### The mesh
 
-The hard part of v1 was turning a waveform into a watertight, printable solid. The groove follows an Archimedean spiral $r_c(	heta) = r_0 - rac{p}{2\pi}	heta$. At each angular step the sample sets the floor height. The mesh must be a closed 2-manifold, every edge shared by exactly two triangles, or the slicer rejects it.
+The hard part of v1 was turning a waveform into a watertight, printable solid. The groove follows an Archimedean spiral $r_c(\theta) = r_0 - \frac{p}{2\pi}\theta$. At each angular step the sample sets the floor height. The mesh must be a closed 2-manifold, every edge shared by exactly two triangles, or the slicer rejects it.
 
-- **Six vertices per step:** outer and inner wall top at the surface, floor centre at $Z_{	ext{base}} + (s + n_{\min}) h$, outer and inner wall bottom at $Z = 0$, and the groove centre projected to land height. Consecutive steps form the quad strips for walls, floor and land.
+- **Six vertices per step:** outer and inner wall top at the surface, floor centre at $Z_{\text{base}} + (s + n_{\min}) h$, outer and inner wall bottom at $Z = 0$, and the groove centre projected to land height. Consecutive steps form the quad strips for walls, floor and land.
 - **About 10 triangles per step.** A 60-second record at 78 RPM with a 0.2 mm nozzle is 680,000 steps and 6.8 million triangles.
 - **Four open boundaries to seal:** a start cap at the outer radius, an end cap at the inner radius with reversed winding (wrong winding reads as a hole), the outer rim to the record's edge, and the inner disk to the spindle hole.
 - **Inter-turn bridging.** The land between one turn and the next must be triangulated too, which means indexing back one full revolution at every step. Skip it and each turn is a separate shell floating in space.
 - **Sign convention.** High sample values map to a deeper floor, never above the surface, so turns can never self-intersect.
 
-![STL Mesh](stl_mesh.png)
+![Top view of the record mesh on the slicer's build plate: a dark disc with fine concentric grooves and a centre hole](stl_mesh.png)
 
 ### Stylus contact
 

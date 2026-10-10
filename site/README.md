@@ -9,11 +9,12 @@ Run from `site/`:
 ```
 npm install
 npm run dev       # http://localhost:4321/EngineeringPortfolio/
+npm test          # unit tests with node --test, no build needed
 npm run build     # astro build, then pagefind indexes dist/
 npm run preview
 ```
 
-`CONTENT_DIR` points at a different content folder, relative to `site/`. The fixture is a small copy of real pages plus hidden cases:
+`CONTENT_DIR` points at a different content folder, relative to `site/`. The fixture in `test/fixture-content/` is a small copy of real pages plus the cases the home page and visibility rules have to handle: a featured project with a result and a hook (`openvinyl`), a parent with a part (`asicpuzzle2026`, featured, and `asicpuzzle2026-starbattle` with `parent: asicpuzzle2026`), a plain project with none of the home page fields (`plain-project`), and hidden ones (`hidden-draft` with `publish: false`, `abandoned-one`, and a private entry under `openvinyl/log/`):
 
 ```
 CONTENT_DIR=test/fixture-content npm run build          # bash
@@ -46,8 +47,11 @@ In markdown, relative raster images (`![](photo.jpg)`, `![](../photo.jpg)` from 
 
 ## Layout
 
+- `src/content.config.ts` the two collections (projects, entries) and their frontmatter schema
 - `src/pages/` home, project and entry pages, notebook, search, 404, `rss.xml`, and `og/` (Open Graph images rendered with sharp)
 - `src/layouts/Base.astro` the only layout
 - `src/styles/site.css` the only stylesheet
-- `src/lib/content.ts` visibility, ordering, dates, URLs
-- `src/build/` the asset integration and the markdown plugins
+- `src/lib/content.ts` visibility, ordering, dates, URLs, the home page split (featured rows, the rest, each parent's parts) and the sidebar list; the ordering itself is plain JS in `src/lib/order.mjs`
+- `src/lib/og.ts` Open Graph images: which file each page uses and the sharp rendering
+- `src/ink/` handwritten ink notes: strip stroke data from page SVGs, rewrite page embeds (see `src/ink/README.md`)
+- `src/build/` the visibility scan, the asset integration (`copy-assets.mjs`) and the markdown plugins

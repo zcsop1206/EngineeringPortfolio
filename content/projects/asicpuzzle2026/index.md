@@ -14,17 +14,17 @@ hook:
   label: What it prints
   text: "(* TWO STARS *) for the key. All zeros prints EMPTY SKY, all ones BIG BANG, everything else TRY AGAIN."
 ---
-[Jane Street](https://blog.janestreet.com/can-you-reverse-engineer-an-asic/published)'s puzzle gave just a chip's layout. You had to find the string it prints when you enter the right input.
+[Jane Street](https://blog.janestreet.com/can-you-reverse-engineer-an-asic/)'s puzzle gave just a chip's layout. You had to find the string it prints when you enter the right input.
 
 I am a mechanical engineering student and this was my first ASIC. I had worked with 3D printing file formats before and thought that would help with the layout file. It did not, but it was enough of a push to start.
 
 <div style="margin:0 0 1rem;max-width:640px">
-<video controls autoplay muted loop playsinline style="display:block;width:100%" src="/EngineeringPortfolio/projects/asicpuzzle2026/warmup_gds_3d.mp4" aria-label="3D render of the warmup chip GDS, slowly orbiting"></video>
+<video controls autoplay muted loop playsinline width="1280" height="1302" style="display:block;width:100%" src="/EngineeringPortfolio/projects/asicpuzzle2026/warmup_gds_3d.mp4" aria-label="3D render of the warmup chip GDS, slowly orbiting"></video>
 </div>
 
 *The warmup chip's GDS in 3D. Standard cells along the bottom, metal wiring stacked above them, wide power straps on top. The puzzle chip is the same thing with a lot more cells.*
 
-This post is the solve. [Part 2](/EngineeringPortfolio/projects/asicpuzzle2026-starbattle) is figuring out the chip's function.
+This post is the solve. [Part 2](/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/) is figuring out the chip's function.
 
 ## The puzzle
 
@@ -397,4 +397,4 @@ Check every step against something you already trust. The extractor against the 
 
 Then stop building and start running. I spent most of my time trying to generalise the one tool I trusted. Once I started experimenting with the incomplete tools I had, the rest took about 35 minutes by my notes: reading the VCD properly, the simulator and its two bugs, the solver, the answer.
 
-I still did not know what the chip computes to decide whether an input is correct. I found out in [part 2](/EngineeringPortfolio/projects/asicpuzzle2026-starbattle).
+I still did not know what the chip computes to decide whether an input is correct. I found out in [part 2](/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/).
