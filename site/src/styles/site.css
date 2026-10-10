@@ -11,8 +11,12 @@
   --code-bg: #f3f3f3;
 
   --text-col: 680px;
-  --wide-col: 960px;
   --gutter: 16px;
+
+  /* Type scale. Body for content; small for everything secondary (metadata,
+     sidebars, footer, tables, code); lede for the intro and page summaries. */
+  --small: 0.85rem;
+  --lede: 1.15rem;
 
   /* Variables referenced by inline SVG and HTML in the markdown bodies,
      carried over from Starlight. Grayscale except red, which marks a
@@ -46,7 +50,7 @@
   --sl-font-mono: var(--font-mono);
 
   /* Pagefind UI, black on white, no colour, square corners. */
-  --pagefind-ui-scale: 0.9;
+  --pagefind-ui-scale: 0.85;
   --pagefind-ui-primary: var(--text);
   --pagefind-ui-text: var(--text);
   --pagefind-ui-background: var(--bg);
@@ -120,7 +124,7 @@ h1, h2, h3, h4 { font-family: var(--font-sans); font-weight: 600; line-height: 1
 h1 { font-size: 1.75rem; margin: 0 0 0.5rem; }
 h2 { font-size: 1.3rem; margin: 2.25rem 0 0.75rem; }
 h3 { font-size: 1.1rem; margin: 1.75rem 0 0.5rem; }
-h4 { font-size: 1rem; margin: 1.5rem 0 0.5rem; }
+h4 { font-size: 1.0625rem; margin: 1.5rem 0 0.5rem; }
 
 p, ul, ol, table, pre, blockquote, figure { margin: 0 0 1rem; }
 ul, ol { padding-left: 1.4rem; }
@@ -133,19 +137,23 @@ code, kbd, samp, pre, .mono, time {
   font-variant-numeric: tabular-nums;
 }
 time { white-space: nowrap; }
-code { font-size: 0.9em; background: var(--code-bg); padding: 0.05em 0.25em; }
-pre { font-size: 0.85rem; line-height: 1.5; background: var(--code-bg); padding: 0.75rem 1rem; overflow-x: auto; }
+code { font-size: 0.92em; background: var(--code-bg); padding: 0.05em 0.25em; }
+pre { font-size: var(--small); line-height: 1.5; background: var(--code-bg); padding: 0.75rem 1rem; overflow-x: auto; }
 pre code { background: none; padding: 0; font-size: inherit; }
 
 blockquote { margin-left: 0; padding-left: 1rem; border-left: 1px solid var(--rule); color: var(--muted); }
 
-table { border-collapse: collapse; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+table { border-collapse: collapse; font-size: var(--small); font-variant-numeric: tabular-nums; }
 th, td { text-align: left; vertical-align: top; padding: 0.35rem 0.75rem 0.35rem 0; border-bottom: 1px solid var(--rule); }
 th:last-child, td:last-child { padding-right: 0; }
 thead th { font-weight: 600; border-bottom-color: var(--text); }
 
 .muted { color: var(--muted); }
 .plain { list-style: none; padding: 0; }
+
+/* Buttons (the Star Battle widget): plain text in a 1 px rule, square. */
+.prose button { font: inherit; font-size: var(--small); color: var(--text); background: var(--bg); border: 1px solid var(--rule); border-radius: 0; padding: 0.25rem 0.6rem; cursor: pointer; }
+.prose button:hover { border-color: var(--text); }
 
 /* MathJax SVG output (carried over from src/mathjax.css) */
 mjx-container svg { display: inline !important; }
@@ -180,7 +188,7 @@ main { padding-bottom: 3rem; }
   padding-top: 1.5rem;
   padding-bottom: 2.5rem;
   border-top: 1px solid var(--rule);
-  font-size: 0.92rem;
+  font-size: var(--small);
 }
 
 /* Media stays inside the text column. Anything wider scrolls inside its box. */
@@ -197,11 +205,11 @@ main { padding-bottom: 3rem; }
 .nav-mobile {
   width: min(var(--text-col), 100% - 2 * var(--gutter));
   margin: -1rem auto 1.5rem;
-  font-size: 0.92rem;
+  font-size: var(--small);
 }
 .nav-mobile details { border-top: 1px solid var(--rule); }
 .nav-mobile details:last-child { border-bottom: 1px solid var(--rule); }
-.nav-mobile summary { cursor: pointer; padding: 0.5rem 0; font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+.nav-mobile summary { cursor: pointer; padding: 0.5rem 0; font-family: var(--font-mono); color: var(--muted); }
 .nav-mobile summary:hover { color: var(--text); }
 .nav-mobile ul { margin: 0 0 0.75rem; }
 .nav-mobile li { margin: 0.35rem 0; }
@@ -231,10 +239,10 @@ main { padding-bottom: 3rem; }
     top: 1.5rem;
     max-height: calc(100vh - 3rem);
     overflow-y: auto;
-    font-size: 0.85rem;
+    font-size: var(--small);
     line-height: 1.45;
   }
-  .sidebar-title { margin: 0 0 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+  .sidebar-title { margin: 0 0 0.5rem; font-family: var(--font-mono); color: var(--muted); }
   .sidebar li { margin: 0 0 0.45rem; }
   .sidebar a { text-decoration: none; color: var(--muted); }
   .sidebar a:hover { text-decoration: underline; color: var(--text); }
@@ -245,7 +253,7 @@ main { padding-bottom: 3rem; }
    variation is the cover size: 300 px for featured projects, 150 px for the rest
    (full width on phones for featured, 120 px for the rest). */
 
-.intro p { font-size: 1.15rem; line-height: 1.55; }
+.intro p { font-size: var(--lede); line-height: 1.55; }
 .projects { margin-top: 2.5rem; }
 .project { display: flex; gap: 1rem; align-items: flex-start; margin: 0 0 2rem; }
 .project.featured { display: block; margin-bottom: 2.5rem; }
@@ -265,14 +273,13 @@ main { padding-bottom: 3rem; }
 /* Project and entry pages */
 
 .page-head { margin-bottom: 1.5rem; }
-.lede { font-size: 1.1rem; margin: 0 0 0.5rem; }
-.meta { font-size: 0.85rem; color: var(--muted); margin: 0; }
-.crumb { margin: 0 0 0.5rem; font-size: 0.95rem; }
+.lede { font-size: var(--lede); line-height: 1.55; margin: 0 0 0.5rem; }
+.meta { font-size: var(--small); color: var(--muted); margin: 0; }
+.crumb { margin: 0 0 0.5rem; }
 .page-cover { display: block; width: 100%; height: auto; margin: 0 0 2rem; }
 
 .prose > :first-child { margin-top: 0; }
-.prose img { display: block; margin: 0 auto; }
-.prose > .figure { text-align: center; }
+.prose img { display: block; }
 .prose > table { display: block; width: max-content; }
 
 .notes { margin-top: 3rem; }
@@ -289,7 +296,7 @@ main { padding-bottom: 3rem; }
 }
 .log-list .log-title { text-decoration: underline; text-underline-offset: 0.15em; text-decoration-thickness: 1px; }
 .log-list a:hover .log-title { text-decoration-thickness: 2px; }
-.log-list .mono { font-size: 0.85rem; }
+.log-list .mono { font-size: var(--small); }
 .log-list .type { color: var(--muted); }
 @media (max-width: 480px) {
   .log-list a { grid-template-columns: max-content 1fr; gap: 0 1rem; }
@@ -306,7 +313,7 @@ main { padding-bottom: 3rem; }
 }
 .pager a { display: flex; flex-direction: column; max-width: 48%; }
 .pager .next { text-align: right; margin-left: auto; }
-.pager .muted { font-size: 0.85rem; }
+.pager .muted { font-size: var(--small); }
 .back { margin-top: 1.5rem; }
 
 /* Notebook */
@@ -321,7 +328,7 @@ main { padding-bottom: 3rem; }
   border-top: 1px solid var(--rule);
 }
 .notebook > li:last-child { border-bottom: 1px solid var(--rule); }
-.notebook time { font-size: 0.85rem; line-height: 1.9; }
+.notebook time { font-size: var(--small); line-height: 1.9; }
 .notebook .plain { margin: 0; }
 .notebook .plain li { margin: 0 0 0.2rem; }
 

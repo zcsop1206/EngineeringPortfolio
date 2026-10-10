@@ -18,8 +18,8 @@ hook:
 
 I am a mechanical engineering student and this was my first ASIC. I had worked with 3D printing file formats before and thought that would help with the layout file. It did not, but it was enough of a push to start.
 
-<div style="margin:0 auto 1rem;max-width:640px">
-<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/projects/asicpuzzle2026/warmup_gds_3d.mp4" aria-label="3D render of the warmup chip GDS, slowly orbiting"></video>
+<div style="margin:0 0 1rem;max-width:640px">
+<video controls autoplay muted loop playsinline style="display:block;width:100%" src="/EngineeringPortfolio/projects/asicpuzzle2026/warmup_gds_3d.mp4" aria-label="3D render of the warmup chip GDS, slowly orbiting"></video>
 </div>
 
 *The warmup chip's GDS in 3D. Standard cells along the bottom, metal wiring stacked above them, wide power straps on top. The puzzle chip is the same thing with a lot more cells.*
@@ -130,7 +130,7 @@ Instance names do not survive into a GDS, so comparing my netlist to the warmup'
 
 Here is the comparator, `cmp0`, in both. It checks the 9-bit sum against 496, which in binary is five ones then four zeros, so it is three AND gates:
 
-<svg viewBox="0 0 660 236" width="660" height="236" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The warmup comparator as two graphs: the given netlist with names on the left, the netlist extracted from the GDS without names on the right, same three AND cells and same wiring" style="display:block;margin:0 auto 1rem;max-width:100%;height:auto">
+<svg viewBox="0 0 660 236" width="660" height="236" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The warmup comparator as two graphs: the given netlist with names on the left, the netlist extracted from the GDS without names on the right, same three AND cells and same wiring" style="display:block;margin:0 0 1rem;max-width:100%;height:auto">
 <text x="160" y="14" text-anchor="middle" style="font-family:var(--font-sans);font-size:11px;font-weight:600;fill:var(--sl-color-text)">Given netlist</text>
 <line x1="68" y1="28" x2="130" y2="34" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
 <line x1="68" y1="52" x2="130" y2="48" style="stroke:var(--sl-color-text);stroke-width:1;opacity:0.7"/>
@@ -323,7 +323,7 @@ Finding the input is a constraint problem: 121 unknown bits, and `success` must 
 
 I did not describe the chip to Z3 separately. The simulator already computes every gate from its inputs, so I ran it through the protocol, reset, 121 enable cycles, 8 idle cycles, with the 121 input bits as symbols instead of numbers. Every gate output becomes an expression. Every flip-flop at every cycle becomes a fresh boolean tied to the expression feeding it. After 129 cycles, `success` is one formula over the 121 input bits.
 
-<svg viewBox="0 0 640 372" width="640" height="372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="How the key was found: the chip unrolled into 129 copies of its gates, giving one formula for success over the 121 input bits, then Z3 deducing forced bits, guessing, propagating, learning from contradictions until every bit is fixed" style="display:block;margin:0 auto 1rem;max-width:100%;height:auto">
+<svg viewBox="0 0 640 372" width="640" height="372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="How the key was found: the chip unrolled into 129 copies of its gates, giving one formula for success over the 121 input bits, then Z3 deducing forced bits, guessing, propagating, learning from contradictions until every bit is fixed" style="display:block;margin:0 0 1rem;max-width:100%;height:auto">
 <defs><marker id="z3arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--sl-color-text)"/></marker></defs>
 <text x="10" y="16" style="font-family:var(--font-sans);font-size:11px;font-weight:600;fill:var(--sl-color-text)">1. Unroll the chip in time</text>
 <rect x="20" y="56" width="84" height="46" rx="4" style="fill:var(--sl-color-gray-6);stroke:var(--sl-color-text);stroke-width:1"/>

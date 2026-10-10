@@ -20,7 +20,7 @@ Start with the puzzle itself. The rules:
 - No two stars touch, not even at a corner.
 
 <div id="sb-widget" class="not-content" style="margin:1.5rem 0">
-<svg viewBox="-2 -2 264 264" width="264" height="264" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Interactive 11 by 11 Star Battle grid with the recovered regions. Each cell is a button that toggles a star." style="display:block;margin:0 auto;max-width:100%;height:auto">
+<svg viewBox="-2 -2 264 264" width="264" height="264" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Interactive 11 by 11 Star Battle grid with the recovered regions. Each cell is a button that toggles a star." style="display:block;margin:0 0 0;max-width:100%;height:auto">
 <rect data-i="0" x="1" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
 <rect data-i="1" x="23" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
 <rect data-i="2" x="45" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
@@ -307,14 +307,14 @@ Start with the puzzle itself. The rules:
 <text data-col="9" x="209" y="258" style="font-family:var(--font-mono);font-size:11px;fill:var(--sl-color-gray-3);pointer-events:none" text-anchor="middle" aria-hidden="true">0</text>
 <text data-col="10" x="231" y="258" style="font-family:var(--font-mono);font-size:11px;fill:var(--sl-color-gray-3);pointer-events:none" text-anchor="middle" aria-hidden="true">0</text>
 </svg>
-<p style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin:1rem 0 0">
-<button type="button" data-act="check" style="font:inherit;font-size:0.85rem;line-height:1.2;padding:0.3rem 0.7rem;border:1px solid var(--sl-color-gray-5);border-radius:0.35rem;background:var(--sl-color-bg-nav);color:var(--sl-color-text);cursor:pointer">Check</button>
-<button type="button" data-act="hint" style="font:inherit;font-size:0.85rem;line-height:1.2;padding:0.3rem 0.7rem;border:1px solid var(--sl-color-gray-5);border-radius:0.35rem;background:var(--sl-color-bg-nav);color:var(--sl-color-text);cursor:pointer">Hint</button>
-<button type="button" data-act="miss" style="font:inherit;font-size:0.85rem;line-height:1.2;padding:0.3rem 0.7rem;border:1px solid var(--sl-color-gray-5);border-radius:0.35rem;background:var(--sl-color-bg-nav);color:var(--sl-color-text);cursor:pointer">Near miss</button>
-<button type="button" data-act="key" style="font:inherit;font-size:0.85rem;line-height:1.2;padding:0.3rem 0.7rem;border:1px solid var(--sl-color-gray-5);border-radius:0.35rem;background:var(--sl-color-bg-nav);color:var(--sl-color-text);cursor:pointer">Solution</button>
-<button type="button" data-act="reset" style="font:inherit;font-size:0.85rem;line-height:1.2;padding:0.3rem 0.7rem;border:1px solid var(--sl-color-gray-5);border-radius:0.35rem;background:var(--sl-color-bg-nav);color:var(--sl-color-text);cursor:pointer">Reset</button>
+<p style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:1rem 0 0">
+<button type="button" data-act="check">Check</button>
+<button type="button" data-act="hint">Hint</button>
+<button type="button" data-act="miss">Near miss</button>
+<button type="button" data-act="key">Solution</button>
+<button type="button" data-act="reset">Reset</button>
 </p>
-<p style="text-align:center;min-height:1.75rem;margin:0.75rem 0 0;font-family:var(--font-mono);font-size:0.9rem;color:var(--sl-color-text)" aria-live="polite"><span data-out></span></p>
+<p style="min-height:1.75rem;margin:0.75rem 0 0;font-family:var(--font-mono);font-size:0.9rem;color:var(--sl-color-text)" aria-live="polite"><span data-out></span></p>
 </div>
 
 <script>
@@ -431,7 +431,7 @@ Read the three messages again. An empty sky: no stars. A big bang: every cell a 
 
 Lay the key out 11 wide, first bit top left.
 
-<svg viewBox="-2 -2 246 246" width="246" height="246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The 121-bit key as an 11 by 11 grid" style="display:block;margin:0 auto 1.5rem">
+<svg viewBox="-2 -2 246 246" width="246" height="246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The 121-bit key as an 11 by 11 grid" style="display:block;margin:0 0 1.5rem">
 <rect x="1" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
 <rect x="23" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
 <rect x="45" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
@@ -564,7 +564,7 @@ A flip-flop is one bit of memory; it takes a new value on every clock edge. A ga
 
 That already kills the design I guessed in part 1, a stored answer compared against the input. 92 bits cannot hold a 121-bit key, or the 121-cell grid being checked. The chip has to judge the grid as it streams past, keeping running counts.
 
-<svg viewBox="0 0 640 236" width="640" height="236" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left, the 121-cell grid that arrives one bit per clock. Right, the chip's 92 flip-flops drawn as squares and grouped by role: 9 for position, 22 column tallies, 22 region tallies, 12 for the last input bits plus a touch flag, 3 for the row tally and its error latch, 8 for the total, 15 for the output generator." style="display:block;margin:0 auto 1rem;max-width:100%;height:auto">
+<svg viewBox="0 0 640 236" width="640" height="236" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left, the 121-cell grid that arrives one bit per clock. Right, the chip's 92 flip-flops drawn as squares and grouped by role: 9 for position, 22 column tallies, 22 region tallies, 12 for the last input bits plus a touch flag, 3 for the row tally and its error latch, 8 for the total, 15 for the output generator." style="display:block;margin:0 0 1rem;max-width:100%;height:auto">
 <text x="20" y="16" text-anchor="start" style="font-family:var(--font-sans);font-size:11px;fill:var(--sl-color-text);font-weight:600">What comes in</text>
 <rect x="20" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
 <rect x="35" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
@@ -836,8 +836,8 @@ Left to right: position, then the window and counts, then the tallies, then the 
 
 The simulator can print every flip-flop after every clock, so I fed the key and watched the groups. The bit order inside each counter was unknown, so the script tries every permutation of a group's flops and keeps the one under which it counts up by one most often.
 
-<div style="margin:0 auto 1rem;max-width:420px">
-<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/key_streaming.mp4" aria-label="The key entering the chip one bit per frame. Beside the grid the column tally, region tally, 12-bit window, touch flag and total are read from the flip-flops after every clock edge, ending at total 22 and the success message."></video>
+<div style="margin:0 0 1rem;max-width:420px">
+<video controls autoplay muted loop playsinline style="display:block;width:100%" src="/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/key_streaming.mp4" aria-label="The key entering the chip one bit per frame. Beside the grid the column tally, region tally, 12-bit window, touch flag and total are read from the flip-flops after every clock edge, ending at total 22 and the success message."></video>
 </div>
 
 *The key going in one bit per frame. Every number beside the grid is read from the flip-flops after that clock edge, nothing is computed by the animation.*
@@ -868,7 +868,7 @@ Edge 125: `enable` has dropped, `success` goes high, and `O` shows `(`. One char
 
 The no-touching rule looks like it needs the whole grid. It needs twelve bits.
 
-<svg viewBox="0 0 640 248" width="640" height="248" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three rows of an 11-wide grid read one cell per clock. The current cell is marked. Every earlier cell is numbered by how many bits back it sits in the stream. The four earlier neighbours of the current cell are 1, 10, 11 and 12 back, all inside the 12-bit window the chip keeps; the four later neighbours are checked when their own star arrives. Below, the 12-bit chain with positions 1, 10, 11 and 12 outlined." style="display:block;margin:0 auto 1rem;max-width:100%;height:auto">
+<svg viewBox="0 0 640 248" width="640" height="248" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three rows of an 11-wide grid read one cell per clock. The current cell is marked. Every earlier cell is numbered by how many bits back it sits in the stream. The four earlier neighbours of the current cell are 1, 10, 11 and 12 back, all inside the 12-bit window the chip keeps; the four later neighbours are checked when their own star arrives. Below, the 12-bit chain with positions 1, 10, 11 and 12 outlined." style="display:block;margin:0 0 1rem;max-width:100%;height:auto">
 <text x="20" y="16" text-anchor="start" style="font-family:var(--font-sans);font-size:11px;fill:var(--sl-color-text);font-weight:600">Reading the grid one cell per clock</text>
 <rect x="20" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
 <text x="32.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">16</text>
@@ -969,8 +969,8 @@ The 12-flop chain is that window. When a star arrives, the flag sets if there is
 
 Reading the 150-gate lookups was unnecessary. Feeding the chip a grid with a single star shows which region tally moves, so that cell belongs to that region. 121 runs, one per cell, gave the whole map.
 
-<div style="margin:0 auto 1rem;max-width:420px">
-<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/region_recovery.mp4" aria-label="121 simulator runs with one star each. After every run the one region tally that moved lights up and the cell takes that region's letter, until all eleven regions are coloured in."></video>
+<div style="margin:0 0 1rem;max-width:420px">
+<video controls autoplay muted loop playsinline style="display:block;width:100%" src="/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/region_recovery.mp4" aria-label="121 simulator runs with one star each. After every run the one region tally that moved lights up and the cell takes that region's letter, until all eleven regions are coloured in."></video>
 </div>
 
 *One star per cell, 121 runs. After each run the tally that moved names the cell's region.*
@@ -1015,7 +1015,7 @@ The first condition is not a very useful constraint. It says nothing about the 9
 
 Uniqueness is a better condition, so the question is whether it singles out the real map. The test: take every empty cell, move it into each neighbouring region, discard any map where a region comes apart, and ask Z3 for all solutions of the altered puzzle under the four rules.
 
-<div style="display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;margin:0 auto 1.5rem">
+<div style="display:flex;flex-wrap:wrap;gap:1.5rem;margin:0 0 1.5rem">
 <svg viewBox="-2 -2 246 246" width="246" height="246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The real region map with the key's stars" style="display:block;max-width:100%;height:auto">
 <rect x="1" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
 <rect x="23" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
@@ -1574,7 +1574,7 @@ The simulator can run with the 121 input bits symbolic, so the printed string is
 
 The quote mark is what the chip prints. Every input in the fourth row has two stars per row, column and region and at least one touching pair. This one has exactly one:
 
-<svg viewBox="-2 -2 246 246" width="246" height="246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A near miss as an 11 by 11 grid: 22 stars, two per row, column and region, with the touching pair at row 9 column 4 and row 10 column 3 in red" style="display:block;margin:0 auto 1.5rem">
+<svg viewBox="-2 -2 246 246" width="246" height="246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A near miss as an 11 by 11 grid: 22 stars, two per row, column and region, with the touching pair at row 9 column 4 and row 10 column 3 in red" style="display:block;margin:0 0 1.5rem">
 <rect x="1" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
 <rect x="23" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
 <rect x="45" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
