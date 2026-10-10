@@ -42,7 +42,7 @@ function isPublishable(relInProject, slug, hiddenEntries) {
 }
 
 /** List publishable files: [{ abs, relFromContent, relFromProjects }]. */
-export function listAssets(contentDir) {
+function listAssets(contentDir) {
   const { hiddenProjects, hiddenEntries } = scanVisibility(contentDir);
   const projectsDir = path.join(contentDir, 'projects');
   const out = [];

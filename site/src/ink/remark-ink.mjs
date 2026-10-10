@@ -29,7 +29,7 @@ function filePathOf(file) {
 }
 
 /** Whether frontmatter marks an ink note: `ink` is a number (or numeric string) of at least 1. */
-export function isInkFrontmatter(fm) {
+function isInkFrontmatter(fm) {
   if (!fm || fm.ink === undefined || fm.ink === null || fm.ink === '' || typeof fm.ink === 'boolean') return false;
   const n = Number(fm.ink);
   return Number.isFinite(n) && n >= 1;
@@ -48,7 +48,7 @@ export function pageFileOf(url, stem) {
 }
 
 /** The page size from the root <svg> tag: the viewBox's width and height, else the width and height attributes. */
-export function readSvgSize(svgPath) {
+function readSvgSize(svgPath) {
   const fd = fs.openSync(svgPath, 'r');
   let head;
   try {

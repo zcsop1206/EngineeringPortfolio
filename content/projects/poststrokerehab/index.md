@@ -6,10 +6,12 @@ start: 2025-09-01
 end: 2025-11-21
 cover: compliantjointbent.jpg
 publish: true
+short: Compliant finger joint
+result: "A printed compliant joint for a rehab glove: elastic to 90° in nonlinear FEA, restoring torque above the 0.012–0.015 N·m friction floor."
 ---
-![joint photo](compliantjointbent.jpg)
+![The black printed compliant joint worn on a bent finger, its open triangular cells folded around the knuckle](compliantjointbent.jpg)
 
-# Parametric Compliant Tendon-Driven PIP Joint Array for Post-Stroke Rehabilitation Glove
+## Parametric Compliant Tendon-Driven PIP Joint Array for Post-Stroke Rehabilitation Glove
 
 > Designed a geometrically nonlinear compliant joint array to replace discrete torsional springs in a tendon-driven post-stroke rehabilitation glove. Developed a parametric CAD framework and nonlinear FEA workflow using displacement-controlled loading to check 90° elastic survivability, distributed strain behavior, and restoring torque sufficient to overcome lumped Bowden and anatomical friction while preserving backdrivability.
 

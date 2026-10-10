@@ -3,8 +3,14 @@ title: "OpenVinyl: 3D-printed records, and why v2 cuts the groove sideways"
 description: A hill-and-dale record printed and played on a hobby FDM printer (v1), and a lateral-cut encoder that writes the printer's G-code directly (v2, verified in software, not yet printed). Every groove parameter is derived from bead width, stylus contact and printer acceleration.
 status: in-progress
 start: 2026-03-01
-cover: stl_mesh.png
+cover: openvinyl_v1_record.jpg
 publish: true
+short: OpenVinyl
+result: "A 3D-printed record that plays. v2 writes the groove as G-code and round-trips a 440 Hz tone to 100.5 µm against 100 commanded."
+featured: 3
+hook:
+  label: Wrong turn
+  text: "v1 cut depth because a 0.48 mm bead seemed too wide to wiggle. Written as G-code directly, it places to about 0.01 mm."
 ---
 OpenVinyl turns digital audio into groove geometry on records printed on a hobby FDM printer, played back on a turntable I designed with two collaborators. v1 worked, barely. This month I went back to first principles and reversed its central design decision. v2 is still a work-in-progress, and I plan to print it and run tests in September 2026.
 
@@ -151,9 +157,10 @@ Level 0 is new to the validation tiers: the stylus tracks the full disc without 
 
 **A hill-and-dale record generated as a watertight 6.8 million triangle STL, sliced, printed, and played on a turntable built for it.**
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 1.5rem;">
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin-bottom: 1.5rem;">
   <iframe
-    src="https://www.youtube.com/embed/aqkWe6JU3gI"
+    src="https://www.youtube-nocookie.com/embed/aqkWe6JU3gI"
+    loading="lazy"
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;"
     title="OpenVinyl v1 demo"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -184,15 +191,15 @@ The 300 to 681 Hz passband means most musical fundamentals could not be encoded 
 
 ### The mesh
 
-The hard part of v1 was turning a waveform into a watertight, printable solid. The groove follows an Archimedean spiral $r_c(	heta) = r_0 - rac{p}{2\pi}	heta$. At each angular step the sample sets the floor height. The mesh must be a closed 2-manifold, every edge shared by exactly two triangles, or the slicer rejects it.
+The hard part of v1 was turning a waveform into a watertight, printable solid. The groove follows an Archimedean spiral $r_c(\theta) = r_0 - \frac{p}{2\pi}\theta$. At each angular step the sample sets the floor height. The mesh must be a closed 2-manifold, every edge shared by exactly two triangles, or the slicer rejects it.
 
-- **Six vertices per step:** outer and inner wall top at the surface, floor centre at $Z_{	ext{base}} + (s + n_{\min}) h$, outer and inner wall bottom at $Z = 0$, and the groove centre projected to land height. Consecutive steps form the quad strips for walls, floor and land.
+- **Six vertices per step:** outer and inner wall top at the surface, floor centre at $Z_{\text{base}} + (s + n_{\min}) h$, outer and inner wall bottom at $Z = 0$, and the groove centre projected to land height. Consecutive steps form the quad strips for walls, floor and land.
 - **About 10 triangles per step.** A 60-second record at 78 RPM with a 0.2 mm nozzle is 680,000 steps and 6.8 million triangles.
 - **Four open boundaries to seal:** a start cap at the outer radius, an end cap at the inner radius with reversed winding (wrong winding reads as a hole), the outer rim to the record's edge, and the inner disk to the spindle hole.
 - **Inter-turn bridging.** The land between one turn and the next must be triangulated too, which means indexing back one full revolution at every step. Skip it and each turn is a separate shell floating in space.
 - **Sign convention.** High sample values map to a deeper floor, never above the surface, so turns can never self-intersect.
 
-![STL Mesh](stl_mesh.png)
+![Top view of the record mesh on the slicer's build plate: a dark disc with fine concentric grooves and a centre hole](stl_mesh.png)
 
 ### Stylus contact
 

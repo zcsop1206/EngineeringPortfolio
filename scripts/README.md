@@ -19,7 +19,7 @@ Run it from anywhere in the repo, with Node 20 or later and no dependencies:
 
     node scripts/guard.mjs
 
-In CI it runs before the build. The step for `.github/workflows/deploy.yml`:
+In CI it runs before `npm ci` and the build, as this step in `.github/workflows/deploy.yml`:
 
 ```yaml
 - name: Guard against files that must not be published

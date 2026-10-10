@@ -6,8 +6,10 @@ start: 2025-09-01
 end: 2025-12-03
 cover: gearboxassem.png
 publish: true
+short: "3:1 printed gearbox"
+result: "An optimizer-sized 3D-printed 3:1 gearbox, exact 3:1 with gears at most 30 mm across. A hand check later found its safety factors wrong."
 ---
-![gearboxassem.png](gearboxassem.png)
+![Line drawing of the gearbox assembly: a printed housing holding two spur gears and a pair of bevel gears on shafts](gearboxassem.png)
 >Formulated and solved a Mixed-Integer Nonlinear Programming (MINLP) problem to optimize a two-stage compound gear train for 3D printing. Used a Differential Evolution algorithm with "maximin" objective function to navigate ~10^6 design combinations, maximizing the minimum safety factor across the assembly. The resulting design achieved an exact 3:1 reduction ratio, fitting within a 125mm build volume and 6-hour print budget. The safety factors the optimizer reported did not survive a hand check: at the specified 5 Nm input the teeth are overstressed (see [the correction below](#hand-check-of-the-safety-factors)).
 >
 >**Link to career interests:** This project taught me computational design optimization for manufacturing constraints, which is directly applicable to my interest in robotics and automated manufacturing. The constraint-handling approach I developed here (balancing structural performance with build time and geometric limits) mirrors the multi-objective optimization problems I want to solve in production robotics, where cycle time, material cost, and reliability must all be simultaneously optimized.
@@ -85,7 +87,7 @@ The algorithm converged on a solution that contradicted typical FDM design intui
 **Why this works:** Small modules minimize pitch diameter for a given reduction ratio. Compact gearboxes have shorter shaft spans, which reduces bending deflection and improves mesh alignment. The trade-off is manufacturing complexity (small teeth near nozzle resolution limits), but the optimizer determined this was acceptable.
 
 Final gearbox assembly with DFMA optimized housing designed by teammates:
-![gearboxassem.png](gearboxassem.png)
+![Line drawing of the gearbox assembly: a printed housing holding two spur gears and a pair of bevel gears on shafts](gearboxassem.png)
 ### Performance Metrics
 
 |Parameter|Result|% of Limit|
@@ -138,8 +140,8 @@ I modeled all four gears in SolidWorks using the optimization output parameters.
 
 **Documentation work:** I created [assembly instructions](https://docs.google.com/document/d/1G6eaIqDjWRjSXjXO8OqMMjGxj0i5qIlwevrQheYqX7o/edit?tab=t.0) with step-by-step photos and torque specifications. This enabled assembly in 2.5 minutes. Writing clear technical documentation is something I hadn't prioritized before this project, but during testing we realized our design isn't fully intuitive and needs clearly defined assembly instructions.
 
-![asseminstructionsp1.png](asseminstructionsp1.png)
-![asseminstructionsp2.png](asseminstructionsp2.png)
+![Assembly instructions, page 1: a table of parts 1 to 8, then steps 1 to 4 fitting bushings, shafts and spur gears to the base](asseminstructionsp1.png)
+![Assembly instructions, page 2: steps 5 to 13 adding the bevel gears and spacers, then joining the housing halves](asseminstructionsp2.png)
 ## Extension: Moving Toward Production
 
 Three developments needed before this design is production-ready:

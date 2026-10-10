@@ -7,13 +7,14 @@ end: 2026-09-10
 cover: cover.png
 publish: true
 date: 2026-09-08
-featured: true
+parent: asicpuzzle2026
+short: The Star Battle checker
 tags:
 github:
 award:
 tech stack:
 ---
-[Part 1](/EngineeringPortfolio/projects/asicpuzzle2026) found the 121 bits that make the Jane Street puzzle chip print `(* TWO STARS *)`. This post is about what those bits mean.
+[Part 1](/EngineeringPortfolio/projects/asicpuzzle2026/) found the 121 bits that make the Jane Street puzzle chip print `(* TWO STARS *)`. This post is about what those bits mean.
 
 Start with the puzzle itself. The rules:
 
@@ -25,126 +26,126 @@ Start with the puzzle itself. The rules:
 <div id="sb-widget" class="not-content" style="margin:1.5rem 0">
 <svg viewBox="-2 -2 264 264" width="264" height="264" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Interactive 11 by 11 Star Battle grid with the recovered regions. Each cell is a button that toggles a star." style="display:block;margin:0 auto;max-width:100%;height:auto">
 <rect data-i="0" x="1" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="1" x="23" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="2" x="45" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="3" x="67" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="4" x="89" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="5" x="111" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="6" x="133" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="7" x="155" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="8" x="177" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="9" x="199" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="10" x="221" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="11" x="1" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="12" x="23" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="13" x="45" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="14" x="67" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="15" x="89" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="16" x="111" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="17" x="133" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="18" x="155" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="19" x="177" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="20" x="199" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="21" x="221" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="22" x="1" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="23" x="23" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="24" x="45" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="25" x="67" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="26" x="89" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="27" x="111" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="28" x="133" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="29" x="155" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="30" x="177" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="31" x="199" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="32" x="221" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="33" x="1" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="34" x="23" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="35" x="45" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="36" x="67" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="37" x="89" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="38" x="111" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="39" x="133" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="40" x="155" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="41" x="177" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="42" x="199" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="43" x="221" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="44" x="1" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="45" x="23" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="46" x="45" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="47" x="67" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="48" x="89" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="49" x="111" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="50" x="133" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="51" x="155" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="52" x="177" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="53" x="199" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="54" x="221" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="55" x="1" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="56" x="23" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="57" x="45" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="58" x="67" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="59" x="89" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="60" x="111" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="61" x="133" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="62" x="155" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="63" x="177" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="64" x="199" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="65" x="221" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="66" x="1" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="67" x="23" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="68" x="45" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="69" x="67" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="70" x="89" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="71" x="111" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="72" x="133" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="73" x="155" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="74" x="177" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="75" x="199" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="76" x="221" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="77" x="1" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="78" x="23" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="79" x="45" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="80" x="67" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="81" x="89" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="82" x="111" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="83" x="133" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="84" x="155" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="85" x="177" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="86" x="199" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="87" x="221" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="88" x="1" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="89" x="23" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="90" x="45" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="91" x="67" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="92" x="89" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="93" x="111" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="94" x="133" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="95" x="155" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="96" x="177" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="97" x="199" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="98" x="221" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="99" x="1" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="100" x="23" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="101" x="45" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="102" x="67" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="103" x="89" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="104" x="111" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="105" x="133" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="106" x="155" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="107" x="177" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="108" x="199" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="109" x="221" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="110" x="1" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="111" x="23" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="112" x="45" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="113" x="67" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="114" x="89" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="115" x="111" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="116" x="133" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="117" x="155" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="118" x="177" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="119" x="199" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="120" x="221" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="1" x="23" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="2" x="45" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="3" x="67" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="4" x="89" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="5" x="111" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="6" x="133" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="7" x="155" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="8" x="177" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="9" x="199" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="10" x="221" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="11" x="1" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="12" x="23" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="13" x="45" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="14" x="67" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="15" x="89" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="16" x="111" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="17" x="133" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="18" x="155" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="19" x="177" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="20" x="199" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="21" x="221" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="22" x="1" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="23" x="23" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="24" x="45" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="25" x="67" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="26" x="89" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="27" x="111" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="28" x="133" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="29" x="155" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="30" x="177" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="31" x="199" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="32" x="221" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="33" x="1" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="34" x="23" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="35" x="45" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="36" x="67" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="37" x="89" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="38" x="111" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="39" x="133" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="40" x="155" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="41" x="177" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="42" x="199" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="43" x="221" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="44" x="1" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="45" x="23" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="46" x="45" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="47" x="67" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="48" x="89" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="49" x="111" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="50" x="133" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="51" x="155" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="52" x="177" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="53" x="199" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="54" x="221" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="55" x="1" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="56" x="23" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="57" x="45" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="58" x="67" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="59" x="89" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="60" x="111" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="61" x="133" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="62" x="155" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="63" x="177" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="64" x="199" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="65" x="221" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="66" x="1" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="67" x="23" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="68" x="45" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="69" x="67" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="70" x="89" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="71" x="111" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="72" x="133" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="73" x="155" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="74" x="177" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="75" x="199" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="76" x="221" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="77" x="1" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="78" x="23" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="79" x="45" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="80" x="67" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="81" x="89" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="82" x="111" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="83" x="133" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="84" x="155" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="85" x="177" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="86" x="199" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="87" x="221" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="88" x="1" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="89" x="23" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="90" x="45" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="91" x="67" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="92" x="89" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="93" x="111" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="94" x="133" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="95" x="155" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="96" x="177" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="97" x="199" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="98" x="221" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="99" x="1" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="100" x="23" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="101" x="45" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="102" x="67" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="103" x="89" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="104" x="111" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="105" x="133" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="106" x="155" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="107" x="177" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="108" x="199" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="109" x="221" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="110" x="1" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="111" x="23" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="112" x="45" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="113" x="67" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="114" x="89" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="115" x="111" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="116" x="133" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="117" x="155" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="118" x="177" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="119" x="199" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="120" x="221" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
 <line x1="0" y1="0" x2="0" y2="22" style="stroke:var(--sl-color-text);stroke-width:2.5;stroke-linecap:square;pointer-events:none"/>
 <line x1="0" y1="0" x2="22" y2="0" style="stroke:var(--sl-color-text);stroke-width:2.5;stroke-linecap:square;pointer-events:none"/>
 <line x1="22" y1="0" x2="44" y2="0" style="stroke:var(--sl-color-text);stroke-width:2.5;stroke-linecap:square;pointer-events:none"/>
@@ -394,7 +395,8 @@ Start with the puzzle itself. The rules:
       if (e.key === "ArrowDown" && r < N - 1) t = i + N;
       if (t >= 0) { e.preventDefault(); cells[t].focus(); }
     });
-    el.addEventListener("focus", function () { el.style.stroke = TXT; el.style.strokeWidth = "2"; });
+    // roving tabindex: only the last focused cell is in the Tab order, arrows move within the grid
+    el.addEventListener("focus", function () { cells.forEach(function (x) { x.setAttribute("tabindex", "-1"); }); el.setAttribute("tabindex", "0"); el.style.stroke = TXT; el.style.strokeWidth = "2"; });
     el.addEventListener("blur", function () { el.style.stroke = "none"; });
   });
   root.querySelectorAll("button[data-act]").forEach(function (b) {

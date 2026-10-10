@@ -7,8 +7,10 @@ end: 2026-09-10
 cover: regions.png
 cover_on_page: false
 publish: true
+short: What the chip computes
+parent: asicpuzzle2026
 ---
-[Part 1](/EngineeringPortfolio/projects/asicpuzzle2026) found the 121 bits that make the Jane Street puzzle chip print `(* TWO STARS *)`. This post is about what those bits mean.
+[Part 1](/EngineeringPortfolio/projects/asicpuzzle2026/) found the 121 bits that make the Jane Street puzzle chip print `(* TWO STARS *)`. This post is about what those bits mean.
 
 Start with the puzzle itself. The rules:
 
@@ -18,128 +20,128 @@ Start with the puzzle itself. The rules:
 - No two stars touch, not even at a corner.
 
 <div id="sb-widget" class="not-content" style="margin:1.5rem 0">
-<svg viewBox="-2 -2 264 264" width="264" height="264" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Interactive 11 by 11 Star Battle grid with the recovered regions. Each cell is a button that toggles a star." style="display:block;margin:0 auto;max-width:100%;height:auto">
+<svg viewBox="-2 -2 264 264" width="264" height="264" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Interactive 11 by 11 Star Battle grid with the recovered regions. Each cell is a button that toggles a star." style="display:block;margin:0 0 0;max-width:100%;height:auto">
 <rect data-i="0" x="1" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="1" x="23" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="2" x="45" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="3" x="67" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="4" x="89" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="5" x="111" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="6" x="133" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="7" x="155" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="8" x="177" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="9" x="199" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="10" x="221" y="1" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 0, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="11" x="1" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="12" x="23" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="13" x="45" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="14" x="67" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="15" x="89" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="16" x="111" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="17" x="133" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="18" x="155" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="19" x="177" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="20" x="199" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="21" x="221" y="23" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 1, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="22" x="1" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="23" x="23" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="24" x="45" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="25" x="67" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="26" x="89" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="27" x="111" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="28" x="133" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="29" x="155" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="30" x="177" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="31" x="199" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="32" x="221" y="45" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 2, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="33" x="1" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="34" x="23" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="35" x="45" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="36" x="67" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="37" x="89" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="38" x="111" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="39" x="133" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="40" x="155" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="41" x="177" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="42" x="199" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="43" x="221" y="67" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 3, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="44" x="1" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="45" x="23" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="46" x="45" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="47" x="67" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="48" x="89" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="49" x="111" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="50" x="133" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="51" x="155" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="52" x="177" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="53" x="199" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="54" x="221" y="89" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 4, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="55" x="1" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="56" x="23" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="57" x="45" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="58" x="67" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="59" x="89" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="60" x="111" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="61" x="133" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="62" x="155" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="63" x="177" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="64" x="199" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="65" x="221" y="111" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 5, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="66" x="1" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="67" x="23" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="68" x="45" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="69" x="67" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="70" x="89" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="71" x="111" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="72" x="133" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="73" x="155" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="74" x="177" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="75" x="199" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="76" x="221" y="133" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 6, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="77" x="1" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="78" x="23" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="79" x="45" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="80" x="67" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="81" x="89" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="82" x="111" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="83" x="133" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="84" x="155" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="85" x="177" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="86" x="199" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="87" x="221" y="155" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 7, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="88" x="1" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="89" x="23" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="90" x="45" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="91" x="67" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="92" x="89" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="93" x="111" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="94" x="133" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="95" x="155" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="96" x="177" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="97" x="199" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="98" x="221" y="177" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 8, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="99" x="1" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="100" x="23" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="101" x="45" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="102" x="67" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="103" x="89" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="104" x="111" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="105" x="133" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="106" x="155" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="107" x="177" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="108" x="199" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="109" x="221" y="199" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 9, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="110" x="1" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="111" x="23" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="112" x="45" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="113" x="67" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="114" x="89" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="115" x="111" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="116" x="133" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="117" x="155" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="118" x="177" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="119" x="199" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
-<rect data-i="120" x="221" y="221" width="20" height="20" rx="3" tabindex="0" role="button" aria-pressed="false" aria-label="row 10, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="1" x="23" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="2" x="45" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="3" x="67" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="4" x="89" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="5" x="111" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="6" x="133" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="7" x="155" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="8" x="177" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="9" x="199" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="10" x="221" y="1" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 0, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="11" x="1" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="12" x="23" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="13" x="45" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="14" x="67" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="15" x="89" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="16" x="111" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="17" x="133" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="18" x="155" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="19" x="177" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="20" x="199" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="21" x="221" y="23" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 1, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="22" x="1" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="23" x="23" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="24" x="45" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="25" x="67" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="26" x="89" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="27" x="111" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="28" x="133" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="29" x="155" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="30" x="177" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="31" x="199" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="32" x="221" y="45" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 2, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="33" x="1" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="34" x="23" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="35" x="45" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="36" x="67" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="37" x="89" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="38" x="111" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="39" x="133" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="40" x="155" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="41" x="177" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="42" x="199" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="43" x="221" y="67" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 3, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="44" x="1" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="45" x="23" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="46" x="45" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="47" x="67" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="48" x="89" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="49" x="111" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="50" x="133" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="51" x="155" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="52" x="177" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="53" x="199" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="54" x="221" y="89" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 4, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="55" x="1" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="56" x="23" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="57" x="45" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="58" x="67" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="59" x="89" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="60" x="111" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="61" x="133" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="62" x="155" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="63" x="177" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="64" x="199" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="65" x="221" y="111" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 5, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="66" x="1" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="67" x="23" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="68" x="45" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="69" x="67" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="70" x="89" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="71" x="111" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="72" x="133" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="73" x="155" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="74" x="177" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="75" x="199" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="76" x="221" y="133" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 6, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="77" x="1" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="78" x="23" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="79" x="45" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="80" x="67" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="81" x="89" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="82" x="111" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="83" x="133" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="84" x="155" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="85" x="177" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="86" x="199" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="87" x="221" y="155" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 7, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="88" x="1" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="89" x="23" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="90" x="45" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="91" x="67" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="92" x="89" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="93" x="111" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="94" x="133" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="95" x="155" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="96" x="177" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="97" x="199" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="98" x="221" y="177" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 8, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="99" x="1" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="100" x="23" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="101" x="45" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="102" x="67" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="103" x="89" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="104" x="111" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="105" x="133" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="106" x="155" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="107" x="177" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="108" x="199" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="109" x="221" y="199" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 9, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="110" x="1" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 0" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="111" x="23" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 1" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="112" x="45" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 2" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="113" x="67" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 3" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="114" x="89" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 4" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="115" x="111" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 5" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="116" x="133" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 6" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="117" x="155" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 7" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="118" x="177" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 8" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="119" x="199" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 9" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
+<rect data-i="120" x="221" y="221" width="20" height="20" rx="3" tabindex="-1" role="button" aria-pressed="false" aria-label="row 10, column 10" style="fill:var(--sl-color-gray-6);cursor:pointer;outline-offset:2px"/>
 <line x1="0" y1="0" x2="0" y2="22" style="stroke:var(--sl-color-text);stroke-width:2.5;stroke-linecap:square;pointer-events:none"/>
 <line x1="0" y1="0" x2="22" y2="0" style="stroke:var(--sl-color-text);stroke-width:2.5;stroke-linecap:square;pointer-events:none"/>
 <line x1="22" y1="0" x2="44" y2="0" style="stroke:var(--sl-color-text);stroke-width:2.5;stroke-linecap:square;pointer-events:none"/>
@@ -305,14 +307,14 @@ Start with the puzzle itself. The rules:
 <text data-col="9" x="209" y="258" style="font-family:var(--font-mono);font-size:11px;fill:var(--sl-color-gray-3);pointer-events:none" text-anchor="middle" aria-hidden="true">0</text>
 <text data-col="10" x="231" y="258" style="font-family:var(--font-mono);font-size:11px;fill:var(--sl-color-gray-3);pointer-events:none" text-anchor="middle" aria-hidden="true">0</text>
 </svg>
-<p style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin:1rem 0 0">
-<button type="button" data-act="check" style="font:inherit;font-size:0.85rem;line-height:1.2;padding:0.3rem 0.7rem;border:1px solid var(--sl-color-gray-5);border-radius:0.35rem;background:var(--sl-color-bg-nav);color:var(--sl-color-text);cursor:pointer">Check</button>
-<button type="button" data-act="hint" style="font:inherit;font-size:0.85rem;line-height:1.2;padding:0.3rem 0.7rem;border:1px solid var(--sl-color-gray-5);border-radius:0.35rem;background:var(--sl-color-bg-nav);color:var(--sl-color-text);cursor:pointer">Hint</button>
-<button type="button" data-act="miss" style="font:inherit;font-size:0.85rem;line-height:1.2;padding:0.3rem 0.7rem;border:1px solid var(--sl-color-gray-5);border-radius:0.35rem;background:var(--sl-color-bg-nav);color:var(--sl-color-text);cursor:pointer">Near miss</button>
-<button type="button" data-act="key" style="font:inherit;font-size:0.85rem;line-height:1.2;padding:0.3rem 0.7rem;border:1px solid var(--sl-color-gray-5);border-radius:0.35rem;background:var(--sl-color-bg-nav);color:var(--sl-color-text);cursor:pointer">Solution</button>
-<button type="button" data-act="reset" style="font:inherit;font-size:0.85rem;line-height:1.2;padding:0.3rem 0.7rem;border:1px solid var(--sl-color-gray-5);border-radius:0.35rem;background:var(--sl-color-bg-nav);color:var(--sl-color-text);cursor:pointer">Reset</button>
+<p style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:1rem 0 0">
+<button type="button" data-act="check">Check</button>
+<button type="button" data-act="hint">Hint</button>
+<button type="button" data-act="miss">Near miss</button>
+<button type="button" data-act="key">Solution</button>
+<button type="button" data-act="reset">Reset</button>
 </p>
-<p style="text-align:center;min-height:1.75rem;margin:0.75rem 0 0;font-family:var(--font-mono);font-size:0.9rem;color:var(--sl-color-text)" aria-live="polite"><span data-out></span></p>
+<p style="min-height:1.75rem;margin:0.75rem 0 0;font-family:var(--font-mono);font-size:0.9rem;color:var(--sl-color-text)" aria-live="polite"><span data-out></span></p>
 </div>
 
 <script>
@@ -389,7 +391,8 @@ Start with the puzzle itself. The rules:
       if (e.key === "ArrowDown" && r < N - 1) t = i + N;
       if (t >= 0) { e.preventDefault(); cells[t].focus(); }
     });
-    el.addEventListener("focus", function () { el.style.stroke = TXT; el.style.strokeWidth = "2"; });
+    // roving tabindex: only the last focused cell is in the Tab order, arrows move within the grid
+    el.addEventListener("focus", function () { cells.forEach(function (x) { x.setAttribute("tabindex", "-1"); }); el.setAttribute("tabindex", "0"); el.style.stroke = TXT; el.style.strokeWidth = "2"; });
     el.addEventListener("blur", function () { el.style.stroke = "none"; });
   });
   root.querySelectorAll("button[data-act]").forEach(function (b) {
@@ -429,7 +432,7 @@ Read the three messages again. An empty sky: no stars. A big bang: every cell a 
 
 Lay the key out 11 wide, first bit top left.
 
-<svg viewBox="-2 -2 246 246" width="246" height="246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The 121-bit key as an 11 by 11 grid" style="display:block;margin:0 auto 1.5rem">
+<svg viewBox="-2 -2 246 246" width="246" height="246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The 121-bit key as an 11 by 11 grid" style="display:block;margin:0 0 1.5rem">
 <rect x="1" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
 <rect x="23" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
 <rect x="45" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
@@ -562,7 +565,7 @@ A flip-flop is one bit of memory; it takes a new value on every clock edge. A ga
 
 That already kills the design I guessed in part 1, a stored answer compared against the input. 92 bits cannot hold a 121-bit key, or the 121-cell grid being checked. The chip has to judge the grid as it streams past, keeping running counts.
 
-<svg viewBox="0 0 640 236" width="640" height="236" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left, the 121-cell grid that arrives one bit per clock. Right, the chip's 92 flip-flops drawn as squares and grouped by role: 9 for position, 22 column tallies, 22 region tallies, 12 for the last input bits plus a touch flag, 3 for the row tally and its error latch, 8 for the total, 15 for the output generator." style="display:block;margin:0 auto 1rem;max-width:100%;height:auto">
+<svg viewBox="0 0 640 236" width="640" height="236" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left, the 121-cell grid that arrives one bit per clock. Right, the chip's 92 flip-flops drawn as squares and grouped by role: 9 for position, 22 column tallies, 22 region tallies, 12 for the last input bits plus a touch flag, 3 for the row tally and its error latch, 8 for the total, 15 for the output generator." style="display:block;margin:0 0 1rem;max-width:100%;height:auto">
 <text x="20" y="16" text-anchor="start" style="font-family:var(--font-sans);font-size:11px;fill:var(--sl-color-text);font-weight:600">What comes in</text>
 <rect x="20" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
 <rect x="35" y="30" width="13" height="13" rx="2" style="fill:var(--sl-color-gray-6)"/>
@@ -834,8 +837,8 @@ Left to right: position, then the window and counts, then the tallies, then the 
 
 The simulator can print every flip-flop after every clock, so I fed the key and watched the groups. The bit order inside each counter was unknown, so the script tries every permutation of a group's flops and keeps the one under which it counts up by one most often.
 
-<div style="margin:0 auto 1rem;max-width:420px">
-<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/key_streaming.mp4" aria-label="The key entering the chip one bit per frame. Beside the grid the column tally, region tally, 12-bit window, touch flag and total are read from the flip-flops after every clock edge, ending at total 22 and the success message."></video>
+<div style="margin:0 0 1rem;max-width:420px">
+<video controls autoplay muted loop playsinline width="1080" height="1350" style="display:block;width:100%" src="/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/key_streaming.mp4" aria-label="The key entering the chip one bit per frame. Beside the grid the column tally, region tally, 12-bit window, touch flag and total are read from the flip-flops after every clock edge, ending at total 22 and the success message."></video>
 </div>
 
 *The key going in one bit per frame. Every number beside the grid is read from the flip-flops after that clock edge, nothing is computed by the animation.*
@@ -866,7 +869,7 @@ Edge 125: `enable` has dropped, `success` goes high, and `O` shows `(`. One char
 
 The no-touching rule looks like it needs the whole grid. It needs twelve bits.
 
-<svg viewBox="0 0 640 248" width="640" height="248" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three rows of an 11-wide grid read one cell per clock. The current cell is marked. Every earlier cell is numbered by how many bits back it sits in the stream. The four earlier neighbours of the current cell are 1, 10, 11 and 12 back, all inside the 12-bit window the chip keeps; the four later neighbours are checked when their own star arrives. Below, the 12-bit chain with positions 1, 10, 11 and 12 outlined." style="display:block;margin:0 auto 1rem;max-width:100%;height:auto">
+<svg viewBox="0 0 640 248" width="640" height="248" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three rows of an 11-wide grid read one cell per clock. The current cell is marked. Every earlier cell is numbered by how many bits back it sits in the stream. The four earlier neighbours of the current cell are 1, 10, 11 and 12 back, all inside the 12-bit window the chip keeps; the four later neighbours are checked when their own star arrives. Below, the 12-bit chain with positions 1, 10, 11 and 12 outlined." style="display:block;margin:0 0 1rem;max-width:100%;height:auto">
 <text x="20" y="16" text-anchor="start" style="font-family:var(--font-sans);font-size:11px;fill:var(--sl-color-text);font-weight:600">Reading the grid one cell per clock</text>
 <rect x="20" y="30" width="24" height="24" rx="2" style="fill:var(--sl-color-gray-6)"/>
 <text x="32.0" y="45.5" text-anchor="middle" style="font-family:var(--font-mono);font-size:8px;fill:var(--sl-color-gray-3)">16</text>
@@ -967,8 +970,8 @@ The 12-flop chain is that window. When a star arrives, the flag sets if there is
 
 Reading the 150-gate lookups was unnecessary. Feeding the chip a grid with a single star shows which region tally moves, so that cell belongs to that region. 121 runs, one per cell, gave the whole map.
 
-<div style="margin:0 auto 1rem;max-width:420px">
-<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/region_recovery.mp4" aria-label="121 simulator runs with one star each. After every run the one region tally that moved lights up and the cell takes that region's letter, until all eleven regions are coloured in."></video>
+<div style="margin:0 0 1rem;max-width:420px">
+<video controls autoplay muted loop playsinline width="1080" height="1350" style="display:block;width:100%" src="/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/region_recovery.mp4" aria-label="121 simulator runs with one star each. After every run the one region tally that moved lights up and the cell takes that region's letter, until all eleven regions are coloured in."></video>
 </div>
 
 *One star per cell, 121 runs. After each run the tally that moved names the cell's region.*
@@ -1013,7 +1016,7 @@ The first condition is not a very useful constraint. It says nothing about the 9
 
 Uniqueness is a better condition, so the question is whether it singles out the real map. The test: take every empty cell, move it into each neighbouring region, discard any map where a region comes apart, and ask Z3 for all solutions of the altered puzzle under the four rules.
 
-<div style="display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;margin:0 auto 1.5rem">
+<div style="display:flex;flex-wrap:wrap;gap:1.5rem;margin:0 0 1.5rem">
 <svg viewBox="-2 -2 246 246" width="246" height="246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The real region map with the key's stars" style="display:block;max-width:100%;height:auto">
 <rect x="1" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
 <rect x="23" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
@@ -1572,7 +1575,7 @@ The simulator can run with the 121 input bits symbolic, so the printed string is
 
 The quote mark is what the chip prints. Every input in the fourth row has two stars per row, column and region and at least one touching pair. This one has exactly one:
 
-<svg viewBox="-2 -2 246 246" width="246" height="246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A near miss as an 11 by 11 grid: 22 stars, two per row, column and region, with the touching pair at row 9 column 4 and row 10 column 3 in red" style="display:block;margin:0 auto 1.5rem">
+<svg viewBox="-2 -2 246 246" width="246" height="246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A near miss as an 11 by 11 grid: 22 stars, two per row, column and region, with the touching pair at row 9 column 4 and row 10 column 3 in red" style="display:block;margin:0 0 1.5rem">
 <rect x="1" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
 <rect x="23" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>
 <rect x="45" y="1" width="20" height="20" rx="3" style="fill:var(--sl-color-gray-6)"/>

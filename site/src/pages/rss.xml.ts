@@ -32,11 +32,17 @@ export const GET: APIRoute = async (context) => {
     })),
   ].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 
+  const self = new URL(url('/rss.xml'), context.site).href;
+  const lastBuildDate = (items[0]?.pubDate ?? new Date()).toUTCString();
   return rss({
     title: SITE_NAME,
     description: 'Project writeups and working notes.',
     site: new URL(url('/'), context.site),
     items,
     trailingSlash: true,
+    xmlns: { atom: 'http://www.w3.org/2005/Atom' },
+    customData:
+      `<language>en</language><lastBuildDate>${lastBuildDate}</lastBuildDate>` +
+      `<atom:link href="${self}" rel="self" type="application/rss+xml"/>`,
   });
 };

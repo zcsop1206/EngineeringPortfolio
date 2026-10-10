@@ -5,6 +5,12 @@ status: in-progress
 start: 2026-05-01
 cover: cact_condenser.jpeg
 publish: true
+short: Heat pipe condenser
+result: "Machined a copper condenser for a wickless heat pipe and tested it charged and dry: 0.074 K/W against 0.26–0.28, steady at 410 W."
+featured: 1
+hook:
+  label: Still open
+  text: "The centre ran 18 °C above the edge, and that gradient per watt was the same charged and dry."
 ---
 ![Machined C110 copper condenser block with 1/4 NPT ports, thermocouple holes and bolt pattern](cact_condenser.jpeg)
 
@@ -204,11 +210,11 @@ The heat $Q$ enters uniformly over the 30 × 30 mm heater face. It leaves over t
 
 The fit recovers the power to within 8% from temperatures alone, and in the charged run it lands on the same value as the coolant balance. So the centre-to-edge gradient of Section 6.4 is what 5 mm of copper gives when it carries that power outward, charged or dry. The chamber changes $g$, by a factor of four.
 
-<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/projects/cact/cact_test1_field.mp4" aria-label="The charged run. A plan view of the substrate shows the fitted temperature field with isotherms growing outward from the heater face as the power steps up, with the eight thermocouples drawn as dots coloured by their measured value. Beside it a section of the stack shows the heater block, substrate, condenser and coolant temperatures."></video>
+<video controls autoplay muted loop playsinline width="1280" height="720" style="display:block;width:100%" src="/EngineeringPortfolio/projects/cact/cact_test1_field.mp4" aria-label="The charged run. A plan view of the substrate shows the fitted temperature field with isotherms growing outward from the heater face as the power steps up, with the eight thermocouples drawn as dots coloured by their measured value. Beside it a section of the stack shows the heater block, substrate, condenser and coolant temperatures."></video>
 
 *Video 1. The charged run. The field is the fitted model. The dots are the measurements, so a dot that stands out from the field is where the model is wrong.*
 
-<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/projects/cact/cact_control_field.mp4" aria-label="The dry control. The same view through four power steps. The substrate runs much hotter than the condenser and a left-to-right tilt grows with power."></video>
+<video controls autoplay muted loop playsinline width="1280" height="720" style="display:block;width:100%" src="/EngineeringPortfolio/projects/cact/cact_control_field.mp4" aria-label="The dry control. The same view through four power steps. The substrate runs much hotter than the condenser and a left-to-right tilt grows with power."></video>
 
 *Video 2. The dry control, on a wider colour scale.*
 

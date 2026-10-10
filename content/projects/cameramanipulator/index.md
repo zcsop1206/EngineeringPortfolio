@@ -6,6 +6,8 @@ start: 2025-09-01
 end: 2025-11-21
 cover: finalcinemanipulatorpromo.png
 publish: true
+short: Camera robot (design study)
+result: "Requirements and CAD for a 4-DOF camera robot: 17 verifiable specs, $1,435 BOM, 28% under budget. Not built."
 ---
 ![Final Cinema Manipulator](finalcinemanipulatorpromo.png)
 

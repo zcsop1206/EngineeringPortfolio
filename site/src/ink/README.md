@@ -22,7 +22,7 @@ An ink note is a markdown file with frontmatter `ink: 1` and one image embed per
 `index.mjs` re-exports the above and adds:
 
 - `inkTransform(): { match(relPath: string): boolean, apply(buffer: Buffer, relPath: string): Promise<Buffer> }` for the copy-asset integration. `match` is true for `.svg` paths; `apply` strips ink pages and returns any other SVG unchanged.
-- `firstInkPage(markdownAbsPath: string): string | null`, the absolute path of the first page the note embeds (null if the file is not an ink note, embeds no page, or the page is missing). For Open Graph images.
+- `firstInkPage(markdownAbsPath: string): string | null`, the absolute path of the first page the note embeds (null if the file is not an ink note, embeds no page, or the page is missing). The site does not use it: Open Graph images for entries come from `firstImageFile` in `src/lib/content.ts`.
 
 ## Wiring
 
@@ -40,11 +40,11 @@ transforms: [inkTransform()]
 ## CSS
 
 ```css
-.ink-page { display: block; width: 100%; max-width: 816px; margin: 1rem auto; height: auto; background: white; }
-@media (prefers-color-scheme: dark) { .ink-page { background: #111; } }
+.ink-page { display: block; width: 100%; height: auto; margin: 1rem 0; background: #ffffff; }
+@media (prefers-color-scheme: dark) { .ink-page { background: #111111; } }
 ```
 
-Pages have a transparent background. The SVG's own `<style>` draws default ink and template lines dark in light mode and light in dark mode, following the operating system's colour scheme even inside an `<img>`, so the background behind the page has to follow the same media query. If the site gets a manual theme toggle, the page background should still follow `prefers-color-scheme`, not the toggle, because the SVG cannot see the toggle.
+This is the rule in `src/styles/site.css`: each page is the width of the text column, on the column's left edge. Pages have a transparent background. The SVG's own `<style>` draws default ink and template lines dark in light mode and light in dark mode, following the operating system's colour scheme even inside an `<img>`, so the background behind the page has to follow the same media query. If the site gets a manual theme toggle, the page background should still follow `prefers-color-scheme`, not the toggle, because the SVG cannot see the toggle.
 
 ## What was checked
 

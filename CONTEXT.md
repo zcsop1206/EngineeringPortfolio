@@ -23,10 +23,10 @@ content/                         the Obsidian vault (open this folder in Obsidia
 site/                            the Astro site; run every npm command from here
   src/content.config.ts          the two collections and their frontmatter schema
   src/ink/                       ink notes: strip stroke data, rewrite page embeds
-  src/build/                     copies content media into dist/
+  src/build/                     the visibility scan, the markdown plugins, and copy-assets (content media into dist/)
   test/fixture-content/          a small content tree for building without the real one
 scripts/guard.mjs                fails on files that must not be published (see scripts/README.md)
-.github/workflows/deploy.yml     guard, npm ci, build in site/, deploy site/dist
+.github/workflows/deploy.yml     guard, npm ci, npm test, build in site/, deploy site/dist
 ```
 
 Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `content/learning/`. The learning notes vault lives outside the repo at `Documents/learning-vault/`.
@@ -34,17 +34,21 @@ Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `c
 ## Content rules
 
 - URLs: a project is at `/EngineeringPortfolio/projects/<slug>/`, where the slug is the folder name. These links were shared on LinkedIn and X and must not change. Entries are at `/projects/<slug>/log/<file stem>/`. Every non-markdown file under `content/projects/<slug>/` is served at `/EngineeringPortfolio/projects/<slug>/<relative path>`.
-- Writeup frontmatter: `title`, `description` (one line, the result), `status` (built-and-tested, design-study, in-progress, abandoned), `start`, `end` (omit while ongoing), `cover` (an image next to index.md), `publish` (default true). `cover_on_page: false` keeps the cover for the home page and link previews but leaves it off the top of the writeup (part 2 of the ASIC puzzle uses it, so the solved grid doesn't spoil the puzzle).
+- Writeup frontmatter: `title`, `description` (one line: the lede under the title and the meta description), `status` (built-and-tested, design-study, in-progress, abandoned), `start`, `end` (omit while ongoing), `cover` (an image next to index.md), `publish` (default true).
+- Home page frontmatter, all optional: `short` (the title on the home page and in the sidebar), `result` (one line: what was built and the number that proves it), `featured` (1, 2 or 3: a featured row, in that order), `hook` (`{label, text}`, shown on featured rows only), `parent` (the slug this is a part of; parts are not listed on the home page, they are linked as "Part N" from the parent's row).
+- `cover_on_page: false` keeps the cover for the home page and link previews but leaves it off the top of the writeup. Both ASIC parts use it (in part 2 the cover is the solved grid, which would spoil the puzzle).
 - Entry frontmatter: `date`, `type` (log, test, decision, sketch; default log), `title` (optional), `publish` (default true). `project` is derived from the folder. Handwritten entries carry `ink: 1` and are written by the ink plugin.
 - Hidden from the site: `publish: false`, `status: abandoned`, and every entry of a hidden project. Hidden media is not copied to `dist/`.
 - Prose is the owner's. Edits by tools change only frontmatter, paths and links. Never regenerate a note from a template.
-- Style for anything added to the site: no bold lead phrases, no `<style>` blocks, no `<details>`, no asides, no decorative images. Visuals only when they communicate. ISO dates.
+- Style for anything added to the site: no bold lead phrases, no `<style>` blocks, no `<details>` in markdown content (the site's own mobile nav uses it), no asides, no decorative images. Visuals only when they communicate. ISO dates.
 - Notebook index at `/notebook/` exists but is not linked from the home page.
 
 ## The site
 
 - Plain Astro 5, content collections over `../content` (override with `CONTENT_DIR`, relative to `site/`), Pagefind search at `/search/`, RSS at `/rss.xml` (projects and entries), a sitemap, an Open Graph image per page.
-- Look: black type on white, dark mode follows the OS only, one system text face and a mono face for numbers, underlined links, a 680 px text column, figures up to about 960 px. No toggle: the ink SVGs switch colour through `prefers-color-scheme` inside `<img>`, so a site toggle would put white ink on a white page.
+- Look: black type on white, dark mode follows the OS only, one system text face and a mono face for numbers, underlined links, a 680 px text column, and figures on the text column too. No toggle: the ink SVGs switch colour through `prefers-color-scheme` inside `<img>`, so a site toggle would put white ink on a white page.
+- Design rule: the simplest baseline, with variation only where it serves a stated intention. One left edge, the text column. One type scale: body, `--small`, `--lede`, headings. Media sits flush left with square corners. Mono only for metadata.
+- Home page: the intro, then one row per project on the text column: cover, short title, result, status. The featured three come first, with a 300 px cover and a hook; then a rule; then the rest with 150 px covers. No "Now" section.
 - Markdown bodies may contain inline SVG and HTML, MathJax, and one inline `<script>` (the Star Battle widget). An inline `<script>` needs a blank line before it and no blank lines inside.
 - Ink page SVGs lose their `<metadata>` (the raw stroke points, about half the bytes) on the way to `dist/`. The vault files are never modified.
 
@@ -88,5 +92,5 @@ Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `c
 ## Checks before pushing
 
 - `node scripts/guard.mjs` from anywhere in the repo.
-- `cd site && npm run build`; open `dist/` served under a folder named `EngineeringPortfolio` so the base path resolves.
+- `cd site && npm test && npm run build`; open `dist/` served under a folder named `EngineeringPortfolio` so the base path resolves.
 - A commit builds cleanly in a fresh `git worktree add` plus `npm ci` in `site/`.

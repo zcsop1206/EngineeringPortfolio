@@ -4,7 +4,7 @@ import { url } from '../lib/content';
 
 const bundle = url('/pagefind/');
 ---
-<Base title="Search" description="Search the project writeups and working notes.">
+<Base title="Search" description="Search the project writeups and working notes." noindex>
   <link slot="head" rel="stylesheet" href={`${bundle}pagefind-ui.css`} />
   <h1>Search</h1>
   <div id="search" data-bundle={bundle} data-base={url('/')}>

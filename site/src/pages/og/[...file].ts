@@ -1,12 +1,14 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { firstImageFile, getEntries } from '../../lib/content';
-import { DEFAULT_OG, entryOgFile, renderDefaultOg, renderImageOg } from '../../lib/og';
+import { firstImageFile, getEntries, getProjects } from '../../lib/content';
+import { DEFAULT_OG, entryOgFile, renderDefaultOg, renderImageOg, smallCoverOgs } from '../../lib/og';
 
 export const getStaticPaths = (async () => {
   const paths: { params: { file: string }; props: { src?: string } }[] = [
     { params: { file: DEFAULT_OG }, props: {} },
   ];
-  for (const e of await getEntries()) {
+  const projects = await getProjects();
+  for (const { file, src } of smallCoverOgs(projects)) paths.push({ params: { file }, props: { src } });
+  for (const e of await getEntries(projects)) {
     const file = entryOgFile(e);
     if (file) paths.push({ params: { file }, props: { src: firstImageFile(e) } });
   }
