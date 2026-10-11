@@ -1,6 +1,6 @@
 ---
-title: "CACT: copper condenser for a wickless flat-plate heat pipe, tested charged and dry"
-description: Machined a C110 copper condenser block to GD&T for an asymmetric-sawtooth vapor chamber and tested it charged and dry. At 410 W the charged chamber reached steady state and passed heat to the condenser at 0.074 K/W, against 0.26 to 0.28 K/W dry.
+title: "CACT: wickless flat-plate heat pipe"
+description: Machined a C110 copper condenser block to GD&T for an asymmetric-sawtooth vapor chamber. Used it in the assembly to test performance against a control setup. At 410 W the charged chamber reached steady state and passed heat to the condenser at 0.074 K/W, against 0.26 to 0.28 K/W dry.
 status: in-progress
 start: 2026-05-01
 cover: cact_condenser.jpeg
@@ -10,7 +10,7 @@ result: "Machined a copper condenser for a wickless heat pipe and tested it char
 featured: 1
 hook:
   label: Still open
-  text: "The centre ran 18 °C above the edge, and that gradient per watt was the same charged and dry."
+  text: The centre ran 18 °C above the edge, and that gradient per watt was the same charged and dry.
 ---
 ![Machined C110 copper condenser block with 1/4 NPT ports, thermocouple holes and bolt pattern](cact_condenser.jpeg)
 
@@ -20,13 +20,13 @@ hook:
 
 A wickless flat-plate heat pipe under development at the Centre for Advanced Coating Technologies pumps fluid with a wire-arc-sprayed asymmetric sawtooth coating instead of a capillary wick. The previous build had a polycarbonate top plate that could not condense vapor, identified as the root cause of the device never reaching steady state. This report covers the replacement: a C110 copper condenser designed and machined to a GD&T drawing, the thermocouple and DAQ instrumentation of the assembly, and two tests: one with the chamber charged with water and a control with it dry. Charged, the device reached steady state at 410 W and the chiller water carried away the electrical input, to within 7% at that point and about 20% over the run. The resistance from substrate to condenser was 0.074 K/W, against 0.26 to 0.28 K/W dry. The substrate was not uniform: the centre ran 18 °C above the edge, and that gradient per watt was the same charged and dry. The charged resistance is lower than conduction through the liquid would give, consistent with the two-phase cooling the chamber is designed for. The flow inside the chamber and its distribution across the plate are not resolved by these thermocouples. A 2-D conduction model of the plate, fitted to the eight substrate thermocouples, recovers the heater power to within 8% and is used to animate the temperature field. Two measurement corrections and a known bypass in the chamber are identified, and the next experiments are specified.
 
-| Item | Detail |
-| --- | --- |
-| Organisation | Centre for Advanced Coating Technologies (CACT), University of Toronto |
-| Period | May 2026 to present, research placement |
-| Role | Design, machining, instrumentation and testing of the condenser |
-| Deliverables | Drawing FPHPM2601 (Appendix A), the machined block, a calibrated 14-channel thermocouple map, the charged and dry test logs |
-| Tools | SolidWorks with GD&T, manual mill and drill press, NPT tapping, Omega OMB-DAQ-56 with thermocouple expansion modules, chiller, DC power supply |
+| Item         | Detail                                                                                                                                         |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Organisation | Centre for Advanced Coating Technologies (CACT), University of Toronto                                                                         |
+| Period       | May 2026 to present, research placement                                                                                                        |
+| Role         | Design, machining, instrumentation and testing of the condenser                                                                                |
+| Deliverables | Drawing FPHPM2601 (Appendix A), the machined block, a calibrated 14-channel thermocouple map, the charged and dry test logs                    |
+| Tools        | SolidWorks with GD&T, manual mill and drill press, NPT tapping, Omega OMB-DAQ-56 with thermocouple expansion modules, chiller, DC power supply |
 
 ## 1. Background
 

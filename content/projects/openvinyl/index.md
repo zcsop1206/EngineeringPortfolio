@@ -1,36 +1,33 @@
 ---
-title: "OpenVinyl: 3D-printed records, and why v2 cuts the groove sideways"
+title: "OpenVinyl: 3D-printed records"
 description: A hill-and-dale record printed and played on a hobby FDM printer (v1), and a lateral-cut encoder that writes the printer's G-code directly (v2, verified in software, not yet printed). Every groove parameter is derived from bead width, stylus contact and printer acceleration.
 status: in-progress
 start: 2026-03-01
 cover: openvinyl_v1_record.jpg
 publish: true
 short: OpenVinyl
-result: "A 3D-printed record that plays. v2 writes the groove as G-code and round-trips a 440 Hz tone to 100.5 µm against 100 commanded."
+result: A 3D-printed record that plays. v2 writes the groove as G-code and round-trips a 440 Hz tone to 100.5 µm against 100 commanded.
 featured: 3
 hook:
   label: Wrong turn
-  text: "v1 cut depth because a 0.48 mm bead seemed too wide to wiggle. Written as G-code directly, it places to about 0.01 mm."
+  text: v1 cut depth because a 0.48 mm bead seemed too wide to wiggle. Written as G-code directly, it places to about 0.01 mm.
 ---
-OpenVinyl turns digital audio into groove geometry on records printed on a hobby FDM printer, played back on a turntable I designed with two collaborators. v1 worked, barely. This month I went back to first principles and reversed its central design decision. v2 is still a work-in-progress, and I plan to print it and run tests in September 2026.
+OpenVinyl turns digital audio into groove geometry on records printed on a hobby FDM printer, played back on a turntable I designed with two collaborators. v1 worked, barely. This month I went back to first principles and reversed its central design decision. v2 is still a work-in-progress, and I plan to print it and run tests in October 2026.
 
 ## The pivot
 
-**v1 put the audio in groove depth because the bead looked too wide for a sideways wiggle. The bead was the wrong thing to be worried about.**
+v1 encoded audio as groove depth because an FDM bead is 0.48 mm wide, so a lateral wiggle looked impossible at 10 to 20 times the width of a real vinyl groove. It assumed the geometry would go through a slicer, and a slicer can only reproduce what a mesh describes at bead resolution. If the encoder writes the G-code itself, the bead can be placed to about 0.01 mm even though it is 0.48 mm wide.
 
-v1 encoded audio as groove depth because an FDM bead is 0.48 mm wide, so a lateral wiggle looked impossible at 10 to 20 times the width of a real vinyl groove. That argument was right about the bead and wrong about the conclusion. It assumed the geometry would go through a slicer, and a slicer can only reproduce what a mesh describes at bead resolution. If the encoder writes the G-code itself, the bead can be placed to about 0.01 mm even though it is 0.48 mm wide. Modulation is displacement, not feature size.
-
-So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and precise XY axes. Layer-height quantization disappears, slicer segment merging disappears, the staircase noise disappears, the ceramic cartridge works in its designed direction, and the groove pass prints in about 25 minutes instead of hours. The constraint was in the FDM slicer. v2 goes one level lower, so printer precision, and FDM physics are constraints.
+So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and precise XY axes. Layer-height quantization, slicer segment merging, and the staircase noise all disappear; the ceramic cartridge works in its designed direction, and the groove pass prints in about 25 minutes instead of hours. The constraint was in the FDM slicer. v2 goes one level lower, so printer precision, and FDM physics are constraints.
 
 ## What v1 got right
 
 **The contact mechanics, the slope limit and the habit of deriving everything from two hardware numbers all carry over unchanged.**
 
-- **Hertzian contact.** An 18 µm LP stylus at 4 g on PLA peaks near 700 MPa, about 14x the yield stress. First play plastically sets the groove. A 3 mil (76 µm) 78-RPM tip cuts peak pressure by about 2.6x, to about 270 MPa, because pressure scales as $R^{-2/3}$. That is still over 5x yield.
+- **Hertzian contact.** An 18 µm LP stylus at 4 g on PLA peaks near 700 MPa, about 14x the yield stress. First play plastically sets the groove. A 3 mil (76 µm) 78-RPM tip cuts peak pressure by about 2.6x, to about 270 MPa, because pressure scales as $R^{-2/3}$. That is still over 5x yield. Fortunately this is less of a concern now that this deformation doesn't act on the geometry encoding the audio.
 - **Slope constraint.** $A \cdot f \leq \tan(\theta_{\max}) \cdot v / 2\pi$. At 78 RPM, $r = 40$ mm and 45°, this is $A \cdot f \leq 52$ mm·Hz.
 - **Radius-dependent bandwidth.** Outer turns get 3x the inner turns on a 10 inch disc.
 - **The compressor** to fit the amplitude budget, and the three-tier validation: melody recognition, SNR, pitch accuracy.
-- **The habit** of deriving every parameter from two hardware inputs and listing what is unmeasured in a living parameters file.
 
 ## Slicer constraint based assumptions in v1
 
@@ -49,9 +46,6 @@ So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and pr
 | Constant RPM | CAV first, CLV designed for | See below. |
 | Fixed pitch | Variable pitch later | Cutting lathes vary spacing with the signal envelope. We write the G-code, so we can too. |
 | "12 inch" 254 mm disc | It is a 10 inch | A 12 inch LP is 302 mm and does not fit a 256 mm bed. |
-
-Questioned and kept as scope rather than physics: a mechanical needle (optical readout would remove contact mechanics but stops being a record), and FDM itself (resin at 35 µm pixels would win on fidelity, but the point is FDM on the printer we own).
-
 ## The v2 groove
 
 **Two beads per turn, 1.1 bead widths apart, so a V-crease forms between them. Both beads wiggle together and the stylus rides the crease.**
