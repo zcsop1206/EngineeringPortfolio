@@ -83,6 +83,10 @@ An end deficit decays as $e^{-s/\ell}$ with $\ell = \sqrt{K/G}$. For this build 
 
 Each row is what the logged run will show, from the model at the assumed dimensions. The band is the minimum and maximum over a screening sample of every unmeasured input, not a confidence interval. The hand value is the same quantity by the closed-form estimate.
 
+<video controls autoplay muted loop playsinline width="1280" height="720" style="display:block;width:100%" src="/EngineeringPortfolio/projects/tubefurnace/furnace_v1_first_run.mp4" aria-label="The predicted first run of the current furnace: the temperature profile along the tube rises as a single arch through the 20 °C per minute ramp, holds at 1000 °C for 30 minutes within a ±5 °C band at the centre, then collapses when the heater switches off. Five silicon pieces pushed in at the start of the hold grow oxide to about 30 nm. Below, the tube centre temperature against the setpoint, the heater power falling through the hold as the blanket charges, and the oxide at the pieces."></video>
+
+*Video 1. The run the table describes, as the model sees it. Top, the profile along the tube with the pieces coloured by their oxide. Bottom, the centre temperature against the setpoint, the relay power, and the oxide at the centre and ±2 and ±4 cm. The pieces go in at the start of the hold; the 25 nm they show at once is the thin-oxide offset the Deal-Grove model applies, which is the part of the model the oxide runs will test first.*
+
 | Response at 1000 °C | Model | Band over the unmeasured inputs | Moved most by | Hand |
 | --- | --- | --- | --- | --- |
 | Steady relay duty | 8% | 5 to 34% | element cold resistance | 13% |
@@ -121,12 +125,14 @@ A Morris screening over the eighteen unmeasured inputs ranks the cold measuremen
 | 5 | Blanket grade and density | the losses |
 | 6 | Supply voltage and the plug actually used | everything dynamic, by a factor of four. It ranks sixth only because the resistance range is wider. It is the first thing to settle |
 
+Each run is logged at 1 s: setpoint and reading over the controller's RS485 port if it exposes them, otherwise from a second thermocouple on a logger, and the heater power from a clamp meter on the element lead. The run sheet records room temperature, humidity, mains voltage and the element's cold resistance, so a drift between runs is a regressor and not noise.
+
 Then five experiments, each designed to estimate named parameters with a stated resolution rather than to produce curves.
 
 | Experiment | Levels | Estimates | What the design showed |
 | --- | --- | --- | --- |
 | Logged ramp, hold and free cool-down | 700, 850 and 1000 °C, one repeat | losses against temperature, effective heat capacity, the controller's plant model | on its own it cannot separate the blanket conductivity from the shell film coefficient (correlation 0.98). Logging the heater power with a clamp meter to 0.5% instead of reading 2% off the controller is what separates them |
-| Profile scan with a second thermocouple | 1 cm steps at 700 and 1000 °C, both directions | axial and radial conductance and the end losses separately | the scan points outside the winding are what make it work: without them the parameter uncertainty is three times larger |
+| Profile scan with a second thermocouple | 1 cm steps at 700 and 1000 °C, both directions, the two thermocouples co-located at the centre first so the scan reads differences to ±1 K | axial and radial conductance and the end losses separately | the scan points outside the winding are what make it work: without them the parameter uncertainty is three times larger |
 | Oxidation of silicon pieces in room air | 1000 °C for 30 and 240 min, 900 °C for 240 min, plus a run at 5% RH behind a desiccant | rate constants and the thin-oxide offset at this ambient | the plan's original 30 and 60 min cells leave the parabolic constant unidentified with the colour chart; the long holds and the dry run fix that |
 | Element life | cold resistance before and after every run | resistance drift against the model's element temperature | the element runs near its limit at full power |
 | Safety verification | infrared survey of the box, earth continuity, insulation resistance, limiter fault injection at 300 °C | the box temperature and the limiter's response against the runaway time | |
@@ -154,3 +160,19 @@ Three pieces of physics force the result. The insulation that keeps the shell to
 As of 2026-10-11: the simulator and the plan exist, the hazard fix is specified, and no run has been logged. Next, in order: the cold measurements, the wiring fix and the earth and insulation checks, the limiter and its fault-injection test, then the logged ramp and the scans. The oxide runs wait on silicon pieces and on a reflectometer or the long holds.
 
 Open items only the hardware can settle: the supply voltage, where the thermocouple sits (against the winding it reads the element, in the bore it reads the process, and the oxide runs will tell which), and whether the 2 W/cm² surface-load limit I am using for the nichrome is the right vendor number. The build cost, parts list and a comparison against a commercial tube furnace's datasheet are to come with the measurements.
+
+## 9. Further work
+
+The model's next jobs, after the first logged run. The list is ordered by what each buys against the acceptance numbers of Section 3, and everything on it waits on the plant being identified from a measured ramp, a scan and a cool-down. Until then a better controller model or a better winding is a prediction about a furnace whose heat loss is known to a factor of three.
+
+| Item | What exists | What it adds | Waits on |
+| --- | --- | --- | --- |
+| The controller as built | A generic PI tuned from the identified plant, with continuous power per 2 s tick | The box's own algorithm from its manual: proportional band in °C, integer I and D, filtering, 1 °C resolution, its autotune; the relay as on/off time proportioning, or a number showing a 2 s cycle is invisible to a plant with minutes of time constant | the controller's model number, then the logged run |
+| Emulator over the unmeasured inputs | A Morris screening of 18 inputs, minutes per sheet | A fitted surrogate so every band on this page updates in seconds when a cold measurement lands | profiling one prediction sheet first |
+| Graded pitch for this furnace | The v2 study, where a graded winding fixes only the symmetric droop | With no gas flow the droop here is symmetric, which is the case a graded pitch fixes; the optimum pitch against the end-loss factor, and the robust choice. Rewinding under cement is a rebuild, so this is a number before it is a decision | measured $K$ and $G$ |
+| Model against measurement, in time | $T(z,t)$ stored every 10 s | The scan points and the logged ramp over the predicted field, as one animation | the scan |
+| Controller comparison | Overshoot, settling and duty metrics; feed-forward already cuts the overshoot from 7 to 0.2 °C | PI, PI with feed-forward, PID and a constrained predictive controller on the identified plant under the quartz ramp and element limits. On one actuator and one sensor they should converge, because the ramp is limited by power minus loss over heat capacity, not by the algorithm; the table is there to show it. What the box can actually be set to bounds the study | the identified plant |
+| Shell temperature against insulation | Shell temperature predicted, 80 °C with a 42 to 212 °C band | One curve of shell temperature against blanket thickness for the v2 box, with the standard's touch limit drawn on | the film coefficient from the infrared survey |
+| Commercial datasheets | Nothing | Flat-zone length and tolerance, ramp and overshoot from two commercial tube furnaces beside this one's measured numbers | the measurements |
+
+Not on the list: the room as a model (the screening says measure the film coefficient instead), and predictive control for its own sake, which earns its place with three coupled zones and hard constraints, that is, with v2.
