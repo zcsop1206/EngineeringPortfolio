@@ -21,7 +21,7 @@ CONTENT_DIR=test/fixture-content npm run build          # bash
 $env:CONTENT_DIR = "test/fixture-content"; npm run build  # PowerShell
 ```
 
-The build stops if `<CONTENT_DIR>/projects` does not exist. Search only works in a build, since the Pagefind index is made after `astro build`.
+The content layer caches each rendered page in `.astro/` keyed on the markdown alone, so after changing a markdown plugin run `npx astro build --force` (or delete `.astro/`) to see its effect; CI builds from a clean checkout. The build stops if `<CONTENT_DIR>/projects` does not exist. Search only works in a build, since the Pagefind index is made after `astro build`.
 
 ## Content
 
@@ -48,10 +48,10 @@ In markdown, relative raster images (`![](photo.jpg)`, `![](../photo.jpg)` from 
 ## Layout
 
 - `src/content.config.ts` the two collections (projects, entries) and their frontmatter schema
-- `src/pages/` home, project and entry pages, notebook, search, 404, `rss.xml`, and `og/` (Open Graph images rendered with sharp)
+- `src/pages/` home, project and entry pages, each project's visuals page (`projects/[slug]/visuals.astro`: its figures one per screen, for walking someone through it), notebook, search, 404, `rss.xml`, and `og/` (Open Graph images rendered with sharp)
 - `src/layouts/Base.astro` the only layout
 - `src/styles/site.css` the only stylesheet
 - `src/lib/content.ts` visibility, ordering, dates, URLs, the home page split (featured rows, the rest, each parent's parts) and the sidebar list; the ordering itself is plain JS in `src/lib/order.mjs`
 - `src/lib/og.ts` Open Graph images: which file each page uses and the sharp rendering
 - `src/ink/` handwritten ink notes: strip stroke data from page SVGs, rewrite page embeds (see `src/ink/README.md`)
-- `src/build/` the visibility scan, the asset integration (`copy-assets.mjs`) and the markdown plugins
+- `src/build/` the visibility scan, the asset integration (`copy-assets.mjs`) and the markdown plugins, among them `rehype-figures.mjs`, which collects a writeup's figures and captions for its visuals page and gives each figure an id (`fig-N`) in the writeup

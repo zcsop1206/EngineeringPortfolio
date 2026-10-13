@@ -1,0 +1,172 @@
+---
+// A project's visuals: the cover (when the writeup shows it) and every figure
+// of the writeup in order, one per screen, each with its caption and a link to
+// where it sits in the writeup. For walking someone through the project. The
+// figures come from src/build/rehype-figures.mjs through remarkPluginFrontmatter.
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import {
+  bodyOpensWithCover,
+  figureLabel,
+  figuresOf,
+  getProjects,
+  outline,
+  projectNav,
+  projectUrl,
+  shortTitle,
+  visualsUrl,
+  type Figure,
+  type Project,
+} from '../../../lib/content';
+import { coverOg } from '../../../lib/og';
+
+type Section = { slug: string; text: string };
+type PageProps = { figures: Figure[]; sections: Section[]; showCover: boolean };
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  const props = new Map<string, PageProps>();
+  for (const project of projects) {
+    const { headings, remarkPluginFrontmatter } = await render(project);
+    const figures = figuresOf(remarkPluginFrontmatter);
+    const { cover, cover_on_page } = project.data;
+    const showCover = Boolean(cover) && cover_on_page !== false && !bodyOpensWithCover(project);
+    if (figures.length === 0 && !showCover) continue;
+    props.set(project.id, { figures, sections: outline(headings), showCover });
+  }
+  const withVisuals = [...props.keys()];
+  return withVisuals.map((slug) => ({
+    params: { slug },
+    props: { project: projects.find((p) => p.id === slug)!, projects, withVisuals, ...props.get(slug)! },
+  }));
+}
+
+const { project, projects, withVisuals, figures, sections, showCover } = Astro.props as PageProps & {
+  project: Project;
+  projects: Project[];
+  withVisuals: string[];
+};
+const { title, description, cover } = project.data;
+const total = figures.length + (showCover ? 1 : 0);
+const writeup = projectUrl(project);
+// The left sidebar lists every project; those with visuals link to their visuals page.
+const has = new Set(withVisuals);
+const nav = projectNav(projects, project.id).map((n) => {
+  const slug = n.href.replace(/\/$/, '').split('/').at(-1)!;
+  return has.has(slug) ? { ...n, href: visualsUrl(slug) } : n;
+});
+// The right sidebar lists the figures.
+const offset = showCover ? 1 : 0;
+const items: Section[] = [
+  ...(showCover ? [{ slug: 'fig-cover', text: `1. ${shortTitle(project)}` }] : []),
+  ...figures.map((f, i) => ({ slug: f.id, text: `${i + 1 + offset}. ${figureLabel(f.caption) || 'Figure'}` })),
+];
+const sectionOf = (f: Figure): Section | undefined => (f.section >= 0 ? sections[f.section] : undefined);
+---
+<Base
+  title={`Visuals: ${title}`}
+  description={description}
+  ogImage={await coverOg(project)}
+  ogType="article"
+  nav={nav}
+  outline={items}
+  noindex
+  wide
+>
+  <article class="page visuals">
+    <header class="page-head">
+      <h1>{title}</h1>
+      <p class="lede">The {total === 1 ? 'figure' : 'figures'} from the <a href={writeup}>writeup</a>, one per screen, in order.</p>
+      <p class="meta mono">
+        {total} {total === 1 ? 'visual' : 'visuals'}
+        <span aria-hidden="true">{' · '}</span>
+        arrow keys or j and k move between them
+      </p>
+    </header>
+    <p class="visuals-index mono">
+      {items.map((it, i) => (
+        <>
+          {i > 0 && ' '}
+          <a href={'#' + it.slug} title={it.text}>{i + 1}</a>
+        </>
+      ))}
+    </p>
+    {showCover && cover && (
+      <section class="visual" id="fig-cover" aria-label={`Visual 1 of ${total}`}>
+        <p class="meta mono">
+          1 / {total}
+          <span aria-hidden="true">{' · '}</span>
+          <a href={writeup}>in the writeup</a>
+        </p>
+        <Image
+          src={cover}
+          alt=""
+          width={1360}
+          widths={[480, 680, 1024, 1360]}
+          sizes="(min-width: 1000px) 960px, calc(100vw - 32px)"
+          format="webp"
+          loading="eager"
+          class="cover"
+        />
+        <p class="caption">{description}</p>
+      </section>
+    )}
+    {figures.map((f, i) => {
+      const n = i + 1 + offset;
+      const section = sectionOf(f);
+      return (
+        <section class="visual" id={f.id} aria-label={`Visual ${n} of ${total}`}>
+          <p class="meta mono">
+            {n} / {total}
+            <span aria-hidden="true">{' · '}</span>
+            {section ? (
+              <>in the writeup: <a href={`${writeup}#${f.id}`}>{section.text}</a></>
+            ) : (
+              <a href={`${writeup}#${f.id}`}>in the writeup</a>
+            )}
+          </p>
+          <div class="prose" set:html={f.html} />
+          {f.captionHtml ? (
+            <p class="caption" set:html={f.captionHtml} />
+          ) : f.caption ? (
+            <p class="caption">{f.caption}</p>
+          ) : null}
+        </section>
+      );
+    })}
+  </article>
+  <script is:inline>
+    // Arrow keys, j/k, PageDown/PageUp, Home/End move between figures. Keys
+    // typed into a control, a video or the Star Battle grid are left alone.
+    (function () {
+      var figs = Array.prototype.slice.call(document.querySelectorAll('.visual'));
+      if (figs.length < 2) return;
+      var smooth = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      function current() {
+        var best = 0;
+        for (var i = 0; i < figs.length; i++) {
+          if (figs[i].getBoundingClientRect().top <= 2) best = i;
+        }
+        return best;
+      }
+      function go(i) {
+        i = Math.max(0, Math.min(figs.length - 1, i));
+        figs[i].scrollIntoView({ behavior: smooth, block: 'start' });
+        history.replaceState(null, '', '#' + figs[i].id);
+      }
+      document.addEventListener('keydown', function (e) {
+        if (e.altKey || e.ctrlKey || e.metaKey) return;
+        var t = e.target;
+        if (t && t.closest && t.closest('input, textarea, select, button, video, [role="group"], [contenteditable]')) return;
+        var k = e.key;
+        if (k === 'ArrowRight' || k === 'j' || k === 'PageDown') go(current() + 1);
+        else if (k === 'ArrowLeft' || k === 'k' || k === 'PageUp') go(current() - 1);
+        else if (k === 'Home') go(0);
+        else if (k === 'End') go(figs.length - 1);
+        else return;
+        e.preventDefault();
+      });
+    })();
+  </script>
+</Base>

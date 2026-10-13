@@ -125,6 +125,29 @@ export function projectUrl(p: Project | string): string {
   return url(`/projects/${typeof p === 'string' ? p : p.id}/`);
 }
 
+/** A figure collected by src/build/rehype-figures.mjs; see the comment there. */
+export type Figure = { id: string; html: string; caption: string; captionHtml?: string; section: number };
+
+/** The figures a writeup's markdown produced, from render()'s remarkPluginFrontmatter. */
+export function figuresOf(remarkPluginFrontmatter: Record<string, unknown>): Figure[] {
+  return (remarkPluginFrontmatter.figures as Figure[] | undefined) ?? [];
+}
+
+/** The project's visuals page: its figures one per screen, for walking someone through it. */
+export function visualsUrl(p: Project | string): string {
+  return url(`/projects/${typeof p === 'string' ? p : p.id}/visuals/`);
+}
+
+/**
+ * A short label for a figure in a list: the caption without its "Figure 1."
+ * prefix, cut at the first sentence and to about `max` characters.
+ */
+export function figureLabel(caption: string, max = 56): string {
+  const first = caption.replace(/^(Figure|Fig\.|Video|Table)\s*\d+[.:]\s*/i, '').split(/(?<=[.!?])\s/)[0].trim();
+  const text = first.replace(/[.:,;]$/, '');
+  return text.length > max ? `${text.slice(0, max - 1).replace(/\s+\S*$/, '')}…` : text;
+}
+
 // astro.config.mjs sets CONTENT_DIR_ABS; the fallback assumes astro runs from site/.
 function contentDir(): string {
   return process.env.CONTENT_DIR_ABS || resolveContentDir(process.cwd());

@@ -186,7 +186,7 @@ main { padding-bottom: 3rem; }
     margin-left: auto;
     margin-right: auto;
     display: grid;
-    grid-template-columns: 200px var(--text-col) 200px;
+    grid-template-columns: 200px minmax(0, var(--text-col)) 200px;
     justify-content: space-between;
     align-items: start;
   }
@@ -270,6 +270,25 @@ main { padding-bottom: 3rem; }
 .pager .next { text-align: right; margin-left: auto; }
 .pager .muted { font-size: var(--small); }
 .back { margin-top: 1.5rem; }
+
+/* Visuals: a project's figures one per screen, for walking someone through the
+   work. The one variation from the writeup is width: the text column is 960 px
+   here, since the page exists to show the media, and each figure is capped at
+   the viewport height so the arrow keys move one figure at a time. */
+
+body.wide { --text-col: 960px; }
+.visual { min-height: calc(100svh - 1rem); padding-top: 1rem; border-top: 1px solid var(--rule); }
+.visual:first-of-type { border-top: 0; padding-top: 0; }
+.visual .meta { margin-bottom: 0.75rem; }
+.visual img, .visual video, .visual svg, .visual iframe { max-width: 100%; height: auto; }
+.visual img, .visual video { display: block; width: auto; max-height: 80svh; object-position: left top; }
+.visual img + img { margin-top: 1rem; }
+.visual .figure { margin: 0 0 0.75rem; }
+.visual .caption { font-size: var(--small); color: var(--muted); margin: 0.75rem 0 1.5rem; }
+.visual .cover { display: block; width: auto; max-width: 100%; max-height: 80svh; height: auto; }
+.visuals-index { font-size: var(--small); margin: 0 0 2rem; }
+.visuals-index a { text-decoration: none; }
+.visuals-index a:hover { text-decoration: underline; }
 
 /* Notebook */
 

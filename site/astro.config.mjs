@@ -8,6 +8,7 @@ import copyAssets from './src/build/copy-assets.mjs';
 import remarkAssetUrls from './src/build/remark-asset-urls.mjs';
 import rehypeA11y from './src/build/rehype-a11y.mjs';
 import rehypeFigureClass from './src/build/rehype-figure-class.mjs';
+import rehypeFigures from './src/build/rehype-figures.mjs';
 import rehypeMathLabels from './src/build/rehype-math-labels.mjs';
 import { resolveContentDir } from './src/build/visibility.mjs';
 import { remarkInk, inkTransform } from './src/ink/index.mjs';
@@ -39,7 +40,8 @@ export default defineConfig({
     // with alt text and lazy loading; remarkAssetUrls then handles any other SVG.
     remarkPlugins: [remarkMath, remarkInk({ contentDir, base }), [remarkAssetUrls, { contentDir, base }]],
     // rehypeMathLabels runs rehype-mathjax and names each formula's SVG with its TeX.
-    rehypePlugins: [rehypeMathLabels, rehypeFigureClass, rehypeA11y],
+    // rehypeFigures collects a writeup's figures for its /visuals/ page.
+    rehypePlugins: [rehypeMathLabels, rehypeFigureClass, [rehypeFigures, { contentDir, base }], rehypeA11y],
   },
   integrations: [
     // Ink page SVGs lose their raw stroke data (<metadata>) on the way to dist/.
@@ -51,6 +53,7 @@ export default defineConfig({
         page.endsWith('/') &&
         !page.endsWith('/404/') &&
         !page.endsWith('/search/') &&
+        !page.endsWith('/visuals/') &&
         (hasEntries || !page.endsWith('/notebook/')),
     }),
   ],

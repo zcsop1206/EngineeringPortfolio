@@ -42,6 +42,7 @@ Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `c
 - Prose is the owner's. Edits by tools change only frontmatter, paths and links. Never regenerate a note from a template.
 - Style for anything added to the site: no bold lead phrases, no `<style>` blocks, no `<details>` in markdown content (the site's own mobile nav uses it), no asides, no decorative images. Visuals only when they communicate. ISO dates.
 - Notebook index at `/notebook/` exists but is not linked from the home page.
+- Visuals pages (added 2026-10-13): `/projects/<slug>/visuals/` shows a writeup's cover (when the writeup shows it) and every top-level figure, in order, one per screen, with its caption and a link back to its place in the writeup (`#fig-N`). For walking someone through a project. Built by `site/src/build/rehype-figures.mjs` from the markdown: a paragraph of only images, an inline SVG or video block, or a `<div>` holding one, each with the following `*Figure N. …*` paragraph as its caption, else the media's alt text or aria-label. A paragraph that mixes an image with text is not a figure. The writeup links the page from its meta line; the pages are `noindex` and out of the sitemap. The one layout variation is a 960 px column (`wide` on `Base`).
 
 ## The site
 

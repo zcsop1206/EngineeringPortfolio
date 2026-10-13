@@ -8,11 +8,13 @@ import {
   entryProject,
   entryTitle,
   entryUrl,
+  figuresOf,
   getEntries,
   getProjects,
   isoDate,
   outline,
   projectNav,
+  visualsUrl,
   type Project,
 } from '../../../lib/content';
 import { coverOg } from '../../../lib/og';
@@ -32,8 +34,10 @@ const { project, projects, entries } = Astro.props as {
   entries: Awaited<ReturnType<typeof getEntries>>;
 };
 const { title, description, status, start, end, cover } = project.data;
-const { Content, headings } = await render(project);
+const { Content, headings, remarkPluginFrontmatter } = await render(project);
 const showCover = cover && project.data.cover_on_page !== false && !bodyOpensWithCover(project);
+// The visuals page shows the cover (when this page does) and then the body's figures.
+const visuals = figuresOf(remarkPluginFrontmatter).length + (showCover ? 1 : 0);
 ---
 <Base title={title} description={description} ogImage={await coverOg(project)} ogType="article" nav={projectNav(projects, project.id)} outline={outline(headings)}>
   <article class="page" data-pagefind-body>
@@ -46,6 +50,12 @@ const showCover = cover && project.data.cover_on_page !== false && !bodyOpensWit
         <time datetime={isoDate(start)}>{isoDate(start)}</time>
         {' – '}
         {end ? <time datetime={isoDate(end)}>{isoDate(end)}</time> : 'present'}
+        {visuals > 0 && (
+          <>
+            <span aria-hidden="true">{' · '}</span>
+            <a href={visualsUrl(project)}>{visuals} {visuals === 1 ? 'visual' : 'visuals'}</a>
+          </>
+        )}
       </p>
     </header>
     {showCover && (
