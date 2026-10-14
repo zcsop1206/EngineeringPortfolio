@@ -22,16 +22,16 @@ So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and pr
 
 ## What v1 got right
 
-**The contact mechanics, the slope limit and the habit of deriving everything from two hardware numbers all carry over unchanged.**
+The contact mechanics, the slope limit and the habit of deriving everything from two hardware numbers all carry over unchanged.
 
-- **Hertzian contact.** An 18 µm LP stylus at 4 g on PLA peaks near 700 MPa, about 14x the yield stress. First play plastically sets the groove. A 3 mil (76 µm) 78-RPM tip cuts peak pressure by about 2.6x, to about 270 MPa, because pressure scales as $R^{-2/3}$. That is still over 5x yield. Fortunately this is less of a concern now that this deformation doesn't act on the geometry encoding the audio.
-- **Slope constraint.** $A \cdot f \leq \tan(\theta_{\max}) \cdot v / 2\pi$. At 78 RPM, $r = 40$ mm and 45°, this is $A \cdot f \leq 52$ mm·Hz.
-- **Radius-dependent bandwidth.** Outer turns get 3x the inner turns on a 10 inch disc.
-- **The compressor** to fit the amplitude budget, and the three-tier validation: melody recognition, SNR, pitch accuracy.
+- Hertzian contact. An 18 µm LP stylus at 4 g on PLA peaks near 700 MPa, about 14x the yield stress. First play plastically sets the groove. A 3 mil (76 µm) 78-RPM tip cuts peak pressure by about 2.6x, to about 270 MPa, because pressure scales as $R^{-2/3}$. That is still over 5x yield. Fortunately this is less of a concern now that this deformation doesn't act on the geometry encoding the audio.
+- Slope constraint. $A \cdot f \leq \tan(\theta_{\max}) \cdot v / 2\pi$. At 78 RPM, $r = 40$ mm and 45°, this is $A \cdot f \leq 52$ mm·Hz.
+- Radius-dependent bandwidth. Outer turns get 3x the inner turns on a 10 inch disc.
+- The compressor to fit the amplitude budget, and the three-tier validation: melody recognition, SNR, pitch accuracy.
 
 ## Slicer constraint based assumptions in v1
 
-**Half of v1's parameters were consequences of the slicer. Each one was re-derived or dropped.**
+Half of v1's parameters were consequences of the slicer. Each one was re-derived or dropped.
 
 | v1 item | v2 verdict | Reason |
 | --- | --- | --- |
@@ -48,7 +48,7 @@ So v2 is a lateral cut, emitted directly as G-code, on the printer's fast and pr
 | "12 inch" 254 mm disc | It is a 10 inch | A 12 inch LP is 302 mm and does not fit a 256 mm bed. |
 ## The v2 groove
 
-**Two beads per turn, 1.1 bead widths apart, so a V-crease forms between them. Both beads wiggle together and the stylus rides the crease.**
+Two beads per turn, 1.1 bead widths apart, so a V-crease forms between them. Both beads wiggle together and the stylus rides the crease.
 
 Both beads follow the same radial offset $x(\theta) = A \cdot \text{audio}(t)$ on top of a flat sliced disc. The stylus self-centres in the crease and reads $x$ as lateral displacement, which is what a ceramic cartridge is built to sense.
 
@@ -75,19 +75,23 @@ Play time is the price of the lateral cut: 36 s versus v1's 64 s on the same dis
 
 ## The encoder
 
-**The software derives the groove, writes the G-code, then decodes that same file back into audio to prove it.**
+The software derives the groove, writes the G-code, then decodes that same file back into audio to prove it.
 
-- **Conditioning.** Mono, highpass, lowpass at the inner-radius smear limit, 6:1 compressor to 18 dB, normalize ignoring filter edge transients. The edge-transient bug silently scaled every record to 79% until the round-trip test caught it.
-- **Sampling.** The spiral is sampled at constant arc length (0.1 mm), so outer turns get finer sampling automatically. v1's "per-turn adaptive bandwidth" extension is free on the geometry side.
-- **Slope limiter.** Runs on $x(\theta)$ after mapping, because the bound depends on radius. Gain envelope is a running minimum over 1 mm, smoothed twice, iterated to convergence. Reports the fraction of samples touched.
-- **Feedrate scheduling.** Printer XY acceleration bounds $A \cdot f$ exactly like the stylus does, and print speed is the free knob. Each segment's speed is set from the bead centreline curvature ($v^2 \kappa \leq 2000$ mm/s²) with 1 mm lookahead, capped at 30 mm/s. Loud passages print slowly, quiet ones fast. This is the print-time optimizer.
-- **Base disc.** Sliced in Bambu Studio and exported as G-code. The tool reads disc top Z, centre and extrusion mode from the export and inserts the groove before the end G-code, reusing the printer's own start sequence, bed levelling and purge.
-- **Self-describing G-code.** Every parameter is written as `; OV key=value` comments and each bead pass is labelled. The preview decodes the file that goes to the printer back into a WAV and a PNG. Tests check the decoded signal matches the internal one to under 2 µm.
-- **Validation gate.** Exit code 2 if any check fails: bed bounds, minimum segment length, volumetric flow, planner segment rate, feedrate range, groove slope, land width, inner radius, disc fits bed, outer bead inside disc.
+- Conditioning. Mono, highpass, lowpass at the inner-radius smear limit, 6:1 compressor to 18 dB, normalize ignoring filter edge transients. The edge-transient bug silently scaled every record to 79% until the round-trip test caught it.
+- Sampling. The spiral is sampled at constant arc length (0.1 mm), so outer turns get finer sampling automatically. v1's "per-turn adaptive bandwidth" extension is free on the geometry side.
+- Slope limiter. Runs on $x(\theta)$ after mapping, because the bound depends on radius. Gain envelope is a running minimum over 1 mm, smoothed twice, iterated to convergence. Reports the fraction of samples touched.
+- Feedrate scheduling. Printer XY acceleration bounds $A \cdot f$ exactly like the stylus does, and print speed is the free knob. Each segment's speed is set from the bead centreline curvature ($v^2 \kappa \leq 2000$ mm/s²) with 1 mm lookahead, capped at 30 mm/s. Loud passages print slowly, quiet ones fast. This is the print-time optimizer.
+- Base disc. Sliced in Bambu Studio and exported as G-code. The tool reads disc top Z, centre and extrusion mode from the export and inserts the groove before the end G-code, reusing the printer's own start sequence, bed levelling and purge.
+- Self-describing G-code. Every parameter is written as `; OV key=value` comments and each bead pass is labelled. The preview decodes the file that goes to the printer back into a WAV and a PNG. Tests check the decoded signal matches the internal one to under 2 µm.
+- Validation gate. Exit code 2 if any check fails: bed bounds, minimum segment length, volumetric flow, planner segment rate, feedrate range, groove slope, land width, inner radius, disc fits bed, outer bead inside disc.
 
 ![Preview of a 30 s synthetic melody at 78 RPM: toolpath, the two beads near mid-record, the lateral modulation recovered from the G-code, and the feedrate schedule](./openvinyl_v2_preview_melody.png)
 
 The four panels above are decoded from the G-code file itself, not from the encoder's internal state. Top right is the pair of beads near mid-record with the wiggle visible. Bottom left is the modulation the stylus should see. Bottom right shows the feedrate only dipping where the melody gets loud.
+
+<video controls autoplay muted loop playsinline width="1280" height="720" style="display:block;width:100%" src="/EngineeringPortfolio/projects/openvinyl/openvinyl_v2_toolpath_melody.mp4" aria-label="The melody G-code as the printer will run it, decoded from the file. The whole toolpath fills in as the L bead runs inward and the R bead returns outward, coloured by scheduled feedrate. A 3 mm window follows the nozzle with both beads at true width and the crease between them. The G-code lines being executed scroll beside it, and a cursor runs along the feedrate schedule, which dips where the modulation envelope is loud. Time runs at real speed at the start, the turnaround and the end, and up to 150 times faster between."></video>
+
+The same file, played as the printer will run it. The L bead runs inward and the R bead returns outward alongside it, so the pass has no travel move. Time runs at real speed where the detail is, at the start, the turnaround at the inner radius and the end, and up to 150 times faster between.
 
 ![Preview of the stress disc: a 300 to 680 Hz tone ladder at 0.2 mm amplitude on a 7 inch, 45 RPM disc](./openvinyl_v2_preview_stress_ladder.png)
 
@@ -103,7 +107,7 @@ Printer profile numbers still to tune on hardware: 30 mm/s ceiling, 2000 mm/s² 
 
 ## CAV or CLV
 
-**A custom turntable can slow down as the needle moves inward, like a CD. That is worth about 1.6x the audio at the same worst-case quality.**
+A custom turntable can slow down as the needle moves inward, like a CD. That is worth about 1.6x the audio at the same worst-case quality.
 
 CAV, constant angular velocity, is fixed RPM like every vinyl record. Groove speed under the stylus varies 3x from outer to inner turn, so bandwidth, slope budget and print resolution per second all vary 3x, and the whole disc is designed for the worst inner turn.
 
@@ -113,7 +117,7 @@ Decision: first records are CAV so speed control is not a variable during tracki
 
 ## The test ladder
 
-**One print, one question. The dominant risk in v2 is tracking, not bandwidth.**
+One print, one question. The dominant risk in v2 is tracking, not bandwidth.
 
 Neither v1's analysis nor the first v2 plan addressed whether a stylus stays in a crease between two round FDM beads for 40 turns. Hence coupons first.
 
@@ -149,7 +153,9 @@ Level 0 is new to the validation tiers: the stylus tracks the full disc without 
 
 ## v1: what was built and played
 
-**A hill-and-dale record generated as a watertight 6.8 million triangle STL, sliced, printed, and played on a turntable built for it.**
+Two v1 pipelines exist. One printed and played. The other is the design the rest of this page derives from, and its one print did not track.
+
+**The record that played** came from Amanda Ghassaei's Processing record generator, modified for a 10 inch disc at 150 RPM on the P1S with a 0.4 mm nozzle and 0.08 mm layers. The audio was a mono WAV decimated by 11 to about 4 kHz with no filter, then peak-normalized to 4-bit integers. The sketch puts 1,600 samples on each revolution and cuts a V groove 2.9 mm wide at 5.1 mm pitch, with the floor set by the sample: eleven floor heights 0.18 mm apart, 1.0 to 2.8 mm below the surface of a 3.0 mm disc. Nine revolutions fit between the edge and the 86 mm radius where the sketch stops, so the disc holds 3.6 s of the 28.7 s file. The mesh is 102,400 triangles with six open edges where the spiral starts, which the slicer's vertex welding closed on import. It played, and the needle got stuck in it: a 3 mil tip bottoms in a V that deep.
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin-bottom: 1.5rem;">
   <iframe
@@ -162,11 +168,13 @@ Level 0 is new to the validation tiers: the stylus tracks the full disc without 
   </iframe>
 </div>
 
-The initial turntable was built by Samantha Chan (mechanical CAD) and Niegel Fernandes (electronics). Initial validation on it confirmed that the physical constraints predicted actual system behaviour: the inner-radius bandwidth limit, the slope-induced amplitude ceiling, and the first-play plastic deformation all appeared where the geometry analysis said they would. The playback transfer function was never measured, and the pipeline used a conservative global cutoff, so usable bandwidth on the outer grooves was left on the table. v2 gets both of those for free from the geometry.
+![The sliced disc on the build plate: nine grooves on the outer band, a flat centre, 3.04 mm tall](stl_mesh.png)
+
+The turntable was built by Samantha Chan (mechanical CAD) and Niegel Fernandes (electronics) for 150 RPM. The playback transfer function was never measured.
 
 ![Initial turntable CAD (Samantha Chan)](rig_model.png)
 
-In v1 the groove was a helical trench whose floor height varied in 0.08 mm steps. Every downstream parameter derived from two hardware inputs, nozzle diameter and layer height, and the signal processing was the last thing designed.
+**The designed pipeline** is `wav_to_record.py`: a hill-and-dale groove on an Archimedean spiral, the floor height in 0.08 mm steps, every parameter derived from nozzle diameter and layer height, and the signal processing designed last. The first disc from it: 254 mm, 2.40 mm tall, 28 layers, 5 h 17 min, 111 g of PLA. The needle struggled to hold its spiral because the groove at the surface was almost nothing, and the sliced G-code shows why. The groove band runs from 100 to 119 mm radius with modulated floors between 1.28 and 1.92 mm, but every layer above 1.92 mm is solid across the whole disc and the top layer is a continuous skin with gap infill over the band. The mesh had quads across the top of the V, so the slicer printed the grooves as tunnels under a 0.5 mm roof and left the stylus the roof's texture. The mesh does not survive; the slice does. The numbers below are the design at its last version, with a 0.2 mm nozzle, and were never printed.
 
 | | Inner radius (40 mm) | Outer radius (120 mm) |
 | --- | --- | --- |
@@ -187,13 +195,15 @@ The 300 to 681 Hz passband means most musical fundamentals could not be encoded 
 
 The hard part of v1 was turning a waveform into a watertight, printable solid. The groove follows an Archimedean spiral $r_c(\theta) = r_0 - \frac{p}{2\pi}\theta$. At each angular step the sample sets the floor height. The mesh must be a closed 2-manifold, every edge shared by exactly two triangles, or the slicer rejects it.
 
-- **Six vertices per step:** outer and inner wall top at the surface, floor centre at $Z_{\text{base}} + (s + n_{\min}) h$, outer and inner wall bottom at $Z = 0$, and the groove centre projected to land height. Consecutive steps form the quad strips for walls, floor and land.
-- **About 10 triangles per step.** A 60-second record at 78 RPM with a 0.2 mm nozzle is 680,000 steps and 6.8 million triangles.
-- **Four open boundaries to seal:** a start cap at the outer radius, an end cap at the inner radius with reversed winding (wrong winding reads as a hole), the outer rim to the record's edge, and the inner disk to the spindle hole.
-- **Inter-turn bridging.** The land between one turn and the next must be triangulated too, which means indexing back one full revolution at every step. Skip it and each turn is a separate shell floating in space.
-- **Sign convention.** High sample values map to a deeper floor, never above the surface, so turns can never self-intersect.
+- Five vertices per step: outer and inner wall top at the surface, floor centre at $Z_{\text{base}} + (s + n_{\min}) h$, and outer and inner wall bottom at $Z = 0$. Consecutive steps form the quad strips for the two walls and the floor.
+- The land between turns is bridged top and bottom, by indexing back one full revolution at every step. Skip it and each turn is a separate shell floating in space. Ten triangles per step with the bridges.
+- Four boundaries to seal: the rim to the record's edge, the inner disk to the spindle hole, and the open notch of the V at each end of the groove, one triangle each. The rim's last quad and the inner disk's first quad are split where the groove starts and ends, or the seams are T-junctions.
+- Sign convention. High sample values map to a deeper floor, never above the surface, so turns can never self-intersect.
+- Checked, not assumed. For the 60 s record at 78 RPM with a 0.2 mm nozzle, 81,666 steps and 825,046 triangles, every edge in exactly two triangles, all facing out.
 
-![Top view of the record mesh on the slicer's build plate: a dark disc with fine concentric grooves and a centre hole](stl_mesh.png)
+<video controls autoplay muted loop playsinline width="1280" height="720" style="display:block;width:100%" src="/EngineeringPortfolio/projects/openvinyl/openvinyl_v1_mesh_build.mp4" aria-label="The v1 signal chain snapping to 16 levels of 0.08 mm, then a toy record of 48 steps per turn and 3 turns built step by step. Open edges are drawn red and counted. The land bridge is withheld on turn two so the floating shell is visible, then the bridges, rim, inner disk and caps close the count to zero. The end cap goes in wound the wrong way first and is counted as an inside-out face."></video>
+
+The toy record above has 48 steps per turn so the topology is visible; the construction is the same as the real one. The committed generator does not pass that check. Its land quads sit across the top of the V and roof the trench, which is what the February disc printed, and the groove spans the whole pitch so the bridges are degenerate. The animation and the numbers above use the corrected generator in `anim/v1_mesh.py`.
 
 ### Stylus contact
 
@@ -203,11 +213,12 @@ A spherical tip also cannot resolve floor features shorter than $2\pi R$ along t
 
 ### Manufacturing limits that no longer apply
 
-- **Z quantization.** 0.08 mm layers gave 16 levels over 1.28 mm, with the bottom 1 to 2 bits suspect at $\pm 0.02$ mm Z accuracy.
-- **Slicer segment merging.** Inner-radius steps of 0.24 mm sat at the slicer's minimum segment length and were dropped from the G-code.
-- **Staircase noise.** The layer staircase produced a tone at $v / h$, about 4 kHz at the inner radius.
+- Z quantization. 0.08 mm layers gave 16 levels over 1.28 mm, with the bottom 1 to 2 bits suspect at $\pm 0.02$ mm Z accuracy.
+- Slicer segment merging. Inner-radius steps of 0.24 mm sat at the slicer's minimum segment length and were dropped from the G-code.
+- Staircase noise. The layer staircase produced a tone at $v / h$, about 4 kHz at the inner radius.
+- Gap infill. The land between grooves was 0.13 mm, thinner than the nozzle, so the slicer filled it as a gap. A groove has to survive slicing, not just meshing.
 
-All three are not relevant once the groove is written as G-code on the XY plane.
+None of the four is relevant once the groove is written as G-code on the XY plane.
 
 ## References
 
