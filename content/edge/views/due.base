@@ -1,0 +1,25 @@
+filters:
+  and:
+    - file.folder.endsWith("schemata")
+    - file.hasProperty("drill_next")
+    - drill_next <= today()
+properties:
+  drill_prompt:
+    displayName: Drill
+  drill_mode:
+    displayName: Mode
+  drill_next:
+    displayName: Due
+  drill_interval:
+    displayName: Interval (d)
+views:
+  - type: table
+    name: Due today
+    order:
+      - file.name
+      - drill_prompt
+      - drill_mode
+      - drill_next
+      - drill_interval
+      - confidence
+      - cold
