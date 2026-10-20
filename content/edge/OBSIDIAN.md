@@ -43,6 +43,12 @@ No community plugins are required. Optional ones that fit:
 - **Weekly**: pick one project. For each schema, read its `## Lens` and answer it in
   the project's `## Lens sweeps`. Score predictions and bump `confirmed` on the schemata they came from. Set `held` only after a new exemplar solved cold.
 
+## The map
+
+`python probes/map.py` from `edge/` regenerates `probes/out/map.svg` and `map.md`. Open
+`map.md` in Obsidian: the SVG embeds, and each region lists its sections as links. Regenerate
+after a schema is held or a writeup changes.
+
 ## What the script still does
 
 `edge.py` is optional. It duplicates nothing Obsidian shows; it only saves typing:

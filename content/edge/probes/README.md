@@ -34,6 +34,25 @@ python probes/surprisal.py schemata/*.md --model Qwen/Qwen2.5-1.5B
 Untested as of 2026-10-17: written without a model present. First run is itself a
 prediction to log: "it runs on the first try, p=0.4".
 
+## M. map (built 2026-10-20) — `map.py`
+
+Embeds every unit in the vault (writeup sections, log entries, schemata, exemplars,
+questions) with all-MiniLM-L6-v2 through transformers, offline, and projects to 2-D with
+t-SNE. Clusters activity into regions by meaning. Emits `probes/out/map.svg` and
+`probes/out/map.md` (embed the SVG in a note; the md lists each region's sections as links).
+
+What the four states look like on it: held schemata are solid dots; open questions are
+rings; a region of activity with no schema inside is an unknown known, and one that spans
+projects is the strongest candidate; the dashed hull is the edge of what is documented.
+Unknown unknowns are kept unmapped, by decision (2026-10-20): nothing is drawn beyond the
+frontier, because it would be a reference corpus's map rather than mine. They enter through
+anomalies and lens sweeps. `--reference FILE` exists in the code but is dormant.
+
+```
+python probes/map.py
+python probes/map.py --threshold 0.5
+```
+
 ## B. footprint (second) — not built
 
 Gemma 2 2B + a Gemma Scope SAE at a middle layer (residual stream, layer ~12 of 26).
