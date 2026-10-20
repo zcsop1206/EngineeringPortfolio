@@ -25,5 +25,6 @@ reality, a primary source I read, a counterexample, a hint one level up. never t
 ## Derivation
 <in my own words, from things I already hold. prefix anything a model contributed with ai:>
 
-## Becomes schema
-<[[schema]] when it closes>
+## Closes into
+<the [[schema]] it joined as an exemplar, or the new schema it founded. a question is not
+closed by an answer; it is closed when the answer is an exemplar in a schema>

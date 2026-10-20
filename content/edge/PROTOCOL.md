@@ -1,120 +1,119 @@
-# Edge — protocol v0.1
+# Edge — protocol v0.2
 
-Reasoning and sources for every rule here are in DESIGN.md. Obsidian setup is in OBSIDIAN.md.
+The rules. The reasoning is in CORE.md (what a schema is and why) and DESIGN.md (the
+evidence behind the rituals). Obsidian setup is in OBSIDIAN.md.
 
-Goal: increase discretional agency. Knowledge is useful here only when I can act on it
-without assistance and can say how I got there.
+## What a schema is
 
-## The four states and the three moves that matter
+A schema is a micro-paradigm with four parts:
 
-| state | short | what it feels like |
-|---|---|---|
-| known known | KK | I can produce it cold and explain the derivation |
-| known unknown | KU | I can name the question |
-| unknown known | UK | I act correctly without knowing why, or I knew once and forgot |
-| unknown unknown | UU | I cannot even name the question yet |
+- **Generalization**: a statement I can make.
+- **Commitments**: what has to exist and be true for the statement to make sense.
+- **Exemplars**: concrete problems it has solved, worked by hand. The first one is the
+  derivation.
+- **Anomalies**: what it has failed to absorb.
 
-Moves the system is built around:
+I **hold** a schema when I can solve a new exemplar cold *and* state the generalization.
+Exemplar transfer alone is an unknown known. The statement alone is a slogan.
 
-1. **UK → KK: act first, capture second.** Produce before looking up. When something
-   comes out right without a derivation, log it as a hunch (`~`) and derive it later.
-2. **KU → KK: question → derivation or experiment → schema → drill.** A question is not
-   closed when answered. It is closed when the answer is a schema I can re-derive cold.
-3. **UU → KU: mine the edges.** Three edge detectors: surprises (`!`), prediction
-   misses, and lens sweeps (apply every schema I hold to a project and see where it
-   produces a question I can't answer).
+## The four states, in these terms
 
-The fourth transition, KK → UK (forgetting), is fought with drills on derivations,
-not facts.
+| state | what it is here |
+|---|---|
+| known known | a held schema |
+| known unknown | a puzzle my schemata say is solvable, not yet solved: a question file |
+| unknown known | exemplars worked, generalization never articulated: fluent but cannot teach |
+| unknown unknown | what my schemata make invisible. Found only through anomalies and through another schema's lens |
+
+## The moves
+
+1. **Unknown unknown to known unknown.** An anomaly (`!`), a prediction miss (`p` scored
+   wrong), or a lens I cannot answer. Each becomes a question.
+2. **Known unknown to known known.** A question is attempted in writing, gets feedback,
+   and closes by joining a schema as an exemplar, or by founding a new schema.
+3. **Unknown known to known known.** A hunch (`~`) is worked until the generalization
+   can be stated. Then it is an exemplar with a rule.
+4. **Crisis.** A schema whose anomalies outnumber its exemplars is in crisis. The weekly
+   sweep with my other schemata is how I look for its successor. Patching the
+   generalization after the fact is not a fix; it is degeneration.
+
+## Health, computed
+
+| state | condition |
+|---|---|
+| progressive | a dated prediction, made before the outcome, came true, and anomalies ≤ confirmed |
+| holding | exemplars > 0, no confirmed prediction yet |
+| degenerating | anomalies > confirmed |
+| crisis | anomalies > exemplars |
+
+Health replaces any hand-set confidence. The only way to raise it is a prediction that
+comes true or an anomaly resolved into an exemplar.
 
 ## Capture signals
 
-During work, capture only. One line in `inbox/inbox.md`. Never resolve during work;
-that is where agency is exercised.
+During work, capture only. One line in `inbox/inbox.md`. Never resolve during work.
 
-| tag | meaning | state it signals |
+| tag | meaning | becomes |
 |---|---|---|
-| `?` | a question I can't answer | KU |
-| `!` | a surprise: outcome differed from expectation | UU leaking in |
-| `~` | a hunch: it worked and I don't know why | UK |
-| `=` | a derivation: I now understand and can re-derive | KK candidate |
-| `x` | an error I made, with the cause if known | blindspot |
-| `p` | a prediction, with a confidence, before the outcome is known | calibration |
+| `?` | a question I can't answer | a question file |
+| `!` | a surprise: outcome differed from expectation | an anomaly on a schema, or a surprise on a project |
+| `~` | a hunch: it worked and I don't know why | a question, until the rule is stated |
+| `=` | a derivation: I now understand and can re-derive | an exemplar on a schema |
+| `x` | an error I made, with the cause if known | an anomaly, or a question |
+| `p` | a prediction, with a probability, before the outcome | a row in a project's Predictions table |
 
 ## Rituals
 
-- **During work:** capture only. `edge capture "? why does X happen"`.
-- **Daily, 10 min:** triage the inbox. Each line becomes a question file, a schema
-  edit, a drill, or gets deleted. Inbox should be empty at the end.
-- **Weekly:** one lens sweep on one project (`edge sweep <project>`). Score any
-  predictions whose outcomes are now known. Promote or demote schema confidence.
-- **Monthly:** run the loop on the system itself (`projects/edge.md`).
+- **During work**: capture only.
+- **Daily, ten minutes**: empty the inbox. Each line becomes a file, an edit, or nothing.
+- **Drills, when due**: solve a **new exemplar** of the schema. Not "re-derive the
+  statement". Work it in whichever mode fits: written, drawn with no words, restated under
+  a constraint (taboo, word budget, negation, audience, other language), or built. Pass
+  only if the exemplar went into the file. Pass doubles the interval; fail resets it to
+  one day and is captured as `x`.
+- **Weekly, half an hour**: one project. Every schema's lens against it. Score
+  predictions whose outcomes are known. Anything worth showing becomes a dated log entry
+  in `projects/<slug>/log/`, in my own words.
+- **Monthly**: run the loop on the system itself (`projects/edge.md`).
 
 ## Self-sufficiency rule
 
 A transition counts only if I performed it by hand. Tools and models may surface a
-signal, schedule, or count. **Signals, not sentences.** If a tool's output could be
-pasted into a schema, the tool is misdesigned.
+signal, schedule, or count. **Signals, not sentences.** No tool output changes `held`,
+the counters, or the drill fields except through my own edit after my own work.
 
 ## The gate (attempt, then feedback)
 
-The system exists partly because I have been outsourcing thinking. So:
-
 1. **Attempt first.** Before asking a model anything about a question, write the attempt
-   under `## Attempts` in the question file. No written attempt, no model.
-2. **Feedback must follow.** An attempt without feedback decays into a guess. Take it
-   from the cheapest source that preserves my derivation, in this order: reality (run,
-   build, measure); a primary source I read myself; a counterexample or error-check
-   from a person or model; a hint one level up. Record it under `## Feedback`.
-3. **A model may:** ask me questions, point at a blindspot or error, check a derivation I
-   wrote, give a counterexample, name a lens or schema I might not have applied.
-4. **A model may not:** give the answer, write the derivation, write the schema.
-5. **Unlock:** after three logged attempts, or a hard time-box I set in advance, a model
-   may give one hint one level up (the next sub-question, not the answer).
-6. Anything a model produced is tagged `ai:` and cannot be promoted to a schema until I
-   have re-derived it by hand in my own words.
+   under `## Attempts`. No written attempt, no model.
+2. **Feedback must follow**, from the cheapest source that preserves my derivation:
+   reality (run, build, measure); a primary source I read myself; a counterexample or
+   error-check from a person or model; a hint one level up. Record it under `## Feedback`.
+3. **A model may**: ask me questions, point at a blindspot or error, check a derivation I
+   wrote, give a counterexample, name a lens or schema I have not applied.
+4. **A model may not**: give the answer, write the derivation, write an exemplar, write a
+   generalization.
+5. **Unlock**: after three logged attempts, or a time-box set in advance, a model may give
+   one hint one level up.
+6. Anything a model produced is tagged `ai:` and cannot become an exemplar until I have
+   re-derived it by hand in my own words.
 
-## Metacognition fields
+## Probes
 
-Every schema carries:
+Probes locate a schema relative to the consensus paradigm encoded in an open-weight
+model. They say where my phrasing leaves the consensus, whether two of my terms collapse
+onto one direction, whether a hierarchy I assert has a geometric correlate. They never say
+what is true, and they never change health or `held`. Specs in `probes/`.
 
-- `confidence`: 0 untested, 1 used once, 2 used in several contexts, 3 I would bet on it
-- `cold`: true/false, can I re-derive the verbal statement with no notes
-- `modes`: which of verbal, visual, spatial, built I have produced it in cold
-- `## Derivation`: how it follows from things I already hold
-- `## Fails when`: known limits
-- `## Lens`: the question it lets me ask of any new problem
-- `## Representations`: the four slots. A schema is not its sentence.
-
-A schema with `cold: false` is not a known known yet, whatever its confidence.
-Confidence 3 requires at least two modes.
-
-## Drills
-
-Generative recall, not flashcards. A drill prompt is "re-derive X", "draw X with no
-words", "build X", or "restate X under a constraint", never "what is X". The drill
-lives on the schema (`drill_prompt`, `drill_mode`, `drill_next`, `drill_interval`).
-Intervals double on pass (1, 2, 4, 8, 16, 32, 64 days) and reset to 1 on fail. A fail
-is also a capture: `x` with the cause. Rotate `drill_mode` after each pass.
-
-Constrained restatements (mode `constrained`): taboo (no key terms), budget (exactly
-12 words, then 40), negation (three things it is not), audience, other language.
-
-## Two free unknown-unknown detectors
-
-- **Translation failure.** Drawing or building a verbal schema and being unable to
-  place something means that something is an unstated quantity or relation. Log `!`.
-- **Constraint failure.** Where a constrained restatement stalls, the schema is held
-  as a phrase, not an understanding. Log `?`.
-
-Computational probes (surprisal, SAE footprint, embedding neighbourhood) are specified
-in `probes/`. They emit signals only. They come after the free detectors.
+Two probes need no model and come first: try to draw the generalization with no words,
+and restate it under a constraint. Whatever cannot be placed or restated is an unstated
+commitment. Log it.
 
 ## Growth rules
 
-- Plain markdown, flat folders, small vocabulary. Nothing enforced by software that a
-  text editor can't do by hand.
+- Plain markdown, flat folders, small vocabulary. Nothing enforced by software that a text
+  editor can't do by hand.
 - Fields are conventions. Add one when a real need appears, retire it when unused.
-- The system is a project inside the system. Changes to this protocol go through the
-  same loop: capture, question, attempt, schema.
-- Any tooling (edge.py) must be deletable without losing information.
+- The system is a project inside the system. Changes to this protocol go through the same
+  loop: an anomaly in how the system behaves, a question, an exemplar.
+- Any tooling must be deletable without losing information.

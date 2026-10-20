@@ -3,23 +3,24 @@ filters:
     - file.folder.endsWith("schemata")
     - file.hasProperty("drill_next")
     - drill_next <= today()
+formulas:
+  health: 'if(anomalies > exemplars, "crisis", if(anomalies > confirmed, "degenerating", if(confirmed > 0, "progressive", if(exemplars > 0, "holding", "empty"))))'
 properties:
-  drill_prompt:
-    displayName: Drill
-  drill_mode:
-    displayName: Mode
+  formula.health:
+    displayName: Health
+  exemplars:
+    displayName: Exemplars so far
   drill_next:
     displayName: Due
   drill_interval:
     displayName: Interval (d)
 views:
   - type: table
-    name: Due today
+    name: Solve a new exemplar
     order:
       - file.name
-      - drill_prompt
-      - drill_mode
+      - formula.health
+      - exemplars
       - drill_next
       - drill_interval
-      - confidence
-      - cold
+      - held

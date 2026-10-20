@@ -13,7 +13,7 @@ Needs: `pip install torch transformers`, a small local causal LM. Default is
 `google/gemma-2-2b` (needs Hugging Face login once). Any causal LM works; try
 `Qwen/Qwen2.5-1.5B` if Gemma is a hassle.
 
-Reads the `## Statement` of one schema file. Emits:
+Reads the `## Generalization` of one schema file (older files: `## Statement`). Emits:
 
 1. per-token surprisal (bits), rendered as the statement with tokens above a
    threshold wrapped in `==highlight==`. These are the words where my phrasing leaves

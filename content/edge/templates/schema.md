@@ -1,43 +1,39 @@
 ---
-confidence: 0
-cold: false
-modes: []
+held: false
+exemplars: 0
+anomalies: 0
+predictions: 0
+confirmed: 0
 domain:
 created: {{date}}
-drill_prompt:
-drill_mode: verbal
 drill_next:
 drill_interval: 1
 ---
 
 # <schema name>
 
-Fields: confidence 0 untested, 1 used once, 2 several contexts, 3 would bet on it.
-cold means I can re-derive the verbal statement with no notes. modes lists which of
-verbal, visual, spatial, built I have produced it in cold. Confidence 3 needs two.
-drill_mode is one of verbal, visual, built, constrained. Delete this paragraph.
+A schema is a micro-paradigm (CORE.md). held is true only when I have solved a new
+exemplar cold and can state the generalization. The counters are maintained by hand or
+by the plugin; health is computed from them. Delete this paragraph.
 
-## Statement
-<one or two sentences>
+## Generalization
+<one or two sentences I can state>
 
-## Derivation
-<how it follows from what I already hold. prefix anything a model contributed with ai:>
+## Commitments
+<what has to exist and be true for the generalization to make sense. this is where
+another schema's lens will bite>
 
-## Representations
-- verbal: (the statement above)
-- visual: <link to .canvas / .excalidraw / photo, drawn with no words>
-- spatial / kinesthetic: <a gesture, a physical layout, a walk-through>
-- built: <a circuit, a sim, a jig, code, a model>
+## Exemplars
+<dated. concrete problems this schema solved, worked by hand. the first one is the
+derivation. an exemplar may be written, drawn with no words, restated under a constraint,
+or built>
 
-## Applies when
-
-## Fails when
+## Anomalies
+<dated. what resisted. link the [[question]] each raised. resolved into an exemplar =
+accommodated; unresolvable = a vote for crisis>
 
 ## Lens
 <the question this schema lets me ask of any new problem>
 
-## Came from
-<[[question]] files, surprise, project>
-
 ## Probe notes
-<translation failures, constrained restatements that broke, probe output links. by hand.>
+<position relative to the consensus paradigm. never changes held or the counters>

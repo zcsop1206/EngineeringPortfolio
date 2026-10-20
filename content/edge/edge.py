@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""edge: optional tooling over the markdown. Obsidian shows everything this prints.
+"""edge: optional tooling over the markdown. The Obsidian plugin and Bases show all of this.
 Signals, scheduling and counting only. Deletable without losing information.
 
   edge capture "<tag> text"        append a line to inbox/inbox.md
@@ -8,7 +8,7 @@ Signals, scheduling and counting only. Deletable without losing information.
   edge due                         schemata whose drill_next is today or earlier
   edge drill <schema> pass|fail    double or reset the interval on that schema
   edge sweep <project>             print every schema's lens against a project
-  edge stats                       where knowledge is sitting right now
+  edge stats                       where knowledge is sitting right now, with health
 """
 import re, sys
 from datetime import date, timedelta
@@ -16,9 +16,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 INBOX = ROOT / "inbox" / "inbox.md"
-TAGS = {"?": "question -> questions/", "!": "surprise -> project Surprises, then a question",
-        "~": "hunch -> derive it, then schema", "=": "derivation -> schema + drill",
-        "x": "error -> cause, then schema fails_when or a question", "p": "prediction -> project Predictions table"}
+TAGS = {"?": "question -> questions/", "!": "surprise -> anomaly on a schema, or project Surprises",
+        "~": "hunch -> question until the rule is stated", "=": "derivation -> exemplar on a schema",
+        "x": "error -> anomaly or question", "p": "prediction -> project Predictions table"}
 TODAY = date.today()
 
 def frontmatter(path):
@@ -31,6 +31,20 @@ def frontmatter(path):
                 k, v = line.split(":", 1)
                 fm[k.strip()] = v.strip()
     return fm, txt
+
+def num(fm, key):
+    try:
+        return int(fm.get(key, "0") or 0)
+    except ValueError:
+        return 0
+
+def health(fm):
+    ex, an, co = num(fm, "exemplars"), num(fm, "anomalies"), num(fm, "confirmed")
+    if an > ex: return "crisis"
+    if an > co: return "degenerating"
+    if co > 0: return "progressive"
+    if ex > 0: return "holding"
+    return "empty"
 
 def set_field(path, key, value):
     txt = path.read_text(encoding="utf-8")
@@ -94,8 +108,8 @@ def due(_):
     if not rows:
         print("nothing due"); return
     for name, fm in rows:
-        print(f"[{name}] ({fm.get('drill_mode','verbal')}) {fm.get('drill_prompt','')}   due {fm['drill_next']}")
-    print("\nproduce it (write / draw / build) in scratch first. then: edge drill <schema> pass|fail")
+        print(f"[{name}] solve a new exemplar   ({health(fm)}, {num(fm,'exemplars')} so far, due {fm['drill_next']})")
+    print("\nwork it (write / draw / constrain / build), put it under ## Exemplars and bump the count. then: edge drill <schema> pass|fail")
 
 def drill(args):
     name, result = args[0], args[1]
@@ -107,6 +121,8 @@ def drill(args):
     set_field(path, "drill_interval", iv)
     set_field(path, "drill_next", TODAY + timedelta(days=iv))
     print(f"{name}: next {TODAY + timedelta(days=iv)} (interval {iv})")
+    if result == "pass" and num(fm, "exemplars") == 0:
+        print("note: exemplars is still 0. a pass without a new exemplar in the file is not a pass.")
     if result == "fail":
         print('also capture it:  edge capture "x failed drill <schema>: <cause>"')
 
@@ -120,7 +136,7 @@ def sweep(args):
     for s in schemata():
         fm, txt = frontmatter(s)
         lens = section(txt, "Lens") or "(no lens written yet)"
-        print(f"## {s.stem}  [conf {fm.get('confidence','?')}, cold {fm.get('cold','?')}]")
+        print(f"## {s.stem}  [{health(fm)}, held {fm.get('held','?')}]")
         print(f"   {lens}")
         print("   -> answer: \n")
     print("any lens you cannot answer is a new question. any lens that feels irrelevant: say why, that is also data.")
@@ -130,11 +146,15 @@ def stats(_):
     qs = [frontmatter(p)[0] for p in (ROOT / "questions").glob("*.md")]
     ss = [frontmatter(p)[0] for p in schemata()]
     due_n = sum(1 for s in ss if s.get("drill_next") and date.fromisoformat(s["drill_next"]) <= TODAY)
+    by_health = {}
+    for s in ss:
+        by_health[health(s)] = by_health.get(health(s), 0) + 1
     print("inbox     ", {t: sum(1 for l in inbox if l[1] == t) for t in TAGS if any(l[1] == t for l in inbox)} or "empty")
     print("questions ", {st: sum(1 for q in qs if q.get("status") == st) for st in ["open", "attempting", "derived", "schema"]})
-    print("schemata  ", len(ss), "| cold:", sum(1 for s in ss if s.get("cold") == "true"),
-          "| by conf:", {c: sum(1 for s in ss if s.get("confidence") == c) for c in "0123"}, "| drills due:", due_n)
-    print("\nreading: UU->KU shows as inbox ! and new questions. KU->KK shows as questions reaching schema. KK that stay KK show as cold: true.")
+    print("schemata  ", len(ss), "| held:", sum(1 for s in ss if s.get("held") == "true"),
+          "| health:", by_health, "| exemplars:", sum(num(s, "exemplars") for s in ss),
+          "| anomalies:", sum(num(s, "anomalies") for s in ss), "| drills due:", due_n)
+    print("\nreading: UU->KU shows as inbox ! and new questions. KU->KK shows as exemplars growing. held: true is a known known.")
 
 CMDS = {"capture": capture, "triage": triage, "new": new, "due": due, "drill": drill, "sweep": sweep, "stats": stats}
 

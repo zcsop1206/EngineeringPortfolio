@@ -15,9 +15,9 @@ OUT = ROOT / "probes" / "out"
 
 def statement(path):
     txt = Path(path).read_text(encoding="utf-8")
-    m = re.search(r"^## Statement\s*\n(.*?)(?=^## |\Z)", txt, re.S | re.M)
+    m = re.search(r"^## (?:Generalization|Statement)\s*\n(.*?)(?=^## |\Z)", txt, re.S | re.M)
     if not m:
-        sys.exit(f"{path}: no ## Statement section")
+        sys.exit(f"{path}: no ## Generalization section")
     s = " ".join(l.strip() for l in m.group(1).splitlines() if l.strip() and not l.strip().startswith("<!--"))
     return s
 

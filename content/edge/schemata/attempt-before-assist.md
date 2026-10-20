@@ -1,49 +1,42 @@
 ---
-confidence: 1
-cold: false
-modes: []
+held: false
+exemplars: 0
+anomalies: 0
+predictions: 0
+confirmed: 0
 domain: metacognition
 created: 2026-10-17
-drill_prompt: re-derive why a failed retrieval attempt still helps later recall, from what memory does during retrieval, and what feedback has to follow
-drill_mode: verbal
-drill_next: 2026-10-18
+drill_next: 2026-10-21
 drill_interval: 1
 ---
 
 # attempt before assist
 
-## Statement
+## Generalization
 Retrieval attempted before the answer is shown strengthens later recall more than
 studying the answer directly, even when the attempt fails, provided feedback follows
 the attempt.
 
-## Derivation
-<write this yourself. the statement is borrowed from the testing-effect and pretesting
-literature, so it is a claim held as a phrase, not a derivation. the "provided feedback
-follows" clause was added 2026-10-17 after reading summaries of Kornell, Hays & Bjork
-2009 and Richland, Kornell & Kao 2009. I have read neither paper.>
+## Commitments
+- Some prior structure for the domain exists, so an attempt is a search and not a guess.
+  Where that boundary lies is [[when-is-attempting-wasteful]].
+- Feedback is available after the attempt. Without it the attempt decays as a guess.
+- Memory is strengthened by the act of retrieval, not only by exposure. This is the
+  borrowed claim underneath everything above; I have not derived it.
 
-## Representations
-- verbal: (the statement above)
-- visual:
-- spatial / kinesthetic:
-- built:
+## Exemplars
+<none yet. the generalization is held as a phrase from the testing-effect and pretesting
+literature (Roediger & Karpicke 2006; Kornell, Hays & Bjork 2009; Richland, Kornell &
+Kao 2009), none of which I have read. the first exemplar is the derivation, in my own
+words, of why a failed attempt followed by feedback beats reading.>
 
-## Applies when
-Any time I am about to ask a model, search, or open a reference for something I
-might partly already hold.
-
-## Fails when
-When I have zero prior structure for the domain, an attempt is guessing and the time
-is better spent reading. The boundary is [[when-is-attempting-wasteful]].
-Also fails when no feedback follows: the attempt then decays as a guess.
+## Anomalies
+<none yet. a drill fail that cannot be resolved into an exemplar becomes the first one.>
 
 ## Lens
 Where in this project am I reading or asking before trying to produce? And where did
 I attempt but never get feedback?
 
-## Came from
-Seed of the system. Source claims to re-derive and verify: the testing effect
-(Roediger & Karpicke 2006) and the pretesting effect (Kornell, Hays & Bjork 2009).
-
 ## Probe notes
+2026-10-17 surprisal, gpt2 and Qwen2.5-1.5B: [[probes/out/attempt-before-assist.surprisal.gpt2]],
+[[probes/out/attempt-before-assist.surprisal.qwen2.5-1.5b]]. Interpretation not yet written.

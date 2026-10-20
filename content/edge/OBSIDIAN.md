@@ -34,12 +34,14 @@ No community plugins are required. Optional ones that fit:
 - **During work**: append one line to `inbox/inbox.md`. Tag first. Nothing else.
 - **Daily**: open `inbox/inbox.md`. Each line becomes a new note from a template, an
   edit to a schema, or is deleted. Graph view's orphans are schemata nothing links to.
-- **Drill**: open `views/due.base`. Write the derivation (or draw it, or build it)
-  somewhere scratch *before* opening the schema. Then open the schema and edit two
-  properties: pass means `drill_next` = today + double `drill_interval`; fail means
-  interval 1, due tomorrow, and a `x` line in the inbox with the cause.
+- **Drill**: open `views/due.base`. Solve a *new exemplar* of the schema, in scratch,
+  before opening it. Put the exemplar under `## Exemplars`, bump the `exemplars` counter,
+  then edit two properties: pass means `drill_next` = today + double `drill_interval`;
+  fail means interval 1, due tomorrow, and a `x` line in the inbox with the cause.
+- **Health**: `views/schemata.base` computes progressive / holding / degenerating / crisis
+  from the counters. Crisis sits at the top; that is next Sunday's sweep.
 - **Weekly**: pick one project. For each schema, read its `## Lens` and answer it in
-  the project's `## Lens sweeps`. Score predictions. Adjust `confidence` and `cold`.
+  the project's `## Lens sweeps`. Score predictions and bump `confirmed` on the schemata they came from. Set `held` only after a new exemplar solved cold.
 
 ## What the script still does
 

@@ -1,5 +1,9 @@
 # Edge — design v0.1
 
+> Superseded in part by CORE.md (2026-10-20): schemata are now micro-paradigms with
+> computed health; `confidence`, `cold`, `modes` and `drill_prompt` are gone. The
+> evidence for the rituals and the probe specs below still stand.
+
 What changed from v0, why, and what the evidence was. PROTOCOL.md is the rules;
 this file is the reasoning. Read this when the rules feel arbitrary.
 
