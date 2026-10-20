@@ -6,7 +6,7 @@ predictions: 0
 confirmed: 0
 domain: metacognition
 created: 2026-10-17
-drill_next: 2026-10-21
+drill_next: 2026-10-18
 drill_interval: 1
 ---
 
