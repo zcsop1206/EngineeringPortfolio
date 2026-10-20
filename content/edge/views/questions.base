@@ -1,0 +1,36 @@
+filters:
+  and:
+    - file.folder.endsWith("questions")
+properties:
+  status:
+    displayName: Status
+  opened:
+    displayName: Opened
+  domain:
+    displayName: Domain
+  source:
+    displayName: Came from
+views:
+  - type: table
+    name: Open
+    filters:
+      and:
+        - status != "schema"
+    groupBy:
+      property: status
+      direction: ASC
+    order:
+      - file.name
+      - status
+      - opened
+      - domain
+      - source
+  - type: table
+    name: Closed
+    filters:
+      and:
+        - status == "schema"
+    order:
+      - file.name
+      - opened
+      - domain
