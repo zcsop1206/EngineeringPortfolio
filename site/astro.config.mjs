@@ -19,7 +19,9 @@ if (!fs.existsSync(path.join(contentDir, 'projects'))) {
   throw new Error(`No projects folder in ${contentDir}. Set CONTENT_DIR (relative to site/).`);
 }
 process.env.CONTENT_DIR_ABS = contentDir; // read by src/content.config.ts
-const base = '/EngineeringPortfolio';
+// The custom domain serves the site at the root. GitHub Pages redirects the old
+// zcsop1206.github.io/EngineeringPortfolio/ links to it.
+const base = '/';
 // /notebook/ stays out of the sitemap until some project has a log entry.
 const projectsDir = path.join(contentDir, 'projects');
 const hasEntries = fs.readdirSync(projectsDir).some((slug) => {
@@ -28,7 +30,7 @@ const hasEntries = fs.readdirSync(projectsDir).some((slug) => {
 });
 
 export default defineConfig({
-  site: 'https://zcsop1206.github.io',
+  site: 'https://aditbhargava.me',
   base,
   output: 'static',
   build: { format: 'directory' },

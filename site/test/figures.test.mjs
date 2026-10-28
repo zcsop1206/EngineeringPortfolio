@@ -102,3 +102,15 @@ test('a paragraph that mixes an image with text is not a figure, and log entries
   const entry = await figures('![A](a.png)\n', path.join(contentDir, 'projects', 'demo', 'log', '2026-01-01.md'));
   assert.equal(entry.figures.length, 0);
 });
+
+test('base "/" (the custom domain) gives root-relative asset URLs, not "//projects"', async () => {
+  const file = path.join(contentDir, 'projects', 'demo', 'index.md');
+  const out = await unified()
+    .use(remarkParse)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeFigureClass)
+    .use(rehypeFigures, { contentDir, base: '/' })
+    .use(rehypeStringify, { allowDangerousHtml: true })
+    .process({ value: '## One\n\n![A block](./block.jpeg)\n', path: file, data: {} });
+  assert.match(out.data.astro.frontmatter.figures[0].html, /src="\/projects\/demo\/block\.jpeg"/);
+});

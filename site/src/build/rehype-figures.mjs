@@ -85,7 +85,7 @@ function assetUrl(base, slug, src) {
   let rel = src;
   try { rel = decodeURI(src); } catch { /* keep raw */ }
   rel = path.posix.normalize(rel.replace(/^\.\//, ''));
-  return `${base}/projects/${slug}/${rel.split('/').map(encodeURIComponent).join('/')}`;
+  return `${base.replace(/\/+$/, '')}/projects/${slug}/${rel.split('/').map(encodeURIComponent).join('/')}`;
 }
 
 function isRelative(src) {

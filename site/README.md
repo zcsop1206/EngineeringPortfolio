@@ -1,6 +1,6 @@
 # Site
 
-Plain Astro 5 site for https://zcsop1206.github.io/EngineeringPortfolio/. Content lives outside this folder, in `../content` (an Obsidian vault).
+Plain Astro 5 site for https://aditbhargava.me/. Content lives outside this folder, in `../content` (an Obsidian vault).
 
 ## Commands
 
@@ -8,7 +8,7 @@ Run from `site/`:
 
 ```
 npm install
-npm run dev       # http://localhost:4321/EngineeringPortfolio/
+npm run dev       # http://localhost:4321/
 npm test          # unit tests with node --test, no build needed
 npm run build     # astro build, then pagefind indexes dist/
 npm run preview
@@ -38,12 +38,12 @@ The schema is in `src/content.config.ts`. A writeup with `publish: false` or `st
 Every file under `content/projects/<slug>/` except `*.md` and dotfiles is published at
 
 ```
-/EngineeringPortfolio/projects/<slug>/<path inside the project folder>
+/projects/<slug>/<path inside the project folder>
 ```
 
 byte for byte, unless a transform in `astro.config.mjs` (`copyAssets({ transforms })`) matches it. `src/build/copy-assets.mjs` copies them into `dist/` after the build and serves them in dev.
 
-In markdown, relative raster images (`![](photo.jpg)`, `![](../photo.jpg)` from a log entry) go through Astro's image pipeline and come out as resized WebP under `_astro/`. Relative SVG images are rewritten to the asset URL above, so ink pages get the transforms. Raw HTML must use the full asset URL, for example `<video src="/EngineeringPortfolio/projects/<slug>/clip.mp4">`.
+In markdown, relative raster images (`![](photo.jpg)`, `![](../photo.jpg)` from a log entry) go through Astro's image pipeline and come out as resized WebP under `_astro/`. Relative SVG images are rewritten to the asset URL above, so ink pages get the transforms. Raw HTML must use the full asset URL, for example `<video src="/projects/<slug>/clip.mp4">`.
 
 ## Layout
 

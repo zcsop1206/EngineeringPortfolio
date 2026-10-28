@@ -14,7 +14,7 @@ github:
 award:
 tech stack:
 ---
-[Part 1](/EngineeringPortfolio/projects/asicpuzzle2026/) found the 121 bits that make the Jane Street puzzle chip print `(* TWO STARS *)`. This post is about what those bits mean.
+[Part 1](/projects/asicpuzzle2026/) found the 121 bits that make the Jane Street puzzle chip print `(* TWO STARS *)`. This post is about what those bits mean.
 
 Start with the puzzle itself. The rules:
 
@@ -842,7 +842,7 @@ Left to right: position, then the window and counts, then the tallies, then the 
 The simulator can print every flip-flop after every clock, so I fed the key and watched the groups. The bit order inside each counter was unknown, so the script tries every permutation of a group's flops and keeps the one under which it counts up by one most often.
 
 <div style="margin:0 auto 1rem;max-width:420px">
-<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/key_streaming.mp4" aria-label="The key entering the chip one bit per frame. Beside the grid the column tally, region tally, 12-bit window, touch flag and total are read from the flip-flops after every clock edge, ending at total 22 and the success message."></video>
+<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/projects/asicpuzzle2026-starbattle/key_streaming.mp4" aria-label="The key entering the chip one bit per frame. Beside the grid the column tally, region tally, 12-bit window, touch flag and total are read from the flip-flops after every clock edge, ending at total 22 and the success message."></video>
 </div>
 
 *The key going in one bit per frame. Every number beside the grid is read from the flip-flops after that clock edge, nothing is computed by the animation.*
@@ -975,7 +975,7 @@ The 12-flop chain is that window. When a star arrives, the flag sets if there is
 Reading the 150-gate lookups was unnecessary. Feeding the chip a grid with a single star shows which region tally moves, so that cell belongs to that region. 121 runs, one per cell, gave the whole map.
 
 <div style="margin:0 auto 1rem;max-width:420px">
-<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/EngineeringPortfolio/projects/asicpuzzle2026-starbattle/region_recovery.mp4" aria-label="121 simulator runs with one star each. After every run the one region tally that moved lights up and the cell takes that region's letter, until all eleven regions are coloured in."></video>
+<video controls autoplay muted loop playsinline style="display:block;width:100%;border-radius:6px" src="/projects/asicpuzzle2026-starbattle/region_recovery.mp4" aria-label="121 simulator runs with one star each. After every run the one region tally that moved lights up and the cell takes that region's letter, until all eleven regions are coloured in."></video>
 </div>
 
 *One star per cell, 121 runs. After each run the tally that moved names the cell's region.*

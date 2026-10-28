@@ -1,6 +1,6 @@
 # Engineering portfolio and notebook
 
-The site at https://zcsop1206.github.io/EngineeringPortfolio/ and the Obsidian vault behind it.
+The site at https://aditbhargava.me/ and the Obsidian vault behind it.
 
 - `content/` is the vault: project writeups, dated entries, images, handwritten pages. Open this folder in Obsidian.
 - `site/` is the Astro site. Run `npm install`, `npm test` and `npm run build` there.

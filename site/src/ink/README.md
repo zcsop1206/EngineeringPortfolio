@@ -30,12 +30,12 @@ An ink note is a markdown file with frontmatter `ink: 1` and one image embed per
 // astro.config.mjs
 import { remarkInk, inkTransform } from './src/ink/index.mjs';
 
-markdown: { remarkPlugins: [remarkInk({ contentDir: 'content', base: '/EngineeringPortfolio' })] }
+markdown: { remarkPlugins: [remarkInk({ contentDir: 'content', base: '/' })] }
 // the copy-asset integration:
 transforms: [inkTransform()]
 ```
 
-`contentDir` must be the directory the served URLs are relative to: a page at `content/projects/<slug>/log/<entry>/p-xxxxxx.svg` is served at `/EngineeringPortfolio/projects/<slug>/log/<entry>/p-xxxxxx.svg`. A relative `contentDir` resolves against the working directory of the build.
+`contentDir` must be the directory the served URLs are relative to: a page at `content/projects/<slug>/log/<entry>/p-xxxxxx.svg` is served at `/projects/<slug>/log/<entry>/p-xxxxxx.svg`. A relative `contentDir` resolves against the working directory of the build.
 
 ## CSS
 
