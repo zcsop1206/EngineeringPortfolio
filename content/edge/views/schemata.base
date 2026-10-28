@@ -1,0 +1,64 @@
+filters:
+  and:
+    - file.folder.endsWith("schemata")
+formulas:
+  health: 'if(anomalies > exemplars, "crisis", if(anomalies > confirmed, "degenerating", if(confirmed > 0, "progressive", if(exemplars > 0, "holding", "empty"))))'
+properties:
+  formula.health:
+    displayName: Health
+  held:
+    displayName: Held
+  exemplars:
+    displayName: Exemplars
+  anomalies:
+    displayName: Anomalies
+  predictions:
+    displayName: Predicted
+  confirmed:
+    displayName: Confirmed
+  domain:
+    displayName: Domain
+  drill_next:
+    displayName: Next drill
+views:
+  - type: table
+    name: Health
+    groupBy:
+      property: formula.health
+      direction: ASC
+    groupOrder:
+      - crisis
+      - degenerating
+      - holding
+      - progressive
+      - empty
+    order:
+      - file.name
+      - formula.health
+      - held
+      - exemplars
+      - anomalies
+      - confirmed
+      - predictions
+      - domain
+      - drill_next
+  - type: table
+    name: Not yet held
+    filters:
+      and:
+        - held == false
+    order:
+      - file.name
+      - formula.health
+      - exemplars
+      - anomalies
+      - drill_next
+  - type: cards
+    name: By domain
+    groupBy:
+      property: note.domain
+      direction: ASC
+    order:
+      - file.name
+      - formula.health
+      - held
