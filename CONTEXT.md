@@ -4,7 +4,7 @@ Read this first. It records what the repo is, how it is laid out, what has been 
 
 ## What this is
 
-Adit Bhargava's engineering portfolio and public engineering notebook. The site is at `https://zcsop1206.github.io/EngineeringPortfolio/`, built with plain Astro 5 and deployed by GitHub Actions on every push to `main`.
+Adit Bhargava's engineering portfolio and public engineering notebook. The site is at `https://aditbhargava.me/`, built with plain Astro 5 and deployed by GitHub Actions on every push to `main`.
 
 The notebook is kept in Obsidian. On the laptop the vault is the `content/` folder of this checkout, pushed with plain git. On the iPad the same folder is synced through the GitHub API by the plugin `zcsop1206/obsidian-github-sync`; handwriting comes from `zcsop1206/obsidian-notebook`. Both plugins keep their design notes in their own `CONTEXT.md`.
 
@@ -33,7 +33,7 @@ Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `c
 
 ## Content rules
 
-- URLs: a project is at `/EngineeringPortfolio/projects/<slug>/`, where the slug is the folder name. These links were shared on LinkedIn and X and must not change. Entries are at `/projects/<slug>/log/<file stem>/`. Every non-markdown file under `content/projects/<slug>/` is served at `/EngineeringPortfolio/projects/<slug>/<relative path>`.
+- URLs: a project is at `/projects/<slug>/`, where the slug is the folder name. The site moved to https://aditbhargava.me/ on Oct 28 2026; GitHub Pages redirects the old `zcsop1206.github.io/EngineeringPortfolio/` links shared on LinkedIn and X, so slugs must not change. Entries are at `/projects/<slug>/log/<file stem>/`. Every non-markdown file under `content/projects/<slug>/` is served at `/projects/<slug>/<relative path>`.
 - Writeup frontmatter: `title`, `description` (one line: the lede under the title and the meta description), `status` (built-and-tested, design-study, in-progress, abandoned), `start`, `end` (omit while ongoing), `cover` (an image next to index.md), `publish` (default true).
 - Home page frontmatter, all optional: `short` (the title on the home page and in the sidebar), `result` (one line: what was built and the number that proves it), `featured` (1, 2 or 3: a featured row, in that order), `hook` (`{label, text}`, shown on featured rows only), `parent` (the slug this is a part of; parts are not listed on the home page, they are linked as "Part N" from the parent's row).
 - `cover_on_page: false` keeps the cover for the home page and link previews but leaves it off the top of the writeup. Both ASIC parts use it (in part 2 the cover is the solved grid, which would spoil the puzzle).
@@ -93,5 +93,5 @@ Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `c
 ## Checks before pushing
 
 - `node scripts/guard.mjs` from anywhere in the repo.
-- `cd site && npm test && npm run build`; open `dist/` served under a folder named `EngineeringPortfolio` so the base path resolves.
+- `cd site && npm test && npm run build`; serve `dist/` at the root of a local server (the base path is `/`).
 - A commit builds cleanly in a fresh `git worktree add` plus `npm ci` in `site/`.

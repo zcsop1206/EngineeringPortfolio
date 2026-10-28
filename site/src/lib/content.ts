@@ -18,7 +18,7 @@ export function url(p = '/'): string {
 
 /** Absolute URL for Open Graph and RSS. */
 export function absoluteUrl(p: string, site: URL | undefined): string {
-  return new URL(p, site ?? 'https://zcsop1206.github.io').href;
+  return new URL(p, site ?? 'https://aditbhargava.me').href;
 }
 
 /** ISO date, YYYY-MM-DD. Frontmatter dates are parsed as UTC midnight. */

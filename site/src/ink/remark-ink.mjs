@@ -87,7 +87,7 @@ function walk(node, fn, parent = null, index = null) {
 
 /**
  * remarkInk({ contentDir, base }) returns a remark plugin. `contentDir` is the directory the
- * served paths are relative to; `base` is the site's base path, e.g. `/EngineeringPortfolio`.
+ * served paths are relative to; `base` is the site's base path, `/` on the custom domain, `/EngineeringPortfolio` on GitHub Pages without one.
  */
 export default function remarkInk({ contentDir, base = '' } = {}) {
   if (!contentDir) throw new Error('remarkInk: contentDir is required');
