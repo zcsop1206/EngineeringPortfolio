@@ -35,19 +35,19 @@ Round 1 scored a proxy in which every void is filled with fused bone, so less im
 
 The model below is illustrative, not the judge. It uses Gibson–Ashby scaling for the lattice stiffness, a rule of mixtures for the fused state and a strut-size stress concentration for the implant-alone check, with the load scaled so the round 2 cage lands at the judge's 14.1 MPa. The real judge is a voxel finite-element solver with four load cases; its code, specifications and hashes are in the repository. The shape of the result is the same: removing material wins the round 1 proxy and fails on its own.
 
-<div class="bt-panel" style="background:var(--bg-2,#fff);border:1px solid rgba(128,128,128,.35);padding:16px;margin:16px 0">
+<div class="bt-panel" style="background:rgba(128,128,128,.08);border:1px solid rgba(128,128,128,.35);padding:16px;margin:16px 0;color:inherit">
 <div style="display:flex;gap:16px;flex-wrap:wrap">
 <div style="flex:1;min-width:240px">
-<label style="display:block;font-size:14px;margin-top:8px">Material <select id="bt-mat" style="font:inherit"><option value="1136">Tough 1500 V2 (measured 1136 MPa)</option><option value="8018">Rigid 10K (measured 8018 MPa)</option><option value="110000">Ti-6Al-4V (110 GPa)</option><option value="700">UHMWPE (700 MPa)</option></select></label>
-<label style="display:block;font-size:14px;margin-top:8px">Solid fraction φ: <b id="bt-phiV">0.41</b><input id="bt-phi" type="range" min="0.02" max="1" step="0.01" value="0.41" style="width:100%"></label>
-<label style="display:block;font-size:14px;margin-top:8px">Strut size, mm: <b id="bt-tV">0.6</b><input id="bt-t" type="range" min="0.3" max="3" step="0.1" value="0.6" style="width:100%"></label>
+<label style="display:block;font-size:14px;margin-top:8px;color:inherit;opacity:1">Material <select id="bt-mat" style="font:inherit"><option value="1136">Tough 1500 V2 (measured 1136 MPa)</option><option value="8018">Rigid 10K (measured 8018 MPa)</option><option value="110000">Ti-6Al-4V (110 GPa)</option><option value="700">UHMWPE (700 MPa)</option></select></label>
+<label style="display:block;font-size:14px;margin-top:8px;color:inherit;opacity:1">Solid fraction φ: <b id="bt-phiV">0.41</b><input id="bt-phi" type="range" min="0.02" max="1" step="0.01" value="0.41" style="width:100%"></label>
+<label style="display:block;font-size:14px;margin-top:8px;color:inherit;opacity:1">Strut size, mm: <b id="bt-tV">0.6</b><input id="bt-t" type="range" min="0.3" max="3" step="0.1" value="0.6" style="width:100%"></label>
 <p style="font-size:14px;margin:10px 0 0">Presets: <button type="button" id="bt-pLoop">the 1 mm loop</button> <button type="button" id="bt-pR2">round 2 cage</button> <button type="button" id="bt-pCtl">textbook control</button></p>
 </div>
 <div style="flex:1;min-width:240px;font-size:15px">
-<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(128,128,128,.35);padding:6px 0"><span>Round 1 proxy, fused state (lower wins)</span><b id="bt-proxy"></b></div>
-<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(128,128,128,.35);padding:6px 0"><span>Round 2 goal metric M, worse of empty and fused</span><b id="bt-M"></b></div>
-<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(128,128,128,.35);padding:6px 0"><span>Implant alone, 2× load, stress / allowable (MPa)</span><b id="bt-ia"></b></div>
-<div style="display:flex;justify-content:space-between;padding:6px 0"><span>Verdict</span><b id="bt-verdict"></b></div>
+<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(128,128,128,.35);padding:6px 0"><span style="color:inherit;opacity:1">Round 1 proxy, fused state (lower wins)</span><b id="bt-proxy"></b></div>
+<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(128,128,128,.35);padding:6px 0"><span style="color:inherit;opacity:1">Round 2 goal metric M, worse of empty and fused</span><b id="bt-M"></b></div>
+<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(128,128,128,.35);padding:6px 0"><span style="color:inherit;opacity:1">Implant alone, 2× load, stress / allowable (MPa)</span><b id="bt-ia"></b></div>
+<div style="display:flex;justify-content:space-between;padding:6px 0"><span style="color:inherit;opacity:1">Verdict</span><b id="bt-verdict"></b></div>
 </div>
 </div>
 <canvas id="bt-cv" width="820" height="300" style="width:100%;height:auto;margin-top:12px;border:1px solid rgba(128,128,128,.35)"></canvas>
