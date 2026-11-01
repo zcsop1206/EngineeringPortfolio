@@ -111,6 +111,10 @@ The second round changed nothing about the agents' freedom and everything about 
 
 Six agents with no assigned roles, a shared board and one million credits each then ran for 75 minutes. They evaluated fourteen candidates in three geometric families, rejected the two with the lowest scores because their implant-alone margins were thin (15.4 and 16.0 of 17 MPa at the coarse resolution), and shipped a 30.3 × 20.3 × 12.5 mm Tough 1500 channel lattice at 41 % solid. PreForm's thin-features check changed the shipped geometry: the leading candidate had 22 regions of 0.3 mm outer skin flagged, so the group padded the box to 0.45 mm skins, cleared the check, and lost nothing measurable in score. They predicted the shipped design would reach 14 to 15 MPa at the judge's resolution; the judge measured 14.10. On the withheld early-graft state it scored 0.283 against the control's 0.301, the lowest of the nine designs. On the goal metric it scored 1.75 with a band of [1.23, 2.26], against the control's 2.28 [2.15, 2.41]: a tie under the metric's own rule, not a win. Its coarse self-assessment of 0.84 became 1.75 on independent re-scoring, with the fused state agreeing within 3 % and the whole gap in the empty state.
 
+![Four printed lattice cages on a dark cloth: the round 2 collective's dark channel lattice at the top, and three lighter triangular and hexagonal cages from Alan Chen's mesh arm](printed_parts.jpg)
+
+*Figure 4. Printed demonstrators. Top: the round 2 collective's cage, Tough 1500 V2 on a Form Studio 1, re-sliced by the evaluator from the agents' Form 4L scene. The other three are Alan Chen's mesh cages, printed in Alpha Fast as display stand-ins for designs scored in Tough 1500. Engineering resins; not implant-grade.*
+
 ## 5. Same nine designs, two tests
 
 | Design | Official fused score (round 1) | Goal metric M (round 2) | Implant alone | Withheld early state |
@@ -132,7 +136,7 @@ Lower is better in every column. Scores are from the frozen judge at full resolu
 
 ![Alan Chen's run 3: stiffness ratio against dollars spent per run for one-agent, tree and mesh arms at the same 12 dollar cap; the team arms sit to the right at the same height](alan_run3_cost_vs_stiffness.png)
 
-*Figure 4. Alan Chen's controlled run 3, redrawn from his per-run data: 54 runs, nine per arm, same task, model and cap. Teams spent two to three times what one agent spent (derived from arm means of $2.98, 4.96 and 8.70; cost pairs Holm p ≤ 0.0073) and no pair differed on stiffness (Holm p = 1.00).*
+*Figure 5. Alan Chen's controlled run 3, redrawn from his per-run data: 54 runs, nine per arm, same task, model and cap. Teams spent two to three times what one agent spent (derived from arm means of $2.98, 4.96 and 8.70; cost pairs Holm p ≤ 0.0073) and no pair differed on stiffness (Holm p = 1.00).*
 
 In round 1 the leaderless group agreed on its board that one agent would write the deliverables; that agent posted "PIPELINE READY" and exhausted its credit ten seconds later, fifteen minutes into the run, and no one took over. In round 2 the same arrangement, with larger budgets and board announcements when an agent ran low, spread the work: degree centralisation 0.30 from the board logs, no directive posts, three writers and three design families. Decentralisation therefore bought variety and removed a single point of failure. It did not buy speed, and it did not beat the textbook design. Our own two replicates per arm cannot rank the arms, and Alan's nine per arm found no stiffness difference at a matched budget. His full account of runs 0 to 3, including the lattice task, the mesh arm's own bone cages and the physical tests behind them, is in [his final write-up](https://alanchen.cc/s/scienceclaw-final-a23imm6gtunomv5pq5n2/).
 
@@ -144,7 +148,7 @@ Alan Chen's side of the team ran four experiments over the same two days, each a
 
 ![Three panels: stress against crosshead strain for Rigid 10K and Tough 1500 coupons; measured modulus against datasheet for each resin, all below; and the auxetic block's measured Poisson's ratio at three strains against two predictions](specimens_vs_datasheet.png)
 
-*Figure 5. Coupons printed through the PreForm API on a Form 4 and a Form Studio 1, with specimen identifiers engraved on the rafts and randomised logged layouts, and tested on the Breakerspace Instron before any agent ran. Every resin read below its datasheet (Rigid 10K 27 % low, Tough 1500 1.5 to 22 % low); the judge used the measured values. The auxetic block measured ν between −0.85 and −0.95 against our frozen prediction of −0.80. One specimen each, crosshead strain only.*
+*Figure 6. Coupons printed through the PreForm API on a Form 4 and a Form Studio 1, with specimen identifiers engraved on the rafts and randomised logged layouts, and tested on the Breakerspace Instron before any agent ran. Every resin read below its datasheet (Rigid 10K 27 % low, Tough 1500 1.5 to 22 % low); the judge used the measured values. The auxetic block measured ν between −0.85 and −0.95 against our frozen prediction of −0.80. One specimen each, crosshead strain only.*
 
 ## 8. Limits
 
