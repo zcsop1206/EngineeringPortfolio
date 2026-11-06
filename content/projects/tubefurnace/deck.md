@@ -1,80 +1,84 @@
-# Why
+# Inherited
 
-## A furnace nobody had characterised
+## I did not build this furnace
 
-Toronto Hacker Fab's tube furnace was built by three members from a build video. It reaches 1000 °C and glows. I took on the rework after it was built.
+Three members of Toronto Hacker Fab built it from a build video. It reaches 1000 °C and glows. I took on the rework afterwards.
 
-The audit found two things: mains wiring that can short to the case, and no one knew its temperature profile.
+Nobody knew its temperature profile, its ramp, or its oxide rate.
 
-![The build as the model sees it, to scale](furnace_v1_section.png)
+![The build, to scale](furnace_v1_section.png)
 
-# What it is
+## And it can short to its own case
 
-## Predict it before measuring it
+Mains conductors run unsheathed past earthed steel. The earth turns a short into a tripped breaker. It does not stop the short.
 
-A 1-D simulator of the furnace as it stands. It predicts every number the first logged run will produce, each with a band from the dimensions I have not measured yet.
+So it does not run again until that is fixed.
 
-So the first run is a test, not a survey.
+# The bet
 
-# The problem
+## Write the answers down first
 
-## What the furnace is for
+Before the next run I modelled the furnace as it stands and made it predict every number the first logged run will produce.
 
-It grows oxide on silicon, and later diffuses dopants. Both rates are exponential in temperature.
+Each prediction has a band, from the eighteen dimensions I have not measured.
 
-So the questions are: where is the temperature flat, how well is it held, and what is the gas.
+## Nothing here is measured
 
-## What makes it hard
+That is the point. The first run is a test with a way to fail, not a survey.
 
-- Nichrome wound directly on a 5/8 in quartz tube, one thermocouple, both ends open.
-- Eighteen inputs I have not measured.
-- A relay that fails closed.
+# What the model says
 
-# The work
+## There is no plateau
 
-## Fix the hazard first
+An end loss fades over 7 to 9 cm. The winding is 15 cm. The two ends meet in the middle, so the profile is one arch.
 
-Sleeving, ceramic terminals, strain relief, an earth and insulation check. And an over-temperature limiter with its own sensor, independent of the controller.
-
-## One length explains the profile
-
-An end loss decays over about 7 to 9 cm. The winding is 15 cm. The two ends overlap, so there is no plateau, only the top of an arch.
+The flat zone is the top of it: 26 mm at ±5 °C.
 
 ![Predicted profile at 700 and 1000 °C](furnace_v1_profile.png)
 
-## The flat zone is 26 mm
+## 48 seconds
 
-±5 °C at 1000 °C, with a band of 17 to 41 mm over the unmeasured inputs.
+The relay fails closed, and the heater is seven times the losses. From a stuck relay to the quartz limit is 48 seconds.
 
-Checked by hand and by 230 tests against analytic limits and conservation.
-
-## 48 seconds to the quartz limit
-
-If the relay fails closed the furnace runs away at about 2 K/s. That is the number the limiter has to beat, and the fault test runs at 300 °C where a failure does no harm.
+That is the number the independent limiter has to beat.
 
 ![The predicted first run](furnace_v1_first_run.mp4)
 
-## The weather sets the oxide
+## The weather grows the oxide
 
-Water oxidises silicon about 30 times faster than oxygen per atmosphere. Room air holds enough of it that the two contribute about equally.
+Per atmosphere, water oxidises silicon about 30 times faster than oxygen. Room air holds enough that the two contribute about equally.
 
-A hygrometer reading per run is the cheapest valuable instrument on the list.
+A "dry" oxidation in this furnace depends on the humidity that day.
 
-## Measure what narrows the bands most
+## My thermometer does not work
 
-A screening over the eighteen unmeasured inputs ranks the cold measurements. The list takes an hour with the furnace unplugged.
+I wanted to read position differences off oxide colour. The chart resolves 10 nm. The differences are 1 to 9 nm.
 
-Then five experiments, each built to estimate named parameters, not to produce curves.
+The model killed that plan before I spent a run on it.
 
-## It also picks the next furnace
+# The test
 
-The same model over 36 worst cases for three heater layouts. Only three independent zones stay within ±1 K across the boat.
+## An hour with a tape measure
+
+The model ranks its own unknowns by how much each widens the bands. The cold measurements come in that order, furnace unplugged.
+
+## Then five experiments
+
+Each one is built to pin down named parameters to a stated resolution. The fault test runs at 300 °C, where a stuck relay does no harm.
+
+# After
+
+## The same model picks the next furnace
+
+Three heater layouts over 36 worst cases. Only three independent zones hold ±1 K across a boat of wafers.
+
+One sensor sets the level. It cannot fix a tilt.
 
 ![Uniform, graded and zoned heaters at 1000 °C](furnace_axial_profiles.png)
 
 ## Ask me about
 
-- Nothing is measured yet, and why I did it in that order
-- How the model is verified
-- Why the colour chart cannot check the oxide
-- Why one sensor cannot flatten the profile
+- How I trust a model with no data: 230 tests and a hand check
+- What happens if the first run disagrees
+- The wiring fix and the limiter
+- Why the gas flow tilts the profile

@@ -1,84 +1,84 @@
-# Why
+# The dare
 
-## A puzzle, and a wrong assumption
+## My first chip, from the wrong end
 
-Jane Street posted a chip's layout and asked what it prints for the right input.
+Jane Street published a chip's layout and asked what it prints for the right input.
 
-I am a mechanical engineering student and this was my first ASIC. I thought knowing 3D printing file formats would help. It did not, but it got me started.
+I am a mechanical engineering student. I thought knowing 3D printing file formats would help. It did not, but it got me started.
 
 ![](#fig-1)
 
-# What it is
+## What you are given
 
-## A chip with no labels
+Polygons on layers, nothing labelled. One input bit per clock, eight output bits, one success pin.
 
-A layout file: polygons on layers. One input bit per clock, an 8-bit output, a success pin.
-
-I turned the polygons back into a circuit, simulated it, and solved for the 121-bit key.
+And a few hints, most of which I misread.
 
 ![The die image from the puzzle](asiclayout.png)
 
-# The problem
+# The plan
 
-## Everything is there and nothing is named
+## Undo the factory, one step at a time
 
-Each step of making a chip throws away structure. The layout is the last step.
-
-Brute force is out: the key is 121 bits.
-
-## What makes it hard
-
-- No answer to check against on the real chip.
-- 728 cells of 69 types, 92 flip-flops.
-- I did not know what the chip was checking.
-
-# The work
-
-## Test the tools where the answer is known
-
-The puzzle ships a small warmup chip at every stage, source to layout. In it, cells of the same module sit together, so placement is evidence.
+Making a chip throws away structure at every stage. I chose to reverse the stages, and to build each tool on the small warmup chip, where the answer is known.
 
 ![The warmup's placement, coloured by module](asicplacement.png)
 
 ## Polygons back into wires
 
-Trace connectivity through metal and vias, treat each cell as a named black box.
+Overlapping metal is one wire. A via joins two layers. Each cell is a named black box.
 
-Names do not survive into a layout, so I compared shape: my circuit and the true one as graphs, and checked they are the same graph.
+Names do not survive, so I checked shape: my circuit and the true one are the same graph.
 
 ![](#fig-4)
 
-## Where I got stuck
+# Wrong turns
 
-I tried to cluster the circuit back into modules so a person could read it. Best case 16 wrong out of 79, and every parameter was tuned on the warmup.
+## Three guesses, three misses
 
-On the real chip that gives a confident wrong answer with no way to tell. I dropped it.
+- I sized the key at about 780 bits. It is 121.
+- I guessed a stored answer and a comparator. There is no stored answer.
+- I planned to read the circuit by hand. I never did.
 
-## The waveform had the shape of the answer
+## Stuck
 
-The sample recording had been in the repo for a week. The output is text, one character per clock. Each attempt is exactly 121 bits and ends in TRY AGAIN.
+I tried to sort 728 cells back into modules. Best case 16 wrong out of 79, with every setting tuned on the warmup.
 
-That is the protocol, the key length, and a free test for a simulator.
+On the real chip that is a confident wrong answer with no way to tell. I dropped it.
+
+# The clue
+
+## It had been in the repo for a week
+
+The sample recording fits on one screen. The output is text, one letter per clock. Each attempt is 121 bits and ends in TRY AGAIN.
+
+That is the protocol, the key length, and a free test.
 
 ![The sample waveform. The cursor is on a G.](asicsurfer.png)
 
-## A software twin, then a solver
+## So I never needed to understand the chip
 
-A Python model of the extracted circuit, checked by replaying the recording: it prints TRY AGAIN at the same clock edges.
+Simulate the wires I had already extracted. If the simulation prints TRY AGAIN on the same clock edges as the recording, it is the chip.
 
-Then the same circuit as constraints for Z3, asking for success high. One key. It is unique.
+It did.
+
+# The answer
+
+## Ask a solver instead of guessing
+
+The same circuit as constraints, with one demand: success goes high. Z3 returns one key, and proves there is no other.
 
 ![](#fig-6)
 
 ## What it prints
 
-(* TWO STARS *). The chip is an 11 by 11 Star Battle checker, and the key is the solved grid.
+(* TWO STARS *)
 
-All zeros prints EMPTY SKY. All ones prints BIG BANG.
+All zeros prints EMPTY SKY. All ones prints BIG BANG. The chip checks an 11 by 11 Star Battle grid, and the key is the solved puzzle.
 
 ## Ask me about
 
 - How I know the extraction is right
-- Why the key is unique
-- How I found out it was Star Battle
-- What I would do differently
+- How I worked out it was Star Battle
+- What the hints meant in hindsight
+- What I would do first next time

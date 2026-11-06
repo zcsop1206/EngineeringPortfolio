@@ -144,7 +144,7 @@ export function deckFile(slug: string): string | undefined {
 
 /**
  * Whether /projects/<slug>/deck/ exists: a deck.md, or a ready-made page in
- * site/public (BoneTwin's pitch deck).
+ * site/public.
  */
 export function hasDeck(slug: string): boolean {
   return Boolean(deckFile(slug)) || fs.existsSync(path.join(process.cwd(), 'public', 'projects', slug, 'deck', 'index.html'));
