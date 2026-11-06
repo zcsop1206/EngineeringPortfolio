@@ -1,74 +1,64 @@
 # Why
 
-## Can a hobby printer make a record that plays?
+## Origin
 
-A project with two collaborators: print a record on an FDM printer and play it on a turntable we built for it.
-
-v1 worked, barely. This year I went back to first principles and reversed its central decision.
+Can a hobby 3D printer make a record that plays? A project with two collaborators, and a turntable we built for it.
 
 ![The v1 record](openvinyl_v1_record.jpg)
 
-# What it is
+# What
 
-## Audio in, groove geometry out
+## Encoder
 
-Software that turns a sound file into the path the printer's nozzle follows. Every groove parameter comes from three hardware facts: bead width, stylus contact and printer acceleration.
+Software that turns audio into the path the nozzle follows. Every groove parameter comes from bead width, stylus contact and printer acceleration.
 
-# The problem
+# Problem
 
-## The bead is 10 to 20 times too wide
+## Scale
 
-A printed bead is 0.48 mm. A real vinyl groove is far narrower. A sideways wiggle looked impossible, so v1 stored the audio as depth.
+A printed bead is 0.48 mm, 10 to 20 times a vinyl groove. v1 stored the audio as depth because a sideways wiggle looked impossible.
 
 ![](openvinyl_v1_mesh_build.mp4)
 
-## What makes it hard
+## Limits
 
-- The stylus presses at several times the yield stress of PLA. First play deforms the groove.
-- Amplitude times frequency is capped by groove slope, and the cap changes with radius.
-- The printer's acceleration caps the same product.
+Amplitude times frequency is capped twice: by the groove slope the stylus can follow, and by the printer's acceleration. Both caps change with radius.
 
-# The work
+# Work
 
-## The constraint was the slicer, not the bead
+## Insight
 
-A slicer can only reproduce a mesh at bead resolution. Write the G-code directly and the same 0.48 mm bead can be placed to about 0.01 mm.
+The limit was the slicer, not the bead. Written directly as G-code, the same bead places to about 0.01 mm, so v2 cuts sideways on the printer's precise axes.
 
-So v2 cuts sideways, on the printer's fast and precise axes.
+## Groove
 
-## The v2 groove
-
-Two beads per turn, side by side. A crease forms between them. Both wiggle together and the stylus rides the crease.
+Two beads per turn with a crease between them. Both wiggle together and the stylus rides the crease.
 
 ![Decoded from the G-code file itself](openvinyl_v2_preview_melody.png)
 
-## Print speed follows the music
+## Speed
 
-Each segment's speed is set from its curvature. Loud passages print slowly, quiet ones fast. The groove pass takes about 25 minutes.
+Each segment's speed is set from its curvature: loud passages print slowly, quiet ones fast. The groove prints in about 25 minutes.
 
 ![The file as the printer will run it](openvinyl_v2_toolpath_melody.mp4)
 
-## Prove the file, not the code
+## Verification
 
-The tool decodes the G-code it just wrote back into audio. A 440 Hz tone at 100 µm commanded comes back at 100.5 µm.
+The tool decodes its own G-code back into audio. A 440 Hz tone commanded at 100 µm returns at 100.5 µm.
 
-That round trip caught a bug that had scaled every record to 79%.
+## Stress
 
-## Break it on purpose
-
-A stress disc: a tone ladder from 300 to 680 Hz that pushes the slope limit and the speed schedule.
+A tone ladder from 300 to 680 Hz that pushes the slope limit and the speed schedule.
 
 ![The stress disc](openvinyl_v2_preview_stress_ladder.png)
 
-## What is not known yet
+## Next
 
-v2 is verified in software and not printed. The main risk is tracking: whether a stylus stays in a crease between two round beads for 40 turns.
+Print. The open risk is tracking, whether a stylus stays in the crease for 40 turns, so the first prints are small coupons with one question each.
 
-So the first prints are small coupons, one question each.
+## Questions
 
-## Ask me about
-
-- The contact mechanics and why first play does not matter in v2
-- What v1 actually printed and played
-- Constant speed or slowing the platter as the needle moves in
-- What play time the sideways cut costs
+- Contact mechanics
+- v1
+- Constant or variable platter speed
+- Play time

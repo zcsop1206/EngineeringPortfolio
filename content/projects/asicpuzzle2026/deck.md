@@ -1,84 +1,62 @@
-# The dare
+# Why
 
-## My first chip, from the wrong end
+## Origin
 
-Jane Street published a chip's layout and asked what it prints for the right input.
-
-I am a mechanical engineering student. I thought knowing 3D printing file formats would help. It did not, but it got me started.
+Jane Street published a chip's layout and asked what it prints for the right input. I am a mechanical engineering student and this was my first chip.
 
 ![](#fig-1)
 
-## What you are given
+# What
 
-Polygons on layers, nothing labelled. One input bit per clock, eight output bits, one success pin.
+## Puzzle
 
-And a few hints, most of which I misread.
+Polygons on layers, nothing labelled. One input bit per clock, eight output bits, one success pin. Find the input that raises success and read the output.
 
 ![The die image from the puzzle](asiclayout.png)
 
-# The plan
+# Problem
 
-## Undo the factory, one step at a time
+## Scale
 
-Making a chip throws away structure at every stage. I chose to reverse the stages, and to build each tool on the small warmup chip, where the answer is known.
+728 cells and a 121-bit key. Too many to guess, and no answer to check against.
+
+# Work
+
+## Warmup
+
+The puzzle ships a small chip at every stage from source to layout. I built each tool there, where the answer is known.
 
 ![The warmup's placement, coloured by module](asicplacement.png)
 
-## Polygons back into wires
+## Extraction
 
-Overlapping metal is one wire. A via joins two layers. Each cell is a named black box.
-
-Names do not survive, so I checked shape: my circuit and the true one are the same graph.
+Overlapping metal is one wire, a via joins layers, each cell is a named black box. Checked by showing my circuit and the true one are the same graph.
 
 ![](#fig-4)
 
-# Wrong turns
+## Waveform
 
-## Three guesses, three misses
-
-- I sized the key at about 780 bits. It is 121.
-- I guessed a stored answer and a comparator. There is no stored answer.
-- I planned to read the circuit by hand. I never did.
-
-## Stuck
-
-I tried to sort 728 cells back into modules. Best case 16 wrong out of 79, with every setting tuned on the warmup.
-
-On the real chip that is a confident wrong answer with no way to tell. I dropped it.
-
-# The clue
-
-## It had been in the repo for a week
-
-The sample recording fits on one screen. The output is text, one letter per clock. Each attempt is 121 bits and ends in TRY AGAIN.
-
-That is the protocol, the key length, and a free test.
+Reading the circuit by hand was out of reach. The sample recording was not: the output is text, each attempt is 121 bits, and it ends in TRY AGAIN. That gave the protocol and a test.
 
 ![The sample waveform. The cursor is on a G.](asicsurfer.png)
 
-## So I never needed to understand the chip
+## Simulator
 
-Simulate the wires I had already extracted. If the simulation prints TRY AGAIN on the same clock edges as the recording, it is the chip.
+A Python model of the extracted circuit. Replaying the recording, it prints TRY AGAIN on the same clock edges.
 
-It did.
+## Solver
 
-# The answer
-
-## Ask a solver instead of guessing
-
-The same circuit as constraints, with one demand: success goes high. Z3 returns one key, and proves there is no other.
+The same circuit as constraints, with success required high. Z3 returns one key and proves it is the only one.
 
 ![](#fig-6)
 
-## What it prints
+## Answer
 
-(* TWO STARS *)
+(* TWO STARS *). The chip checks an 11 by 11 Star Battle grid, and the key is the solved puzzle.
 
-All zeros prints EMPTY SKY. All ones prints BIG BANG. The chip checks an 11 by 11 Star Battle grid, and the key is the solved puzzle.
+## Questions
 
-## Ask me about
-
-- How I know the extraction is right
-- How I worked out it was Star Battle
-- What the hints meant in hindsight
+- Trusting the extraction
+- Finding Star Battle
+- The hints
 - What I would do first next time

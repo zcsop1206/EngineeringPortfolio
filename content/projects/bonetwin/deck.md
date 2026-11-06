@@ -1,97 +1,66 @@
-# 36 hours
+# Why
 
-## A hackathon, and one sentence to work from
+## Origin
 
-ScienceClaw at the MIT Media Lab, with Alan Chen. One night of runs.
-
-The task we gave every agent, word for word: make an implant as mechanically homogeneous with bone as possible without losing integrity.
+ScienceClaw at the MIT Media Lab, 36 hours, with Alan Chen. One task, given word for word to every agent: make an implant as mechanically homogeneous with bone as possible without losing integrity.
 
 ![What round 1 handed in, at one scale](gallery.png)
 
-## What we built
+# What
 
-Thirty-eight Claude agents designing a spinal fusion cage, in arrangements from one agent alone to a leaderless group of six.
+## Experiment
 
-A physics judge, frozen before each round, scored what they handed in. The arrangement was the variable.
+Thirty-eight Claude agents designing a spinal fusion cage, arranged from one agent alone to a leaderless group of six. A frozen physics judge scored what they handed in.
 
-# The catch
+# Problem
 
-## Nothing you can measure equals the goal
+## Metric
 
-Titanium is 4 to 11 times stiffer than bone, so the bone beside a metal cage is under-loaded and wastes away. "Homogeneous with bone" is the cure, and it is not a number.
+A cage stiffer than bone starves the bone beside it. "Homogeneous with bone" is the cure, and no measurable number equals it. Any stand-in becomes the target once agents optimise against it.
 
-Any number that stands in for it becomes the target. Whoever writes it shapes the designs.
+# Work
 
-## So the test had to hold still
+## Coupons
 
-The one who sets the metric is kept apart from those meeting it. The judge is frozen before each round. The agents stay free.
-
-# Ground truth first
-
-## We broke real parts before any agent ran
-
-Coupons printed through the printer's API and pulled on an Instron. Every resin read below its datasheet, one by 27%.
-
-The judge used the measured values.
+Real parts printed and pulled on an Instron before any agent ran. Every resin read below its datasheet, one by 27%, and the judge used the measured values.
 
 ![Stress against strain, and measured against datasheet](specimens_vs_datasheet.png)
 
-# Round 1
+## Proxy
 
-## Every arm gamed it within minutes
-
-The round 1 score filled every void with fused bone, so less implant read as more bone-like. One agent or six, they all found it.
+Round 1 scored every void as fused bone, so less implant read as more bone-like. Every arm found this within minutes.
 
 ![The eight submissions](turntable_grid.mp4)
 
-## The winner was a wire loop
+## Loop
 
-1 mm struts. Loaded alone it would see 1132 MPa against an allowable of 17. Its own report says it targets the metric and is not a clinical device.
+The winner was a 1 mm wire loop: 1132 MPa against an allowable of 17 when loaded alone. The arrangement of the agents did not decide this. The construction of the judge did.
 
-The score ranked the designs almost inversely to the goal.
+## Judge
 
-## So the study turned around
-
-How the agents were organised did not decide whether the metric was gamed. How the judge was built did.
-
-The experiment became a study of the test.
+Round 2 changed only the test: a metric written blind, the implant carrying twice the load alone, one load state withheld, and independent re-scoring.
 
 ![Stimulus in the bone around two cages. Blue is shielded.](sim_slice.mp4)
 
-# Round 2
+## Collective
 
-## Four changes to the test, none to the agents
-
-- A stricter metric, written by an agent that had seen no results.
-- The implant must carry twice the load alone. A failure ranks below every pass.
-- One load state the agents' tool never shows them.
-- Independent re-scoring at twice their resolution.
-
-## Six agents, no roles, 75 minutes
-
-They scored fourteen designs and threw out their two best-scoring ones because the strength margins were thin.
-
-They predicted 14 to 15 MPa for the one they shipped. The judge measured 14.1 of 17.
+Six agents with no roles scored fourteen designs in 75 minutes and discarded their two best-scoring ones for thin margins. They predicted 14 to 15 MPa. The judge measured 14.1 of 17.
 
 ![Top: the round 2 cage, printed](printed_parts.jpg)
 
-## It tied the textbook
+## Result
 
-Best of nine on the withheld state. On the goal metric, a tie with the textbook lattice under the metric's own rule. Not a win.
+Best of nine on the withheld state, and a tie with the textbook lattice on the goal metric.
 
-# What it bought
+## Decentralisation
 
-## Variety, and no single point of failure. Not speed.
-
-In round 1 the leaderless group gave one agent the deliverables. It ran out of credit ten seconds later and nobody took over. In round 2 the work spread.
-
-Alan's controlled run agrees: teams cost two to three times one agent, with no difference in stiffness.
+It bought variety and removed a single point of failure. It did not buy speed: Alan's controlled run shows teams at two to three times the cost with no difference in stiffness.
 
 ![Alan Chen's run 3: cost against stiffness](alan_run3_cost_vs_stiffness.png)
 
-## Ask me about
+## Questions
 
-- How the judge works and what it cannot tell you
-- Why two replicates per arm means no ranking
-- The agent that turned the printer API into a measuring rig
-- What I would freeze differently next time
+- The judge
+- Replicates and what can be claimed
+- How the agents used the printer API
+- What to freeze next time
