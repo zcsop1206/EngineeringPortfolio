@@ -290,6 +290,44 @@ body.wide { --text-col: 960px; }
 .visuals-index a { text-decoration: none; }
 .visuals-index a:hover { text-decoration: underline; }
 
+/* Deck: a project told one beat per screen, the text on the left and the visual
+   on the right. Same type and colours as the rest of the site; the one variation
+   is that the page fills the window. Without script it is every beat in order. */
+
+.deck-bar, .deck-main, .deck-nav { width: min(1400px, 100% - 2 * var(--gutter)); margin-left: auto; margin-right: auto; }
+.deck-bar { display: flex; gap: 1.5rem; align-items: baseline; padding: 1rem 0; font-size: var(--small); color: var(--muted); }
+.deck-bar a { color: var(--text); font-weight: 600; text-decoration: none; }
+.deck-bar a:hover { text-decoration: underline; }
+.deck-sections { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin: 0; flex: 1; }
+.deck-sections li { margin: 0; }
+.deck-sections [aria-current] { color: var(--text); font-weight: 600; }
+.deck-count { white-space: nowrap; }
+.beat { margin: 0 0 3rem; }
+.beat h2 { font-size: 1.75rem; margin: 0 0 1rem; }
+.beat .prose { font-size: var(--lede); line-height: 1.55; }
+.deck-visual { margin: 0 0 2rem; }
+.deck-visual img, .deck-visual video, .deck-visual svg { display: block; max-width: 100%; height: auto; }
+.deck-visual figcaption { font-size: var(--small); color: var(--muted); margin-top: 0.5rem; }
+.deck-nav { display: none; }
+
+body.deck.js { height: 100svh; display: flex; flex-direction: column; overflow: hidden; }
+body.deck.js .deck-main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 8fr); gap: 3rem; align-items: center; }
+body.deck.js .beat { margin: 0; }
+body.deck.js .deck-visuals { height: 100%; min-height: 0; display: flex; align-items: center; }
+body.deck.js .deck-visual { margin: 0; width: 100%; max-height: 100%; }
+body.deck.js .deck-visual img, body.deck.js .deck-visual video { width: auto; max-height: calc(100svh - 10rem); }
+body.deck.js .deck-visual svg { width: 100%; max-height: calc(100svh - 10rem); }
+body.deck.js .deck-nav { display: flex; gap: 0.5rem; padding: 0.75rem 0 1rem; }
+.deck-nav button { font: inherit; font-size: var(--small); color: var(--text); background: var(--bg); border: 1px solid var(--rule); border-radius: 0; padding: 0.25rem 0.6rem; cursor: pointer; }
+.deck-nav button:hover { border-color: var(--text); }
+[hidden] { display: none !important; }
+@media (max-width: 800px) {
+  body.deck.js { height: auto; overflow: visible; }
+  body.deck.js .deck-main { display: flex; flex-direction: column-reverse; align-items: stretch; gap: 1.5rem; }
+  body.deck.js .deck-visuals { height: auto; }
+  body.deck.js .deck-visual img, body.deck.js .deck-visual video, body.deck.js .deck-visual svg { max-height: 55svh; }
+}
+
 /* Notebook */
 
 .notebook { list-style: none; padding: 0; }

@@ -15,6 +15,8 @@ import {
   outline,
   projectNav,
   visualsUrl,
+  deckUrl,
+  hasDeck,
   type Project,
 } from '../../../lib/content';
 import { coverOg } from '../../../lib/og';
@@ -50,6 +52,12 @@ const visuals = figuresOf(remarkPluginFrontmatter).length + (showCover ? 1 : 0);
         <time datetime={isoDate(start)}>{isoDate(start)}</time>
         {' – '}
         {end ? <time datetime={isoDate(end)}>{isoDate(end)}</time> : 'present'}
+        {hasDeck(project.id) && (
+          <>
+            <span aria-hidden="true">{' · '}</span>
+            <a href={deckUrl(project)}>deck</a>
+          </>
+        )}
         {visuals > 0 && (
           <>
             <span aria-hidden="true">{' · '}</span>

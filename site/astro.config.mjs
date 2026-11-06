@@ -56,6 +56,7 @@ export default defineConfig({
         !page.endsWith('/404/') &&
         !page.endsWith('/search/') &&
         !page.endsWith('/visuals/') &&
+        !page.endsWith('/deck/') &&
         (hasEntries || !page.endsWith('/notebook/')),
     }),
   ],

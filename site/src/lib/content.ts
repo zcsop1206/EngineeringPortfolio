@@ -133,6 +133,27 @@ export function figuresOf(remarkPluginFrontmatter: Record<string, unknown>): Fig
   return (remarkPluginFrontmatter.figures as Figure[] | undefined) ?? [];
 }
 
+/**
+ * The project's deck.md, if it has one: the source of /projects/<slug>/deck/
+ * (see lib/deck.mjs).
+ */
+export function deckFile(slug: string): string | undefined {
+  const f = path.join(contentDir(), 'projects', slug, 'deck.md');
+  return fs.existsSync(f) ? f : undefined;
+}
+
+/**
+ * Whether /projects/<slug>/deck/ exists: a deck.md, or a ready-made page in
+ * site/public (BoneTwin's pitch deck).
+ */
+export function hasDeck(slug: string): boolean {
+  return Boolean(deckFile(slug)) || fs.existsSync(path.join(process.cwd(), 'public', 'projects', slug, 'deck', 'index.html'));
+}
+
+export function deckUrl(p: Project | string): string {
+  return url(`/projects/${typeof p === 'string' ? p : p.id}/deck/`);
+}
+
 /** The project's visuals page: its figures one per screen, for walking someone through it. */
 export function visualsUrl(p: Project | string): string {
   return url(`/projects/${typeof p === 'string' ? p : p.id}/visuals/`);
