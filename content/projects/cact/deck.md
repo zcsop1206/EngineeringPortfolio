@@ -8,7 +8,7 @@ I joined the Centre for Advanced Coating Technologies in May 2026. The lab's wic
 
 # What
 
-## Device
+## The device
 
 A vapor chamber where a sprayed sawtooth coating pumps the liquid instead of a wick. I designed and machined its copper top plate, instrumented the assembly, and tested it charged and dry.
 
@@ -38,23 +38,23 @@ Calibrated thermocouples in the heater block, substrate centre and edge, condens
 
 ![Where the thermocouple beads sit](cact_thermocouple_map.svg)
 
-## Charged
+## Charged run
 
 Steady at 410 W, 46 W/cm². The chiller water carried away the electrical input to within 7%.
 
 ![The charged run](cact_test1_history.svg)
 
-## Control
+## Dry control
 
 The same assembly with no fluid, stepped to 318 W.
 
 ![The dry control](cact_control_history.svg)
 
-## Resistance
+## Thermal resistance
 
 Substrate to condenser: 0.074 K/W charged against 0.26 to 0.28 dry. Heater to substrate is unchanged, since the fluid is not in that path.
 
-## Gradient
+## Plate gradient
 
 The centre ran 18 °C above the edge, the same per watt charged and dry. A conduction model fitted to eight thermocouples recovers the heater power to within 8%, so the gradient is the copper plate, and that is the next thing to design out.
 

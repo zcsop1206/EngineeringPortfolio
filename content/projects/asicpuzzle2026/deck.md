@@ -8,7 +8,7 @@ Jane Street published a chip's layout and asked what it prints for the right inp
 
 # What
 
-## Puzzle
+## The puzzle
 
 Polygons on layers, nothing labelled. One input bit per clock, eight output bits, one success pin. Find the input that raises success and read the output.
 
@@ -16,13 +16,13 @@ Polygons on layers, nothing labelled. One input bit per clock, eight output bits
 
 # Problem
 
-## Scale
+## Search space
 
 728 cells and a 121-bit key. Too many to guess, and no answer to check against.
 
 # Work
 
-## Warmup
+## Warmup chip
 
 The puzzle ships a small chip at every stage from source to layout. I built each tool there, where the answer is known.
 
@@ -34,13 +34,13 @@ Overlapping metal is one wire, a via joins layers, each cell is a named black bo
 
 ![](#fig-4)
 
-## Waveform
+## Sample waveform
 
 Reading the circuit by hand was out of reach. The sample recording was not: the output is text, each attempt is 121 bits, and it ends in TRY AGAIN. That gave the protocol and a test.
 
 ![The sample waveform. The cursor is on a G.](asicsurfer.png)
 
-## Simulator
+## Software twin
 
 A Python model of the extracted circuit. Replaying the recording, it prints TRY AGAIN on the same clock edges.
 
@@ -50,7 +50,7 @@ The same circuit as constraints, with success required high. Z3 returns one key 
 
 ![](#fig-6)
 
-## Answer
+## The answer
 
 (* TWO STARS *). The chip checks an 11 by 11 Star Battle grid, and the key is the solved puzzle.
 

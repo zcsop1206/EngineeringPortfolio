@@ -28,13 +28,13 @@ One thermocouple, both ends open, and eighteen inputs not yet measured.
 
 One-dimensional along the tube, verified by 230 tests against analytic limits and by hand.
 
-## Profile
+## Temperature profile
 
 End losses fade over 7 to 9 cm and the winding is 15 cm, so the profile is one arch. The flat zone is 26 mm at ±5 °C.
 
 ![Predicted profile at 700 and 1000 °C](furnace_v1_profile.png)
 
-## Safety
+## Runaway and safety
 
 The relay fails closed. From a stuck relay to the quartz limit is 48 seconds, which sizes the independent limiter. The mains wiring is resleeved and checked before any run.
 
@@ -48,7 +48,7 @@ Water oxidises silicon about 30 times faster than oxygen per atmosphere. In room
 
 The model ranks its unknowns by how much each widens the bands. Cold measurements in that order, then five experiments that each pin down named parameters.
 
-## Next
+## Next furnace
 
 The same model over 36 worst cases picks the next furnace's heater: three independent zones, the only layout that holds ±1 K across a boat.
 
