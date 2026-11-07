@@ -14,6 +14,7 @@ Dates: 0 typed, 0 from git, 0 assumed today.
 | citations this month | 0 | >= 1 (n/a in the first month) | n/a |
 | arrivals | 0 | >= 1 by 2027-01-18 | not yet |
 | test domains first call | putnam none; asic none | a call in each before its date (putnam 2026-12-05, asic 2027-01-18) | not yet |
+| dormant | 0 domains, 0 misses | 0 (over 4 weeks) | not yet |
 | silent weeks in last 8 | 0 | 0 (completed weeks from 2026-11-02) | ok |
 
 ## Next id
@@ -26,6 +27,15 @@ none
 none
 
 ## Misses
+none
+
+## Known
+none
+
+## Dormant
+Domains quiet for more than 4 weeks:
+none
+Misses not cited by a later call in 4 weeks:
 none
 
 ## Domains

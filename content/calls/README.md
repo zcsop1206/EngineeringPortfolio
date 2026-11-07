@@ -31,7 +31,7 @@ From the repo root, on the laptop:
     node content/calls/tally.mjs --check    no write; prints problems, exit 1 if any
     node content/calls/tally.mjs --stdout   prints the readout instead of writing it
 
-readout.md: a header with the run date and where the dates came from; Verdict, one row per check below; Next id; Open, oldest first, with ask on those past the window; Arrivals; Misses, newest first, which is the skill written down; Domains, with each domain's first call; Weeks, the last eight; Problems. It needs Node. Without git, undated lines are dated the run day and silent weeks are not assessed. The iPad only writes calls.
+readout.md: a header with the run date and where the dates came from; Verdict, one row per check below; Next id; Open, oldest first, with ask on those past the window; Arrivals; Misses, newest first, which is the skill written down; Known, the calls that held, per domain, in your words; Dormant, domains with no call and misses no later call has cited in the dormant window; Domains, with each domain's first call; Weeks, the last eight; Problems. It needs Node. Without git, undated lines are dated the run day and silent weeks are not assessed. The iPad only writes calls.
 
 ## How the experiment reads out
 
@@ -42,6 +42,7 @@ Working, read off the Verdict:
 - calls are real bets: miss rate over settled non-moot calls inside the band once five are settled; below it the calls are too safe or written after the fact, above it fidelity is not being asked
 - calibration: mean confidence of settled non-moot calls that carry one is within the knob of their held percent
 - transfer: from the second month with calls, at least the knob's number of call-text citations that settle held per month, and one arrival by 2027-01-18
+- nothing dormant: no domain without a call, and no miss without a later citation, for longer than the dormant window
 
 Not working: a completed week with commits under content/projects/ and no call; open calls past the window piling up; a miss rate below the band; no arrival by 2027-01-18.
 
@@ -58,7 +59,12 @@ The knobs. Change one value and its date at a time; tally.mjs reads this table.
 | calibration gap points | 15 | 2026-11-07 |
 | citations per month | 1 | 2026-11-07 |
 | moot share max | 25 | 2026-11-07 |
+| dormant weeks | 4 | 2026-11-07 |
 | test domains | putnam, asic | 2026-11-07 |
+
+## The profile pass
+
+The tally counts; it cannot say that three misses in two domains are the same weakness. [profile-prompt.md](profile-prompt.md) is a prompt a model runs over the ledger to write profile.md: what has held per domain in your words, the misses clustered into named weaknesses with whether any later call applied them, what is dormant, and at most three one-word questions. It only links, counts, flags and asks. It is the one part with a model in the loop, it is run by hand, the tally never depends on it, and profile.md can be deleted on its own.
 
 ## First week
 
@@ -70,7 +76,7 @@ Built 2026-11-07 without opening Obsidian: how the vault shows the two .mjs file
 
 ## Deleting it
 
-calls.md is the only file Adit types in. Copy it anywhere, then delete content/calls/ and the two mentions in CONTEXT.md (the layout line and the paragraph). Nothing else refers to it; the site never reads it.
+calls.md is the only file Adit types in. Copy it anywhere, then delete content/calls/ (profile.md and readout.md are generated) and the two mentions in CONTEXT.md (the layout line and the paragraph). Nothing else refers to it; the site never reads it.
 
 ## Coexistence
 

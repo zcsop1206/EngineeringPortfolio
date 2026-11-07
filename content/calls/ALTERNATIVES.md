@@ -55,6 +55,8 @@ A schedule is a third part. If the readout shows the tally is not being run, add
 Calls allowed anywhere in the vault and swept by the tally, or only in calls.md: only calls.md.
 Ids need a last line to read, and one file is one place to look.
 
+A model in the loop for the semantic part, or none: added on 2026-11-07, after the first build, at Adit's request that the system track what they know, their weaknesses and dormant domains. The tally can list held calls and flag quiet domains and uncited misses, and now does, but it cannot see that three misses in two domains are one weakness. The profile pass (profile-prompt.md) does that, within the brief's limits: link, count, flag, ask; never choose. It is the third moving part, so it is optional, run by hand, deletable on its own, and the tally never depends on it.
+
 Not fitted as an alternative, but used: retroactive seeding in retro.md, the same two parts run against known answers from past projects. Weaker evidence, since the answer is known, but the fastest way to the first misses.
 
 ## The two unknowns

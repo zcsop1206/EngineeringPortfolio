@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // tally.mjs: reads calls.md (and git), writes readout.md. Generated output is not Adit's words.
 // Plain Node >= 18, ESM, no dependencies. See README.md in this folder.
+// readout.md order: header, Verdict, Next id, Open, Arrivals, Misses, Known, Dormant, Domains, Weeks, Problems.
 
 import { readFileSync, writeFileSync, existsSync, realpathSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -77,6 +78,7 @@ export const DEFAULT_KNOBS = {
   'citations per month': 1,
   'moot share max': 25,
   'test domains': ['putnam', 'asic'],
+  'dormant weeks': 4,
 };
 
 // Parses `| knob | value | since |` rows out of README text. Returns { knobs, problems }.
@@ -448,6 +450,29 @@ export function buildReadout(ledger, knobs, opts) {
     };
   });
 
+  // Known: held calls per domain, newest first by call date (then higher id first)
+  const newestFirst = (a, b) => (a.date === b.date ? b.id - a.id : a.date < b.date ? 1 : -1);
+  const known = domainNames
+    .map((d) => ({ domain: d, calls: settled.filter((c) => c.domain === d && c.settle.verdict === 'held').sort(newestFirst) }))
+    .filter((k) => k.calls.length);
+
+  // Dormant: domains whose last call is older than the knob, and misses no later call cites within it
+  const dormantWeeks = knobs['dormant weeks'];
+  const dormantDays = dormantWeeks * 7;
+  const dormantDomains = domainNames
+    .map((d) => {
+      const last = calls.filter((c) => c.domain === d).map((c) => c.date).sort().pop();
+      const days = daysBetween(last, today);
+      return { domain: d, lastCall: last, days, weeks: Math.floor(days / 7) };
+    })
+    .filter((d) => d.days > dormantDays)
+    .sort((a, b) => (a.lastCall === b.lastCall ? a.domain.localeCompare(b.domain) : a.lastCall < b.lastCall ? -1 : 1));
+  const dormantMisses = misses.filter((miss) => {
+    const citing = calls.filter((c) => isBefore(miss, c) && c.citations.includes(miss.id)).map((c) => c.date).sort();
+    if (!citing.length) return true;
+    return daysBetween(citing[citing.length - 1], today) > dormantDays;
+  });
+
   // Verdict rows
   const verdict = [];
   const row = (check, value, target, state) => verdict.push({ check, value: String(value), target, state });
@@ -515,6 +540,9 @@ export function buildReadout(ledger, knobs, opts) {
   const testTarget = `a call in each before its date (${testDomains.map((d) => `${d} ${TEST_DOMAIN_DATES[d] || 'no date'}`).join(', ')})`;
   row('test domains first call', testValue, testTarget, testDomains.every((d) => firstCall.has(d)) ? 'ok' : 'not yet');
 
+  const dormantState = settled.length === 0 ? 'not yet' : dormantDomains.length === 0 && dormantMisses.length === 0 ? 'ok' : 'off';
+  row('dormant', `${dormantDomains.length} domains, ${dormantMisses.length} misses`, `0 (over ${dormantWeeks} weeks)`, dormantState);
+
   if (!gitOk) {
     row('silent weeks in last 8', '?', '0 (n/a, no git)', 'n/a');
   } else {
@@ -536,6 +564,8 @@ export function buildReadout(ledger, knobs, opts) {
     openPast: new Set(openPast.map((c) => c.id)),
     arrivals,
     misses,
+    known,
+    dormant: { weeks: dormantWeeks, domains: dormantDomains, misses: dormantMisses },
     domains,
     firstCalls: firstCall,
     weeks,
@@ -586,6 +616,23 @@ export function renderReadout(model) {
   out.push('## Misses');
   if (!model.misses.length) out.push('none');
   else for (const c of model.misses) out.push(`- c${c.id} ${c.domain} (${c.date}): ${c.text} -> ${c.settle.text || '(no text)'}`);
+  out.push('');
+  out.push('## Known');
+  if (!model.known.length) out.push('none');
+  else {
+    for (const k of model.known) {
+      out.push(k.domain);
+      for (const c of k.calls) out.push(`- c${c.id} (${c.date}): ${c.text}`);
+    }
+  }
+  out.push('');
+  out.push('## Dormant');
+  out.push(`Domains quiet for more than ${model.dormant.weeks} weeks:`);
+  if (!model.dormant.domains.length) out.push('none');
+  else for (const d of model.dormant.domains) out.push(`- ${d.domain}: last call ${d.lastCall}, ${d.weeks} weeks`);
+  out.push(`Misses not cited by a later call in ${model.dormant.weeks} weeks:`);
+  if (!model.dormant.misses.length) out.push('none');
+  else for (const c of model.dormant.misses) out.push(`- c${c.id} ${c.domain} (settled ${c.settle.date}): ${c.settle.text}`);
   out.push('');
   out.push('## Domains');
   if (!model.domains.length) out.push('no calls yet');
