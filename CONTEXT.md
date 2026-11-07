@@ -20,7 +20,7 @@ content/                         the Obsidian vault (open this folder in Obsidia
   projects/<slug>/log/<entry>/p-xxxxxx.svg  pages of a handwritten entry (notebook-ink/1)
   projects/<slug>/<images, pdfs, videos>    the project's media, referenced by relative path
   private/                       gitignored escape hatch
-  edge/                          metacognition system (see below); public, not rendered by the site
+  calls/                         the calls ledger (see below); public, not rendered by the site
 site/                            the Astro site; run every npm command from here
   src/content.config.ts          the two collections and their frontmatter schema
   src/ink/                       ink notes: strip stroke data, rewrite page embeds
@@ -30,12 +30,14 @@ scripts/guard.mjs                fails on files that must not be published (see 
 .github/workflows/deploy.yml     guard, npm ci, npm test, build in site/, deploy site/dist
 ```
 
-`content/edge/` (added 2026-10-17) is the metacognition system: inbox, questions, schemata,
-per-project prediction and lens-sweep notes, Bases views and probe scripts. The site does not
-read it (the collections glob only `projects/*/index.md` and `projects/*/log/*.md`), but it is
-committed, so it is public on GitHub and syncs to the iPad. Its rules are in its `PROTOCOL.md`
-and the reasoning in its `DESIGN.md`. Anything from it worth showing on the site becomes a
-dated log entry in the owner's words. Decided 2026-10-17: public but off the site, for now.
+`content/calls/` (added 2026-11-07) is the calls ledger: one line before a modelling decision
+(the model, the assumptions, the fidelity, a confidence) and one line after (held, missed or moot).
+`calls.md` is the owner's and the only file typed in; `node content/calls/tally.mjs` writes
+`readout.md`, which is generated and not the owner's words. The site does not read the folder
+(the collections glob only `projects/*/index.md` and `projects/*/log/*.md`), but it is committed,
+so it is public on GitHub and syncs to the iPad. Its `README.md` says how the experiment reads
+out and how to delete it. It replaced `content/edge/` and the edge plugin, removed 2026-11-07 and
+recoverable from git history before that date.
 
 Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `content/learning/`. The learning notes vault lives outside the repo at `Documents/learning-vault/`.
 
