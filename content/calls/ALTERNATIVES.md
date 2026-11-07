@@ -57,6 +57,16 @@ Ids need a last line to read, and one file is one place to look.
 
 A model in the loop for the semantic part, or none: added on 2026-11-07, after the first build, at Adit's request that the system track what they know, their weaknesses and dormant domains. The tally can list held calls and flag quiet domains and uncited misses, and now does, but it cannot see that three misses in two domains are one weakness. The profile pass (profile-prompt.md) does that, within the brief's limits: link, count, flag, ask; never choose. It is the third moving part, so it is optional, run by hand, deletable on its own, and the tally never depends on it.
 
+Silence while working, strict or relaxed: relaxed on 2026-11-07, at Adit's request, to exactly two interruptions. The first is a once-a-day list of what is dormant, the second a flag when a new call resembles one of his own misses and does not cite it. Both are computed by the tally from his lines, by word overlap and dates, with no model in the loop; the text of a nudge is always a quotation of his own settle lines. Anything else the system might say during work, a hint, a question, a model, stays forbidden. The delivery is a file that Obsidian shows live and a desktop notification, from a watch mode of the tally, so no part was added.
+
+Three categories as a frame: taken as one extra settle word, blind, for the model that was never on the list, against missed for the one chosen wrongly from the list. The readout counts a blind that a later held call cites as the transition out of unknown unknowns. Rejected as a separate structure: the ledger already holds the states, and a word is cheaper than a field.
+
+The system as its own experiment: changes are calls in the domain system, settled by the readout, and a knob's since cell can carry the id. Rejected as a separate log: it would be a third file for the same lines.
+
+Analogy drills, A : B :: C : ?, from Adit's NTSE microcosm: taken into the profile pass, at most three a week, built from his own lines, with the blank never filled. Rejected at call time: that would be a hint during work.
+
+Rejected on 2026-11-07, with the reason: checking schemata against the embedding matrices of open-weight models (a research project with no readout he could verify, and a third part); a 2-D or 3-D edge map (a visualiser over a few dozen lines; the Domains and Dormant sections are the map until there are hundreds of calls); documents that rewrite themselves to his level with an understanding structure behind them (a different system; the ledger is already the compact record of what he understands, and those documents should read from it if they are built).
+
 Not fitted as an alternative, but used: retroactive seeding in retro.md, the same two parts run against known answers from past projects. Weaker evidence, since the answer is known, but the fastest way to the first misses.
 
 ## The two unknowns

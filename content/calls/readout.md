@@ -13,6 +13,7 @@ Dates: 0 typed, 0 from git, 0 assumed today.
 | calibration gap | 0 settled with conf | <= 15 (n/a under 5) | n/a |
 | citations this month | 0 | >= 1 (n/a in the first month) | n/a |
 | arrivals | 0 | >= 1 by 2027-01-18 | not yet |
+| blind made known | 0 of 0 blind | every blind cited later by a call that held | n/a |
 | test domains first call | putnam none; asic none | a call in each before its date (putnam 2026-12-05, asic 2027-01-18) | not yet |
 | dormant | 0 domains, 0 misses | 0 (over 4 weeks) | not yet |
 | silent weeks in last 8 | 0 | 0 (completed weeks from 2026-11-02) | ok |

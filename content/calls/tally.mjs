@@ -2,9 +2,10 @@
 // tally.mjs: reads calls.md (and git), writes readout.md. Generated output is not Adit's words.
 // Plain Node >= 18, ESM, no dependencies. See README.md in this folder.
 // readout.md order: header, Verdict, Next id, Open, Arrivals, Misses, Known, Dormant, Domains, Weeks, Problems.
+// --nudge and --watch also write nudge.md beside the ledger (see computeNudges).
 
-import { readFileSync, writeFileSync, existsSync, realpathSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
+import { readFileSync, writeFileSync, existsSync, realpathSync, watch, watchFile } from 'node:fs';
+import { execFileSync, execFile } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -66,6 +67,16 @@ export function localToday() {
   return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 }
 
+function localNow() {
+  const d = new Date();
+  return `${localToday()} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+}
+
+function localClock() {
+  const d = new Date();
+  return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
+}
+
 // ---------------------------------------------------------------------------
 // Knobs
 
@@ -79,9 +90,14 @@ export const DEFAULT_KNOBS = {
   'moot share max': 25,
   'test domains': ['putnam', 'asic'],
   'dormant weeks': 4,
+  'resemblance': 25,
 };
 
+const SINCE_RE = /^(\d{4}-\d{2}-\d{2})(?:\s+c([1-9]\d{0,8}))?$/;
+
 // Parses `| knob | value | since |` rows out of README text. Returns { knobs, problems }.
+// The since cell is "YYYY-MM-DD" or "YYYY-MM-DD c<N>" (the system call that changed it);
+// ids are collected in knobs.sinceRefs and checked against the ledger by buildReadout.
 export function parseKnobs(readmeText) {
   const knobs = {};
   const problems = [];
@@ -101,6 +117,8 @@ export function parseKnobs(readmeText) {
       rows.set(name, { value: cells[1], since: cells[2] || '' });
     }
   }
+  const sinceDates = [];
+  const sinceRefs = [];
   for (const name of Object.keys(DEFAULT_KNOBS)) {
     const def = DEFAULT_KNOBS[name];
     const row = rows.get(name);
@@ -109,8 +127,13 @@ export function parseKnobs(readmeText) {
       problems.push(`knob ${name} missing, using default ${fmtKnob(def)}`);
       continue;
     }
-    if (row.since && !isValidDate(row.since)) {
-      problems.push(`knob ${name} since "${row.since}" is not a date`);
+    if (row.since) {
+      const s = SINCE_RE.exec(row.since);
+      if (!s || !isValidDate(s[1])) problems.push(`knob ${name} since "${row.since}" is not a date`);
+      else {
+        sinceDates.push(s[1]);
+        if (s[2]) sinceRefs.push({ name, id: Number(s[2]) });
+      }
     }
     if (name === 'test domains') {
       const list = row.value.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
@@ -132,8 +155,8 @@ export function parseKnobs(readmeText) {
   }
   // The system's start: the earliest valid `since` date in the table (default 2026-11-07).
   // Checks that look back over weeks only count weeks from this one on.
-  const sinces = [...rows.values()].map((r) => r.since).filter((d) => isValidDate(d)).sort();
-  knobs.since = sinces[0] || '2026-11-07';
+  knobs.since = sinceDates.sort()[0] || '2026-11-07';
+  knobs.sinceRefs = sinceRefs;
   return { knobs, problems };
 }
 
@@ -144,16 +167,23 @@ function fmtKnob(v) {
 // ---------------------------------------------------------------------------
 // Ledger
 
-const VERBS = new Set(['held', 'missed', 'moot']);
+// Settle verbs. held: the call was what was needed. missed: the right model was on the list and
+// another was chosen. blind: the right model was never on the list. moot: never found out.
+const VERBS = new Set(['held', 'missed', 'moot', 'blind']);
+const MISS_VERBS = new Set(['missed', 'blind']);
 // Loose prefix: anything that looks like it wants to be a c-line. If it then fails the strict
 // grammar below it is a problem, not silently ignored.
 const LOOSE_RE = /^\s*(?:[-*]\s*)?(?:\d{4}-\d{2}-\d{2}\s+)?c\d/;
 // Strict grammar: optional "- " or "* ", optional date, c<id> (1..9 digits, no leading zero), whitespace, rest.
 const LINE_RE = /^\s*(?:[-*]\s+)?(?:(\d{4}-\d{2}-\d{2})\s+)?c([1-9]\d{0,8})\s+(.*)$/;
-const SETTLE_RE = /^(held|missed|moot)(?::\s*(.*))?$/;
+const SETTLE_RE = /^(held|missed|moot|blind)(?::\s*(.*))?$/;
 const CALL_RE = /^([a-z][a-z0-9-]*):\s*(.*)$/;
 const CONF_RE = /^(?:(.*\S)\s+)?(\d{1,3})%?$/;
 const FENCE_RE = /^\s*(`{3,}|~{3,})/;
+
+export function isMissVerb(verb) {
+  return MISS_VERBS.has(verb);
+}
 
 export function citationsIn(text, selfId) {
   const out = [];
@@ -319,6 +349,7 @@ export function parseCommitWeeks(logText) {
 const MATH_FROM = '2026-11-09';
 const ARRIVAL_BY = '2027-01-18';
 const TEST_DOMAIN_DATES = { putnam: '2026-12-05', asic: '2027-01-18' };
+const SYSTEM_DOMAIN = 'system'; // calls about the system itself; never dormant, never a test domain
 const MIN_N = 5;
 
 // Ordering of calls: "earlier" means by date, then by id. A call dated earlier is earlier; on the
@@ -365,7 +396,14 @@ export function buildReadout(ledger, knobs, opts) {
   const settled = calls.filter((c) => c.settle);
   const open = calls.filter((c) => !c.settle);
   const nonMoot = settled.filter((c) => c.settle.verdict !== 'moot');
+  const isMiss = (c) => c.settle && MISS_VERBS.has(c.settle.verdict);
   const window = knobs['settle window days'];
+
+  // Knob since cells that cite a call must cite a system call
+  for (const ref of knobs.sinceRefs || []) {
+    const c = byId.get(ref.id);
+    if (!c || c.domain !== SYSTEM_DOMAIN) problems.push(`knob ${ref.name} since cites c${ref.id}, which is not a system call`);
+  }
 
   // Settle dated before its call: a problem; days to settle clamped to 0.
   for (const c of settled) {
@@ -389,6 +427,13 @@ export function buildReadout(ledger, knobs, opts) {
   for (const c of calls) {
     const cur = firstCall.get(c.domain);
     if (!cur || isBefore(c, cur)) firstCall.set(c.domain, c);
+  }
+
+  // Made known: a missed or blind call whose id is cited in the call text of a later call
+  // (by date, then id) that settled held.
+  for (const c of calls) {
+    if (!isMiss(c)) continue;
+    c.madeKnownBy = calls.filter((x) => isBefore(c, x) && x.settle && x.settle.verdict === 'held' && x.citations.includes(c.id)).map((x) => x.id);
   }
 
   // Weeks
@@ -423,9 +468,9 @@ export function buildReadout(ledger, knobs, opts) {
     }
   }
 
-  // Misses
+  // Misses: missed and blind, newest settle first
   const misses = settled
-    .filter((c) => c.settle.verdict === 'missed')
+    .filter(isMiss)
     .sort((a, b) => (a.settle.date === b.settle.date ? b.id - a.id : a.settle.date < b.settle.date ? 1 : -1));
 
   // Domains
@@ -435,6 +480,7 @@ export function buildReadout(ledger, knobs, opts) {
     const ds = dc.filter((c) => c.settle);
     const held = ds.filter((c) => c.settle.verdict === 'held').length;
     const missed = ds.filter((c) => c.settle.verdict === 'missed').length;
+    const blind = ds.filter((c) => c.settle.verdict === 'blind').length;
     const moot = ds.filter((c) => c.settle.verdict === 'moot').length;
     return {
       domain: d,
@@ -443,23 +489,29 @@ export function buildReadout(ledger, knobs, opts) {
       open: dc.length - ds.length,
       held,
       missed,
+      blind,
       moot,
       medianDays: median(ds.map((c) => c.daysToSettle)),
       meanConf: mean(dc.filter((c) => c.conf !== null).map((c) => c.conf)),
-      heldPct: pct(held, held + missed),
+      heldPct: pct(held, held + missed + blind),
     };
   });
 
-  // Known: held calls per domain, newest first by call date (then higher id first)
+  // Known: held calls per domain, newest first by call date (then higher id first), with lineage
   const newestFirst = (a, b) => (a.date === b.date ? b.id - a.id : a.date < b.date ? 1 : -1);
+  for (const c of calls) {
+    c.lineage = c.citations.filter((id) => byId.has(id)).map((id) => ({ id, verb: byId.get(id).settle ? byId.get(id).settle.verdict : 'open' }));
+  }
   const known = domainNames
     .map((d) => ({ domain: d, calls: settled.filter((c) => c.domain === d && c.settle.verdict === 'held').sort(newestFirst) }))
     .filter((k) => k.calls.length);
 
-  // Dormant: domains whose last call is older than the knob, and misses no later call cites within it
+  // Dormant: domains whose last call is older than the knob (system excluded), and misses no
+  // later call cites within it
   const dormantWeeks = knobs['dormant weeks'];
   const dormantDays = dormantWeeks * 7;
   const dormantDomains = domainNames
+    .filter((d) => d !== SYSTEM_DOMAIN)
     .map((d) => {
       const last = calls.filter((c) => c.domain === d).map((c) => c.date).sort().pop();
       const days = daysBetween(last, today);
@@ -496,7 +548,7 @@ export function buildReadout(ledger, knobs, opts) {
   const lo = knobs['miss rate low'];
   const hi = knobs['miss rate high'];
   const missRow = (label, set) => {
-    const missed = set.filter((c) => c.settle.verdict === 'missed').length;
+    const missed = set.filter(isMiss).length;
     if (set.length < MIN_N) {
       row(label, `${set.length} settled non-moot`, `${lo} to ${hi} % (n/a under ${MIN_N})`, 'n/a');
       return;
@@ -535,7 +587,16 @@ export function buildReadout(ledger, knobs, opts) {
 
   row('arrivals', arrivals.length, `>= 1 by ${ARRIVAL_BY}`, arrivals.length >= 1 ? 'ok' : 'not yet');
 
-  const testDomains = knobs['test domains'] || DEFAULT_KNOBS['test domains'];
+  const blinds = settled.filter((c) => c.settle.verdict === 'blind');
+  const blindKnown = blinds.filter((c) => c.madeKnownBy.length).length;
+  row(
+    'blind made known',
+    `${blindKnown} of ${blinds.length} blind`,
+    'every blind cited later by a call that held',
+    blinds.length === 0 ? 'n/a' : blindKnown === blinds.length ? 'ok' : 'not yet'
+  );
+
+  const testDomains = (knobs['test domains'] || DEFAULT_KNOBS['test domains']).filter((d) => d !== SYSTEM_DOMAIN);
   const testValue = testDomains.map((d) => `${d} ${firstCall.has(d) ? firstCall.get(d).date : 'none'}`).join('; ');
   const testTarget = `a call in each before its date (${testDomains.map((d) => `${d} ${TEST_DOMAIN_DATES[d] || 'no date'}`).join(', ')})`;
   row('test domains first call', testValue, testTarget, testDomains.every((d) => firstCall.has(d)) ? 'ok' : 'not yet');
@@ -560,6 +621,8 @@ export function buildReadout(ledger, knobs, opts) {
     gitNote: opts.gitNote || '',
     verdict,
     nextId,
+    calls,
+    byId,
     open,
     openPast: new Set(openPast.map((c) => c.id)),
     arrivals,
@@ -585,6 +648,10 @@ function table(headers, rows) {
 
 export function renderVerdict(model) {
   return table(['check', 'value', 'target', 'state'], model.verdict.map((r) => [r.check, r.value, r.target, r.state]));
+}
+
+function lineageSuffix(c) {
+  return c.lineage && c.lineage.length ? ` via ${c.lineage.map((l) => `c${l.id} (${l.verb})`).join(', ')}` : '';
 }
 
 export function renderReadout(model) {
@@ -615,14 +682,14 @@ export function renderReadout(model) {
   out.push('');
   out.push('## Misses');
   if (!model.misses.length) out.push('none');
-  else for (const c of model.misses) out.push(`- c${c.id} ${c.domain} (${c.date}): ${c.text} -> ${c.settle.text || '(no text)'}`);
+  else for (const c of model.misses) out.push(`- c${c.id} ${c.domain} (${c.date}) ${c.settle.verdict}: ${c.text} -> ${c.settle.text || '(no text)'}`);
   out.push('');
   out.push('## Known');
   if (!model.known.length) out.push('none');
   else {
     for (const k of model.known) {
       out.push(k.domain);
-      for (const c of k.calls) out.push(`- c${c.id} (${c.date}): ${c.text}`);
+      for (const c of k.calls) out.push(`- c${c.id} (${c.date}): ${c.text}${lineageSuffix(c)}`);
     }
   }
   out.push('');
@@ -639,7 +706,7 @@ export function renderReadout(model) {
   else {
     out.push(
       table(
-        ['domain', 'first call', 'calls', 'open', 'held', 'missed', 'moot', 'median days to settle', 'mean conf', 'held %'],
+        ['domain', 'first call', 'calls', 'open', 'held', 'missed', 'blind', 'moot', 'median days to settle', 'mean conf', 'held %'],
         model.domains.map((d) => [
           d.domain,
           d.firstCall,
@@ -647,6 +714,7 @@ export function renderReadout(model) {
           d.open,
           d.held,
           d.missed,
+          d.blind,
           d.moot,
           d.medianDays === null ? '-' : fmtNum(d.medianDays, Number.isInteger(d.medianDays) ? 0 : 1),
           fmtNum(d.meanConf),
@@ -689,10 +757,85 @@ export function tally(callsText, readmeText, opts = {}) {
 }
 
 // ---------------------------------------------------------------------------
+// Nudges: the only interruptions the system may make. Two shapes, quoting his lines only.
+//   N1 "dormant: ..." once per calendar day, when there are new calls and something is dormant.
+//   N2 "c<new> resembles c<old> (...). Not cited." per new call that reads like an earlier miss.
+
+const STOP_WORDS = new Set(('that this with from when then than will would have been into over under only also just more most same each ' +
+  'which what where enough before after about between because while their there these those your mine').split(' '));
+
+export function tokens(text) {
+  const out = new Set();
+  for (const w of String(text || '').toLowerCase().match(/[a-z0-9]+/g) || []) {
+    if (w.length < 4 || /^\d+$/.test(w) || STOP_WORDS.has(w)) continue;
+    out.add(w);
+  }
+  return out;
+}
+
+export function jaccard(a, b) {
+  if (!a.size || !b.size) return 0;
+  let inter = 0;
+  for (const w of a) if (b.has(w)) inter++;
+  const union = a.size + b.size - inter;
+  return union ? inter / union : 0;
+}
+
+// "## Next id" of a previous readout.md, or null.
+export function parseReadoutNextId(text) {
+  const m = /^## Next id\r?\nc(\d+)/m.exec(String(text || ''));
+  return m ? Number(m[1]) : null;
+}
+
+// Header date of a previous nudge.md, or null.
+export function parseNudgeDate(text) {
+  const m = /^Generated by tally\.mjs on (\d{4}-\d{2}-\d{2})/.exec(String(text || ''));
+  return m ? m[1] : null;
+}
+
+// model: from buildReadout. prev: { nextId: number|null, nudgeDate: 'YYYY-MM-DD'|null }.
+// opts: { today }. Returns the nudge lines (possibly empty).
+export function computeNudges(model, prev, knobs, opts = {}) {
+  const today = opts.today || model.today;
+  const prevNext = prev && Number.isFinite(prev.nextId) ? prev.nextId : null;
+  const newCalls = prevNext === null ? [] : model.calls.filter((c) => c.id >= prevNext);
+  const lines = [];
+
+  // N1: dormant, at most once per calendar day, only when something new was written
+  if (newCalls.length && (!prev || prev.nudgeDate !== today)) {
+    for (const d of model.dormant.domains) lines.push(`dormant: ${d.domain}: last call ${d.lastCall}, ${d.weeks} weeks`);
+    for (const c of model.dormant.misses) lines.push(`dormant: c${c.id} ${c.domain} (${c.settle.verdict} ${c.settle.date}): ${c.settle.text}`);
+  }
+
+  // N2: resemblance to an earlier missed or blind call that the new call does not cite
+  const threshold = Number(knobs['resemblance'] ?? DEFAULT_KNOBS['resemblance']);
+  const old = model.calls.filter((c) => c.settle && MISS_VERBS.has(c.settle.verdict));
+  for (const n of newCalls) {
+    const nt = tokens(n.text);
+    const hits = [];
+    for (const o of old) {
+      if (o.id === n.id || n.citations.includes(o.id)) continue;
+      const score = jaccard(nt, tokens(`${o.text} ${o.settle.text}`)) * 100;
+      if (score >= threshold) hits.push({ o, score });
+    }
+    hits.sort((a, b) => b.score - a.score || a.o.id - b.o.id);
+    for (const { o } of hits.slice(0, 2)) {
+      lines.push(`c${n.id} resembles c${o.id} (${o.settle.verdict} ${o.settle.date}: ${o.settle.text}). Not cited.`);
+    }
+  }
+  return lines;
+}
+
+export function renderNudge(lines, now) {
+  return `Generated by tally.mjs on ${now}. Not Adit's words. Delete freely.\n${lines.length ? lines.join('\n') : 'nothing'}\n`;
+}
+
+// ---------------------------------------------------------------------------
 // CLI
 
-const USAGE = 'usage: node tally.mjs [--check | --stdout] [--today=YYYY-MM-DD]';
+const USAGE = 'usage: node tally.mjs [--check | --stdout | --nudge | --watch [--no-toast]] [--today=YYYY-MM-DD]';
 const BLAME_NOTE = 'calls.md is not committed yet, or git is unavailable; undated lines assumed today.';
+const TOAST_APP_ID = '{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\\WindowsPowerShell\\v1.0\\powershell.exe';
 
 function findRepoRoot(start) {
   let dir = start;
@@ -708,12 +851,15 @@ function git(args, cwd) {
   return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 64 * 1024 * 1024 });
 }
 
-// Returns { check, stdout, today } or { error }.
+// Returns { check, stdout, nudge, watch, noToast, today } or { error }.
 export function parseArgs(argv, env = {}) {
-  const opts = { check: false, stdout: false, today: env.TALLY_TODAY || null };
+  const opts = { check: false, stdout: false, nudge: false, watch: false, noToast: false, today: env.TALLY_TODAY || null };
   for (const a of argv) {
     if (a === '--check') opts.check = true;
     else if (a === '--stdout') opts.stdout = true;
+    else if (a === '--nudge') opts.nudge = true;
+    else if (a === '--watch') opts.watch = true;
+    else if (a === '--no-toast') opts.noToast = true;
     else if (a.startsWith('--today=')) opts.today = a.slice('--today='.length);
     else return { error: `unknown argument: ${a}` };
   }
@@ -721,19 +867,33 @@ export function parseArgs(argv, env = {}) {
   return opts;
 }
 
-function main(argv) {
-  const here = path.dirname(fileURLToPath(import.meta.url));
+function showToast(title, body) {
+  const script = [
+    '[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null',
+    '[Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType = WindowsRuntime] | Out-Null',
+    '$t = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02)',
+    "$n = $t.GetElementsByTagName('text')",
+    '$n.Item(0).AppendChild($t.CreateTextNode($env:CALLS_TOAST_TITLE)) | Out-Null',
+    '$n.Item(1).AppendChild($t.CreateTextNode($env:CALLS_TOAST_BODY)) | Out-Null',
+    '$toast = [Windows.UI.Notifications.ToastNotification]::new($t)',
+    '[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($env:CALLS_TOAST_APPID).Show($toast)',
+  ].join('; ');
+  try {
+    execFile(
+      'powershell',
+      ['-NoProfile', '-NonInteractive', '-WindowStyle', 'Hidden', '-Command', script],
+      { env: { ...process.env, CALLS_TOAST_TITLE: title, CALLS_TOAST_BODY: body, CALLS_TOAST_APPID: TOAST_APP_ID }, windowsHide: true },
+      () => {}
+    );
+  } catch {
+    // toasts are best effort
+  }
+}
+
+// Reads the ledger and git, builds the model. Returns { model, text, problems, knobs }.
+function runTally(here, today) {
   const callsPath = path.join(here, 'calls.md');
   const readmePath = path.join(here, 'README.md');
-  const readoutPath = path.join(here, 'readout.md');
-
-  const args = parseArgs(argv, process.env);
-  if (args.error) {
-    process.stderr.write(`${args.error}\n${USAGE}\n`);
-    return 2;
-  }
-  const today = args.today || localToday();
-
   const callsText = existsSync(callsPath) ? readFileSync(callsPath, 'utf8') : '';
   const readmeText = existsSync(readmePath) ? readFileSync(readmePath, 'utf8') : null;
 
@@ -756,8 +916,94 @@ function main(argv) {
       notes.push('git log failed; project commits unknown.');
     }
   }
+  return tally(callsText, readmeText, { today, lineDates, commitWeeks, gitNote: notes.join(' ') });
+}
 
-  const { model, text, problems } = tally(callsText, readmeText, { today, lineDates, commitWeeks, gitNote: notes.join(' ') });
+// One --nudge pass: write readout.md, compute nudges against the previous readout and nudge.md,
+// write nudge.md. Returns { lines, body }.
+function runNudge(here, today) {
+  const readoutPath = path.join(here, 'readout.md');
+  const nudgePath = path.join(here, 'nudge.md');
+  const prev = {
+    nextId: existsSync(readoutPath) ? parseReadoutNextId(readFileSync(readoutPath, 'utf8')) : null,
+    nudgeDate: existsSync(nudgePath) ? parseNudgeDate(readFileSync(nudgePath, 'utf8')) : null,
+  };
+  const { model, text, knobs } = runTally(here, today);
+  writeFileSync(readoutPath, text, 'utf8');
+  const lines = computeNudges(model, prev, knobs, { today });
+  const body = renderNudge(lines, localNow());
+  writeFileSync(nudgePath, body, 'utf8');
+  return { lines, body };
+}
+
+function runWatch(here, today, noToast) {
+  const callsPath = path.join(here, 'calls.md');
+  let lastShown = null;
+  let timer = null;
+  const pass = () => {
+    timer = null;
+    let result;
+    try {
+      result = runNudge(here, today || localToday());
+    } catch (e) {
+      process.stdout.write(`${localClock()} error: ${e && e.message ? e.message : e}\n`);
+      return;
+    }
+    const { lines } = result;
+    process.stdout.write(`${localClock()} ${lines.length} nudge${lines.length === 1 ? '' : 's'}\n`);
+    const bodyKey = lines.join('\n');
+    if (lines.length && bodyKey !== lastShown) {
+      lastShown = bodyKey;
+      if (!noToast) showToast('Calls', lines[0]);
+    }
+  };
+  const schedule = () => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(pass, 500);
+  };
+  let watcher = null;
+  try {
+    watcher = watch(here, { persistent: true }, (_event, filename) => {
+      if (!filename || String(filename).toLowerCase() === 'calls.md') schedule();
+    });
+    watcher.on('error', () => {
+      watchFile(callsPath, { interval: 1000 }, schedule);
+    });
+  } catch {
+    watchFile(callsPath, { interval: 1000 }, schedule);
+  }
+  process.stdout.write(`watching ${callsPath} (Ctrl-C to stop)\n`);
+  pass();
+  process.on('SIGINT', () => {
+    if (watcher) watcher.close();
+    process.exit(0);
+  });
+}
+
+function main(argv) {
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  const readoutPath = path.join(here, 'readout.md');
+
+  const args = parseArgs(argv, process.env);
+  if (args.error) {
+    process.stderr.write(`${args.error}\n${USAGE}\n`);
+    return 2;
+  }
+
+  if (args.watch) {
+    runWatch(here, args.today, args.noToast);
+    return 0;
+  }
+
+  const today = args.today || localToday();
+
+  if (args.nudge) {
+    const { body } = runNudge(here, today);
+    process.stdout.write(body);
+    return 0;
+  }
+
+  const { model, text, problems } = runTally(here, today);
 
   if (args.check) {
     process.stdout.write(problems.length ? problems.map((p) => `- ${p}`).join('\n') + '\n' : 'none\n');

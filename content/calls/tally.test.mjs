@@ -1,7 +1,7 @@
 // node --test content/calls/tally.test.mjs  (no git, no files: fixtures are inline and dates are typed)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseLedger, parseKnobs, DEFAULT_KNOBS, weekStart, tally, parseBlame, parseCommitWeeks, assignDates, parseArgs, isBefore } from './tally.mjs';
+import { parseLedger, parseKnobs, DEFAULT_KNOBS, weekStart, tally, parseBlame, parseCommitWeeks, assignDates, parseArgs, isBefore, computeNudges, renderNudge, parseReadoutNextId, parseNudgeDate, tokens, jaccard } from './tally.mjs';
 
 const TODAY = '2026-11-07';
 const README = `
@@ -16,6 +16,7 @@ const README = `
 | moot share max | 25 | 2026-11-07 |
 | test domains | putnam, asic | 2026-11-07 |
 | dormant weeks | 4 | 2026-11-07 |
+| resemblance | 25 | 2026-11-07 |
 `;
 
 const HEADINGS = ['## Verdict', '## Next id', '## Open', '## Arrivals', '## Misses', '## Known', '## Dormant', '## Domains', '## Weeks', '## Problems'];
@@ -164,12 +165,12 @@ test('settle dated before its call is a problem and days to settle clamp to 0', 
   const src = ['2026-11-01 c1 a: x 50', '2026-10-20 c1 missed: y', '2026-10-01 c2 a: x 50', '2026-10-11 c2 held'].join('\n');
   const { text, model, problems } = tally(src, README, { today: TODAY });
   assert.deepEqual(problems, ['c1 settled 2026-10-20 before it was called 2026-11-01']);
-  assert.ok(text.includes('| a | 2026-10-01 | 2 | 0 | 1 | 1 | 0 | 5 | 50 | 50 |')); // median of (0, 10) = 5
+  assert.ok(text.includes('| a | 2026-10-01 | 2 | 0 | 1 | 1 | 0 | 0 | 5 | 50 | 50 |')); // median of (0, 10) = 5
   // the clamped settle counts as settled on its call date, inside the last 30 d
   const five = [src, '2026-10-01 c3 a: x', '2026-10-02 c3 held', '2026-10-01 c4 a: x', '2026-10-02 c4 held', '2026-10-01 c5 a: x', '2026-10-02 c5 held'].join('\n');
   const t = tally(five, README, { today: TODAY }).text;
   assert.equal(verdictRow(t, 'miss rate last 30 d').value, '2 settled non-moot');
-  assert.equal(model.verdict.length, 12);
+  assert.equal(model.verdict.length, 13);
 });
 
 const ARRIVAL_BASE = ['2026-10-01 c1 furnace: lumped inside 70', '2026-10-05 c1 held'];
@@ -245,10 +246,12 @@ test('knobs parse from the README table, with fallback and problems when absent'
   assert.ok(changed.problems.includes('knob miss rate low missing, using default 20'));
 
   const none = parseKnobs(null);
-  assert.deepEqual(none.knobs, { ...DEFAULT_KNOBS, since: '2026-11-07' });
+  assert.deepEqual(none.knobs, { ...DEFAULT_KNOBS, since: '2026-11-07', sinceRefs: [] });
   assert.equal(full.knobs.since, '2026-11-07');
   assert.equal(changed.knobs.since, '2026-12-01');
-  assert.equal(none.problems.length, 9);
+  assert.equal(none.problems.length, 10);
+  assert.equal(none.knobs['resemblance'], 25);
+  assert.ok(none.problems.includes('knob resemblance missing, using default 25'));
   assert.equal(none.knobs['dormant weeks'], 4);
   assert.ok(none.problems.includes('knob dormant weeks missing, using default 4'));
   assert.equal(parseKnobs(README.replace('| dormant weeks | 4 |', '| dormant weeks | 6 |')).knobs['dormant weeks'], 6);
@@ -283,10 +286,10 @@ test('empty ledger: header, all nine sections, no problems with a full README', 
   assert.ok(text.includes('## Open\nnone\n'));
   assert.ok(text.includes('## Domains\nno calls yet\n'));
   assert.ok(text.includes('## Problems\nnone\n'));
-  assert.equal(model.verdict.length, 12);
+  assert.equal(model.verdict.length, 13);
   assert.deepEqual(model.verdict.map((r) => r.check), [
     'calls this week any', 'math+putnam this week', 'open past window', 'moot share', 'miss rate all time', 'miss rate last 30 d',
-    'calibration gap', 'citations this month', 'arrivals', 'test domains first call', 'dormant', 'silent weeks in last 8',
+    'calibration gap', 'citations this month', 'arrivals', 'blind made known', 'test domains first call', 'dormant', 'silent weeks in last 8',
   ]);
   assert.equal(model.weeks.length, 8);
   assert.equal(model.weeks[7].week, '2026-11-02');
@@ -375,7 +378,7 @@ test('open calls: oldest first, past-window ones carry the ask, text as typed', 
 test('misses newest first with call text as typed, arrow and settle text', () => {
   const src = ['2026-10-01 c1 furnace: first call 70', '2026-10-03 c1 missed: needed radiation', '2026-10-02 c2 math: second call', '2026-10-05 c2 missed: needed induction'].join('\n');
   const { text } = tally(src, README, { today: TODAY });
-  assert.ok(text.includes('## Misses\n- c2 math (2026-10-02): second call -> needed induction\n- c1 furnace (2026-10-01): first call 70 -> needed radiation\n'));
+  assert.ok(text.includes('## Misses\n- c2 math (2026-10-02) missed: second call -> needed induction\n- c1 furnace (2026-10-01) missed: first call 70 -> needed radiation\n'));
 });
 
 test('citations this month: n/a in the first month, counted after', () => {
@@ -395,9 +398,9 @@ test('domains and weeks tables', () => {
   const src = ['2026-11-02 c1 math: a 40', '2026-11-04 c1 held', '2026-11-03 c2 math: b 60', '2026-11-05 c2 missed: c', '2026-11-06 c3 asic: d'].join('\n');
   const commitWeeks = new Map([['2026-10-26', 3], ['2026-11-02', 1]]);
   const { text, model } = tally(src, README, { today: TODAY, commitWeeks });
-  assert.ok(text.includes('| domain | first call | calls | open | held | missed | moot | median days to settle | mean conf | held % |'));
-  assert.ok(text.includes('| math | 2026-11-02 | 2 | 0 | 1 | 1 | 0 | 2 | 50 | 50 |'));
-  assert.ok(text.includes('| asic | 2026-11-06 | 1 | 1 | 0 | 0 | 0 | - | - | - |'));
+  assert.ok(text.includes('| domain | first call | calls | open | held | missed | blind | moot | median days to settle | mean conf | held % |'));
+  assert.ok(text.includes('| math | 2026-11-02 | 2 | 0 | 1 | 1 | 0 | 0 | 2 | 50 | 50 |'));
+  assert.ok(text.includes('| asic | 2026-11-06 | 1 | 1 | 0 | 0 | 0 | 0 | - | - | - |'));
   assert.ok(text.includes('| 2026-11-02 | 3 | 2 | asic, math | 1 |'));
   assert.ok(text.includes('| 2026-10-26 | 0 | 0 | - | 3 |'));
   // The week of 2026-10-26 had commits and no calls, but it is before the system's start
@@ -469,10 +472,13 @@ test('git parsers: blame porcelain (40 and 64 hex) and commit weeks', () => {
   for (const k of weeks.keys()) assert.equal(weekStart(k), k);
 });
 
-test('CLI arguments: only --check, --stdout and --today=YYYY-MM-DD are accepted', () => {
-  assert.deepEqual(parseArgs([]), { check: false, stdout: false, today: null });
-  assert.deepEqual(parseArgs(['--check', '--today=2026-11-07']), { check: true, stdout: false, today: '2026-11-07' });
-  assert.deepEqual(parseArgs(['--stdout'], { TALLY_TODAY: '2026-11-01' }), { check: false, stdout: true, today: '2026-11-01' });
+test('CLI arguments: only the known flags and --today=YYYY-MM-DD are accepted', () => {
+  const base = { check: false, stdout: false, nudge: false, watch: false, noToast: false, today: null };
+  assert.deepEqual(parseArgs([]), base);
+  assert.deepEqual(parseArgs(['--check', '--today=2026-11-07']), { ...base, check: true, today: '2026-11-07' });
+  assert.deepEqual(parseArgs(['--stdout'], { TALLY_TODAY: '2026-11-01' }), { ...base, stdout: true, today: '2026-11-01' });
+  assert.deepEqual(parseArgs(['--nudge']), { ...base, nudge: true });
+  assert.deepEqual(parseArgs(['--watch', '--no-toast']), { ...base, watch: true, noToast: true });
   assert.deepEqual(parseArgs(['--today=2026-11-02'], { TALLY_TODAY: '2026-11-01' }).today, '2026-11-02');
   for (const bad of [['--chekc'], ['--stdout', '--write'], ['calls.md'], ['--today'], ['--today=2026-13-40'], ['-c']]) {
     assert.ok(parseArgs(bad).error, bad.join(' '));
@@ -535,4 +541,169 @@ test('verdict: dormant row has three states', () => {
   const quiet = verdictRow(tally('2026-09-01 c1 math: x\n2026-09-02 c1 held', README, { today: TODAY }).text, 'dormant');
   assert.equal(quiet.value, '1 domains, 0 misses');
   assert.equal(quiet.state, 'off');
+});
+
+test('blind settles count as misses everywhere, print their verb, and get their own column', () => {
+  const src = [
+    '2026-10-01 c1 math: on the list, chose wrong 60', '2026-10-02 c1 missed: needed the other one',
+    '2026-10-01 c2 math: never on the list 80', '2026-10-03 c2 blind: needed a model I did not know',
+    '2026-10-01 c3 math: fine 50', '2026-10-02 c3 held',
+    '2026-10-01 c4 math: fine 50', '2026-10-02 c4 held',
+    '2026-10-01 c5 math: fine 50', '2026-10-02 c5 held',
+  ].join('\n');
+  const { text, model } = tally(src, README, { today: '2026-10-10' });
+  assert.ok(text.includes('## Misses\n- c2 math (2026-10-01) blind: never on the list 80 -> needed a model I did not know\n- c1 math (2026-10-01) missed: on the list, chose wrong 60 -> needed the other one\n'));
+  assert.ok(text.includes('| math | 2026-10-01 | 5 | 0 | 3 | 1 | 1 | 0 | 1 | 58 | 60 |'));
+  assert.equal(verdictRow(text, 'miss rate all time').value, '40 % of 5'); // 2 of 5, blind included
+  assert.equal(verdictRow(text, 'miss rate last 30 d').value, '40 % of 5');
+  assert.equal(verdictRow(text, 'calibration gap').value, '2 (mean conf 58, held 60 %)'); // held 3 of 5 with conf
+  assert.deepEqual(model.dormant.misses.map((c) => c.id), [2, 1]);
+  assert.equal(parseLedger('c1 a: x\nc1 blind').settles[0].verdict, 'blind');
+  // the old verbs are unchanged
+  assert.equal(verdictRow(tally(src.replace('blind:', 'moot:'), README, { today: '2026-10-10' }).text, 'miss rate all time').value, '4 settled non-moot');
+});
+
+test('verdict: blind made known', () => {
+  const na = verdictRow(tally('2026-10-01 c1 math: x\n2026-10-02 c1 missed: y', README, { today: TODAY }).text, 'blind made known');
+  assert.equal(na.value, '0 of 0 blind');
+  assert.equal(na.target, 'every blind cited later by a call that held');
+  assert.equal(na.state, 'n/a');
+  const one = ['2026-10-01 c1 math: x', '2026-10-02 c1 blind: y', '2026-10-05 c2 math: as in c1, now known', '2026-10-06 c2 held'];
+  const ok = verdictRow(tally(one.join('\n'), README, { today: TODAY }).text, 'blind made known');
+  assert.equal(ok.value, '1 of 1 blind');
+  assert.equal(ok.state, 'ok');
+  // cited by a call that missed, cited only in settle text, cited by an earlier call: not made known
+  for (const variant of [
+    ['2026-10-05 c2 math: as in c1', '2026-10-06 c2 missed: no'],
+    ['2026-10-05 c2 math: no citation', '2026-10-06 c2 held: as in c1'],
+    ['2026-09-05 c2 math: as in c1, but earlier', '2026-09-06 c2 held'],
+    ['2026-10-05 c2 math: as in c1, still open'],
+  ]) {
+    const r = verdictRow(tally([one[0], one[1], ...variant].join('\n'), README, { today: TODAY }).text, 'blind made known');
+    assert.equal(r.value, '0 of 1 blind', variant.join(' | '));
+    assert.equal(r.state, 'not yet');
+  }
+  const two = [...one, '2026-10-03 c3 asic: z', '2026-10-04 c3 blind: w'];
+  assert.equal(verdictRow(tally(two.join('\n'), README, { today: TODAY }).text, 'blind made known').value, '1 of 2 blind');
+});
+
+test('Known: lineage suffix lists each existing cited id with its verb', () => {
+  const src = [
+    '2026-10-01 c1 furnace: first 70', '2026-10-02 c1 missed: no',
+    '2026-10-03 c7 math: second', '2026-10-04 c7 blind: unknown unknown',
+    '2026-10-05 c8 math: open one',
+    '2026-11-10 c44 asic: as in c7 and c1, also c8 and c99 60', '2026-11-11 c44 held',
+    '2026-11-12 c45 asic: cites nothing', '2026-11-13 c45 held',
+  ].join('\n');
+  const { text } = tally(src, README, { today: '2026-11-14' });
+  assert.ok(text.includes('## Known\nasic\n- c45 (2026-11-12): cites nothing\n- c44 (2026-11-10): as in c7 and c1, also c8 and c99 60 via c7 (blind), c1 (missed), c8 (open)\n'));
+});
+
+test('system domain: never dormant, never a test domain, and knob since may cite a system call', () => {
+  const src = ['2026-09-01 c1 math: old', '2026-09-02 c1 held', '2026-09-01 c2 system: lowering the window will raise the settle rate 60', '2026-11-01 c3 math: fresh'].join('\n');
+  const { model, text } = tally(src, README, { today: TODAY });
+  assert.deepEqual(model.dormant.domains.map((d) => d.domain), []);
+  assert.ok(text.includes('| system | 2026-09-01 | 1 | 1 |'));
+  assert.equal(verdictRow(text, 'calls this week any').value, '0');
+  const sys = tally('c1 system: about the system\n2026-11-01 c2 putnam: p', README.replace('putnam, asic', 'putnam, system'), { today: TODAY }).text;
+  const r = verdictRow(sys, 'test domains first call');
+  assert.equal(r.value, 'putnam 2026-11-01');
+  assert.equal(r.state, 'ok');
+  assert.equal(verdictRow(sys, 'calls this week any').value, '1');
+
+  const withId = README.replace('| settle window days | 14 | 2026-11-07 |', '| settle window days | 7 | 2026-11-07 c2 |');
+  const k = parseKnobs(withId);
+  assert.equal(k.problems.length, 0);
+  assert.equal(k.knobs['settle window days'], 7);
+  assert.equal(k.knobs.since, '2026-11-07');
+  assert.deepEqual(k.knobs.sinceRefs, [{ name: 'settle window days', id: 2 }]);
+  assert.deepEqual(tally(src, withId, { today: TODAY }).problems, []);
+  // c1 is a math call, c9 does not exist
+  const bad = README.replace('| settle window days | 14 | 2026-11-07 |', '| settle window days | 7 | 2026-11-07 c1 |').replace('| miss rate low | 20 | 2026-11-07 |', '| miss rate low | 20 | 2026-11-07 c9 |');
+  assert.deepEqual(tally(src, bad, { today: TODAY }).problems, [
+    'knob settle window days since cites c1, which is not a system call',
+    'knob miss rate low since cites c9, which is not a system call',
+  ]);
+  assert.ok(parseKnobs(README.replace('| miss rate low | 20 | 2026-11-07 |', '| miss rate low | 20 | 2026-11-07 c01 |')).problems.includes('knob miss rate low since "2026-11-07 c01" is not a date'));
+});
+
+test('nudge tokens: lowercase words of 4+ letters, stop words and numbers dropped', () => {
+  assert.deepEqual([...tokens('Radiation off the element matters above 900 C; the ranking held anyway. 70')], ['radiation', 'element', 'matters', 'above', 'ranking', 'held', 'anyway']);
+  assert.deepEqual([...tokens('that this with from when 1234')], []);
+  assert.equal(jaccard(tokens('alpha beta gamma'), tokens('alpha beta delta')), 0.5);
+  assert.equal(jaccard(tokens(''), tokens('alpha')), 0);
+});
+
+const NUDGE_OLD = [
+  '2026-10-01 c1 furnace: one-D along the axis, radial lumped, ends open to the room, no radiation. 70',
+  '2026-10-05 c1 missed: radiation off the element matters above 900 C',
+  '2026-10-02 c2 math: pigeonhole on residues mod n, assume n prime first 55',
+  '2026-10-06 c2 blind: needed generating functions',
+  '2026-10-03 c3 math: induction on n 40',
+  '2026-10-04 c3 held',
+];
+
+function nudgesFor(newLines, prev, opts = {}) {
+  const { model, knobs } = tally([...NUDGE_OLD, ...newLines].join('\n'), opts.readme || README, { today: opts.today || TODAY });
+  return computeNudges(model, prev, knobs, { today: opts.today || TODAY });
+}
+
+test('N2 resemblance: a new call sharing enough words with an old miss and not citing it is nudged', () => {
+  const lines = nudgesFor(['2026-11-07 c4 furnace: one-D along the axis, radial lumped, ends open, no radiation 60'], { nextId: 4, nudgeDate: TODAY });
+  assert.deepEqual(lines, ['c4 resembles c1 (missed 2026-10-05: radiation off the element matters above 900 C). Not cited.']);
+  // citing the old call silences it
+  assert.deepEqual(nudgesFor(['2026-11-07 c4 furnace: one-D along the axis, radial lumped, ends open, no radiation, unlike c1 60'], { nextId: 4, nudgeDate: TODAY }), []);
+  // below the threshold: nothing
+  assert.deepEqual(nudgesFor(['2026-11-07 c4 furnace: radial lumped only, everything else different here today 60'], { nextId: 4, nudgeDate: TODAY }), []);
+  // only stop words and numbers in common: nothing
+  assert.deepEqual(nudgesFor(['2026-11-07 c4 furnace: that this with from 900 70'], { nextId: 4, nudgeDate: TODAY }), []);
+  // a higher knob silences a weak match; a lower knob admits it
+  const weak = ['2026-11-07 c4 furnace: radial lumped, no radiation, and other words entirely 60'];
+  assert.equal(nudgesFor(weak, { nextId: 4, nudgeDate: TODAY }, { readme: README.replace('| resemblance | 25 |', '| resemblance | 90 |') }).length, 0);
+  assert.equal(nudgesFor(weak, { nextId: 4, nudgeDate: TODAY }, { readme: README.replace('| resemblance | 25 |', '| resemblance | 10 |') }).length, 1);
+  // not a new call: nothing; no previous readout: nothing is new
+  assert.deepEqual(nudgesFor(['2026-11-07 c4 furnace: one-D along the axis, radial lumped, ends open, no radiation 60'], { nextId: 5, nudgeDate: TODAY }), []);
+  assert.deepEqual(nudgesFor(['2026-11-07 c4 furnace: one-D along the axis, radial lumped, ends open, no radiation 60'], { nextId: null, nudgeDate: null }), []);
+  // held calls are never compared, blind ones are; at most two per new call, highest overlap first
+  const both = nudgesFor(['2026-11-07 c4 math: pigeonhole on residues mod n, assume n prime, radiation off the element matters above 900 C, radial lumped axis'], { nextId: 4, nudgeDate: TODAY });
+  assert.equal(both.length, 2);
+  assert.ok(both.every((l) => /^c4 resembles c[12] \((missed|blind) 2026-10-0[56]: .*\)\. Not cited\.$/.test(l)));
+});
+
+test('N1 dormant: once per calendar day, only with new calls, only when something is dormant', () => {
+  const old = ['2026-09-01 c1 furnace: old 70', '2026-09-05 c1 missed: needed radiation', '2026-09-02 c2 math: fine', '2026-09-03 c2 held'];
+  const fresh = ['2026-11-07 c3 asic: a new thing entirely'];
+  const run = (prev, lines = fresh) => {
+    const { model, knobs } = tally([...old, ...lines].join('\n'), README, { today: TODAY });
+    return computeNudges(model, prev, knobs, { today: TODAY });
+  };
+  const expected = [
+    'dormant: furnace: last call 2026-09-01, 9 weeks',
+    'dormant: math: last call 2026-09-02, 9 weeks',
+    'dormant: c1 furnace (missed 2026-09-05): needed radiation',
+  ];
+  assert.deepEqual(run({ nextId: 3, nudgeDate: null }), expected);
+  assert.deepEqual(run({ nextId: 3, nudgeDate: '2026-11-06' }), expected);
+  assert.deepEqual(run({ nextId: 3, nudgeDate: TODAY }), []); // already nudged today
+  assert.deepEqual(run({ nextId: 4, nudgeDate: null }), []); // nothing new
+  assert.deepEqual(run({ nextId: null, nudgeDate: null }), []); // no previous readout
+  // nothing dormant: nothing, even with a new call
+  const quiet = ['2026-11-01 c1 furnace: recent 70', '2026-11-02 c1 held', '2026-11-07 c2 asic: new'];
+  const { model, knobs } = tally(quiet.join('\n'), README, { today: TODAY });
+  assert.deepEqual(computeNudges(model, { nextId: 2, nudgeDate: null }, knobs, { today: TODAY }), []);
+  // N1 lines come before N2 lines
+  const mixed = run({ nextId: 3, nudgeDate: null }, ['2026-11-07 c3 furnace: old and new, as before, needed radiation too']);
+  assert.equal(mixed.length, 3); // furnace is no longer dormant once c3 is written
+  assert.deepEqual(mixed.slice(0, 2), ['dormant: math: last call 2026-09-02, 9 weeks', 'dormant: c1 furnace (missed 2026-09-05): needed radiation']);
+  assert.equal(mixed[2], 'c3 resembles c1 (missed 2026-09-05: needed radiation). Not cited.');
+});
+
+test('nudge.md rendering and the two header parsers', () => {
+  assert.equal(renderNudge([], '2026-11-07 09:30'), "Generated by tally.mjs on 2026-11-07 09:30. Not Adit's words. Delete freely.\nnothing\n");
+  assert.equal(renderNudge(['a', 'b'], '2026-11-07 09:30'), "Generated by tally.mjs on 2026-11-07 09:30. Not Adit's words. Delete freely.\na\nb\n");
+  assert.equal(parseNudgeDate(renderNudge([], '2026-11-07 09:30')), '2026-11-07');
+  assert.equal(parseNudgeDate(''), null);
+  assert.equal(parseReadoutNextId(tally('c1 a: x\nc7 a: y', README, { today: TODAY }).text), 8);
+  assert.equal(parseReadoutNextId(tally('', README, { today: TODAY }).text), 1);
+  assert.equal(parseReadoutNextId(null), null);
 });
