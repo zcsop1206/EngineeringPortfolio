@@ -2,7 +2,7 @@ Written by a model for Adit. Not Adit's words.
 
 # Putnam
 
-First iteration, 2026-11-07, for the sitting on 2026-12-05. Every section is a topic you can mark with `%% lost %%`, `%% easy %%` or `%% forgot %%`; the next `/teach` run rewrites it to your level. Problems are referred to by source and number and never copied here: the archive at https://kskedlaya.org/putnam-archive/ has every paper from 1985 and solutions from 1995 (files `2024.pdf` and `2024s.pdf`), and the MIT seminar 18.A34, Fall 2018, by Yufei Zhao, has eleven topic problem sets at https://ocw.mit.edu/courses/18-a34-mathematical-problem-solving-putnam-seminar-fall-2018/pages/assignments/ (CC BY-NC-SA 4.0). PS n below means that seminar's problem set n.
+First iteration, 2026-11-07, for the sitting on 2026-12-05. Every section is a topic you can mark with a lost, easy or forgot comment, as the README describes; the next `/teach` run rewrites it to your level. Problems are referred to by source and number and never copied here: the archive at https://kskedlaya.org/putnam-archive/ has every paper from 1985 and solutions from 1995 (files `2024.pdf` and `2024s.pdf`), and the MIT seminar 18.A34, Fall 2018, by Yufei Zhao, has eleven topic problem sets at https://ocw.mit.edu/courses/18-a34-mathematical-problem-solving-putnam-seminar-fall-2018/pages/assignments/ (CC BY-NC-SA 4.0). PS n below means that seminar's problem set n.
 
 ## The plan to 2026-12-05
 
