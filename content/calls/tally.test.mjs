@@ -1,7 +1,7 @@
 // node --test content/calls/tally.test.mjs  (no git, no files: fixtures are inline and dates are typed)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseLedger, parseKnobs, DEFAULT_KNOBS, weekStart, tally, parseBlame, parseCommitWeeks, assignDates, parseArgs, isBefore, computeNudges, renderNudge, parseReadoutNextId, parseNudgeDate, tokens, jaccard } from './tally.mjs';
+import { parseLedger, parseKnobs, DEFAULT_KNOBS, weekStart, tally, parseBlame, parseCommitWeeks, assignDates, parseArgs, isBefore, computeNudges, renderNudge, parseReadoutNextId, parseNudgeDate, tokens, jaccard, numberLedger, renderCheck } from './tally.mjs';
 
 const TODAY = '2026-11-07';
 const README = `
@@ -706,4 +706,110 @@ test('nudge.md rendering and the two header parsers', () => {
   assert.equal(parseReadoutNextId(tally('c1 a: x\nc7 a: y', README, { today: TODAY }).text), 8);
   assert.equal(parseReadoutNextId(tally('', README, { today: TODAY }).text), 1);
   assert.equal(parseReadoutNextId(null), null);
+});
+
+test('id-less calls are numbered after the highest explicit id, in file order', () => {
+  const led = parseLedger(['furnace: first without an id 70', 'c7 math: explicit', '- 2026-11-01 asic: second without an id', 'c2 math: lower explicit', '* retro-x: third, with a marker'].join('\n'));
+  assert.equal(led.problems.length, 0);
+  assert.deepEqual(led.calls.map((c) => [c.id, c.domain, c.lineNo, c.typedDate]), [
+    [8, 'furnace', 1, null],
+    [7, 'math', 2, null],
+    [9, 'asic', 3, '2026-11-01'],
+    [2, 'math', 4, null],
+    [10, 'retro-x', 5, null],
+  ]);
+  assert.equal(led.calls[0].text, 'first without an id 70');
+  assert.equal(led.calls[0].conf, 70);
+  assert.deepEqual(led.assigned, [{ lineNo: 1, id: 8, kind: 'call' }, { lineNo: 3, id: 9, kind: 'call' }, { lineNo: 5, id: 10, kind: 'call' }]);
+  // no explicit ids: start at 1
+  const none = parseLedger('math: a\nmath: b');
+  assert.deepEqual(none.calls.map((c) => c.id), [1, 2]);
+  // the legend lines in calls.md do not match (space before the colon, or a capital), and "note: x" does
+  const legend = parseLedger(['One line before the tool: `c<id> domain: ...`', 'Dates come from git. Type one only when needed.', 'note: x', 'Furnace: capital', 'math:no space', 'math: '].join('\n'));
+  assert.deepEqual(legend.calls.map((c) => [c.id, c.domain]), [[1, 'note']]);
+  assert.equal(legend.problems.length, 0);
+  // assigned ids start above every explicit id in the file, wherever those sit, so they never collide
+  const dup = parseLedger('c1 math: a\nmath: b\nc2 math: c');
+  assert.equal(dup.problems.length, 0);
+  assert.deepEqual(dup.calls.map((c) => c.id), [1, 3, 2]);
+});
+
+test('bare settles resolve to the nearest open call above; explicit settles in between are consumed', () => {
+  const led = parseLedger(['c1 math: a', 'c2 math: b', 'c2 held', 'missed: settles c1, since c2 is already settled', 'furnace: c', '- 2026-11-02 blind: settles the furnace call', 'moot'].join('\n'));
+  assert.deepEqual(led.settles.map((st) => [st.id, st.verdict, st.lineNo, st.typedDate]), [
+    [2, 'held', 3, null],
+    [1, 'missed', 4, null],
+    [3, 'blind', 6, '2026-11-02'],
+  ]);
+  assert.equal(led.settles[1].text, 'settles c1, since c2 is already settled');
+  assert.deepEqual(led.problems.map((pr) => pr.message), ['settle on line 7 has no open call above it']);
+  assert.deepEqual(led.assigned, [{ lineNo: 4, id: 1, kind: 'settle' }, { lineNo: 5, id: 3, kind: 'call' }, { lineNo: 6, id: 3, kind: 'settle' }]);
+  // a bare settle before any call is a problem too
+  assert.deepEqual(parseLedger('held: nothing above\nc1 a: x').problems.map((pr) => pr.message), ['settle on line 1 has no open call above it']);
+  // a bare settle can also take a call that an earlier bare settle left alone
+  const chain = parseLedger('a: one\na: two\nheld\nmissed: y');
+  assert.deepEqual(chain.settles.map((st) => [st.id, st.verdict]), [[2, 'held'], [1, 'missed']]);
+  // the whole thing flows through the readout
+  const { text, problems } = tally(['2026-10-01 c1 math: a 50', '2026-10-02 furnace: as in c1', '2026-10-03 held', '2026-10-04 missed: y'].join('\n'), README, { today: TODAY });
+  assert.equal(problems.length, 0);
+  assert.ok(text.includes('## Misses\n- c1 math (2026-10-01) missed: a 50 -> y\n'));
+  assert.ok(text.includes('## Known\nfurnace\n- c2 (2026-10-02): as in c1 via c1 (missed)\n'));
+  assert.ok(text.includes('## Next id\nc3\n'));
+});
+
+test('citations to an id assigned in the same run resolve', () => {
+  const led = parseLedger(['furnace: base', 'held', 'asic: as in c1 and c3', 'math: another'].join('\n'));
+  assert.deepEqual(led.calls.map((c) => c.id), [1, 2, 3]);
+  assert.deepEqual(led.calls[1].citations, [1, 3]);
+  assert.equal(led.problems.length, 0);
+});
+
+test('numberLedger inserts only id tokens: LF, CRLF, BOM, no trailing newline, round trip', () => {
+  // remove exactly the inserted tokens, at their lines, and nothing else
+  const strip = (r) => {
+    const lines = r.text.split('\n');
+    for (const { lineNo, id } of r.inserted) lines[lineNo - 1] = lines[lineNo - 1].replace(`c${id} `, '');
+    return lines.join('\n');
+  };
+  // LF with trailing newline
+  const lf = '# Calls\n\nfurnace: a 70\nc5 math: explicit\nheld\n- 2026-11-01 asic: b\n* missed: c\n';
+  const r1 = numberLedger(lf);
+  // the bare "held" settles c5, the nearest open call above it, not c6
+  assert.equal(r1.text, '# Calls\n\nc6 furnace: a 70\nc5 math: explicit\nc5 held\n- 2026-11-01 c7 asic: b\n* c7 missed: c\n');
+  assert.deepEqual(r1.inserted, [{ lineNo: 3, id: 6 }, { lineNo: 5, id: 5 }, { lineNo: 6, id: 7 }, { lineNo: 7, id: 7 }]);
+  assert.equal(strip(r1), lf);
+  // CRLF, no trailing newline
+  const crlf = 'furnace: a\r\nheld: b\r\nc2 math: c';
+  const r2 = numberLedger(crlf);
+  assert.equal(r2.text, 'c3 furnace: a\r\nc3 held: b\r\nc2 math: c');
+  assert.equal(strip(r2), crlf);
+  // BOM on an id-less first line
+  const bom = '\uFEFFfurnace: a\nheld\n';
+  const r3 = numberLedger(bom);
+  assert.equal(r3.text, '\uFEFFc1 furnace: a\nc1 held\n');
+  assert.equal(strip(r3), bom);
+  // nothing to do: text returned unchanged, same reference semantics
+  const done = 'c1 a: x\nc1 held\n';
+  assert.deepEqual(numberLedger(done), { text: done, inserted: [] });
+  // an orphan bare settle and fenced lines are left alone
+  const mixed = 'moot\n```\nmath: fenced\n```\nmath: real\n';
+  const r4 = numberLedger(mixed);
+  assert.equal(r4.text, 'moot\n```\nmath: fenced\n```\nc1 math: real\n');
+  // the numbered text parses to the same calls and settles with nothing left to assign
+  const again = parseLedger(r1.text);
+  assert.deepEqual(again.assigned, []);
+  assert.deepEqual(again.calls.map((c) => c.id), parseLedger(lf).calls.map((c) => c.id));
+  assert.deepEqual(again.settles.map((st) => st.id), parseLedger(lf).settles.map((st) => st.id));
+});
+
+test('--check output lists unnumbered lines after the problems without affecting them', () => {
+  const src = 'c1 math: a\nfurnace: b\nheld\nc9 held\n';
+  const { problems, ledger } = tally(src, README, { today: TODAY });
+  assert.deepEqual(problems, ['line 4: settle for unknown id c9']);
+  assert.equal(renderCheck(problems, ledger, src), '- line 4: settle for unknown id c9\nUnnumbered (will be numbered on the next run):\n- line 2: furnace: b\n- line 3: held\n');
+  const clean = tally('furnace: b\n', README, { today: TODAY });
+  assert.equal(clean.problems.length, 0);
+  assert.equal(renderCheck(clean.problems, clean.ledger, 'furnace: b\n'), 'none\nUnnumbered (will be numbered on the next run):\n- line 1: furnace: b\n');
+  const numbered = tally('c1 furnace: b\n', README, { today: TODAY });
+  assert.equal(renderCheck(numbered.problems, numbered.ledger, 'c1 furnace: b\n'), 'none\n');
 });

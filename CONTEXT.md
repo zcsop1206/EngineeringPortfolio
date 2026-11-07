@@ -37,7 +37,8 @@ scripts/guard.mjs                fails on files that must not be published (see 
 `readout.md`, which is generated and not the owner's words. The site does not read the folder
 (the collections glob only `projects/*/index.md` and `projects/*/log/*.md`), but it is committed,
 so it is public on GitHub and syncs to the iPad. Its `README.md` says how the experiment reads
-out and how to delete it. It replaced `content/edge/` and the edge plugin, removed 2026-11-07 and
+out and how to delete it. `.claude/skills/profile` and `.claude/skills/teach` are the `/profile` and
+`/teach` commands for the two model passes. It replaced `content/edge/` and the edge plugin, removed 2026-11-07 and
 recoverable from git history before that date.
 
 `content/teach/` (added 2026-11-07) holds docs written by a model and rewritten to the owner's level

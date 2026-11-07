@@ -3,9 +3,11 @@
 // Plain Node >= 18, ESM, no dependencies. See README.md in this folder.
 // readout.md order: header, Verdict, Next id, Open, Arrivals, Misses, Known, Dormant, Domains, Weeks, Problems.
 // --nudge and --watch also write nudge.md beside the ledger (see computeNudges).
+// Lines without an id get one on the next write run (see numberLedger); --check and --stdout never write.
 
 import { readFileSync, writeFileSync, existsSync, realpathSync, watch, watchFile } from 'node:fs';
 import { execFileSync, execFile } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -180,6 +182,11 @@ const SETTLE_RE = /^(held|missed|moot|blind)(?::\s*(.*))?$/;
 const CALL_RE = /^([a-z][a-z0-9-]*):\s*(.*)$/;
 const CONF_RE = /^(?:(.*\S)\s+)?(\d{1,3})%?$/;
 const FENCE_RE = /^\s*(`{3,}|~{3,})/;
+// Id-less forms: the first token is a verb, or a domain token immediately followed by ": ".
+const BARE_SETTLE_RE = /^\s*(?:[-*]\s+)?(?:(\d{4}-\d{2}-\d{2})\s+)?(held|missed|moot|blind)(?::\s*(.*))?$/;
+const BARE_CALL_RE = /^\s*(?:[-*]\s+)?(?:(\d{4}-\d{2}-\d{2})\s+)?([a-z][a-z0-9-]*): (.*)$/;
+// Where an id token goes when one is inserted: after whitespace, marker and date.
+const PREFIX_RE = /^(\s*(?:[-*]\s+)?(?:\d{4}-\d{2}-\d{2}\s+)?)/;
 
 export function isMissVerb(verb) {
   return MISS_VERBS.has(verb);
@@ -199,69 +206,129 @@ export function citationsIn(text, selfId) {
   return out;
 }
 
-// Returns { calls, settles, problems }. calls/settles are in file order, with lineNo (1-based) and
-// typedDate (string or null). Duplicate ids keep the first call; later ones are problems.
+// Returns { calls, settles, problems, assigned }. calls/settles are in file order, with lineNo
+// (1-based) and typedDate (string or null). Duplicate ids keep the first call; later ones are problems.
 // call.text is the text exactly as typed after the domain colon (confidence included);
 // call.conf is the parsed trailing confidence, or null.
+// Lines without an id: a call gets max explicit id + 1, + 2, ... in file order (1 if there are no
+// explicit ids); a bare settle takes the id of the nearest call above it that is still unsettled at
+// that point of the file. Those lines are listed in `assigned` ({ lineNo, id, kind }) so the write
+// modes can put the id into calls.md (numberLedger).
 export function parseLedger(text) {
   const calls = [];
   const settles = [];
   const problems = [];
+  const assigned = [];
   const ids = new Set();
-  const lines = String(text || '').replace(/^﻿/, '').split(/\r?\n/);
-  let fence = null; // { marker: '`' | '~', lineNo }
-  lines.forEach((raw, i) => {
-    const lineNo = i + 1;
-    const line = raw.replace(/\s+$/, '');
-    const f = FENCE_RE.exec(line);
-    if (f) {
-      const marker = f[1][0];
-      if (!fence) fence = { marker, lineNo };
-      else if (fence.marker === marker) fence = null;
-      return;
-    }
-    if (fence) return;
-    if (!LOOSE_RE.test(line)) return;
+  const lines = String(text || '').replace(/^\uFEFF/, '').split(/\r?\n/);
+
+  // Walk the lines outside code fences. Returns the fence left open, if any.
+  const walk = (fn) => {
+    let fence = null; // { marker: '`' | '~', lineNo }
+    lines.forEach((raw, i) => {
+      const lineNo = i + 1;
+      const line = raw.replace(/\s+$/, '');
+      const f = FENCE_RE.exec(line);
+      if (f) {
+        const marker = f[1][0];
+        if (!fence) fence = { marker, lineNo };
+        else if (fence.marker === marker) fence = null;
+        return;
+      }
+      if (fence) return;
+      fn(line, lineNo);
+    });
+    return fence;
+  };
+
+  // Pass 1: the highest explicit call id decides where assigned ids start.
+  let maxExplicit = 0;
+  walk((line) => {
     const m = LINE_RE.exec(line);
-    if (!m) {
+    if (!m) return;
+    const c = CALL_RE.exec(m[3].trim());
+    if (c && !VERBS.has(c[1])) maxExplicit = Math.max(maxExplicit, Number(m[2]));
+  });
+  let nextAssigned = maxExplicit + 1;
+
+  // Pass 2: the lines themselves.
+  const settledSoFar = new Set();
+  const pushCall = (id, domain, ctext, lineNo, typedDate, line) => {
+    let conf = null;
+    const k = CONF_RE.exec(ctext);
+    if (k && Number(k[2]) <= 100) conf = Number(k[2]);
+    if (ids.has(id)) {
+      problems.push({ lineNo, text: line.trim(), kind: 'duplicate', id, message: `line ${lineNo}: duplicate id c${id}: ${line.trim()}` });
+      return false;
+    }
+    ids.add(id);
+    calls.push({ id, domain, text: ctext, conf, lineNo, typedDate, citations: citationsIn(ctext, id) });
+    return true;
+  };
+  const pushSettle = (id, verdict, stext, lineNo, typedDate) => {
+    settles.push({ id, verdict, text: stext, lineNo, typedDate, citations: citationsIn(stext, id) });
+    settledSoFar.add(id);
+  };
+  const fence = walk((line, lineNo) => {
+    if (LOOSE_RE.test(line)) {
+      const m = LINE_RE.exec(line);
+      if (!m) {
+        problems.push({ lineNo, text: line.trim(), kind: 'unparsable', message: `line ${lineNo}: unparsable c-line: ${line.trim()}` });
+        return;
+      }
+      const typedDate = m[1] || null;
+      const id = Number(m[2]);
+      const rest = m[3].trim();
+      if (typedDate && !isValidDate(typedDate)) {
+        problems.push({ lineNo, text: line.trim(), kind: 'unparsable', message: `line ${lineNo}: bad date: ${line.trim()}` });
+        return;
+      }
+      const sm = SETTLE_RE.exec(rest);
+      if (sm) {
+        pushSettle(id, sm[1], (sm[2] || '').trim(), lineNo, typedDate);
+        return;
+      }
+      const c = CALL_RE.exec(rest);
+      if (c && !VERBS.has(c[1])) {
+        pushCall(id, c[1], c[2].trim(), lineNo, typedDate, line);
+        return;
+      }
       problems.push({ lineNo, text: line.trim(), kind: 'unparsable', message: `line ${lineNo}: unparsable c-line: ${line.trim()}` });
       return;
     }
-    const typedDate = m[1] || null;
-    const id = Number(m[2]);
-    const rest = m[3].trim();
-    if (typedDate && !isValidDate(typedDate)) {
-      problems.push({ lineNo, text: line.trim(), kind: 'unparsable', message: `line ${lineNo}: bad date: ${line.trim()}` });
-      return;
-    }
-    const s = SETTLE_RE.exec(rest);
-    if (s) {
-      const stext = (s[2] || '').trim();
-      settles.push({ id, verdict: s[1], text: stext, lineNo, typedDate, citations: citationsIn(stext, id) });
-      return;
-    }
-    const c = CALL_RE.exec(rest);
-    if (c && !VERBS.has(c[1])) {
-      const ctext = c[2].trim();
-      let conf = null;
-      const k = CONF_RE.exec(ctext);
-      if (k && Number(k[2]) <= 100) conf = Number(k[2]);
-      if (ids.has(id)) {
-        problems.push({ lineNo, text: line.trim(), kind: 'duplicate', id, message: `line ${lineNo}: duplicate id c${id}: ${line.trim()}` });
+    const bs = BARE_SETTLE_RE.exec(line);
+    if (bs) {
+      const typedDate = bs[1] || null;
+      if (typedDate && !isValidDate(typedDate)) {
+        problems.push({ lineNo, text: line.trim(), kind: 'unparsable', message: `line ${lineNo}: bad date: ${line.trim()}` });
         return;
       }
-      ids.add(id);
-      calls.push({ id, domain: c[1], text: ctext, conf, lineNo, typedDate, citations: citationsIn(ctext, id) });
+      const target = [...calls].reverse().find((c) => !settledSoFar.has(c.id));
+      if (!target) {
+        problems.push({ lineNo, text: line.trim(), kind: 'orphan', message: `settle on line ${lineNo} has no open call above it` });
+        return;
+      }
+      pushSettle(target.id, bs[2], (bs[3] || '').trim(), lineNo, typedDate);
+      assigned.push({ lineNo, id: target.id, kind: 'settle' });
       return;
     }
-    problems.push({ lineNo, text: line.trim(), kind: 'unparsable', message: `line ${lineNo}: unparsable c-line: ${line.trim()}` });
+    const bc = BARE_CALL_RE.exec(line);
+    if (bc) {
+      const typedDate = bc[1] || null;
+      if (typedDate && !isValidDate(typedDate)) {
+        problems.push({ lineNo, text: line.trim(), kind: 'unparsable', message: `line ${lineNo}: bad date: ${line.trim()}` });
+        return;
+      }
+      const id = nextAssigned++;
+      if (pushCall(id, bc[2], bc[3].trim(), lineNo, typedDate, line)) assigned.push({ lineNo, id, kind: 'call' });
+    }
   });
   if (fence) {
     problems.push({ lineNo: fence.lineNo, text: '', kind: 'fence', message: `code fence opened at line ${fence.lineNo} never closes; lines after it were ignored` });
   }
-  for (const s of settles) {
-    if (!ids.has(s.id)) {
-      problems.push({ lineNo: s.lineNo, text: s.text, kind: 'unknown', id: s.id, message: `line ${s.lineNo}: settle for unknown id c${s.id}` });
+  for (const st of settles) {
+    if (!ids.has(st.id)) {
+      problems.push({ lineNo: st.lineNo, text: st.text, kind: 'unknown', id: st.id, message: `line ${st.lineNo}: settle for unknown id c${st.id}` });
     }
   }
   for (const item of [...calls, ...settles]) {
@@ -272,7 +339,25 @@ export function parseLedger(text) {
     }
   }
   problems.sort((a, b) => a.lineNo - b.lineNo);
-  return { calls, settles, problems };
+  return { calls, settles, problems, assigned };
+}
+
+// Puts "c<N> " in front of the domain token or verb of every id-less line, changing nothing else:
+// same line endings, BOM kept, trailing newline untouched. Returns { text, inserted: [{ lineNo, id }] }.
+// Removing every inserted token gives the original text back.
+export function numberLedger(text) {
+  const src = String(text || '');
+  const ledger = parseLedger(src);
+  if (!ledger.assigned.length) return { text: src, inserted: [] };
+  const lines = src.split('\n'); // keeps any '\r' on the line, so CRLF files stay CRLF
+  const inserted = [];
+  for (const a of [...ledger.assigned].sort((x, y) => x.lineNo - y.lineNo)) {
+    const i = a.lineNo - 1;
+    const prefix = PREFIX_RE.exec(lines[i])[1]; // \s* also covers the BOM on line 1
+    lines[i] = `${prefix}c${a.id} ${lines[i].slice(prefix.length)}`;
+    inserted.push({ lineNo: a.lineNo, id: a.id });
+  }
+  return { text: lines.join('\n'), inserted };
 }
 
 // lineDates: Map lineNo -> 'YYYY-MM-DD' | null (null = uncommitted), or null when git failed.
@@ -753,7 +838,7 @@ export function tally(callsText, readmeText, opts = {}) {
     gitNote: opts.gitNote || '',
     knobProblems,
   });
-  return { model, text: renderReadout(model), problems: model.problems, knobs };
+  return { model, text: renderReadout(model), problems: model.problems, knobs, ledger };
 }
 
 // ---------------------------------------------------------------------------
@@ -830,6 +915,18 @@ export function renderNudge(lines, now) {
   return `Generated by tally.mjs on ${now}. Not Adit's words. Delete freely.\n${lines.length ? lines.join('\n') : 'nothing'}\n`;
 }
 
+// What --check prints: the problems, then the id-less lines (informational, not problems).
+export function renderCheck(problems, ledger, callsText) {
+  const out = [problems.length ? problems.map((p) => `- ${p}`).join('\n') : 'none'];
+  const assigned = (ledger && ledger.assigned) || [];
+  if (assigned.length) {
+    const lines = String(callsText || '').replace(/^\uFEFF/, '').split(/\r?\n/);
+    out.push('Unnumbered (will be numbered on the next run):');
+    for (const a of [...assigned].sort((x, y) => x.lineNo - y.lineNo)) out.push(`- line ${a.lineNo}: ${(lines[a.lineNo - 1] || '').trim()}`);
+  }
+  return out.join('\n') + '\n';
+}
+
 // ---------------------------------------------------------------------------
 // CLI
 
@@ -890,11 +987,19 @@ function showToast(title, body) {
   }
 }
 
-// Reads the ledger and git, builds the model. Returns { model, text, problems, knobs }.
-function runTally(here, today) {
+function readCalls(here) {
+  const callsPath = path.join(here, 'calls.md');
+  return existsSync(callsPath) ? readFileSync(callsPath, 'utf8') : '';
+}
+
+function sha1(text) {
+  return createHash('sha1').update(text, 'utf8').digest('hex');
+}
+
+// Reads git, builds the model from callsText. Returns { model, text, problems, knobs, ledger }.
+function runTally(here, today, callsText) {
   const callsPath = path.join(here, 'calls.md');
   const readmePath = path.join(here, 'README.md');
-  const callsText = existsSync(callsPath) ? readFileSync(callsPath, 'utf8') : '';
   const readmeText = existsSync(readmePath) ? readFileSync(readmePath, 'utf8') : null;
 
   const repoRoot = findRepoRoot(here);
@@ -919,36 +1024,58 @@ function runTally(here, today) {
   return tally(callsText, readmeText, { today, lineDates, commitWeeks, gitNote: notes.join(' ') });
 }
 
+// Numbers id-less lines in calls.md when asked. Returns { callsText, numbered, wrote }.
+function numberCalls(here, writeBack) {
+  const callsPath = path.join(here, 'calls.md');
+  let callsText = readCalls(here);
+  const numbered = numberLedger(callsText);
+  let wrote = false;
+  if (writeBack && numbered.inserted.length) {
+    writeFileSync(callsPath, numbered.text, 'utf8');
+    callsText = numbered.text;
+    wrote = true;
+  }
+  return { callsText, numbered, wrote };
+}
+
 // One --nudge pass: write readout.md, compute nudges against the previous readout and nudge.md,
-// write nudge.md. Returns { lines, body }.
-function runNudge(here, today) {
+// write nudge.md. Returns { lines, body, callsText, numbered, prev }. The watcher passes the
+// `prev` of the pass it is redoing after a write-back, so the same calls still count as new.
+function runNudge(here, today, { writeBack, prev: prevGiven }) {
   const readoutPath = path.join(here, 'readout.md');
   const nudgePath = path.join(here, 'nudge.md');
-  const prev = {
+  const prev = prevGiven || {
     nextId: existsSync(readoutPath) ? parseReadoutNextId(readFileSync(readoutPath, 'utf8')) : null,
     nudgeDate: existsSync(nudgePath) ? parseNudgeDate(readFileSync(nudgePath, 'utf8')) : null,
   };
-  const { model, text, knobs } = runTally(here, today);
+  const { callsText, numbered } = numberCalls(here, writeBack);
+  const { model, text, knobs } = runTally(here, today, callsText);
   writeFileSync(readoutPath, text, 'utf8');
   const lines = computeNudges(model, prev, knobs, { today });
   const body = renderNudge(lines, localNow());
   writeFileSync(nudgePath, body, 'utf8');
-  return { lines, body };
+  return { lines, body, callsText, numbered, prev };
 }
 
 function runWatch(here, today, noToast) {
   const callsPath = path.join(here, 'calls.md');
   let lastShown = null;
-  let timer = null;
-  const pass = () => {
-    timer = null;
+  let passTimer = null;
+  let writeTimer = null;
+  let lastWrittenHash = null; // our own write of calls.md, so its change event is ignored
+  let lastParsed = null; // { text, numbered, prev } from the last pass
+  // force: 'start' for the first pass, 'redo' to redo the last pass on the written-back file
+  const pass = (force) => {
+    passTimer = null;
+    if (!force && lastWrittenHash && sha1(readCalls(here)) === lastWrittenHash) return;
     let result;
     try {
-      result = runNudge(here, today || localToday());
+      result = runNudge(here, today || localToday(), { writeBack: false, prev: force === 'redo' && lastParsed ? lastParsed.prev : null });
     } catch (e) {
       process.stdout.write(`${localClock()} error: ${e && e.message ? e.message : e}\n`);
       return;
     }
+    lastParsed = { text: result.callsText, numbered: result.numbered, prev: result.prev };
     const { lines } = result;
     process.stdout.write(`${localClock()} ${lines.length} nudge${lines.length === 1 ? '' : 's'}\n`);
     const bodyKey = lines.join('\n');
@@ -957,9 +1084,29 @@ function runWatch(here, today, noToast) {
       if (!noToast) showToast('Calls', lines[0]);
     }
   };
+  // Write ids back only after 2 s without change events, and only if the file still reads as
+  // what was parsed; otherwise the next change handles it.
+  const writeBack = () => {
+    writeTimer = null;
+    if (!lastParsed || !lastParsed.numbered.inserted.length) return;
+    if (readCalls(here) !== lastParsed.text) return;
+    const out = lastParsed.numbered.text;
+    lastWrittenHash = sha1(out);
+    try {
+      writeFileSync(callsPath, out, 'utf8');
+    } catch (e) {
+      process.stdout.write(`${localClock()} error: ${e && e.message ? e.message : e}\n`);
+      return;
+    }
+    const n = lastParsed.numbered.inserted.length;
+    process.stdout.write(`${localClock()} numbered ${n} line${n === 1 ? '' : 's'}\n`);
+    pass('redo');
+  };
   const schedule = () => {
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(pass, 500);
+    if (passTimer) clearTimeout(passTimer);
+    passTimer = setTimeout(() => pass(false), 500);
+    if (writeTimer) clearTimeout(writeTimer);
+    writeTimer = setTimeout(writeBack, 2000);
   };
   let watcher = null;
   try {
@@ -973,7 +1120,8 @@ function runWatch(here, today, noToast) {
     watchFile(callsPath, { interval: 1000 }, schedule);
   }
   process.stdout.write(`watching ${callsPath} (Ctrl-C to stop)\n`);
-  pass();
+  pass('start');
+  if (lastParsed && lastParsed.numbered.inserted.length) writeTimer = setTimeout(writeBack, 2000);
   process.on('SIGINT', () => {
     if (watcher) watcher.close();
     process.exit(0);
@@ -998,21 +1146,24 @@ function main(argv) {
   const today = args.today || localToday();
 
   if (args.nudge) {
-    const { body } = runNudge(here, today);
+    const { body } = runNudge(here, today, { writeBack: true });
     process.stdout.write(body);
     return 0;
   }
 
-  const { model, text, problems } = runTally(here, today);
-
-  if (args.check) {
-    process.stdout.write(problems.length ? problems.map((p) => `- ${p}`).join('\n') + '\n' : 'none\n');
-    return problems.length ? 1 : 0;
-  }
-  if (args.stdout) {
+  if (args.check || args.stdout) {
+    const callsText = readCalls(here);
+    const { text, problems, ledger } = runTally(here, today, callsText);
+    if (args.check) {
+      process.stdout.write(renderCheck(problems, ledger, callsText));
+      return problems.length ? 1 : 0;
+    }
     process.stdout.write(text);
     return 0;
   }
+
+  const { callsText } = numberCalls(here, true);
+  const { model, text } = runTally(here, today, callsText);
   writeFileSync(readoutPath, text, 'utf8');
   process.stdout.write(renderVerdict(model) + '\n');
   return 0;
