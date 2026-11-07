@@ -66,7 +66,7 @@ Start with [retro.md](retro.md): the furnace and the ASIC decision points as que
 
 ## Not verified
 
-(filled in by the orchestrator after integration)
+Built 2026-11-07 without opening Obsidian: how the vault shows the two .mjs files, and what the iPad sync plugin does with the folder, were not checked. No real call has been made yet, so every readout section beyond the empty state was exercised on fixtures and on a scratch clone with one committed call, where git dated it correctly; lines synced from the iPad will carry the sync time, not the writing time. The rule itself cannot be checked by the system: a call typed after the tool answered looks the same in the file. The site's tests and the publish guard pass; the full site build was not run. retro.md's pointers were checked against the repos as of 2026-11-07 and will drift as those files change; the ASIC uniqueness run (question 7) has no code in its repo. 2026-12-05 is assumed to be the Putnam date.
 
 ## Deleting it
 
