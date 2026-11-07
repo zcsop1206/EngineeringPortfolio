@@ -14,7 +14,7 @@ Then four sections, in this order, under `##` headings. Lists only; no paragraph
 
 Known. Per domain, what has held: compress the calls that settled held into the models and assumptions that have worked, in Adit's own words (quote the call text, do not paraphrase into your own terms), each with its ids. Where several held calls say the same thing, group them and give the count.
 
-Weaknesses. Cluster the misses across domains into named patterns. A pattern needs at least two misses; name it in plain words taken from the settle texts (for example "dropped a loss term", "assumed steady state", "over-resolved"). For each pattern: the ids, the domains, the date of the last instance, and whether any later call's text cites one of its ids (applied) or none does (not applied). Misses that fit no pattern go under "once", one line each.
+Weaknesses. Cluster the misses across domains into named patterns. A pattern needs at least two misses; name it in plain words taken from the settle texts or from the call texts where Adit links one miss to another (for example "dropped a loss term", "assumed steady state", "went to the first tool that fit"). For each pattern: the ids, the domains, the settle date of the last instance, and whether any later call's text cites one of its ids (applied) or none does (not applied). Misses that fit no pattern go under "once", one line each.
 
 Dormant. Copy the two lists from readout.md's Dormant section, then add: weakness patterns with no new instance and no citation in the dormant window, named with their last date.
 
