@@ -21,6 +21,7 @@ content/                         the Obsidian vault (open this folder in Obsidia
   projects/<slug>/<images, pdfs, videos>    the project's media, referenced by relative path
   private/                       gitignored escape hatch
   calls/                         the calls ledger (see below); public, not rendered by the site
+  teach/                         docs a model rewrites to the owner's level, and levels.md (see below); public, not rendered
 site/                            the Astro site; run every npm command from here
   src/content.config.ts          the two collections and their frontmatter schema
   src/ink/                       ink notes: strip stroke data, rewrite page embeds
@@ -38,6 +39,11 @@ scripts/guard.mjs                fails on files that must not be published (see 
 so it is public on GitHub and syncs to the iPad. Its `README.md` says how the experiment reads
 out and how to delete it. It replaced `content/edge/` and the edge plugin, removed 2026-11-07 and
 recoverable from git history before that date.
+
+`content/teach/` (added 2026-11-07) holds docs written by a model and rewritten to the owner's level
+from `%% lost %%`, `%% easy %%` and `%% forgot %%` comments, plus a generated `levels.md`. Every file
+in it is a model's, and its `README.md` says so; the rule that prose is the owner's does not apply there.
+The site does not read it.
 
 Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `content/learning/`. The learning notes vault lives outside the repo at `Documents/learning-vault/`.
 
