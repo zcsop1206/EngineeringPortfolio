@@ -24,7 +24,7 @@ A modelling question is any point where which theory, what assumption or how muc
 
 - Obsidian, laptop: open calls.md, right-click its tab, Pin. It stays open; Ctrl+End goes to the bottom.
 - Obsidian, iPad: in Shortcuts, add an Open URL action with `obsidian://open?vault=content&file=calls%2Fcalls.md` and put it on the home screen.
-- Laptop watcher: double-click [watch.cmd](watch.cmd), or run it from a shell; `watch.cmd stop` stops it. To have it start at logon, put a shortcut to watch.cmd in the Startup folder (Win+R, `shell:startup`).
+- Laptop watcher: double-click [watch.cmd](watch.cmd), or run it from a shell; `watch.cmd stop` stops it. It starts at logon through the shortcut "Calls watcher" in the Startup folder (Win+R, `shell:startup`), added 2026-11-07.
 
 ## While working
 
@@ -76,7 +76,7 @@ Built 2026-11-07 without opening Obsidian: how the vault shows the .mjs and .cmd
 
 ## Deleting it
 
-calls.md is the only file Adit types in. Copy it anywhere, then delete content/calls/, the two mentions in CONTEXT.md (the layout line and the paragraph), and .claude/skills/profile. The teach layer is deleted separately. Nothing else refers to it; the site never reads it.
+calls.md is the only file Adit types in. Copy it anywhere, then delete content/calls/, the two mentions in CONTEXT.md (the layout line and the paragraph), the shortcut "Calls watcher" in the Startup folder, and .claude/skills/profile. The teach layer is deleted separately. Nothing else refers to it; the site never reads it.
 
 ## Coexistence
 
