@@ -1,0 +1,166 @@
+\section{Polynomials and their roots}
+\label{sec:polynomials}
+
+A polynomial has three descriptions: its coefficients, its roots, and its values at enough points. Most polynomial problems are solved by moving from the description the problem gives to the one it hides.
+
+\begin{recognise}
+A polynomial is given by a property of its roots (``all roots real'', ``roots in arithmetic progression'') or of its values (``$p(k)$ is an integer for every integer $k$'', ``$p(1) = p(2) = 0$'') rather than by its coefficients. An expression in several variables is symmetric, so the variables are the roots of something. A sequence of values is asked about at the next index. A question about the real roots of $p$ mentions $p'$, or could. A sum of coefficients taken every $k$-th one is asked for. A recurrence or congruence is really a statement about a polynomial identity.
+\end{recognise}
+
+\subsection*{The model}
+
+Throughout, $p(x) = a_n x^n + \dots + a_1 x + a_0$ with $a_n \ne 0$ has degree $n$, with coefficients in a field, which for the Putnam is $\Q$, $\R$, $\C$ or $\Z/p\Z$.
+
+\begin{theorem}[Factor theorem]
+$p(r) = 0$ if and only if $x - r$ divides $p(x)$.
+\end{theorem}
+
+\begin{proof}
+Divide $p$ by $x - r$ with remainder: $p(x) = (x - r) q(x) + c$ with $c$ a constant. Setting $x = r$ gives $c = p(r)$.
+\end{proof}
+
+\begin{theorem}[Degree counting]
+A nonzero polynomial of degree $n$ has at most $n$ roots, counted with multiplicity. Hence two polynomials of degree at most $n$ that agree at $n + 1$ points are identical, and a polynomial of degree at most $n$ with $n+1$ roots is the zero polynomial.
+\end{theorem}
+
+\begin{proof}
+By the factor theorem, each root $r$ splits off a factor $x - r$ and lowers the degree by one, so after $n$ roots the quotient is a nonzero constant with no roots. For the second sentence, apply the first to the difference of the two polynomials.
+\end{proof}
+
+Over $\C$ every polynomial of degree $n$ has exactly $n$ roots with multiplicity; this is the fundamental theorem of algebra, used freely. So over $\C$, $p(x) = a_n \prod_{i=1}^{n} (x - r_i)$.
+
+\begin{theorem}[Vieta]
+If $r_1, \dots, r_n$ are the roots of $p$ with multiplicity, then for each $k$,
+\[
+\sum_{i_1 < \dots < i_k} r_{i_1} \cdots r_{i_k} = (-1)^k \frac{a_{n-k}}{a_n} .
+\]
+In particular $\sum r_i = -a_{n-1}/a_n$ and $\prod r_i = (-1)^n a_0 / a_n$.
+\end{theorem}
+
+\begin{proof}
+Expand $a_n \prod (x - r_i)$ and compare the coefficient of $x^{n-k}$ with $a_{n-k}$.
+\end{proof}
+
+Vieta turns a symmetric expression in the roots into an expression in the coefficients. Power sums $\sum r_i^k$ are reached from the elementary symmetric functions either by Newton's identities or, faster on the day, by using $p(r_i) = 0$ to reduce $r_i^k$ to lower powers, as in the first example below.
+
+\begin{theorem}[Rolle, for real roots]
+Let $p$ have real coefficients. Between two distinct real roots of $p$ there is a real root of $p'$. Consequently, if $p$ has $r$ real roots counted with multiplicity, then $p'$ has at least $r - 1$; equivalently, $p$ has at most one more real root than $p'$.
+\end{theorem}
+
+\begin{proof}
+The first sentence is Rolle's theorem from calculus. For the second, let the distinct real roots be $x_1 < \dots < x_s$ with multiplicities $m_1, \dots, m_s$ summing to $r$. A root of multiplicity $m_i \ge 2$ of $p$ is a root of multiplicity $m_i - 1$ of $p'$, and each of the $s - 1$ open gaps contains a further root of $p'$. So $p'$ has at least $\sum (m_i - 1) + (s - 1) = r - 1$ real roots.
+\end{proof}
+
+Used the other way round: if $p'$ has few real roots, so does $p$. If $p'$ has $k$ real roots then $p$ has at most $k + 1$, and the sign of $p$ at the roots of $p'$ decides how many of those are achieved.
+
+\begin{theorem}[Lagrange interpolation]
+Let $x_0, \dots, x_n$ be distinct and let $y_0, \dots, y_n$ be arbitrary. There is exactly one polynomial $p$ of degree at most $n$ with $p(x_i) = y_i$ for every $i$, namely
+\[
+p(x) = \sum_{i=0}^{n} y_i \prod_{j \ne i} \frac{x - x_j}{x_i - x_j} .
+\]
+\end{theorem}
+
+\begin{proof}
+Each product is a polynomial of degree $n$ equal to $1$ at $x_i$ and $0$ at the other nodes, so the sum has the right values. Uniqueness is degree counting: two such polynomials differ by a polynomial of degree at most $n$ with $n + 1$ roots.
+\end{proof}
+
+\begin{theorem}[Finite differences]
+Define $\Delta p(x) = p(x + 1) - p(x)$. If $p$ has degree $n \ge 1$ with leading coefficient $a_n$, then $\Delta p$ has degree $n - 1$ with leading coefficient $n a_n$. Hence $\Delta^n p$ is the constant $n! \, a_n$, and $\Delta^{n+1} p = 0$, which written out at $x = 0$ reads
+\[
+\sum_{k=0}^{n+1} (-1)^{n+1-k} \binom{n+1}{k} p(k) = 0 .
+\]
+\end{theorem}
+
+\begin{proof}
+$(x+1)^n - x^n = n x^{n-1} + \dots$, and lower terms of $p$ contribute lower degrees. The displayed identity is $\Delta^{n+1} p(0)$ expanded by the binomial theorem applied to the operator $\Delta = E - 1$, where $E p(x) = p(x+1)$.
+\end{proof}
+
+The identity gives $p(n+1)$ from $p(0), \dots, p(n)$ without finding $p$. It is also the reason a polynomial that takes integer values at $0, 1, \dots, n$ takes integer values at every integer: the differences are integers, and $p(k)$ is a sum of binomial coefficients times differences.
+
+\begin{theorem}[Roots-of-unity filter]
+Let $\omega = e^{2\pi i/m}$. For any polynomial $p(x) = \sum a_k x^k$ and any residue $r$ modulo $m$,
+\[
+\sum_{k \equiv r \ (\mathrm{mod}\ m)} a_k = \frac{1}{m} \sum_{j=0}^{m-1} \omega^{-jr} \, p(\omega^j) .
+\]
+\end{theorem}
+
+\begin{proof}
+The right side is $\frac1m \sum_k a_k \sum_{j=0}^{m-1} \omega^{j(k-r)}$. The inner sum is $m$ when $m$ divides $k - r$ and otherwise is a geometric series with ratio $\omega^{k-r} \ne 1$ summing to $(\omega^{m(k-r)} - 1)/(\omega^{k-r} - 1) = 0$.
+\end{proof}
+
+With $m = 2$ this is the familiar $\sum a_{2k} = (p(1) + p(-1))/2$.
+
+\begin{firstmoves}
+Write the polynomial by its roots, with the leading coefficient in front, not by its coefficients. Evaluate at $0$, $1$, $-1$, and if anything is cyclic, at the roots of unity. Take a derivative and apply Rolle. Reduce the coefficients modulo $2$. For a polynomial given by values, write down Lagrange or the finite-difference table for the small case and see what it says. For a symmetric expression in several variables, name the variables as the roots of a polynomial and let Vieta translate. Count degrees on both sides of any identity before believing it.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+Let $r$, $s$, $t$ be the three roots of $x^3 - 2x - 5$. Compute $r^5 + s^5 + t^5$.
+\end{example}
+
+\begin{proof}[Solution]
+By Vieta, $r + s + t = 0$, $rs + st + tr = -2$, $rst = 5$. Then
+\[
+r^2 + s^2 + t^2 = (r + s + t)^2 - 2(rs + st + tr) = 0 + 4 = 4 .
+\]
+Each root satisfies its own equation, $r^3 = 2r + 5$, so
+\[
+r^5 = r^2 \cdot r^3 = r^2 (2r + 5) = 2 r^3 + 5 r^2 = 2(2r + 5) + 5 r^2 = 5 r^2 + 4 r + 10 ,
+\]
+and the same for $s$ and $t$. Summing,
+\[
+r^5 + s^5 + t^5 = 5 \cdot 4 + 4 \cdot 0 + 3 \cdot 10 = 50 .
+\]
+\end{proof}
+
+Nothing was computed about the roots themselves; the polynomial has one real root and two complex ones, and it does not matter. The move ``reduce $r^k$ using $p(r) = 0$'' is the polynomial version of reducing modulo something, and it works for any power sum.
+
+\begin{example}
+Show that for every real $a$ the polynomial $x^5 - 5x + a$ has at most three real roots, and determine the values of $a$ for which it has exactly three distinct real roots.
+\end{example}
+
+\begin{proof}[Solution]
+Let $p(x) = x^5 - 5x + a$. Then $p'(x) = 5x^4 - 5 = 5(x^2 - 1)(x^2 + 1)$, which has exactly two real roots, $x = -1$ and $x = 1$. By the Rolle count, $p$ has at most $2 + 1 = 3$ real roots with multiplicity.
+
+For the second part, $p$ is increasing on $(-\infty, -1)$, decreasing on $(-1, 1)$, and increasing on $(1, \infty)$, with $p(x) \to -\infty$ as $x \to -\infty$ and $p(x) \to +\infty$ as $x \to +\infty$. Its local maximum is $p(-1) = -1 + 5 + a = a + 4$ and its local minimum is $p(1) = 1 - 5 + a = a - 4$. On each of the three monotone pieces $p$ has at most one root, and it has a root on all three exactly when the local maximum is positive and the local minimum is negative, that is, when $a + 4 > 0$ and $a - 4 < 0$. So $p$ has exactly three distinct real roots if and only if $-4 < a < 4$. At $a = \pm 4$ one root is double, and for $|a| > 4$ there is exactly one real root.
+\end{proof}
+
+The derivative had a simple factorisation and the problem fell to a sign table. Most ``how many real roots'' questions on the Putnam are this argument with a less convenient derivative, and the derivative's own real roots are found by the same method one level down.
+
+\begin{example}
+Let $p$ be a polynomial with real coefficients such that $p(x) = p(2 - x)$ for all real $x$. Show that $p(x)$ is a polynomial in $(x - 1)^2$.
+\end{example}
+
+\begin{proof}[Solution]
+Put $q(y) = p(1 + y)$, a polynomial in $y$. The hypothesis at $x = 1 + y$ says $q(y) = p(1 + y) = p(1 - y) = q(-y)$ for all real $y$. Write $q(y) = \sum c_k y^k$. Then $q(y) - q(-y) = 2 \sum_{k \text{ odd}} c_k y^k$ is a polynomial vanishing at every real $y$, so by degree counting it is the zero polynomial and every odd coefficient $c_k$ is $0$. Hence $q(y) = \sum_j c_{2j} y^{2j}$ and $p(x) = q(x - 1) = \sum_j c_{2j} (x - 1)^{2j}$.
+\end{proof}
+
+A functional identity between polynomials becomes a statement about coefficients only through degree counting: ``equal at infinitely many points'' is what licenses ``equal as polynomials''. The shift to the symmetric point is the standard first move for any identity of the form $p(x) = p(c - x)$.
+
+\begin{trap}
+Roots that are complex or repeated. Vieta counts with multiplicity and over $\C$; ``the roots are real'' is a hypothesis to be used, not assumed. A polynomial identity checked at finitely many points without counting degrees proves nothing. The leading coefficient forgotten when writing $p$ by its roots: $p(x) = a_n \prod (x - r_i)$, and $a_n$ is often what the problem is about. Rolle gives an upper bound on real roots, never a lower one; the lower bound needs sign changes. Lagrange interpolation produces the unique polynomial of degree at most $n$; a polynomial of higher degree through the same points is not determined. The finite-difference identity needs equally spaced nodes.
+\end{trap}
+
+\begin{ladder}
+\item \putnam{2019 A1}. A symmetric cubic expression in three integers; which values it takes. Factor the symmetric form.
+\item \putnam{2023 A2}. An even-degree polynomial with prescribed values at prescribed points; find its other roots. Build $p$ from its values.
+\item \seminar{Roots \#6}. A polynomial with coefficients from a two-element set; can all its roots be real. Vieta against an inequality.
+\item \seminar{Roots \#7}. A polynomial derived from one with all roots real; show the derived one also has. Rolle and sign changes.
+\item \putnam{2016 A1}. Derivatives of an integer polynomial; the smallest order always divisible by a given integer. Polynomials meet congruences.
+\item \putnam{2022 B1}. A power series built from an integer polynomial; show its coefficients are all nonzero. Work modulo $2$.
+\item \putnam{2024 A2}. Iterates of a polynomial and a divisibility relation; which polynomials. Degree counting on the iterate.
+\item \putnam{2017 A2}. A rational recurrence whose terms are integer polynomials. The polynomial identity behind the recurrence.
+\item \putnam{2019 B5}. A polynomial that interpolates a famous recurrence at many points; its value at the next one. Finite differences.
+\item \putnam{2018 B2}. A polynomial with decreasing coefficients; no roots in a disc. A bound on the roots through a telescoping product.
+\item \putnam{2019 A3}. Polynomials with increasing coefficients; the smallest mean of the root moduli. Vieta and the AM--GM inequality.
+\item \putnam{2022 A2}. The square of a polynomial; how many coefficients can be negative. Extremal on the coefficient pattern.
+\end{ladder}
+
+Seminar: \seminar{Roots \#1, \#8, \#11a}; the set notes that \seminar{\#11(b)} is considerably harder, that \seminar{\#23} is the Chebyshev bound, and that \seminar{\#25} is Descartes's rule of signs.
+
+\begin{hides}
+Recurrences (\putnam{2017 A2}, \putnam{2019 B5}): a sequence of polynomials, or a polynomial through a sequence's values, is a polynomial problem with a recurrence in front. Congruences (\putnam{2016 A1}, \putnam{2022 B1}): an integer polynomial reduced modulo a prime is still a polynomial, with at most as many roots as its degree, which is the bound most such problems need. Inequalities: a symmetric inequality in $n$ variables is often Vieta applied to the polynomial with those roots. Linear algebra: the characteristic polynomial, and the space of polynomials of degree at most $n$ as a vector space of dimension $n + 1$. Generating functions: a generating function is a polynomial or power series, and extracting every $k$-th coefficient is the roots-of-unity filter.
+\end{hides}
+

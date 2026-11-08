@@ -1,0 +1,111 @@
+\section{Invariants and monovariants}
+\label{sec:invariants}
+
+An invariant is a quantity a process leaves unchanged. A monovariant is a quantity the process moves in one direction only. The first proves that a state is unreachable; the second proves that a process stops.
+
+\begin{recognise}
+The problem describes moves: a token slides, two numbers are replaced by one, a square is recoloured, a stone is removed, a player acts. It then asks one of three things. Whether a given state can be reached from the start. Whether the process must stop, and if so after how many steps or in what state. What the possible final states are. Any of the three with a board, a multiset of numbers, or a configuration of objects is an invariant problem until shown otherwise.
+\end{recognise}
+
+\subsection*{The model}
+
+Let a process have a set of states and a set of allowed moves, each taking a state to another state.
+
+\begin{definition}
+A function $I$ on the states is an \emph{invariant} if $I(s') = I(s)$ whenever a move takes $s$ to $s'$. It is a \emph{monovariant} if $I(s') < I(s)$ for every move (or $>$ for every move), with values in a set where this matters.
+\end{definition}
+
+\begin{theorem}[Invariant principle]
+If $I$ is an invariant and $I(\text{start}) \ne I(\text{target})$, then no sequence of moves reaches the target from the start.
+\end{theorem}
+
+\begin{proof}
+By induction on the number of moves, $I$ at every reachable state equals $I(\text{start})$. The target has a different value, so it is not reachable.
+\end{proof}
+
+\begin{theorem}[Monovariant principle]
+If $I$ takes values in the non-negative integers and strictly decreases at every move, then every sequence of moves is finite, and has at most $I(\text{start})$ moves.
+\end{theorem}
+
+\begin{proof}
+After $k$ moves the value is at most $I(\text{start}) - k$ and at least $0$, so $k \le I(\text{start})$.
+\end{proof}
+
+The same conclusion holds for any strictly decreasing quantity in a well-ordered set, for example a tuple of non-negative integers compared lexicographically, or a bounded set of multiples of a fixed positive real. It fails for real numbers in general: a quantity can strictly decrease forever and stay positive. When the monovariant is real, one must also show that each step decreases it by at least a fixed amount, or argue separately.
+
+\begin{proposition}[Both directions]
+To determine exactly which states are reachable, two arguments are needed: an invariant that rules out every unreachable state, and a construction that reaches every remaining state.
+\end{proposition}
+
+This is not a theorem so much as a reminder of the shape of a complete answer. An invariant on its own proves only the negative half.
+
+The invariants that recur, in rough order of how often they are the answer:
+
+\begin{itemize}[nosep,leftmargin=*]
+\item Parity of a sum, of a count, or of the number of objects on squares of one colour.
+\item A sum or a product modulo a small number: modulo 3 when a move changes two things by $1$ in opposite directions and a third by $2$, modulo $n$ when positions live on a cycle of length $n$.
+\item A weighted sum, $\sum c_i x_i$ with weights chosen so that every move's net change is $0$. Finding the weights is a small linear system, and this is the systematic way to search for an invariant when parity fails.
+\item The greatest common divisor of a multiset, under moves that add or subtract elements from each other.
+\item A colouring count: colour the board so that each move changes the count on each colour in a controlled way.
+\item For monovariants: the sum of the numbers on the board, the sum of squares, the number of inversions of a sequence, the number of adjacent pairs in some relation, the largest element.
+\end{itemize}
+
+\begin{firstmoves}
+Write the move as a change in a vector of counts or positions, and compute what it does to the sum, the sum modulo 2, the sum modulo 3, and the sum of squares. Colour the board like a chessboard and count objects on black squares. If a move changes two quantities, look at their difference and their sum. If a move replaces $a$ and $b$ by something, look for a function $f$ with $f(\text{new}) = f(a) + f(b)$ or $f(a) f(b)$. For termination, write down the quantity the process is obviously eroding and check that every move erodes it, not just the typical move. Then do the smallest case by hand and list the states actually reached, which shows what the invariant has to separate.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+Twelve lamps stand in a row at positions $1$ to $12$, all off. A move chooses two lamps whose positions differ by an even number and toggles both. Which configurations can be reached?
+\end{example}
+
+\begin{proof}[Solution]
+Call a lamp odd or even by the parity of its position. Two positions differ by an even number exactly when they have the same parity, so every move toggles two odd lamps or two even lamps.
+
+\emph{Invariant.} Let $E$ be the number of even lamps that are on and $O$ the number of odd lamps that are on. A move toggling two even lamps changes $E$ by $-2$, $0$ or $+2$ and leaves $O$ alone; likewise for odd. So the parities of $E$ and $O$ are each invariant. At the start both are $0$. Hence in every reachable configuration, $E$ and $O$ are both even.
+
+\emph{Construction.} Conversely, let a configuration have $E$ and $O$ both even. Toggling positions $i$ and $i+2$ is a legal move, and a chain of such moves toggles any two lamps of the same parity: to toggle $i$ and $j$ with $i < j$ of the same parity, toggle $(i, i+2)$, then $(i+2, i+4)$, and so on to $(j-2, j)$; every intermediate lamp is toggled twice and ends where it began. The even lamps that are on in the target number $E$, an even count, so they can be paired off and each pair switched on by one chain; likewise the odd ones. So the configuration is reachable.
+
+The reachable configurations are exactly those with an even number of lit lamps among the even positions and an even number among the odd positions. There are $2^5 \cdot 2^5 = 1024$ of them out of $4096$.
+\end{proof}
+
+The move allowed differences $4$, $6$ and so on, and the construction used only difference $2$. That is common: a move set larger than needed for the construction is still constrained by the same invariant, and the invariant is the half of the answer that uses every move.
+
+\begin{example}
+On a board are finitely many positive integers, at least two. A move chooses two of them, $a > b$, and replaces $a$ by $a - b$. Show that the process must stop, and determine what is on the board when it does.
+\end{example}
+
+\begin{proof}[Solution]
+\emph{Termination.} The sum of the numbers on the board is a positive integer, and each move decreases it by $b \ge 1$. By the monovariant principle, there are at most as many moves as the initial sum. The process stops exactly when no two numbers differ, that is, when all numbers on the board are equal.
+
+\emph{The final state.} Let $g$ be the greatest common divisor of the numbers on the board. A move replaces $a$ by $a - b$. Any common divisor of the old numbers divides $a - b$, and any common divisor of the new numbers divides $(a - b) + b = a$; so the set of common divisors is unchanged and $g$ is invariant. At the end all numbers equal some $d$, and the greatest common divisor of a board of equal numbers $d$ is $d$ itself. So $d = g$: the board ends with every entry equal to the greatest common divisor of the starting numbers, and the number of entries never changes.
+\end{proof}
+
+A monovariant for the stopping and an invariant for the final state, in that order. Most termination problems that also ask ``in what state'' have this two-part shape, and it is worth naming both quantities before proving anything about either.
+
+\begin{trap}
+A quantity preserved by most moves and not by one. The lamp problem above would break if a single move of odd difference were allowed; check every move in the list, especially the ones at the boundary of the board where a move may behave differently.
+
+An invariant proved and the construction forgotten. ``The parity shows configuration $X$ is unreachable'' answers a yes or no question; a ``which configurations'' question needs the construction for everything the invariant does not exclude, and the construction is where the writing-up points are lost.
+
+A monovariant in the reals with no lower bound on the step. Strictly decreasing and bounded below does not mean finite; the quantity might converge without arriving.
+
+A monovariant that is only weakly monotone. If some move leaves the quantity unchanged, the process may cycle among states of equal value. Either strengthen the quantity, by adding a tie-breaking second coordinate compared lexicographically, or show directly that the equal-value moves cannot repeat.
+\end{trap}
+
+\begin{ladder}
+\item \putnam{2023 B1}. Coins sliding diagonally on a grid; which configurations can be reached. A chessboard colouring is the invariant; a construction finishes.
+\item \putnam{2024 B1}. A grid with prescribed values along a transversal; whether such a grid can be filled. An invariant of the arrangement, then a construction for the feasible cases.
+\item \putnam{2017 A4}. Quiz scores in a class; split the class into two halves with equal averages. A monovariant on an adjustment process, or an invariant of a swap.
+\item \putnam{2022 B3}. Recolouring the positive reals by a rule; whether everything can end up one colour. An invariant on the set of colours, with the reals as the surprise.
+\item \putnam{2020 B2}. A peg-moving game on a line; when the first player wins. The invariant is the winning position's signature, see \secref{sec:games}{games}.
+\item \putnam{2025 A3}. A game on digit strings with no repeats; who wins. Parity of the remaining moves.
+\end{ladder}
+
+Seminar: \seminar{PS 10 \#13}, a stone-removal game with a divisibility rule; \seminar{PS 10 \#14}, a signing game on the faces of a polyhedron; \seminar{PS 10 \#27}, a redistribution between boxes and which states it reaches. All three are invariant problems wearing other clothes.
+
+\begin{hides}
+Games: the set of losing positions is the level set of an invariant that the winning player restores at each turn. Number theory: the Euclidean algorithm is a monovariant with an invariant, as in the second example. Combinatorics on sequences: sorting arguments count inversions, which is a monovariant. Linear algebra: a weighted sum invariant is a vector in the kernel of the move matrix, and finding it is solving a linear system. Any problem that says ``operation'' or ``step'' and asks about the end.
+\end{hides}
+

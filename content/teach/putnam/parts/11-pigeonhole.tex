@@ -1,0 +1,116 @@
+\section{Pigeonhole and extremal arguments}
+\label{sec:pigeonhole}
+
+Two arguments that prove existence without a construction. Pigeonhole: more objects than boxes forces two objects into one box. Extremal: the largest, smallest, first or last object has a property the others need not, and that property is enough.
+
+\begin{recognise}
+A problem asks to show that two things coincide, that some difference is divisible by something, that a pattern repeats, that a sum of some of the given numbers hits a target, or that an object with a property exists when no construction is in sight. The hypothesis has a count in it (``among any $n+1$ integers'', ``a set of $2n$ points'') and the conclusion has no count, only an existence. For extremal arguments: a finite set, a process that should stop, a configuration that should have a special element, or a statement to be proved for all $n$ where a smallest counterexample would be convenient.
+\end{recognise}
+
+\subsection*{The model}
+
+\begin{theorem}[Pigeonhole principle]
+If $n + 1$ or more objects are placed in $n$ boxes, some box holds at least two objects.
+\end{theorem}
+
+\begin{proof}
+If every box held at most one object, the boxes would hold at most $n$ objects in total, fewer than were placed.
+\end{proof}
+
+\begin{theorem}[Strong form]
+If $m$ objects are placed in $n$ boxes, some box holds at least $\lceil m/n \rceil$ objects, and some box holds at most $\lfloor m/n \rfloor$.
+\end{theorem}
+
+\begin{proof}
+If every box held at most $\lceil m/n \rceil - 1 < m/n$ objects, the total would be less than $n \cdot m/n = m$. The other half is the same argument with the inequalities reversed.
+\end{proof}
+
+\begin{lemma}[Averaging]
+If real numbers $x_1, \dots, x_n$ have mean $\mu$, then some $x_i \ge \mu$ and some $x_j \le \mu$.
+\end{lemma}
+
+\begin{proof}
+If all $x_i < \mu$ then $\sum x_i < n\mu$, contradicting the definition of $\mu$. Likewise for the other side.
+\end{proof}
+
+The averaging lemma is the pigeonhole principle for real-valued quantities, and it is the form that appears in analysis and probability: an integral that equals zero means the integrand is zero somewhere or changes sign; an expectation equal to $\mu$ means some outcome is at least $\mu$.
+
+\begin{theorem}[Extremal principle]
+Every nonempty finite set of real numbers has a largest and a smallest element. Every nonempty set of positive integers has a smallest element.
+\end{theorem}
+
+The second sentence is the well-ordering of $\N$, and it is equivalent to induction. Its working form is the \emph{minimal counterexample}: to prove a statement for all positive integers, suppose it fails, take the smallest $n$ for which it fails, and derive a contradiction, usually by producing a smaller failure. The first sentence is used by looking at the extreme object directly: the longest edge, the point with the largest coordinate, the pair at minimal distance, the first move of a process, the last element of an ordering.
+
+The whole skill in pigeonhole is choosing the boxes. The standard choices, each worth having in hand:
+
+\begin{itemize}[nosep,leftmargin=*]
+\item Residues modulo $n$: $n$ boxes for integers; two in a box have a difference divisible by $n$.
+\item Partial sums $a_1, a_1 + a_2, \dots$ taken modulo $n$: two equal partial sums give a consecutive block with sum divisible by $n$; a zero partial sum gives one directly. Together, $n$ integers always have a nonempty consecutive block with sum divisible by $n$.
+\item Intervals of length $1/n$ in $[0, 1)$: $n$ boxes for fractional parts; two in a box differ by less than $1/n$. This is how Dirichlet's approximation theorem is proved.
+\item Subsets by size, or by the largest odd divisor: every positive integer is $2^k \cdot m$ with $m$ odd, and the numbers $1$ to $2n$ have only $n$ possible values of $m$.
+\item Pairs that sum to a fixed value, pairs of opposite points, pairs of complementary subsets: $n$ boxes for $2n$ objects, when the conclusion wants two objects that ``match''.
+\item Pieces of a region: a square cut into $n^2$ small squares, a disc cut into sectors, a segment cut into pieces; two points in a piece are close.
+\end{itemize}
+
+\begin{firstmoves}
+Try the obvious boxes before anything cleverer: residues if the conclusion mentions divisibility, intervals if it mentions closeness, pairs if it mentions two things matching. Count the boxes and the objects explicitly and check that there really are more objects. For an existence statement with a bound, ask what the extreme object looks like: the largest element of the set, the configuration with the fewest crossings, the pair at smallest distance. Write down what being extreme forbids. For ``for all $n$'' statements that resist induction, take the smallest counterexample and ask what smaller object it contains.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+A clock face has sixty marks, one at each minute. Thirty-one of the marks are painted. Show that two painted marks are diametrically opposite. Show also that thirty painted marks need not have this property.
+\end{example}
+
+\begin{proof}[Solution]
+The sixty marks fall into thirty pairs of diametrically opposite marks: mark $k$ is paired with mark $k + 30$ for $k = 0, 1, \dots, 29$. These pairs are the boxes. Thirty-one painted marks placed in thirty boxes put two painted marks in the same box, and two marks in the same box are opposite.
+
+For the second part, paint the marks $0, 1, \dots, 29$. Each box contains exactly one of these marks, so no two painted marks are opposite. Thirty-one is therefore the smallest number that forces an opposite pair.
+\end{proof}
+
+The two parts are the two halves of any good pigeonhole problem. The principle proves that the threshold is enough; a construction proves that it is sharp. A problem that says ``find the smallest $k$ such that'' always needs both, and the construction is usually a listing of one element from each box.
+
+\begin{example}
+A finite set $S$ of positive integers has the property that whenever $a$ and $b$ are in $S$ with $a < b$, the difference $b - a$ is also in $S$. Show that $S$ consists exactly of the multiples of its smallest element that do not exceed its largest element.
+\end{example}
+
+\begin{proof}[Solution]
+Let $m$ be the smallest element of $S$, which exists because $S$ is finite and nonempty, and let $M$ be the largest.
+
+First, every element of $S$ is a multiple of $m$. Take $b \in S$. If $b = m$ there is nothing to show. Otherwise $b > m$, so $b - m \in S$. Repeating, $b - m, b - 2m, \dots$ stay in $S$ as long as the previous term exceeds $m$. The sequence decreases, so it stops: some $b - km$ lies in $S$ and does not exceed $m$. Because $m$ is the smallest element of $S$, $b - km \ge m$, so $b - km = m$ and $b = (k+1) m$.
+
+Second, every multiple of $m$ up to $M$ is in $S$. Write $M = Km$. Then $M - m = (K-1) m \in S$ when $K \ge 2$, and $(K-1)m - m = (K-2)m \in S$ when $K \ge 3$, and so on down to $m$. So $m, 2m, \dots, Km$ all lie in $S$, and by the first part nothing else does.
+\end{proof}
+
+The extremal element here is the minimum, and what being minimal forbids is any element strictly between $0$ and $m$. That single prohibition pins down the whole set. The argument is the Euclidean algorithm in disguise, which is the usual shape of an extremal argument about divisibility.
+
+\begin{trap}
+Counting the boxes wrong by one. ``Residues modulo $n$'' is $n$ boxes, not $n - 1$; ``the integers from $1$ to $2n$'' is $2n$ objects, not $2n - 1$; a sequence of $n$ partial sums together with the empty sum is $n + 1$ objects. Write the counts down.
+
+An extremal object that need not exist. An infinite set of positive integers has a smallest element but need not have a largest; a set of real numbers in $(0, 1)$ has neither. Before taking the maximum, say why it exists.
+
+A pigeonhole conclusion that is weaker than what was asked. Two objects in the same box share the box's property, nothing more. If the problem asks for three, the strong form is needed, and the count must be large enough for $\lceil m/n \rceil \ge 3$.
+
+Finally, pigeonhole proves existence and says nothing about which objects. A problem that asks to find or construct them wants a different argument.
+\end{trap}
+
+\begin{ladder}
+\item \seminar{Pigeonhole \#1}. A set of integers drawn from a range; show two of them have a prescribed sum. The pairs are the boxes.
+\item \seminar{Pigeonhole \#6}. Integers in a range; show two have a sum or a difference divisible by a given even number. Residues, folded.
+\item \seminar{Pigeonhole \#7}. Among more than half of the integers up to an even bound, two are coprime. Adjacent pairs.
+\item \seminar{Pigeonhole \#8}. Among more than half of the integers up to an even bound, one divides another. Largest odd divisors as boxes.
+\item \putnam{2021 A1}. Fixed-length hops in the plane; the minimum number needed to reach a given point. The bound is extremal; the obstruction to doing better is modular.
+\item \putnam{2023 B2}. Binary digits of the multiples of an integer; a minimum over the multiples. The extremal multiple and what it must look like.
+\item \putnam{2022 A2}. The square of a polynomial; how many coefficients can be negative. Extremal on the coefficient pattern.
+\item \putnam{2025 B5}. Modular inverses and a descent; a lower bound on how often something happens. Counting residues against boxes.
+\item \putnam{2025 A5}. Permutations with a sign pattern; which pattern is most frequent. Extremal over patterns.
+\item \putnam{2024 A3}. Order statistics of a random tableau; whether a balanced pair must exist. Averaging over positions.
+\item \putnam{2016 B3}. A finite point set in the plane; a bounded triangle that covers it. The extremal triangle.
+\end{ladder}
+
+The seminar set \seminar{Pigeonhole} is the warm-up; its own notes say \seminar{\#9} is much harder and not really pigeonhole, and \seminar{\#17(a)} is Fermat's classic. Do \seminar{\#1} to \seminar{\#8} before the Putnam rungs.
+
+\begin{hides}
+Number theory, as a bound on a count of residues: a set of residues too large to avoid a coincidence is pigeonhole, whatever the problem is tagged. Analysis, as the averaging lemma: a continuous function whose integral is zero vanishes somewhere. Combinatorics, as the strong form: a two-colouring of enough objects has a large monochromatic class. Geometry, as pieces of a region: enough points in a square force two close together. Any ``find the smallest $k$'' problem, whose upper half is pigeonhole and lower half is a construction.
+\end{hides}
+

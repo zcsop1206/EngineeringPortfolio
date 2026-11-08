@@ -1,0 +1,116 @@
+\section{Functional equations}
+
+\begin{recognise}
+A function is defined by an equation it satisfies for all inputs, and the problem asks to find all such functions, or to prove one property of them, or to compute one value. A function is characterised by a relation between its values at related points: $x$ and $2x$, $x$ and $1/x$, $x$ and $f(x)$. Sometimes the function is a sequence, a polynomial or a function on the integers, and the same methods apply with induction in place of continuity.
+\end{recognise}
+
+\begin{definition}
+$f\colon X\to Y$ is injective if $f(a)=f(b)$ implies $a=b$, surjective if every $y\in Y$ is $f(x)$ for some $x$, and bijective if both. A function $f\colon\R\to\R$ (or $\Q\to\Q$) is additive if $f(x+y)=f(x)+f(y)$ for all $x,y$.
+\end{definition}
+
+\begin{theorem}[Cauchy's equation]
+Let $f$ be additive. Then $f(qx)=qf(x)$ for every rational $q$ and real $x$; in particular $f(q)=cq$ on $\Q$ with $c=f(1)$. If $f\colon\R\to\R$ is additive and also continuous at one point, or monotone on an interval, or bounded on an interval, then $f(x)=cx$ for all real $x$.
+\end{theorem}
+
+\begin{proof}
+$f(0)=f(0)+f(0)$ gives $f(0)=0$, then $f(-x)=-f(x)$. Induction gives $f(nx)=nf(x)$ for positive integers $n$, so $f(x)=f(n\cdot x/n)=nf(x/n)$ and $f(x/n)=f(x)/n$; combining, $f(mx/n)=(m/n)f(x)$, and negatives follow from oddness.
+
+Continuity at one point $x_0$ gives continuity everywhere: $f(x+h)-f(x)=f(x_0+h)-f(x_0)$. Then for real $x$ take rationals $q_n\to x$; $f(x)=\lim f(q_n)=\lim cq_n=cx$. If $f$ is monotone, say non-decreasing, then for rationals $q<x<q'$, $cq\le f(x)\le cq'$, and letting $q,q'\to x$ gives $f(x)=cx$ (if $c<0$ the inequalities reverse, and $c=0$ makes $f$ constant on $\Q$ hence everywhere by monotonicity). If $f$ is bounded on an interval $J$, then $g(x)=f(x)-cx$ is additive, vanishes on $\Q$, and is bounded on $J$ by some $M'$; for any real $x$ there is a rational $q$ with $x-q\in J$, and $g(x)=g(x-q)$, so $|g|\le M'$ on all of $\R$; but $g(nx)=ng(x)$ is unbounded unless $g(x)=0$.
+\end{proof}
+
+\begin{proposition}[Relatives of Cauchy's equation]
+With continuity or monotonicity assumed:
+\begin{enumerate}[nosep]
+\item $f(x+y)=f(x)f(y)$ on $\R$ gives $f\equiv0$ or $f(x)=e^{cx}$;
+\item $f(xy)=f(x)+f(y)$ on $(0,\infty)$ gives $f(x)=c\ln x$;
+\item $f(xy)=f(x)f(y)$ on $(0,\infty)$ gives $f\equiv0$ or $f(x)=x^{c}$;
+\item $f(x+y)+f(x-y)=2f(x)+2f(y)$ on $\R$ gives $f(x)=cx^2$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) If $f(a)=0$ for some $a$ then $f(x)=f(a)f(x-a)=0$ for all $x$. Otherwise $f(x)=f(x/2)^2>0$ and $\ln f$ is additive. (2) $f(e^t)$ is additive in $t$. (3) $\ln f(e^t)$ is additive in $t$ after ruling out zeros as in (1) and noting $f(x)=f(\sqrt x)^2\ge0$. (4) $x=y=0$ gives $f(0)=0$; $x=0$ gives $f$ even; induction on $n$ gives $f(nx)=n^2f(x)$, so $f(q)=cq^2$ on $\Q$ with $c=f(1)$, and continuity extends it.
+\end{proof}
+
+The pattern in every case is the same: a substitution that produces additivity, the rationals handled by induction, and the reals by continuity. Without the regularity hypothesis there are other, wild solutions, so a problem that gives no continuity, monotonicity or boundedness either lives on $\Q$ or $\Z$, or contains a hidden regularity (a positivity, a bound, an inequality) that must be extracted from the equation itself.
+
+\begin{proposition}[Injectivity and surjectivity from the equation]
+Let $f$ satisfy a functional equation.
+\begin{enumerate}[nosep]
+\item If some substitution yields $f(\text{expression in }y)=g(y)$ with $g$ injective, then $f$ is injective on the range of that expression; if $g$ is surjective onto a set $T$, then the range of $f$ contains $T$.
+\item If $f$ is injective, then any two expressions whose images under $f$ are equal are themselves equal, which turns one equation into a simpler one.
+\item If $f$ is surjective, a variable $f(y)$ may be replaced by a free variable $a$ ranging over the whole codomain.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) If $f(E(y_1))=f(E(y_2))$ then $g(y_1)=g(y_2)$ and $y_1=y_2$; for the range, each $t\in T$ is $g(y)=f(E(y))$. (2) and (3) are the definitions.
+\end{proof}
+
+\begin{proposition}[Polynomial and integer cases]
+If $f$ is a polynomial, compare degrees and leading coefficients on both sides of the equation first; a polynomial identity holding at infinitely many points holds everywhere. If $f\colon\Z\to\Z$ or $\N\to\N$, compute $f(0)$, $f(1)$, $f(2)$ from the equation, then prove the guessed formula by strong induction, using the equation to express $f(n)$ through smaller values.
+\end{proposition}
+
+\begin{proof}
+A nonzero polynomial has finitely many roots, so two polynomials agreeing at infinitely many points are equal; the degree comparison is the comparison of the leading terms of equal polynomials.
+\end{proof}
+
+\begin{firstmoves}
+Substitute $0$, $1$, $x=y$, $y=-x$, $y=1/x$, $y=f(x)$, and whatever makes an inner argument vanish or makes two terms cancel. Determine $f(0)$ and $f(1)$. Guess the form from the special values: constant, linear, a power, an exponential, a quadratic. Ask whether the equation forces injectivity or surjectivity, and use them to simplify. Subtract the guessed solution from $f$ and see what equation the difference satisfies, which is often Cauchy's. On $\Q$ or $\Z$, induct. At the end, verify that the candidate satisfies the original equation, and say so.
+\end{firstmoves}
+
+\begin{example}
+Find all functions $f\colon\Q\to\Q$ such that $f(1)=1$ and
+\[
+f(x+y)=f(x)+f(y)+2xy+1\qquad\text{for all }x,y\in\Q.
+\]
+\end{example}
+
+\begin{proof}[Solution]
+Guess the form. With $x=y=0$, $f(0)=2f(0)+1$, so $f(0)=-1$. With $x=y=1$, $f(2)=2+2+1=5$. With $x=2,y=1$, $f(3)=5+1+4+1=11$. The values $-1,1,5,11$ at $0,1,2,3$ have second differences $2$, so a quadratic with leading coefficient $1$ fits: $x^2+x-1$ takes exactly these values.
+
+Subtract it. Let $g(x)=f(x)-(x^2+x-1)$. Then
+\[
+g(x+y)=f(x)+f(y)+2xy+1-(x+y)^2-(x+y)+1=g(x)+g(y),
+\]
+after expanding $(x+y)^2=x^2+2xy+y^2$ and cancelling. So $g$ is additive on $\Q$, and by Cauchy's theorem $g(q)=cq$ with $c=g(1)=f(1)-1=0$. Hence $g\equiv0$ and $f(x)=x^2+x-1$ for all rational $x$.
+
+Verification: $f(x)+f(y)+2xy+1=x^2+x+y^2+y-2+2xy+1=(x+y)^2+(x+y)-1=f(x+y)$. On $\R$ without a continuity hypothesis the same argument gives $f(x)=x^2+x-1+g(x)$ with $g$ any additive function vanishing at $1$, and there are uncountably many of those; the problem lives on $\Q$ precisely so that additivity alone finishes it.
+\end{proof}
+
+\begin{example}
+Show that there is no function $f\colon\R\to\R$ such that
+\[
+f(x+f(y))=f(x)+y^3\qquad\text{for all }x,y\in\R.
+\]
+\end{example}
+
+\begin{proof}[Solution]
+Suppose $f$ exists. Put $x=0$: $f(f(y))=f(0)+y^3$. The right side is an injective function of $y$ that takes every real value, so $f$ is injective (if $f(y_1)=f(y_2)$ then $f(f(y_1))=f(f(y_2))$, so $y_1^3=y_2^3$) and surjective (every real is $f(f(y))$ for some $y$).
+
+Use surjectivity to free the inner variable. For any real $a$ choose $y$ with $f(y)=a$; then $y^3=f(f(y))-f(0)=f(a)-f(0)$, and the equation reads $f(x+a)=f(x)+f(a)-f(0)$ for all $x,a$. So $g(x)=f(x)-f(0)$ is additive: $g(x+a)=g(x)+g(a)$. In particular $g(0)=0$ and $g(2t)=2g(t)$.
+
+Rewrite $f(f(y))=f(0)+y^3$ in terms of $g$: $f(f(y))=g(f(y))+f(0)=g\bigl(g(y)+f(0)\bigr)+f(0)=g(g(y))+g(f(0))+f(0)$, so $g(g(y))+g(f(0))=y^3$. At $y=0$ this gives $g(f(0))=0$, hence $g(g(y))=y^3$ for all $y$. But then
+\[
+8y^3=g(g(2y))=g(2g(y))=2g(g(y))=2y^3,
+\]
+so $y^3=0$ for every $y$, which is false at $y=1$. No such $f$ exists.
+
+Where the cube mattered: with $y$ in place of $y^3$ the same steps give $g(g(y))=y$, which is consistent with additivity, and $f(x)=x$ is a solution. The contradiction came from comparing how the two sides scale under $y\mapsto2y$, a homogeneity check that is worth running on any equation whose two sides have different degrees.
+\end{proof}
+
+\begin{trap}
+Proving that the guess satisfies the equation and forgetting to prove it is the only solution, or the reverse; both halves are needed and the write-up should name them. Dividing by $f(\text{something})$ that might be zero; treat the zero case separately. Using continuity you were not given, and conversely, not noticing a regularity the equation does give (a square, a positivity, a bound on an interval), which is what makes Cauchy's theorem applicable. Substituting $y=1/x$ at $x=0$. Concluding injectivity from $f(a)=f(b)\Rightarrow a=b$ checked only for one special pair. Claiming a function on $\R$ is determined by its values on $\Q$ without a reason. Reporting ``$f(x)=cx$'' when the equation forces a specific $c$, or the reverse.
+\end{trap}
+
+\begin{ladder}
+\item \seminar{PS 3 \#8}. Functions satisfying the addition laws of sine and cosine; identify them.
+\item \putnam{2022 B6}. A continuous positive function with an equation linking $f$ at related points; find all.
+\item \putnam{2016 A3}. A function with a self-referential relation involving $1/x$; compute an integral.
+\item \putnam{2016 B5}. Functions preserving a constraint between powers and intervals; find all.
+\item \putnam{2025 B6}. A function with an iterated growth condition; the largest admissible exponent.
+\end{ladder}
+
+\begin{hides}
+Inside analysis, where the unknown function is pinned down by its equation and then integrated (\putnam{2016 A3}, \seminar{PS 3 \#28}, \seminar{PS 3 \#38}). Inside inequalities, where a functional inequality rather than an equation is given and the growth rate is the question (\putnam{2025 B6}, \seminar{PS 5 \#15}). Inside polynomials, where a polynomial identity in $x$ is a functional equation solved by degree comparison (\putnam{2024 A2}, \seminar{PS 4 \#13}). Inside recurrences, where a sequence satisfying a relation at $n$ and $2n$ is a function on the integers (\seminar{PS 3 \#26}). Inside number theory, where a function on the positive integers is multiplicative or satisfies a divisibility relation (\putnam{2018 B3}).
+\end{hides}

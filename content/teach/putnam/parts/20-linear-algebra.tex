@@ -1,0 +1,103 @@
+\section{Linear algebra}
+
+\begin{recognise}
+The problem names matrices, determinants, ranks, eigenvalues or vector spaces. Or it does not, and the problem is about polynomials of bounded degree, functions on a finite set, sequences satisfying a linear recurrence, lamps and switches, or a set of vectors with a condition on their inner products: these are vector spaces and linear maps in other clothes. A question that asks how many of something can exist is often a dimension bound. A question that says ``for all $n$'' about an $n\times n$ matrix is settled by the $2\times2$ and $3\times3$ cases and the right general fact.
+\end{recognise}
+
+\begin{theorem}[Rank-nullity]
+Let $T\colon V\to W$ be linear with $V$ finite-dimensional. Then $\dim\ker T+\dim\operatorname{im}T=\dim V$. Consequently: more than $\dim V$ vectors in $V$ are linearly dependent; a linear map between spaces of the same finite dimension is injective if and only if it is surjective; and a square matrix is invertible if and only if its kernel is zero.
+\end{theorem}
+
+\begin{proof}
+Choose a basis $u_1,\dots,u_k$ of $\ker T$ and extend it to a basis $u_1,\dots,u_k,v_1,\dots,v_r$ of $V$. The vectors $Tv_1,\dots,Tv_r$ span $\operatorname{im}T$ because $T$ kills the $u_i$, and they are independent because $\sum c_iTv_i=0$ puts $\sum c_iv_i$ in the kernel, where it is a combination of the $u_i$, so all $c_i=0$ by independence of the full basis. Hence $\dim\operatorname{im}T=r=\dim V-k$. The consequences are the equation read with one term zero or with $\dim V=\dim W$.
+\end{proof}
+
+The hidden vector spaces to know: polynomials of degree at most $n$ have dimension $n+1$, so $n+2$ of them are dependent and a polynomial of degree at most $n$ vanishing at $n+1$ points is zero; real functions on a set of size $m$ have dimension $m$; solutions of a linear recurrence of order $k$ have dimension $k$; $n\times n$ matrices have dimension $n^2$, so the powers $I,A,\dots,A^{n^2}$ are dependent and every matrix satisfies a polynomial.
+
+\begin{theorem}[Eigenvalues, trace, determinant]
+Let $A$ be an $n\times n$ matrix over $\C$ with characteristic polynomial $\chi_A(x)=\det(xI-A)=\prod_{i=1}^n(x-\lambda_i)$, the $\lambda_i$ listed with multiplicity. Then $\tr A=\sum\lambda_i$ and $\det A=\prod\lambda_i$. Moreover $\chi_A(A)=0$ (Cayley-Hamilton), and for any polynomial $f$ the eigenvalues of $f(A)$ are $f(\lambda_i)$ with multiplicity.
+\end{theorem}
+
+\begin{proof}
+Expanding $\det(xI-A)$, the only term containing $x^{n}$ or $x^{n-1}$ is the product of the diagonal entries $\prod(x-a_{ii})$, since any other permutation misses at least two diagonal positions. So the coefficient of $x^{n-1}$ is $-\tr A$, which in the factored form is $-\sum\lambda_i$. Setting $x=0$ gives $\det(-A)=(-1)^n\det A$ on one side and $(-1)^n\prod\lambda_i$ on the other. For the eigenvalues of $f(A)$: over $\C$, $A$ is similar to an upper triangular matrix $U$ with the $\lambda_i$ on the diagonal, and $f(U)$ is upper triangular with $f(\lambda_i)$ on the diagonal. Cayley-Hamilton follows from the same triangularisation: $\prod(U-\lambda_iI)$ kills the standard basis vectors one at a time, in order.
+\end{proof}
+
+\begin{theorem}[Real symmetric matrices]
+Let $A$ be a real symmetric $n\times n$ matrix. Then every eigenvalue of $A$ is real, eigenvectors for distinct eigenvalues are orthogonal, and $\R^n$ has an orthonormal basis of eigenvectors of $A$. In particular $A=Q\,\mathrm{diag}(\lambda_1,\dots,\lambda_n)\,Q^{T}$ with $Q$ orthogonal, and $x^TAx=\sum\lambda_iy_i^2$ in the coordinates $y=Q^Tx$, so $A$ is positive definite if and only if all $\lambda_i>0$.
+\end{theorem}
+
+\begin{proof}
+Let $Av=\lambda v$ with $v\ne 0$ complex. Then $\bar v^{\,T}Av=\lambda|v|^2$, and the left side is real because its conjugate transpose is $\bar v^{\,T}A^{T}v=\bar v^{\,T}Av$ itself. So $\lambda\in\R$, and a real eigenvector exists since $A-\lambda I$ is a real singular matrix. If $Av=\lambda v$ and $Aw=\mu w$ with $\lambda\ne\mu$, then $\lambda\langle v,w\rangle=\langle Av,w\rangle=\langle v,Aw\rangle=\mu\langle v,w\rangle$, so $\langle v,w\rangle=0$. For the basis, take a unit eigenvector $v_1$; $A$ maps the orthogonal complement $v_1^\perp$ to itself (if $\langle w,v_1\rangle=0$ then $\langle Aw,v_1\rangle=\langle w,Av_1\rangle=0$) and is symmetric there, so induct on the dimension.
+\end{proof}
+
+\begin{theorem}[Determinants as alternating multilinear forms]
+There is exactly one function $\det$ from $n\times n$ matrices over a field to the field that is linear in each row, changes sign when two rows are swapped, and takes the value $1$ at $I$. It satisfies: $\det$ is zero when two rows are equal or one row is zero; adding a multiple of one row to another leaves it unchanged; $\det(AB)=\det A\det B$; $\det A^{T}=\det A$; and $\det A\ne 0$ if and only if the rows are linearly independent.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Expanding each row in the standard basis by multilinearity writes $\det A$ as
+\[
+\sum_{\sigma}\ \prod_ia_{i\sigma(i)}\,\det(e_{\sigma(1)},\dots,e_{\sigma(n)}),
+\]
+the sum over all maps $\sigma$ of $\{1,\dots,n\}$ to itself, and the alternating property forces $\det(e_{\sigma(1)},\dots,e_{\sigma(n)})=\operatorname{sgn}(\sigma)$ for permutations and $0$ otherwise. That gives uniqueness and the formula; checking the formula has the three properties gives existence. Two equal rows: swapping them negates $\det$ and changes nothing, so $\det=-\det$ (in characteristic $2$ use the expansion directly). Row operations: linearity in the changed row plus the equal-rows case. For $\det(AB)$: the map $X\mapsto\det(XB)$ is alternating multilinear in the rows of $X$, so it equals $c\det X$ with $c=\det B$. Transpose: the permutation formula is symmetric under $\sigma\mapsto\sigma^{-1}$. Independence: dependent rows reduce by row operations to a zero row; independent rows reduce to $I$ by operations that only scale $\det$ by nonzero factors.
+\end{proof}
+
+Row operations are the working tool. Subtract each row from the next before expanding; add all columns to the first when every row has the same sum; factor a common factor out of a row. A determinant with a parameter $x$ is a polynomial in $x$, and its roots and degree often identify it without expansion.
+
+\begin{proposition}[Linear algebra over the field with two elements]
+Let $\mathbb F_2=\{0,1\}$ with addition modulo $2$. A configuration of $n$ lamps is a vector in $\mathbb F_2^n$, a switch that toggles a fixed set of lamps is a vector $s$, and pressing switches is adding vectors, so the reachable configurations from the all-off state are the span of the switch vectors. For a matrix $A$ over $\mathbb F_2$ (or any field), $Ax=b$ has a solution if and only if $b\cdot y=0$ for every $y$ with $A^{T}y=0$; and if a solution exists, the number of solutions is $2^{\dim\ker A}$.
+\end{proposition}
+
+\begin{proof}
+Pressing a switch twice does nothing and the order does not matter, so the reachable set is the set of sums of subsets of switch vectors, which is the span. For the solvability criterion: if $Ax=b$ and $A^Ty=0$ then $b\cdot y=x\cdot A^Ty=0$, so $\operatorname{im}A\subseteq(\ker A^T)^\perp$; both have dimension $\rank A=n-\dim\ker A^T$ (rank-nullity for $A^T$, and $\rank A=\rank A^T$), so they are equal. Solutions form a coset of $\ker A$.
+\end{proof}
+
+\begin{firstmoves}
+Compute the $2\times2$ and $3\times3$ cases by hand. Look at the trace and the determinant, and at what a polynomial identity in the matrix says about its eigenvalues. Ask what the kernel is, and what the dimension count gives. Name the hidden vector space and write the hidden linear map. For a determinant, do row operations before anything else, and treat a parameter as a polynomial variable. For symmetric matrices, diagonalise. For anything with parity, work over $\mathbb F_2$. For a set of vectors with a condition on their inner products, form the Gram matrix.
+\end{firstmoves}
+
+\begin{example}
+Let $A$ be an $n\times n$ real matrix with $A^3=A$. Prove that $\rank A+\rank(I-A^2)=n$.
+\end{example}
+
+\begin{proof}[Solution]
+Two inclusions give two inequalities. First, $A(I-A^2)=A-A^3=0$, so every vector in $\operatorname{im}(I-A^2)$ lies in $\ker A$, and $\rank(I-A^2)\le\dim\ker A=n-\rank A$ by rank-nullity. Second, every $v$ satisfies $v=A^2v+(I-A^2)v$, so $\R^n=\operatorname{im}A^2+\operatorname{im}(I-A^2)$ and
+\[
+n\le\rank A^2+\rank(I-A^2)\le\rank A+\rank(I-A^2),
+\]
+using $\operatorname{im}A^2\subseteq\operatorname{im}A$. Together, $\rank A+\rank(I-A^2)=n$.
+
+The eigenvalue view explains the answer. $A$ satisfies $x^3-x=x(x-1)(x+1)$, a polynomial with distinct roots, so $A$ is diagonalisable with eigenvalues in $\{0,1,-1\}$; $\rank A$ is the number of nonzero eigenvalues and $\rank(I-A^2)$ the number of zero ones. But the rank-nullity argument above needs no diagonalisation and works over any field, including $\mathbb F_2$, where $x(x-1)(x+1)=x(x-1)^2$ has a repeated root and $A$ need not be diagonalisable. Writing the inclusion argument is also faster under exam conditions than justifying diagonalisability.
+\end{proof}
+
+\begin{example}
+A row of $n\ge 1$ lamps is controlled by $n$ switches; switch $i$ toggles lamp $i$ and each of its immediate neighbours (lamps $i-1$ and $i+1$ when they exist). Starting with all lamps off, for which $n$ can every one of the $2^n$ configurations be reached?
+\end{example}
+
+\begin{proof}[Solution]
+Over $\mathbb F_2$, switch $i$ is the vector with ones in positions $i-1,i,i+1$, and the reachable configurations are the span of the $n$ switch vectors. Every configuration is reachable if and only if the span is all of $\mathbb F_2^n$, that is, if and only if the $n\times n$ matrix $M_n$ with ones on the diagonal and both adjacent diagonals is invertible over $\mathbb F_2$, that is, $\det M_n\ne 0$ in $\mathbb F_2$.
+
+Let $D_n=\det M_n\in\mathbb F_2$. Expanding along the first row, the entry $1$ at $(1,1)$ gives $D_{n-1}$, and the entry $1$ at $(1,2)$ gives the minor whose first column is $(1,0,\dots,0)^T$, which expands to $D_{n-2}$; signs are irrelevant modulo $2$. So $D_n=D_{n-1}+D_{n-2}$, with $D_1=1$ and $D_2=1\cdot1-1\cdot1=0$. The sequence is the Fibonacci numbers modulo $2$: $1,0,1,1,0,1,1,0,\dots$, periodic with period $3$ from $n=1$ (period from the start since the recurrence runs backwards too). Hence $D_n=0$ exactly when $n\equiv 2\pmod 3$, and every configuration is reachable if and only if $n\not\equiv 2\pmod 3$.
+
+Check: $n=2$, both switches toggle both lamps, so only the all-off and all-on states are reachable; $n=3$, switch $2$ toggles everything, switch $1$ toggles lamps $1,2$, so lamp $3$ alone is reachable, and by symmetry lamp $1$, and then everything. When $n\equiv 2\pmod 3$ the kernel is one-dimensional (the vector with ones in positions $\equiv 1,2\pmod 3$ and zeros in positions $\equiv 0$), so exactly half the configurations are reachable, each in two ways.
+\end{proof}
+
+\begin{trap}
+A matrix that is not diagonalisable: $\begin{pmatrix}0&1\\0&0\end{pmatrix}$ has all eigenvalues zero and is not zero, so an argument that works ``on each eigenvector'' needs a basis of eigenvectors, which a polynomial identity with distinct roots or symmetry provides and nothing else does for free. A determinant computed by cofactor expansion when row operations would finish in two lines. A dimension argument that asserts independence without proving it; the count of vectors is not the dimension of their span. Eigenvalues of a real matrix assumed real; a rotation has none. Over $\mathbb F_2$, $1=-1$, so symmetric and skew-symmetric coincide and a determinant that is a square over $\R$ is just a number. The trace of $AB$ equals the trace of $BA$, but $AB$ and $BA$ need not have the same rank or be similar when the matrices are not square.
+\end{trap}
+
+\begin{ladder}
+\item \seminar{PS 7 \#1}. A matrix of signs with a circulant pattern; its rank.
+\item \seminar{PS 7 \#7}. A matrix with a fixed off-diagonal entry and a few diagonal values; its determinant.
+\item \seminar{PS 7 \#9}. A skew-symmetric matrix of even order; its determinant is a perfect square.
+\item \putnam{2018 A2}. A matrix indexed by subsets, entries by intersection; its determinant.
+\item \putnam{2019 B3}. An orthogonal matrix times a reflection; an eigenvalue exists.
+\item \putnam{2022 B2}. A finite set of vectors closed under the cross product; its possible sizes.
+\item \putnam{2017 B1}. Two distinct lines in the plane; a point of one scaled onto the other.
+\item \putnam{2021 B5}. Integer matrices with odd principal minors; closure under powers.
+\item \putnam{2025 A4}. A family of matrices commuting around a cycle; the least possible size.
+\end{ladder}
+
+\begin{hides}
+Inside counting, where a determinant of an incidence or intersection matrix counts something and its nonvanishing bounds a family (\putnam{2018 A2}, \putnam{2019 B6}, \putnam{2025 A4}). Inside geometry, where lines and points are vectors (\putnam{2017 B1}, \putnam{2018 A6}). Inside probability, where an expected determinant is computed by linearity over the permutation expansion (\putnam{2016 B4}). Inside polynomials, where a space of polynomials has a dimension and a linear condition cuts it down (\putnam{2022 A6}). Inside generating functions, where a Hankel matrix of coefficients has a determinant (\putnam{2024 A6}). Inside number theory, where integer matrices are reduced modulo a prime and the rank there controls divisibility (\putnam{2021 B5}, \putnam{2023 B6}, \putnam{2023 A4}).
+\end{hides}

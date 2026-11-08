@@ -1,0 +1,73 @@
+\section{Reading a problem, and the call}
+\label{sec:reading}
+
+A Putnam problem is an analogy puzzle at scale. Find the relevant information, induce the rule, apply it. The techniques in the later sections are the rules; this section is about the finding, and about the one habit that turns a month of problems into evidence: the call.
+
+\subsection*{Three questions before any technique}
+
+Read the statement twice. Then answer three questions in writing, on the page where the solution will go.
+
+\begin{enumerate}[nosep,leftmargin=*]
+\item \emph{What is the object?} An integer, a polynomial, a function, a sequence, a matrix, a set of points, a game position. Problems that look alike often have different objects, and the object is what the technique acts on. A problem about digits is about an integer; a problem about a sum of consecutive values is often about a polynomial; a problem about moves and boards is about a position.
+\item \emph{What is asked?} The verbs are few. Show one exists. Show it holds for all. Find all. Compute a value. Decide yes or no. Each verb has a shape of answer. ``Find all'' needs a list and a proof that the list is complete, which is two arguments, not one. ``Decide'' needs a yes or no and a proof of whichever it is. ``Show one exists'' may be met by a construction or by a counting argument with no construction at all.
+\item \emph{What is the smallest case?} $n$ equal to 1, 2 and 3. The zero polynomial and the constant polynomial. The empty set. A $2 \times 2$ matrix. Written out by hand, not imagined. The smallest cases name the technique more often than the statement does, because the statement is written to hide it and the small case is not. They are also the cheapest work available, and the case $n = 2$ is often the base case of the eventual proof.
+\end{enumerate}
+
+Ten minutes on these three questions is well spent. A technique chosen before them is a guess; after them it is a reading.
+
+\subsection*{The call}
+
+Before working, write one line in \texttt{calls.md} under the domain \texttt{math}:
+
+\begin{quote}\small
+\texttt{math: <problem>, <technique>, <first assumption>,}\\
+\texttt{\phantom{math: }<time>. <confidence>}
+\end{quote}
+
+The technique is the one you expect to carry the problem, named in the vocabulary of this document's section titles. The first assumption is the first thing you are taking for granted: that the answer is the obvious bound, that the pattern in the small cases continues, that the function is a polynomial. The time is the box in minutes. The confidence is a number from 0 to 100 for how likely you think it is that the named technique carries it.
+
+The line is the point. It is a prediction made before the evidence, and a prediction can be scored. Whether or not the problem gets solved, the call is settled.
+
+\subsection*{Settling}
+
+When the box runs out or the problem is done, open the solution in the archive and settle the call in the same sitting, with one word.
+
+\begin{itemize}[nosep,leftmargin=*]
+\item \emph{held}: the technique you named carried the problem, in your solution or in the published one.
+\item \emph{missed}: a different technique from this document's list carried it. You knew the tool and did not pick it.
+\item \emph{blind}: the solution uses something you did not consider at all. The tool was not in your hand.
+\end{itemize}
+
+A solved problem is settled as honestly as an unsolved one. If you solved it by a route you did not name, that is a miss, and recording it as a miss is what makes the readout trustworthy. When a later problem is carried by a technique you called on an earlier one, write the earlier call's id in the new call, as in ``as in c12''. That citation is how the readout sees a technique transferring from the problem where you learned it to the problem where you used it, and transfer is the thing the month is trying to build.
+
+\subsection*{Time boxes}
+
+Twenty-five minutes for an A1, A2, B1 or B2, or for a seminar problem. Forty-five for an A3 or B3, or for anything the ladder marks as harder. The box is not a measure of patience. It is the point after which the published solution teaches more than the struggle does, and the call line has already recorded what the struggle was for. Stopping at the box is part of the exercise, not a failure of it.
+
+\subsection*{A worked reading}
+
+The problem below is invented for this document.
+
+\begin{example}
+Let $n$ be a positive integer. Show that the number of ordered pairs $(a, b)$ of positive integers with $\lcm(a, b) = n$ is odd.
+\end{example}
+
+\emph{Object.} Pairs of positive integers tied to a fixed integer $n$ through its prime factorisation. The object is really $n$, and the pairs are a count attached to it.
+
+\emph{Asked.} Show a count is odd for all $n$. ``Odd'' is a parity statement, and parity statements about counts are carried by two things: an explicit formula that is visibly odd, or a pairing of the counted objects that leaves exactly one unpaired.
+
+\emph{Smallest cases.} For $n = 1$ the only pair is $(1, 1)$: one pair. For $n = 2$ the pairs are $(1, 2)$, $(2, 1)$ and $(2, 2)$: three. For $n = 4$: $(1, 4)$, $(4, 1)$, $(2, 4)$, $(4, 2)$, $(4, 4)$: five. For $n = 6$: $(1, 6)$, $(6, 1)$, $(2, 3)$, $(3, 2)$, $(2, 6)$, $(6, 2)$, $(3, 6)$, $(6, 3)$, $(6, 6)$: nine. The counts $1, 3, 5, 9$ are $2e + 1$ for a prime power $p^e$, and $9 = 3 \times 3$ for $6 = 2 \times 3$. The count looks multiplicative. Also, in every list, each pair $(a, b)$ with $a \ne b$ sits next to its reverse $(b, a)$, and only $(n, n)$ has no partner.
+
+\emph{The call.} Two techniques present themselves, and the call names one:
+
+\begin{quote}\small
+\texttt{math: lcm pairs, multiplicative count over prime powers,}\\
+\texttt{\phantom{math: }assume the count for a prime power is 2e+1, 15 min. 70}
+\end{quote}
+
+\emph{Working.} Write $n = \prod p_i^{e_i}$. A pair $(a, b)$ has $\lcm(a, b) = n$ exactly when, for each $i$, the exponents of $p_i$ in $a$ and $b$ are at most $e_i$ and at least one of them equals $e_i$. For one prime the number of exponent pairs $(\alpha, \beta)$ with $0 \le \alpha, \beta \le e$ and $\max(\alpha, \beta) = e$ is $(e+1)^2 - e^2 = 2e + 1$. The choices for different primes are independent, so the count is $\prod (2 e_i + 1)$, a product of odd numbers, hence odd.
+
+\emph{Settling.} The published solution, had this been an archive problem, might instead pair $(a, b)$ with $(b, a)$: the map is an involution on the set of pairs, its only fixed point is $(n, n)$, so the set has odd size. That argument is two lines and uses no factorisation. If you had called the multiplicative count and it carried, the call is \emph{held}, even though a shorter route existed; the readout records which tool you reached for, not which was shortest. If the pairing had been in the small cases in front of you, as it was here, and you did not name it, the lesson goes in the margin, not in the call.
+
+The reading took longer to write than to do. On the day it is five minutes, and it is the five minutes that decide whether the next forty are spent on the right thing.
+

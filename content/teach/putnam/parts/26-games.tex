@@ -1,0 +1,111 @@
+\section{Games}
+\label{sec:games}
+
+Two players alternate moves on a finite structure and the question is who wins, or what one player can force. The Putnam asks this rarely in the early slots and often enough later that the two standard arguments should be in hand: backward induction from the end, and symmetry.
+
+\begin{recognise}
+Two players, alternating turns, complete information, no chance. A question of the form ``who has a winning strategy'', ``show the second player can always'', ``what is the largest number the first player can guarantee''. Also, disguised: a process in which an adversary chooses the worst case at each step, which is a game against the adversary.
+\end{recognise}
+
+\subsection*{The model}
+
+Consider a game with finitely many positions, in which the players alternate moves, the game always ends, and the player who cannot move loses. (Any game with a different ending rule can be rewritten in this form by adjusting the positions.) Positions in which the game has ended are terminal.
+
+\begin{definition}
+A position is a \emph{losing position} ($P$-position, the previous player wins) if the player about to move loses with best play on both sides, and a \emph{winning position} ($N$-position, the next player wins) otherwise.
+\end{definition}
+
+\begin{theorem}[Backward induction]
+Every position of such a game is either winning or losing, and the two classes are characterised by: a terminal position is losing; a position is winning if and only if some move from it leads to a losing position; a position is losing if and only if every move from it leads to a winning position.
+\end{theorem}
+
+\begin{proof}
+Induction on the length of the longest sequence of moves from the position, which is finite because the game always ends. Terminal positions, with length $0$, are losing by the rule that the player to move loses. For a position of length $\ell \ge 1$, every position reached by a move has length less than $\ell$ and so is already classified. If some move reaches a losing position, the player to move makes it and wins. If every move reaches a winning position, then whatever the player does, the opponent is in a winning position and wins. So the position is classified, and by exactly the stated rule.
+\end{proof}
+
+The theorem is also an algorithm: compute from the end. For a game on a number $n$, list the positions $0, 1, 2, \dots$ and mark each losing or winning from the marks of the positions it can move to. The pattern usually becomes periodic within a dozen positions, and the proof is then an induction that the pattern persists.
+
+\begin{proposition}[The invariant view]
+A set $L$ of positions is exactly the set of losing positions if and only if: every terminal position is in $L$; no move leads from a position in $L$ to a position in $L$; and from every position not in $L$ some move leads into $L$.
+\end{proposition}
+
+\begin{proof}
+If $L$ has the three properties, then the player who faces a position not in $L$ can move into $L$, and the opponent must then move out of $L$; repeating, the first player always faces a position outside $L$ and never runs out of moves, so the opponent eventually reaches a terminal position inside $L$ and loses. Hence positions outside $L$ are winning and positions inside $L$ are losing. The converse is the theorem above.
+\end{proof}
+
+This is \secref{sec:invariants}{invariants and monovariants} seen from the second player's side. A guessed description of the losing positions is proved by checking the three properties, and the winning player's strategy is ``move into $L$''. One never needs to show the guess was found by backward induction.
+
+\begin{theorem}[Pairing strategy]
+Suppose the moves available in a game can be partitioned into pairs $\{m, m'\}$ such that whenever one player makes $m$, the move $m'$ is available to the opponent and, after both, the pairing of the remaining moves is still valid. Then the second player wins by always answering $m$ with $m'$. If a single move $m_0$ is excluded from the pairing and all the other properties hold after $m_0$, then the first player wins by playing $m_0$ first and then answering in pairs.
+\end{theorem}
+
+\begin{proof}
+The player following the pairing always has a move available, because their opponent's last move came from a pair whose other half is still available by hypothesis. A player who always has a move never loses in a game that ends.
+\end{proof}
+
+The usual pairing is a geometric symmetry: a reflection or a half-turn of the board, with the first player taking the centre when there is one. The hypothesis that must be checked, and that problems are designed to break, is that the mirror move is actually legal after the opponent's move. The second example below checks it.
+
+\begin{firstmoves}
+Compute the losing positions from the end for the smallest board, by hand, for at least ten positions or until the pattern repeats twice. Guess the description of the losing set, and prove it by the three properties, not by recomputing. For a game on a board, look for a symmetry; for a game with a central cell, let the first player take it. For a game on integers, look at residues of the position modulo a small number. For ``what can the first player guarantee'', find a strategy giving a value and a counter-strategy for the opponent capping it, which is two arguments.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+Three piles of stones hold $a$, $b$ and $c$ stones. Two players alternate; a move chooses one, two or all three of the piles, each of which must be nonempty, and removes exactly one stone from each chosen pile. The player who cannot move loses. For which starting triples does the first player win?
+\end{example}
+
+\begin{proof}[Solution]
+Claim: the losing positions are exactly the triples in which $a$, $b$ and $c$ are all even. We check the three properties of the invariant view.
+
+The only terminal position is $(0, 0, 0)$, which is all even.
+
+From an all-even position, every move removes one stone from at least one pile, making that pile odd. So no move leads from all-even to all-even.
+
+From a position that is not all-even, let the odd piles be some nonempty subset of the three. Removing one stone from each odd pile is a legal move (each odd pile is nonempty) and makes every pile even. So from every position outside the set, some move leads into it.
+
+Hence the first player wins exactly when at least one of $a$, $b$, $c$ is odd, with the strategy of always emptying the parities: take one stone from each odd pile.
+\end{proof}
+
+Backward induction on a few small triples, $(1,0,0)$, $(1,1,0)$, $(2,0,0)$, $(1,1,1)$, $(2,1,0)$, $(2,2,0)$, produces the guess in a minute; the proof then never mentions induction. The same argument works for any number of piles.
+
+\begin{example}
+A row of $n$ cells is empty, with $n$ odd. Two players alternate placing a stone in an empty cell, subject to the rule that no two stones may ever occupy adjacent cells. The player who cannot move loses. Show that the first player has a winning strategy.
+\end{example}
+
+\begin{proof}[Solution]
+Number the cells $1$ to $n$ and write $c = (n+1)/2$ for the centre, which is a cell because $n$ is odd. Let $\sigma$ be the reflection $k \mapsto n + 1 - k$, which fixes $c$ and swaps the two halves.
+
+The first player places a stone at $c$. Thereafter, whenever the second player places a stone at $k$, the first player places a stone at $\sigma(k)$. We show by induction on the number of rounds that this reply is always legal and that after each reply the set of occupied cells is symmetric under $\sigma$.
+
+After the first move the occupied set is $\{c\}$, which is symmetric. Suppose the occupied set $S$ is symmetric and the second player legally places at $k$; then $k \notin S$, and $k \ne c$ since $c \in S$, so $\sigma(k) \ne k$. Legality of the reply at $\sigma(k)$ requires three things. First, $\sigma(k)$ is empty: $\sigma(k) \notin S$ because $k \notin S$ and $S$ is symmetric, and $\sigma(k) \ne k$. Second, no stone of $S$ is adjacent to $\sigma(k)$: a stone at $\sigma(k) \pm 1$ in $S$ would give, by symmetry, a stone at $k \mp 1$ in $S$, contradicting the legality of the second player's move. Third, the new stone at $k$ is not adjacent to $\sigma(k)$: adjacency would mean $|k - \sigma(k)| = |2k - n - 1| = 1$, so $2k = n$ or $2k = n + 2$, impossible since $n$ is odd and $2k$ is even. After the reply the occupied set is $S \cup \{k, \sigma(k)\}$, again symmetric.
+
+So the first player always has a legal reply. The game ends, since each move fills a cell, so the second player is the one who eventually cannot move.
+\end{proof}
+
+The third check is the one that fails for even $n$: with no central cell, a second player stone next to the axis of symmetry would be adjacent to its mirror image, and the strategy breaks. The even case is a genuinely different problem, and nothing above says who wins it.
+
+\begin{trap}
+A pairing broken by a central element, or by two cells that are each other's mirror and adjacent. Check the mirror move's legality, every condition, in writing.
+
+A strategy that assumes the game ends. The pairing theorem gives a player who never lacks a move; it is the finiteness of the game that converts this into a win.
+
+Confusing ``the last player to move wins'' with ``the last player to move loses''. The misère version of a game has different losing positions, and the backward induction starts from a different base.
+
+A losing-set guess verified only on the examples that produced it. The three properties must be proved for every position, and the hardest one is usually ``from outside the set there is always a move into it''.
+\end{trap}
+
+\begin{ladder}
+\item \putnam{2020 B2}. Pegs moved along a line by two players; for which starting positions the first player wins. Backward induction from the end, then a residue pattern.
+\item \putnam{2022 A5}. Dominoes placed alternately on a strip; how many cells one player can keep uncovered. A strategy and a counter-strategy give matching bounds.
+\item \putnam{2023 A6}. Integers chosen alternately, with a parity goal; who wins for each starting size. The winning condition is a congruence.
+\item \putnam{2025 A3}. A game on digit strings in which repeats are forbidden; the winner. Count the available moves and their parity.
+\item \putnam{2017 A5}. A card-drawing game with three players; show each is sometimes favoured. Games meet probability.
+\end{ladder}
+
+Seminar: \seminar{PS 6 \#24} to \seminar{\#28} are the probability games, where the opponent is partly chance; \seminar{PS 10 \#8, \#13, \#14, \#18} are configuration games on an array, on stones with a divisibility rule, on the faces of a polyhedron, and on commuting matrices.
+
+\begin{hides}
+Invariants: the losing set is the level set of an invariant that the winning player restores at each turn, which is the proposition above read the other way. Counting: ``the first player can guarantee at least $k$'' is an extremal question with a construction and a bound. Probability: a game with a random element is analysed by conditioning on the first move, as in the section on probability and expectation. Any adversarial ``for every choice of the opponent'' statement, including worst-case bounds on algorithms, is a game whether or not the problem says so.
+\end{hides}
+

@@ -20,6 +20,8 @@ content/                         the Obsidian vault (open this folder in Obsidia
   projects/<slug>/log/<entry>/p-xxxxxx.svg  pages of a handwritten entry (notebook-ink/1)
   projects/<slug>/<images, pdfs, videos>    the project's media, referenced by relative path
   private/                       gitignored escape hatch
+  calls/                         the calls ledger (see below); public, not rendered by the site
+  teach/                         docs a model rewrites to the owner's level, and levels.md (see below); public, not rendered
 site/                            the Astro site; run every npm command from here
   src/content.config.ts          the two collections and their frontmatter schema
   src/ink/                       ink notes: strip stroke data, rewrite page embeds
@@ -28,6 +30,24 @@ site/                            the Astro site; run every npm command from here
 scripts/guard.mjs                fails on files that must not be published (see scripts/README.md)
 .github/workflows/deploy.yml     guard, npm ci, npm test, build in site/, deploy site/dist
 ```
+
+`content/calls/` (added 2026-11-07) is the calls ledger: one line before a modelling decision
+(the model, the assumptions, the fidelity, a confidence) and one line after (held, missed or moot).
+`calls.md` is the owner's and the only file typed in; `node content/calls/tally.mjs` writes
+`readout.md`, which is generated and not the owner's words. The site does not read the folder
+(the collections glob only `projects/*/index.md` and `projects/*/log/*.md`), but it is committed,
+so it is public on GitHub and syncs to the iPad. Its `README.md` says how the experiment reads
+out and how to delete it. `.claude/skills/profile` and `.claude/skills/teach` are the `/profile` and
+`/teach` commands for the two model passes. It replaced `content/edge/` and the edge plugin, removed 2026-11-07 and
+recoverable from git history before that date.
+
+`content/teach/` (added 2026-11-07) holds docs written by a model and rewritten to the owner's level
+from `%% lost %%`, `%% easy %%` and `%% forgot %%` comments: each doc is a LaTeX document with its
+built PDF plus a markdown summary that carries the marks, built by `content/teach/build.cmd`, plus a
+generated `levels.md`. Every file in it is a model's, and its `README.md` says so; the rule that prose is
+the owner's does not apply there. The site does not read it. The Obsidian plugin `calls` (repo
+`Documents/obsidian-calls`, installed copy in `.obsidian/plugins/calls/`, gitignored; listed in the
+committed `community-plugins.json`) gives the call, settle and mark lines a form on both devices.
 
 Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `content/learning/`. The learning notes vault lives outside the repo at `Documents/learning-vault/`.
 

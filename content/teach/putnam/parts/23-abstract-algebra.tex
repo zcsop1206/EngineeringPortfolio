@@ -1,0 +1,106 @@
+\section{Abstract algebra}
+
+\begin{recognise}
+A set with an operation and a few rules is given, and something must be deduced from the rules alone. Functions that respect a structure are asked about: homomorphisms, automorphisms, permutations with a property. A number theory problem is really about the multiplicative group modulo $n$, or about the order of an element in it. A problem about a finite set and a composition law asks whether an identity or inverses exist. The eighth seminar set is the only one that prints its Putnam sources, so its first fifteen problems are also a decade-by-decade ladder of what the exam has asked.
+\end{recognise}
+
+\begin{definition}
+A group is a set $G$ with an associative operation, an identity $e$, and an inverse for every element. The order of $G$ is $|G|$; the order $\ord(g)$ of an element is the least $n\ge1$ with $g^n=e$. A subgroup $H$ is a subset closed under the operation and inverses; its left cosets are the sets $gH$. A homomorphism is a map $\varphi$ with $\varphi(ab)=\varphi(a)\varphi(b)$. The group is cyclic if some element generates it, that is, $G=\{g^k\}$.
+\end{definition}
+
+\begin{theorem}[Lagrange]
+If $H$ is a subgroup of a finite group $G$ then $|H|$ divides $|G|$. Consequently $\ord(g)$ divides $|G|$ for every $g$, and $g^{|G|}=e$.
+\end{theorem}
+
+\begin{proof}
+Two cosets $aH$, $bH$ are either equal or disjoint: if $ah_1=bh_2$ then $a=bh_2h_1^{-1}\in bH$, so $aH\subseteq bH$, and symmetrically. Every $g$ lies in $gH$. The map $h\mapsto gh$ is a bijection $H\to gH$, so all cosets have $|H|$ elements, and $|G|$ is $|H|$ times the number of cosets. For the consequences, the powers of $g$ form a subgroup of size $\ord(g)$: they are closed, and $g^n=e$ makes $g^{n-1}$ the inverse of $g$, with $e,g,\dots,g^{n-1}$ distinct by minimality of $n$.
+\end{proof}
+
+\begin{proposition}
+A group of prime order $p$ is cyclic, and every non-identity element generates it. In the group of units modulo $n$, Lagrange's theorem is Euler's theorem $a^{\varphi(n)}\equiv1$ for $\gcd(a,n)=1$, and for prime $n$ it is Fermat's little theorem.
+\end{proposition}
+
+\begin{proof}
+The order of $g\ne e$ divides $p$ and is not $1$, so it is $p$, and the $p$ distinct powers of $g$ exhaust the group. The units modulo $n$ form a group of order $\varphi(n)$ under multiplication, since a product of units is a unit and every unit has an inverse by Bézout.
+\end{proof}
+
+\begin{lemma}
+For every positive integer $n$, $\sum_{d\mid n}\varphi(d)=n$.
+\end{lemma}
+
+\begin{proof}
+Sort the fractions $1/n,2/n,\dots,n/n$ by their denominator in lowest terms. The fractions with denominator $d$ are the $k/d$ with $\gcd(k,d)=1$ and $1\le k\le d$, of which there are $\varphi(d)$, and each $d$ dividing $n$ occurs.
+\end{proof}
+
+\begin{theorem}[The multiplicative group modulo a prime is cyclic]
+For a prime $p$, the group $(\Z/p)^{\times}$ of nonzero residues under multiplication is cyclic of order $p-1$. A generator is called a primitive root. More generally every finite subgroup of the multiplicative group of a field is cyclic.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Let $G$ be the group, of order $n=p-1$. For each $d\mid n$ let $N(d)$ be the number of elements of order exactly $d$. If $N(d)>0$, take $g$ of order $d$; the $d$ powers of $g$ are distinct roots of $x^d-1$, and a polynomial of degree $d$ over a field has at most $d$ roots, so every element of order dividing $d$ is a power of $g$. Among the powers $g^k$, $0\le k<d$, the ones of order exactly $d$ are those with $\gcd(k,d)=1$, so $N(d)=\varphi(d)$. Hence $N(d)\in\{0,\varphi(d)\}$ for every $d\mid n$. Since every element has some order dividing $n$, $\sum_{d\mid n}N(d)=n=\sum_{d\mid n}\varphi(d)$ by the lemma, and this forces $N(d)=\varphi(d)$ for all $d$, in particular $N(n)=\varphi(n)>0$.
+\end{proof}
+
+What the theorem buys: with a primitive root $g$, every nonzero residue is $g^k$ for a unique $k$ modulo $p-1$, so multiplicative questions modulo $p$ become additive questions modulo $p-1$. The squares are the even powers, exactly half the nonzero residues; $x^m\equiv1$ has exactly $\gcd(m,p-1)$ solutions; $x\mapsto x^m$ is a bijection of the nonzero residues if and only if $\gcd(m,p-1)=1$; and $-1$ is $g^{(p-1)/2}$, the unique element of order $2$.
+
+\begin{proposition}[Cancellation in finite structures]
+Let $S$ be a finite nonempty set with an associative operation in which both cancellation laws hold: $ax=ay$ implies $x=y$, and $xa=ya$ implies $x=y$. Then $S$ is a group. In any finite group, left multiplication by a fixed element is a permutation of the group.
+\end{proposition}
+
+\begin{proof}
+For fixed $a$, left multiplication $L_a\colon x\mapsto ax$ is injective by cancellation, hence a bijection of the finite set $S$; likewise right multiplication $R_a$. So there is $e$ with $ae=a$. For any $b$, surjectivity of $R_a$ gives $c$ with $ca=b$, and then $be=cae=ca=b$: $e$ is a right identity for all of $S$. Symmetrically there is a left identity $e'$, and $e'=e'e=e$. Surjectivity of $L_a$ and $R_a$ gives $a'$, $a''$ with $aa'=e=a''a$, and $a'=ea'=a''aa'=a''e=a''$, a two-sided inverse.
+\end{proof}
+
+\begin{proposition}[Homomorphisms and orders]
+A homomorphism is determined by its values on a generating set. A homomorphism sends an element of order $n$ to an element whose order divides $n$. In a permutation, the order is the least common multiple of the cycle lengths, and the sign is $(-1)^{\text{(number of even-length cycles)}}$.
+\end{proposition}
+
+\begin{proof}
+Every element is a product of generators and their inverses, and $\varphi$ respects products and inverses. $g^n=e$ gives $\varphi(g)^n=\varphi(e)=e$. Disjoint cycles commute, a $k$-cycle has order $k$, and a $k$-cycle is a product of $k-1$ transpositions.
+\end{proof}
+
+\begin{firstmoves}
+Identify the structure as one you know in disguise: the integers modulo $n$, the units modulo $n$, the permutations of a small set, the invertible $2\times2$ matrices. Look for the identity and for inverses, and check whether the rules given actually provide them. Count elements by their orders, using Lagrange to restrict the possible orders. Write the operation table for the smallest case. Translate the question modulo $p$ into exponents of a primitive root. For a bare binary operation, test associativity and commutativity on three symbols before assuming either.
+\end{firstmoves}
+
+\begin{example}
+Let $G$ be a finite group whose order is not divisible by $3$. Prove that every element of $G$ has exactly one cube root in $G$: for each $g$ there is a unique $x\in G$ with $x^3=g$.
+\end{example}
+
+\begin{proof}[Solution]
+Let $n=|G|$. Since $\gcd(3,n)=1$, there is an integer $k\ge1$ with $3k\equiv1\pmod n$. By Lagrange, $y^n=e$ for every $y\in G$, so $y^{3k}=y^{3k-1}\cdot y=y$, because $n$ divides $3k-1$. Hence the maps $c(x)=x^3$ and $r(y)=y^k$ satisfy $r(c(x))=x^{3k}=x$ and $c(r(y))=y^{3k}=y$ for all $x,y$: they are mutually inverse bijections of $G$. So $x=g^k$ is a cube root of $g$, and it is the only one, since $c$ is injective.
+
+Nothing was assumed about commutativity. The point to carry away is the shape of the argument: a power map on a finite group is a bijection whenever the exponent is coprime to the order, and its inverse is another power map. Modulo a prime $p$ this says that $x\mapsto x^3$ permutes the nonzero residues exactly when $p\not\equiv1\pmod3$, which is the way ``every residue is a cube modulo $p$'' is proved. When $3$ does divide $n$, Cauchy's theorem gives an element of order $3$, so $x^3=e$ has at least three solutions and uniqueness fails.
+\end{proof}
+
+\begin{example}
+Let $p$ be an odd prime. Show that the number of pairs $(a,b)$ of residues modulo $p$ with $a^2\equiv b^3\pmod p$ is exactly $p$.
+\end{example}
+
+\begin{proof}[Solution]
+Count the pairs by $b$. If $b\equiv0$, then $a^2\equiv0$ forces $a\equiv0$, one pair. If $b\not\equiv0$, write $b=g^k$ for a primitive root $g$; then $b^3=g^{3k}$, and a nonzero residue $g^m$ is a square if and only if $m$ is even modulo $p-1$ (the squares are exactly the even powers of $g$, because $p-1$ is even). Since $3k$ is even if and only if $k$ is, $b^3$ is a square exactly when $b$ is. When $b^3$ is a nonzero square it has exactly two square roots $\pm a_0$, which are distinct because $p$ is odd; when it is not a square it has none.
+
+There are $(p-1)/2$ nonzero squares among the residues, so the number of pairs is
+\[
+1+2\cdot\frac{p-1}{2}+0\cdot\frac{p-1}{2}=p .
+\]
+Check at $p=3$: the pairs with $a^2\equiv b^3$ are $(0,0)$, $(1,1)$, $(2,1)$, three of them. At $p=5$: $b=1$ gives $a=\pm1$, $b=4$ gives $b^3=64\equiv4$ and $a=\pm2$, while $b=2,3$ give $b^3\equiv3,2$, non-squares; with $(0,0)$ that is five pairs.
+
+The primitive root turned a question about cubes and squares into a question about the parity of an exponent, and every multiplicative fact about residues modulo $p$ that this document uses goes through the same translation.
+\end{proof}
+
+\begin{trap}
+Assuming commutativity: $(ab)^2=a^2b^2$ fails in every non-abelian group, and an argument that rearranges a product has used it. Assuming associativity when the problem gives a bare binary operation; the first problem of the seminar's set is a commutative operation that is not associative. Dividing by an element that may have no inverse, which modulo a composite $n$ is any element sharing a factor with $n$. Using a primitive root modulo a composite modulus; the units modulo $8$ form a group in which every element squares to $1$, so no element generates it. Lagrange gives divisibility only; a divisor of the order need not be the order of any element, and need not even be the order of a subgroup (the alternating group on four letters has order $12$ and no subgroup of order $6$). Concluding $x=e$ from $x^m=e$ without knowing $\gcd(m,\ord x)$.
+\end{trap}
+
+\begin{ladder}
+\item \seminar{PS 8 \#1}. A binary operation on a set with a given rule; commutative but not associative.
+\item \seminar{PS 8 \#2}. A group with two relations between two elements; the elements are trivial.
+\item \seminar{PS 8 \#3}. A finite group; the number of elements of a given prime order.
+\item \putnam{2016 A5}. A finite group; every element is a short word in two generators.
+\item \putnam{2018 A4}. A group identity with floor functions in the exponents; two elements commute.
+\item \putnam{2023 B5}. A permutation of the residues whose square is multiplication by a constant; which moduli.
+\end{ladder}
+
+\begin{hides}
+Inside congruences, where the order of an element and the primitive root do the work (\putnam{2021 A5}, \putnam{2024 A4}, \putnam{2023 B5}, \seminar{PS 9 \#7}, \seminar{PS 9 \#32}). Inside permutations and counting, where the cycle structure or the sign is the invariant (\putnam{2025 A5}, \seminar{PS 10 \#16}). Inside linear algebra, where a set of matrices closed under multiplication is a finite group and Lagrange applies to it (\putnam{2022 B2}, \seminar{PS 7 \#14}). Inside games and invariants, where the moves generate a group acting on the positions (\putnam{2023 B1}).
+\end{hides}

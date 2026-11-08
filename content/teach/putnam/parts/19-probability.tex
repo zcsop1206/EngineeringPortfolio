@@ -1,0 +1,122 @@
+\section{Probability and expectation}
+
+\begin{recognise}
+The words random, expected, probability, on average, or almost surely appear. A counting problem asks for a proportion, which is a probability after dividing by the total. A process runs in steps and a stopping time or a final state is asked about. Points are chosen in a region and a geometric condition is imposed. Behind most Putnam probability there is no measure theory at all: a finite sample space, linearity of expectation, a recurrence from the first step, or an area.
+\end{recognise}
+
+\begin{definition}
+On a finite or countable sample space $\Omega$ with probabilities $p(\omega)\ge 0$ summing to $1$, a random variable is a function $X\colon\Omega\to\R$, its expectation is $\E X=\sum_\omega X(\omega)p(\omega)$ when the sum converges absolutely, and the indicator of an event $A\subseteq\Omega$ is $\mathbf 1_A$, with $\E\,\mathbf 1_A=\Pr(A)$. The conditional probability of $A$ given $B$ with $\Pr(B)>0$ is $\Pr(A\mid B)=\Pr(A\cap B)/\Pr(B)$, and $\E(X\mid B)$ is the expectation under the probabilities $p(\omega)/\Pr(B)$ on $B$.
+\end{definition}
+
+\begin{theorem}[Linearity and indicators]
+$\E(aX+bY)=a\E X+b\E Y$ for any random variables with finite expectation, independent or not. If $N=\sum_{i=1}^n\mathbf 1_{A_i}$ counts how many of the events $A_i$ occur, then
+\[
+\E N=\sum_i\Pr(A_i),\qquad \E N^2=\sum_i\Pr(A_i)+2\sum_{i<j}\Pr(A_i\cap A_j).
+\]
+\end{theorem}
+
+\begin{proof}
+The first is the distributive law inside the defining sum. For the second, $N^2=\sum_i\mathbf 1_{A_i}^2+2\sum_{i<j}\mathbf 1_{A_i}\mathbf 1_{A_j}$, and $\mathbf 1_{A}^2=\mathbf 1_A$, $\mathbf 1_A\mathbf 1_B=\mathbf 1_{A\cap B}$.
+\end{proof}
+
+The second formula is how a variance is computed in a problem that asks whether a count is concentrated, and it is the only place where the pairwise interactions enter.
+
+\begin{theorem}[Total probability and conditioning on the first step]
+Let $B_1,B_2,\dots$ be a partition of $\Omega$ into events of positive probability. Then for any event $A$ and any random variable $X$ with finite expectation,
+\[
+\Pr(A)=\sum_i\Pr(A\mid B_i)\Pr(B_i),\qquad \E X=\sum_i\E(X\mid B_i)\Pr(B_i).
+\]
+\end{theorem}
+
+\begin{proof}
+$A$ is the disjoint union of the $A\cap B_i$, and $\Pr(A\cap B_i)=\Pr(A\mid B_i)\Pr(B_i)$. The expectation version is the same decomposition of the defining sum.
+\end{proof}
+
+For a process that moves between finitely many states, condition on the first step: if $h(s)$ is the probability of eventually reaching a target from state $s$, or the expected number of steps to reach it, then $h(s)=\sum_{s'}P(s\to s')h(s')$, plus $1$ in the expected-time case, with $h$ known on the target. This is a linear system, and a Putnam problem is built so that it has a short solution: a symmetry that makes most unknowns equal, or a telescoping along the states.
+
+\begin{proposition}[Tail sum]
+For a random variable $N$ taking values in $\{0,1,2,\dots\}$, $\E N=\sum_{k\ge 1}\Pr(N\ge k)$. For $X\ge 0$ with a density, $\E X=\int_0^\infty\Pr(X>t)\,dt$.
+\end{proposition}
+
+\begin{proof}
+$N=\sum_{k\ge1}\mathbf 1[N\ge k]$ pointwise; take expectations and swap the sum and the expectation, which Tonelli allows since everything is non-negative. The continuous case is the same with an integral.
+\end{proof}
+
+\begin{proposition}[Geometric probability]
+If a point is chosen uniformly in a region $R\subset\R^d$ of finite positive volume, the probability that it lies in a measurable $S\subseteq R$ is $\operatorname{vol}(S)/\operatorname{vol}(R)$. If $X_1,\dots,X_d$ are independent and each uniform on $[0,1]$, then $(X_1,\dots,X_d)$ is uniform on the cube $[0,1]^d$, so a probability about them is a volume.
+\end{proposition}
+
+\begin{proof}
+The first is the definition of the uniform distribution. For the second, independence means the joint density is the product of the marginal densities, which is $1$ on the cube.
+\end{proof}
+
+\begin{proposition}[The probabilistic method]
+If $\E X=\mu$ then $\Pr(X\ge\mu)>0$ and $\Pr(X\le\mu)>0$. In particular, if a random object has expected score $\mu$, some object has score at least $\mu$. If $X\ge 0$ then $\Pr(X\ge a)\le\E X/a$ for $a>0$ (Markov), so if $\E X<1$ for a non-negative integer $X$ then $\Pr(X=0)>0$.
+\end{proposition}
+
+\begin{proof}
+If $X<\mu$ everywhere then $\E X<\mu$. For Markov, $a\,\mathbf 1[X\ge a]\le X$ pointwise; take expectations.
+\end{proof}
+
+\begin{firstmoves}
+Write the quantity as a sum of indicators and compute one probability. Condition on the first step and write the recurrence. List every outcome of the smallest case and count. For points in a region, draw the region where the condition holds and compute its area; look for a line or a curve as the boundary. For an expected stopping time, ask whether every step has the same chance of stopping, which makes it geometric. For a question of the form ``show that some arrangement has property $P$'', choose the arrangement at random and compute the expected number of failures.
+\end{firstmoves}
+
+\begin{example}
+A fair six-sided die is rolled repeatedly and the running total of the rolls is kept. Find the expected number of rolls until the running total is first divisible by $4$.
+\end{example}
+
+\begin{proof}[Solution]
+Only the residue of the total modulo $4$ matters. A roll adds a residue $d\in\{0,1,2,3\}$ with probabilities $p_0=\tfrac16$, $p_1=\tfrac26$, $p_2=\tfrac26$, $p_3=\tfrac16$, since the faces $1,\dots,6$ reduce to $1,2,3,0,1,2$. Let $T_r$ be the expected number of further rolls needed to reach residue $0$ from residue $r$, with $T_0=0$, and let $P(r,s)=p_{s-r}$ (indices modulo $4$). A step of $+1$ has positive probability, so every residue is reachable from every other and all $T_r$ are finite. Conditioning on the next roll, for $r\ne 0$,
+\[
+T_r=1+\sum_{s}P(r,s)\,T_s .
+\]
+The answer asked for is the expected return time to $0$ starting from a fresh total of $0$: $T^{*}=1+\sum_s P(0,s)T_s$.
+
+Rather than solving the system, add the three equations for $r=1,2,3$:
+\[
+\sum_{r\ne 0}T_r=3+\sum_s T_s\sum_{r\ne 0}P(r,s)=3+\sum_s T_s\bigl(1-P(0,s)\bigr),
+\]
+because each column of $P$ sums to $1$: $\sum_rP(r,s)=\sum_r p_{s-r}=1$. Since $T_0=0$, the left side is $\sum_sT_s$, and cancelling it gives $\sum_sP(0,s)T_s=3$. Hence $T^{*}=1+3=4$.
+
+As a check, the system solves to $T_1=\tfrac{98}{25}$, $T_2=\tfrac{84}{25}$, $T_3=\tfrac{86}{25}$, and $1+\tfrac16\bigl(2\cdot\tfrac{98}{25}+2\cdot\tfrac{84}{25}+\tfrac{86}{25}\bigr)=1+\tfrac{450}{150}=4$. The argument used nothing about the die except that each column of $P$ sums to $1$, which holds for any step distribution on any modulus $m$ with the walk irreducible, and gives $m$ every time. That is the uniformity of the previous section hiding in a probability problem: the stationary distribution of a random walk on a group is uniform, so the mean return time to any state is the number of states.
+\end{proof}
+
+\begin{example}
+Two numbers $x$ and $y$ are chosen independently and uniformly from $[0,1]$. Find the probability that $x+y>1$ and $xy<\tfrac14$.
+\end{example}
+
+\begin{proof}[Solution]
+The pair $(x,y)$ is uniform on the unit square, so the probability is the area of the region $\{x+y>1,\ xy<\tfrac14\}$. The region $\{x+y>1\}$ is the triangle above the diagonal, of area $\tfrac12$. Inside it, remove the part where $xy\ge\tfrac14$.
+
+By the arithmetic-geometric mean inequality, $xy\ge\tfrac14$ forces $x+y\ge 2\sqrt{xy}\ge 1$, with equality only at the single point $(\tfrac12,\tfrac12)$. So $\{xy\ge\tfrac14\}$ lies inside $\{x+y\ge 1\}$ up to a set of area zero, and the area to remove is the whole of $\{xy\ge\tfrac14\}$ in the square. That region is $\tfrac14\le x\le 1$, $\tfrac1{4x}\le y\le 1$, with area
+\[
+\int_{1/4}^{1}\Bigl(1-\frac{1}{4x}\Bigr)dx=\frac34-\frac14\ln 4=\frac34-\frac{\ln 2}{2}.
+\]
+Therefore the probability is
+\[
+\frac12-\Bigl(\frac34-\frac{\ln2}{2}\Bigr)=\frac{\ln 2}{2}-\frac14=\frac{2\ln2-1}{4}\approx 0.097.
+\]
+It is positive, as it should be since $(0.9,0.2)$ is in the region, and small, since the hyperbola $xy=\tfrac14$ hugs the line $x+y=1$ near the centre. The inequality step is what made the picture simple: without it, the region to remove would have had to be intersected with the triangle by hand.
+\end{proof}
+
+\begin{trap}
+Multiplying probabilities of events that share randomness; two positions of a random permutation being fixed are not independent, and the indicator method is exactly the way to avoid needing them to be. A sample space that is not uniform: two dice summing to $7$ is six outcomes out of $36$, not one of eleven. Conditioning on the first step and forgetting the $+1$ for the step itself. A stopping time whose expectation is infinite, so the recurrence has no finite solution; check irreducibility or a geometric bound first. In geometric probability, a region drawn with a straight boundary where the condition gives a curve. Computing an expectation and reporting it as the most likely value; the expected number of fixed points of a permutation is $1$, which says nothing about what happens most often.
+\end{trap}
+
+\begin{ladder}
+\item \seminar{PS 6 \#3}. A biased coin tossed many times; the parity of the number of heads.
+\item \seminar{PS 6 \#5}. Uniform draws added until a threshold is crossed; the expected count.
+\item \seminar{PS 6 \#13}. A random point in a disc; nearer the centre or the edge.
+\item \putnam{2021 B1}. A random square placed on a grid; the chance it avoids certain points.
+\item \putnam{2020 A4}. Random blackening of a strip; the limiting white fraction.
+\item \putnam{2020 B3}. A randomly shrinking interval; the expected number of steps below a threshold.
+\item \putnam{2023 B3}. A random sequence and its longest alternating subsequence; the expectation.
+\item \putnam{2024 B4}. A walk pulled toward uniform draws; the limiting mean.
+\item \putnam{2022 A4}. A weighted sum of random terms until an ascent; the expectation.
+\item \putnam{2016 B4}. A random antisymmetric matrix; the expected determinant.
+\end{ladder}
+
+\begin{hides}
+Inside counting, by the probabilistic method: a random object has the property with positive probability, so one exists (\putnam{2024 A3}, \putnam{2018 B6}). Inside recurrences, where the first-step equation is the recurrence (\putnam{2020 A4}, \putnam{2020 B3}). Inside geometry, where a chance is a ratio of areas (\putnam{2021 B1}, \putnam{2024 A5}). Inside inequalities, where a bound on an expectation or a tail is the claim (\putnam{2021 B6}, \putnam{2022 B5}). Inside linear algebra, where the expected determinant of a random matrix is a signed sum of expected products (\putnam{2016 B4}, \seminar{PS 7 \#12}). Inside games, where the two players' chances are compared (\putnam{2017 A5}, \seminar{PS 6 \#24} to \seminar{\#28}).
+\end{hides}

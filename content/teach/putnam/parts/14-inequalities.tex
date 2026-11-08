@@ -1,0 +1,130 @@
+\section{Inequalities}
+
+\begin{recognise}
+A sum, product or integral has to be bounded. The largest or smallest value of an expression is asked for, usually under a constraint such as a fixed sum or a fixed product. One function has to be shown to stay on one side of another on an interval. A sequence has to be shown increasing, or bounded, or both. The words ``best constant'' or ``for all positive reals'' appear. Behind almost all of these sit three results and one habit: the arithmetic-geometric mean inequality, Cauchy-Schwarz, convexity, and the habit of finding the equality case first.
+\end{recognise}
+
+\begin{definition}
+A function $f$ on an interval $I$ is convex if $f(tx+(1-t)y)\le tf(x)+(1-t)f(y)$ for all $x,y\in I$ and $t\in[0,1]$, and strictly convex if the inequality is strict whenever $x\ne y$ and $0<t<1$. It is concave if $-f$ is convex. A twice differentiable $f$ is convex exactly when $f''\ge 0$ on $I$, and strictly convex when $f''>0$ except at isolated points.
+\end{definition}
+
+\begin{lemma}[Tangent line]
+Let $f$ be differentiable and convex on an interval $I$ and let $a\in I$. Then $f(x)\ge f(a)+f'(a)(x-a)$ for all $x\in I$. If $f$ is strictly convex, equality holds only at $x=a$.
+\end{lemma}
+
+\begin{proof}
+Convexity makes $f'$ non-decreasing. For $x>a$ the mean value theorem gives $f(x)-f(a)=f'(\xi)(x-a)$ with $a<\xi<x$, and $f'(\xi)\ge f'(a)$. For $x<a$ the same with $f'(\xi)\le f'(a)$ and $x-a<0$. Strict convexity makes $f'$ strictly increasing and the inequalities strict.
+\end{proof}
+
+\begin{theorem}[Jensen]
+Let $f$ be convex on $I$, let $x_1,\dots,x_n\in I$, and let $w_1,\dots,w_n\ge 0$ with $\sum w_i=1$. Then
+\[
+f\Bigl(\sum_i w_ix_i\Bigr)\le\sum_i w_if(x_i).
+\]
+For strictly convex $f$ and all $w_i>0$, equality holds only when all $x_i$ are equal. For concave $f$ the inequality reverses.
+\end{theorem}
+
+\begin{proof}
+Let $m=\sum w_ix_i$, which lies in $I$. Convex functions have a supporting line at every interior point: a number $c$ with $f(x)\ge f(m)+c(x-m)$ for all $x\in I$ (for differentiable $f$, $c=f'(m)$ by the tangent line lemma; in general any $c$ between the one-sided derivatives works). Multiply by $w_i$ at $x=x_i$ and add: $\sum w_if(x_i)\ge f(m)+c\sum w_i(x_i-m)=f(m)$. In the strict case each inequality $f(x_i)\ge f(m)+c(x_i-m)$ is strict unless $x_i=m$.
+\end{proof}
+
+\begin{theorem}[Arithmetic-geometric mean]
+For positive reals $a_1,\dots,a_n$,
+\[
+\frac{a_1+\dots+a_n}{n}\ \ge\ (a_1\cdots a_n)^{1/n},
+\]
+with equality if and only if all $a_i$ are equal. More generally, for weights $w_i>0$ with $\sum w_i=1$, $\sum w_ia_i\ge\prod a_i^{w_i}$, with the same equality case.
+\end{theorem}
+
+\begin{proof}
+$\ln$ is strictly concave on $(0,\infty)$ since its second derivative is $-1/x^2<0$. Jensen gives $\ln(\sum w_ia_i)\ge\sum w_i\ln a_i=\ln\prod a_i^{w_i}$, with equality only when all $a_i$ coincide. Exponentiate.
+\end{proof}
+
+\begin{theorem}[Cauchy-Schwarz]
+For real $a_1,\dots,a_n$ and $b_1,\dots,b_n$,
+\[
+\Bigl(\sum_i a_ib_i\Bigr)^2\le\Bigl(\sum_i a_i^2\Bigr)\Bigl(\sum_i b_i^2\Bigr),
+\]
+with equality if and only if one sequence is a scalar multiple of the other. The same holds for integrals: $(\int fg)^2\le\int f^2\int g^2$ for continuous $f,g$ on an interval, with equality if and only if $f$ and $g$ are proportional.
+\end{theorem}
+
+\begin{proof}
+If all $b_i=0$ both sides vanish. Otherwise $q(t)=\sum_i(a_i-tb_i)^2=\sum a_i^2-2t\sum a_ib_i+t^2\sum b_i^2$ is a quadratic in $t$ that is never negative, so its discriminant $4(\sum a_ib_i)^2-4\sum a_i^2\sum b_i^2$ is at most $0$. Equality means $q$ has a real root $t_0$, so $a_i=t_0b_i$ for all $i$. The integral case is the same computation with $\int(f-tg)^2\ge 0$, and a non-negative continuous function with zero integral is identically zero.
+\end{proof}
+
+Two consequences are used constantly. With $b_i=1$: $(\sum a_i)^2\le n\sum a_i^2$, the mean of squares dominates the square of the mean. With $a_i=\sqrt{x_i}$ and $b_i=\sqrt{y_i}$ rearranged: for positive $y_i$, $\sum x_i^2/y_i\ge(\sum x_i)^2/\sum y_i$, which is how a sum of fractions is bounded below in one line.
+
+\begin{theorem}[Bernoulli]
+For real $x\ge -1$: $(1+x)^r\ge 1+rx$ when $r\ge 1$ or $r\le 0$, and $(1+x)^r\le 1+rx$ when $0\le r\le 1$. Equality holds only at $x=0$ unless $r\in\{0,1\}$.
+\end{theorem}
+
+\begin{proof}
+$g(x)=(1+x)^r$ has $g''(x)=r(r-1)(1+x)^{r-2}$, which is non-negative on $(-1,\infty)$ exactly when $r\ge 1$ or $r\le 0$. The tangent line at $0$ is $1+rx$, and the tangent line lemma gives the result; for $0<r<1$ the function is concave and the inequality reverses. For integer $r\ge 1$ a direct induction also works: $(1+x)^{k+1}\ge(1+kx)(1+x)=1+(k+1)x+kx^2\ge 1+(k+1)x$, where the first step uses $1+x\ge 0$.
+\end{proof}
+
+\begin{lemma}[Comparison of derivatives]
+Let $f,g$ be differentiable on $[a,b]$ with $f(a)=g(a)$ and $f'(x)\ge g'(x)$ for $a<x<b$. Then $f\ge g$ on $[a,b]$; if the derivative inequality is strict then $f>g$ on $(a,b]$.
+\end{lemma}
+
+\begin{proof}
+$h=f-g$ has $h(a)=0$ and $h'\ge 0$, so $h$ is non-decreasing by the mean value theorem.
+\end{proof}
+
+The lemma is used repeatedly: to prove $f>g$ near a shared point, differentiate both, check the derivatives at the point, and if they also agree, differentiate again. The first derivative where they differ decides, which is the same first-surviving-term idea as in the limits section.
+
+\begin{firstmoves}
+Find where equality should hold and check the claim there; if the claim is false at the symmetric point, the symmetric point is not the extreme and the extreme is on the boundary. For $n$ variables under a symmetric constraint, try all equal and try one variable carrying everything. Name the inequality by the equality case: all equal points to AM-GM or Jensen; proportional sequences point to Cauchy-Schwarz. For a function on an interval, evaluate at the endpoints and at the stationary points. For a function that is not convex on the whole domain, try the tangent line at the equality point anyway and check the one-variable inequality it produces by factoring. For a product, take logarithms. For a sum of $n$ terms with a parameter $n$, compute $n=1$ and $n=2$ exactly.
+\end{firstmoves}
+
+\begin{example}
+Let $a,b,c>0$ with $a+b+c=3$. Show that
+\[
+\frac{a^2}{a^2-a+1}+\frac{b^2}{b^2-b+1}+\frac{c^2}{c^2-c+1}\le 3,
+\]
+and determine when equality holds.
+\end{example}
+
+\begin{proof}[Solution]
+Let $f(x)=x^2/(x^2-x+1)$ for $x>0$; the denominator is $(x-\tfrac12)^2+\tfrac34>0$. The natural equality case is $a=b=c=1$, where $f(1)=1$ and the sum is $3$. Jensen is not available: $f(0)=0$, $f(\tfrac12)=\tfrac13$, $f(1)=1$, $f(2)=\tfrac43$, $f(3)=\tfrac97$, so $f$ is convex near $0$ and concave past $1$, and neither direction of Jensen applies on $(0,3)$.
+
+Use the tangent line at $x=1$ instead. $f'(x)=\dfrac{2x(x^2-x+1)-x^2(2x-1)}{(x^2-x+1)^2}=\dfrac{x(2-x)}{(x^2-x+1)^2}$, so $f'(1)=1$ and the tangent line is $y=x$. The claim $f(x)\le x$ for $x>0$ reads $x^2\le x(x^2-x+1)$, that is $0\le x^2-2x+1=(x-1)^2$, true for all $x$, with equality only at $x=1$. Summing, $f(a)+f(b)+f(c)\le a+b+c=3$, with equality exactly when $a=b=c=1$.
+
+The move to notice: the tangent line was guessed from the equality case, and the one-variable inequality it produced was checked by factoring, not by convexity. The factor $(x-1)^2$ is the signature of a correct tangent at $x=1$; if it had not appeared, the tangent line would have been the wrong tool.
+\end{proof}
+
+\begin{example}
+Let $f\colon[0,1]\to\R$ be continuous with $\int_0^1 f(x)\,dx=1$ and $\int_0^1 xf(x)\,dx=1$. Show that $\int_0^1 f(x)^2\,dx\ge 4$, and find all $f$ for which equality holds.
+\end{example}
+
+\begin{proof}[Solution]
+First find the equality case. Equality in Cauchy-Schwarz needs $f$ proportional to the function we pair it with, and the only functions whose integrals against $f$ we know are combinations of $1$ and $x$. So try $f(x)=\alpha+\beta x$ and impose the constraints: $\alpha+\beta/2=1$ and $\alpha/2+\beta/3=1$, which give $\beta=6$ and $\alpha=-2$. The candidate is $g(x)=6x-2$, with $\int_0^1 g^2=\int_0^1(36x^2-24x+4)\,dx=12-12+4=4$.
+
+Now the proof. For any $f$ satisfying the constraints, $\int_0^1 g f=6\int xf-2\int f=6-2=4$. By Cauchy-Schwarz,
+\[
+16=\Bigl(\int_0^1 gf\Bigr)^2\le\int_0^1 g^2\int_0^1 f^2=4\int_0^1 f^2,
+\]
+so $\int_0^1 f^2\ge 4$. Equality forces $f=\lambda g$ for a constant $\lambda$, and $\int f=1$ then forces $\lambda=1$. So equality holds only for $f(x)=6x-2$.
+
+The order of work matters: the equality case was computed first and it told us which function to pair $f$ with. Pairing with $x$ alone gives $1\le\int x^2\int f^2=\tfrac13\int f^2$, the weaker bound $3$, because $x$ is not the function that equality wants.
+\end{proof}
+
+\begin{trap}
+Applying an inequality in the direction that bounds the wrong way: AM-GM gives an upper bound on a product and a lower bound on a sum, never the reverse, and a chain of inequalities all pointing the same way is the only kind that proves anything. An extreme at the boundary rather than at the symmetric point: for $x+y+z=1$ with $x,y,z\ge 0$ the maximum of $xyz$ is at the centre but the maximum of $x^2+y^2+z^2$ is at a corner, and a Jensen argument that assumed the centre would be simply false. A convex function assumed where the second derivative changes sign, which is why the first example had to be checked by factoring. Forgetting the equality case in the write-up, when the problem asked for the best constant: the bound without the example achieving it is half the points. Dividing by an expression that may be zero, or multiplying through by one whose sign is not known, both of which silently flip or break the inequality.
+\end{trap}
+
+\begin{ladder}
+\item \seminar{PS 5 \#3}. A ratio of a power to a factorial; which term of the sequence is largest.
+\item \seminar{PS 5 \#4}. A finite product of factors slightly above one; a lower bound.
+\item \seminar{PS 5 \#13}. Three positive reals satisfying one inequality; the same for their powers.
+\item \putnam{2025 A2}. A sine bounded by a quadratic on an interval; the best constants.
+\item \putnam{2018 B2}. A polynomial with decreasing coefficients; no roots in a disc.
+\item \putnam{2021 B2}. A series of weighted geometric means under a sum constraint; its supremum.
+\item \putnam{2018 A3}. A trigonometric sum under a constraint on another; its maximum.
+\item \putnam{2019 A3}. Polynomials with increasing coefficients; the least possible mean root modulus.
+\item \putnam{2017 A3}. A sequence of ratios of integrals; increasing and unbounded.
+\item \putnam{2025 B4}. A zero-one matrix with monotone rows and columns; a sum bounded by a count.
+\end{ladder}
+
+\begin{hides}
+Inside limits, where the squeeze needs an upper and a lower bound and each is an inequality (\putnam{2019 B2}, \putnam{2024 B3}). Inside polynomials, where a bound on the roots is a bound on an expression in the coefficients (\putnam{2018 B2}, \putnam{2019 A3}, \putnam{2016 A6}). Inside probability, where a concentration statement is a bound on an expectation or a tail (\putnam{2021 B6}, \putnam{2022 B5}). Inside functional equations, where growth conditions pin the exponent (\putnam{2025 B6}). Inside counting, where the extremal configuration is found by an inequality and then realised by a construction (\putnam{2025 B4}).
+\end{hides}
