@@ -10,6 +10,9 @@ if not exist "%XELATEX%" (
 )
 set "HERE=%~dp0"
 set "FAIL=0"
+rem Reproducible output: the PDFs carry a fixed date instead of the build time, so git sees a change only when the content changes.
+set "SOURCE_DATE_EPOCH=1762473600"
+set "SOURCE_DATE_EPOCH_TEX_PRIMITIVES=1"
 for /d %%D in ("%HERE%*") do (
   if exist "%%D\%%~nxD.tex" (
     if "%~1"=="" ( call :doc "%%D" "%%~nxD" ) else ( if /i "%~1"=="%%~nxD" call :doc "%%D" "%%~nxD" )
