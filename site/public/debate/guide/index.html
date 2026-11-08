@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rebuttal Board guide</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap">
+<style>
+:root{--bg:#f7f8f6;--fg:#17201d;--muted:#6b7773;--line:#e1e6e3;--accent:#1f6a52;--warn:#9a6a0e;
+  --ui:"Source Sans 3",system-ui,sans-serif;--speech:"Source Serif 4",Georgia,serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#101513;--fg:#e6ebe8;--muted:#95a19b;--line:#242d29;--accent:#72c4a4;--warn:#dcae57;color-scheme:dark}}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:16px/1.5 var(--ui);padding-block:40px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:62ch;margin:0 auto}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 28px}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600;margin:28px 0 6px}
+p,li{margin:0 0 8px}
+ol,ul{padding-left:20px}
+a{color:var(--accent)}
+.say{font-family:var(--speech);font-size:17px}
+code{font-family:var(--mono);font-size:.88em}
+.warn{color:var(--warn)}
+.open{display:inline-block;margin:0 0 20px;padding:8px 14px;border:1px solid var(--fg);border-radius:4px;color:var(--fg);text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<main>
+<h1>Rebuttal Board</h1>
+<p class="sub">MIE315 · against the motion "Individual action has more impact on the environment than government policy."</p>
+<a class="open" href="../">Open the board</a>
+
+<h2>Before the round</h2>
+<ol>
+  <li>One person opens the board and presses <b>Session</b>, then <b>New</b>. The code appears after <code>#s-</code> in the address bar.</li>
+  <li>Everyone else opens the same link, or presses Session and types the code. Four people, four devices, one log.</li>
+  <li>Type your first name in the header once. Everything you log carries it.</li>
+  <li>Read the Corpus tab once. The order inside each group is strongest argument first; the greyed groups at the bottom are our own frames and measured wins.</li>
+  <li>One device holds the Haiku key: Session, paste the key, Save. That device then ranks for the whole room, so keep it open, plugged in and online. Nobody else enters anything; their header shows "Haiku via" that person's name once the first ranking arrives.</li>
+</ol>
+
+<h2>During their speech</h2>
+<ol>
+  <li>Type what they said, in their words, and press Enter. Short is fine: <span class="say">"vegan cuts footprint 73 percent"</span>.</li>
+  <li>Three cards appear under it at once, best match first. The line in serif is the line to say aloud. Tap a card's title for the detail, the sources, and what to say if they push back.</li>
+  <li>If Haiku is on, it re-orders the cards a second or two later and adds one italic linking sentence. That sentence is Haiku's phrasing, not a fact; the facts are on the cards.</li>
+  <li>Press <b>More</b> on a point to see all matches, attach a note or link, re-rank, or remove it. Press <b>Use this in the outline</b> on the card you intend to run.</li>
+</ol>
+
+<h2>Building the speeches</h2>
+<ul>
+  <li><b>Outline → Build</b> under Rebuttal gives up to six beats for four minutes, each with a time mark, the line to say and the source to name. Everyone sees the latest build.</li>
+  <li>Build the Closing the same way: a frame that resets the motion, the wins that beat what they actually argued, and the line to end on. <b>Copy</b> gives plain text.</li>
+  <li>The take-away line is on card F4: <span class="say">Individuals choose from the menu. Government writes the menu.</span></li>
+</ul>
+
+<h2>Reading the marks</h2>
+<ul>
+  <li><span class="warn">?</span> or <span class="warn">check source</span>: a source on that card was never fetched by us. Say the point, soften or skip the number.</li>
+  <li><span class="warn">weak</span>: the best answer we have, but a judge may not buy it. Answer briefly and move on.</li>
+  <li>Card ids: <code>F1–F4</code> frames, <code>M1–M5</code> measured examples, <code>A/B/C</code> Adit's rebuttals by tier, <code>FP/PL/MK</code> researched For arguments (footprint, politics, markets), <code>OW/FR</code> further wins and frames.</li>
+</ul>
+
+<h2>If something breaks</h2>
+<ul>
+  <li>The header dot shows sync. Green means shared and live. Red means offline: keep logging, entries queue and send when the connection returns.</li>
+  <li>"Keyword only" means no model has answered yet. Matching still works, in keyword order. If the key device is closed or asleep, points stay in keyword order and outlines build in keyword order after a 20-second wait.</li>
+  <li>Anyone who knows the session code can read and add to the log, so use a fresh code for the real round.</li>
+</ul>
+</main>
+</body>
+</html>
