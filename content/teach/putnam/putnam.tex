@@ -1,50 +1,6 @@
 % Written by a model for Adit. Not Adit's words.
-% Build: content\teach\build.cmd (xelatex from TinyTeX, two passes).
-\documentclass[11pt,a4paper]{article}
-\usepackage{fontspec}
-\setmainfont{DejaVu Serif}
-\setsansfont{DejaVu Sans}
-\setmonofont{DejaVu Sans Mono}
-\usepackage[margin=2.4cm]{geometry}
-\usepackage{amsmath,amssymb,amsthm}
-\usepackage{booktabs,array,longtable}
-\usepackage{enumitem}
-\usepackage{titlesec}
-\usepackage{fancyhdr}
-\usepackage[hidelinks]{hyperref}
-\setlength{\parskip}{0.45em}
-\setlength{\parindent}{0pt}
-\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
-\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
-\pagestyle{fancy}\fancyhf{}
-\rhead{\small Putnam. Written by a model for Adit; not Adit's words.}
-\cfoot{\small\thepage}
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{proposition}[theorem]{Proposition}
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[theorem]{Example}
-\theoremstyle{remark}
-\newtheorem*{trap}{Trap}
-\newtheorem*{firstmoves}{First moves}
-\newtheorem*{recognise}{Recognise it}
-\newtheorem*{hides}{Where it hides}
-\newenvironment{ladder}{\paragraph{Ladder.}\begin{enumerate}[nosep,leftmargin=*]}{\end{enumerate}}
-\newcommand{\putnam}[1]{\textsf{#1}}
-\newcommand{\seminar}[1]{\textsf{#1}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\C}{\mathbb{C}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\E}{\mathbb{E}}
-\DeclareMathOperator{\ord}{ord}
-\DeclareMathOperator{\rank}{rank}
-\DeclareMathOperator{\tr}{tr}
-\DeclareMathOperator{\lcm}{lcm}
-
+% Build: content\teach\build.cmd (xelatex from TinyTeX, two passes). The wrappers in split/ build the weekly and per-topic PDFs.
+\input{_preamble}
 \title{Putnam\\[0.3em]\large Techniques, ladders and the exam}
 \author{Written by a model for Adit. Not Adit's words.}
 \date{Second iteration, 2026-11-07, for the sitting on 2026-12-05}

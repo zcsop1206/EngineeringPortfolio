@@ -1,6 +1,7 @@
 @echo off
 rem Builds every LaTeX doc under content\teach\<name>\<name>.tex into <name>.pdf with TinyTeX's xelatex,
-rem two passes, from any directory. Pass a name to build one doc: build.cmd putnam
+rem two passes, from any directory, and every per-topic wrapper in <name>\split\*.tex into <name>\split\*.pdf.
+rem Pass a name to build one doc: build.cmd putnam
 setlocal
 set "XELATEX=%APPDATA%\TinyTeX\bin\windows\xelatex.exe"
 if not exist "%XELATEX%" (
@@ -11,19 +12,30 @@ set "HERE=%~dp0"
 set "FAIL=0"
 for /d %%D in ("%HERE%*") do (
   if exist "%%D\%%~nxD.tex" (
-    if "%~1"=="" ( call :build "%%D" "%%~nxD" ) else ( if /i "%~1"=="%%~nxD" call :build "%%D" "%%~nxD" )
+    if "%~1"=="" ( call :doc "%%D" "%%~nxD" ) else ( if /i "%~1"=="%%~nxD" call :doc "%%D" "%%~nxD" )
   )
 )
 if "%FAIL%"=="1" exit /b 1
 exit /b 0
 
-:build
+:doc
 pushd "%~1"
-"%XELATEX%" -interaction=nonstopmode -halt-on-error "%~2.tex" >nul
-if errorlevel 1 ( echo %~2: first pass failed, see %~1\%~2.log & set "FAIL=1" & popd & goto :eof )
-"%XELATEX%" -interaction=nonstopmode -halt-on-error "%~2.tex" >nul
-if errorlevel 1 ( echo %~2: second pass failed, see %~1\%~2.log & set "FAIL=1" & popd & goto :eof )
-del /q "%~2.aux" "%~2.out" "%~2.toc" "%~2.log" 2>nul
-echo %~2.pdf built
+call :tex "%~2.tex" "." "%~2"
+if exist "split" (
+  for %%W in (split\*.tex) do call :tex "%%W" "split" "%%~nW"
+)
 popd
+goto :eof
+
+:tex
+rem %1 tex path relative to the doc folder, %2 output directory, %3 job name.
+rem TeX reads a backslash in the path as a control sequence, so the path is passed with forward slashes.
+set "TEXPATH=%~1"
+set "TEXPATH=%TEXPATH:\=/%"
+"%XELATEX%" -interaction=nonstopmode -halt-on-error -output-directory=%~2 "%TEXPATH%" >nul
+if errorlevel 1 ( echo %~3: first pass failed, see %~2\%~3.log & set "FAIL=1" & goto :eof )
+"%XELATEX%" -interaction=nonstopmode -halt-on-error -output-directory=%~2 "%TEXPATH%" >nul
+if errorlevel 1 ( echo %~3: second pass failed, see %~2\%~3.log & set "FAIL=1" & goto :eof )
+del /q "%~2\%~3.aux" "%~2\%~3.out" "%~2\%~3.toc" "%~2\%~3.log" 2>nul
+echo %~3.pdf built
 goto :eof

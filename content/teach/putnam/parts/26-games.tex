@@ -33,7 +33,7 @@ A set $L$ of positions is exactly the set of losing positions if and only if: ev
 If $L$ has the three properties, then the player who faces a position not in $L$ can move into $L$, and the opponent must then move out of $L$; repeating, the first player always faces a position outside $L$ and never runs out of moves, so the opponent eventually reaches a terminal position inside $L$ and loses. Hence positions outside $L$ are winning and positions inside $L$ are losing. The converse is the theorem above.
 \end{proof}
 
-This is Section~\ref{sec:invariants} seen from the second player's side. A guessed description of the losing positions is proved by checking the three properties, and the winning player's strategy is ``move into $L$''. One never needs to show the guess was found by backward induction.
+This is \secref{sec:invariants}{invariants and monovariants} seen from the second player's side. A guessed description of the losing positions is proved by checking the three properties, and the winning player's strategy is ``move into $L$''. One never needs to show the guess was found by backward induction.
 
 \begin{theorem}[Pairing strategy]
 Suppose the moves available in a game can be partitioned into pairs $\{m, m'\}$ such that whenever one player makes $m$, the move $m'$ is available to the opponent and, after both, the pairing of the remaining moves is still valid. Then the second player wins by always answering $m$ with $m'$. If a single move $m_0$ is excluded from the pairing and all the other properties hold after $m_0$, then the first player wins by playing $m_0$ first and then answering in pairs.
