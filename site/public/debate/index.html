@@ -288,8 +288,9 @@ const LS = {
 };
 const S = {
   session: '', name: LS.get('rb:name', ''), events: new Map(), outbox: [],
-  sync: {mode: 'local', status: 'starting', note: ''}, ai: {mode: 'none', sample: null, key: LS.get('rb:key', ''), busy: new Set()},
+  sync: {mode: 'local', status: 'starting', note: ''}, ai: {mode: 'none', sample: null, key: LS.get('rb:key', ''), busy: new Set(), via: ''},
   view: 'board', mview: 'log', side: 'all', q: '', angle: '', open: new Set(), openPts: new Set(), attOpen: new Set(),
+  waiting: {},
 };
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 const sessionFromHash = () => { const m = /^#s-([a-z0-9]{3,24})$/.exec(location.hash || ''); return m ? m[1] : ''; };
@@ -318,8 +319,47 @@ function applyEvent(e, fromRemote) {
   if (!e || !e.id || !e.k) return false;
   if (S.events.has(e.id)) return false;
   S.events.set(e.id, e);
-  if (fromRemote) { const i = S.outbox.findIndex(x => x.id === e.id); if (i >= 0) S.outbox.splice(i, 1); }
+  if (fromRemote) {
+    const i = S.outbox.findIndex(x => x.id === e.id); if (i >= 0) S.outbox.splice(i, 1);
+    if (e.k === 'rerank' && e.model === MODEL && e.by !== (S.name || 'teammate')) { S.ai.via = e.by; renderStatus(); }
+    if (e.k === 'outline' && S.waiting[e.type]) { clearTimeout(S.waiting[e.type]); delete S.waiting[e.type]; }
+    serve(e);
+  }
   return true;
+}
+// ── the device that has a model answers for the room ──
+// Points and build requests from teammates arrive through sync; if this device can reach Haiku it
+// re-ranks or builds and emits the result, which every device receives. The key never leaves here.
+const serveQueue = [];
+let serving = false;
+function serve(e) {
+  if (S.ai.mode === 'none') return;
+  if (e.k === 'point' && Date.now() - e.t < 15 * 60 * 1000) serveQueue.push({kind: 'point', id: e.id, t: e.t});
+  else if (e.k === 'build' && Date.now() - e.t < 90 * 1000) serveQueue.push({kind: 'build', type: e.type, t: e.t});
+  else return;
+  setTimeout(drainServe, 1200 + Math.random() * 800); // jitter: if two devices hold keys, the slower one usually finds the answer already there
+}
+async function drainServe() {
+  if (serving || S.ai.mode === 'none') return;
+  serving = true;
+  try {
+    while (serveQueue.length) {
+      const job = serveQueue.shift();
+      const {points, outlines} = derive();
+      if (job.kind === 'point') {
+        const p = points.find(x => x.id === job.id);
+        if (p && !p.rerank && !S.ai.busy.has(p.id)) await rerankPoint(p);
+      } else if (job.kind === 'build') {
+        const o = outlines[job.type];
+        if (!o || o.t < job.t) await buildOutline(job.type, true);
+      }
+    }
+  } finally { serving = false; }
+}
+let wakeLock = null;
+async function keepAwake() {
+  if (S.ai.mode === 'none' || !navigator.wakeLock || document.visibilityState !== 'visible') return;
+  try { wakeLock = await navigator.wakeLock.request('screen'); } catch {}
 }
 function emit(partial) {
   const e = {id: uid(), t: Date.now(), by: S.name || 'teammate', ...partial};
@@ -456,6 +496,13 @@ async function initAI() {
   }
   if (S.ai.mode === 'none' && S.ai.key) S.ai.mode = 'key';
   render(); renderName();
+  if (S.ai.mode !== 'none') {
+    keepAwake();
+    document.addEventListener('visibilitychange', keepAwake);
+    // catch up on recent points nobody has ranked yet
+    for (const p of derive().points) if (!p.rerank && Date.now() - p.t < 15 * 60 * 1000) serveQueue.push({kind: 'point', id: p.id, t: p.t});
+    if (serveQueue.length) setTimeout(drainServe, 1500);
+  }
 }
 function extractJson(text) {
   try { return JSON.parse(text); } catch {}
@@ -465,6 +512,12 @@ function extractJson(text) {
   throw new Error('no json');
 }
 async function askHaiku(prompt) {
+  if (S.ai.mode === 'key' && S.ai.key === 'demo') { // plumbing test without a real key: echoes the first candidates
+    await new Promise(r => setTimeout(r, 600));
+    const ids = [...new Set((prompt.match(/\b(?:F|M|A|B|C|FP|PL|MK|OW|FR)\d{1,2}\b/g) || []))];
+    const pids = [...new Set((prompt.match(/\bP\d+\b/g) || []))];
+    return {ids: ids.slice(0, 3), order: pids.map((pid, i) => ({pid, ids: [ids[i % Math.max(1, ids.length)]].filter(Boolean)})), line: 'Demo model: no real ranking was done.'};
+  }
   if (S.ai.mode === 'sample') {
     return await S.ai.sample.json(prompt, {model: MODEL, modelTier: 'quick', effort: 'low', cache: false});
   }
@@ -524,12 +577,19 @@ function aiFailed(err) {
 
 // ───────────────────────── outlines ─────────────────────────
 function pointsForOutline(points) { return [...points].reverse(); }
-async function buildOutline(type) {
+async function buildOutline(type, serving) {
   const {points} = derive();
   const pts = pointsForOutline(points);
-  S.view = 'outline'; S.mview = 'outline'; renderViews();
+  if (!serving) { S.view = 'outline'; S.mview = 'outline'; renderViews(); }
   const host = el('outline'); host.dataset.building = type;
   renderOutline();
+  if (!serving && S.ai.mode === 'none' && S.ai.via) {
+    // ask the device that holds the model; fall back to keyword order if nothing comes back
+    emit({k: 'build', type});
+    await new Promise(res => { S.waiting[type] = setTimeout(res, 20000); const poll = setInterval(() => { if (!S.waiting[type]) { clearInterval(poll); res(); } }, 300); });
+    if (!S.waiting[type]) { delete host.dataset.building; renderOutline(); return; }
+    delete S.waiting[type];
+  }
   let order = null, line = '', model = 'keyword';
   const frames = CORPUS.filter(c => c.kind === 'frame');
   const wins = CORPUS.filter(c => c.kind === 'win').sort((a, b) => b.strength - a.strength);
@@ -595,9 +655,10 @@ function renderStatus() {
   st.textContent = (s === 'live' ? 'Shared · ' + S.session : s === 'readonly' ? 'Read-only · ' + S.session : s === 'connecting' ? 'Connecting' : s === 'starting' ? 'Starting' : 'Offline, local') + pending;
   st.title = (S.sync.note || 'Session code ' + S.session) + (pending ? '. Unsent items retry automatically.' : '');
   const at = el('aiText');
-  at.className = (S.ai.mode === 'none' ? 'warn' : 'live') + ' hide-sm';
-  at.textContent = S.ai.mode === 'none' ? 'Keyword only' : 'Haiku on';
-  at.title = S.ai.mode === 'sample' ? 'Re-ranking through your Claude account (claude-haiku-5-5)' : S.ai.mode === 'key' ? 'Re-ranking with your API key (claude-haiku-5-5)' : 'No model available: matches use keyword order. Add a key under Session (standalone) or allow Claude for this page.';
+  const viaOnly = S.ai.mode === 'none' && S.ai.via;
+  at.className = (S.ai.mode === 'none' && !viaOnly ? 'warn' : 'live') + ' hide-sm';
+  at.textContent = S.ai.mode !== 'none' ? 'Haiku on, answering for the room' : viaOnly ? 'Haiku via ' + S.ai.via : 'Keyword only';
+  at.title = S.ai.mode === 'sample' ? 'Re-ranking through your Claude account; this device also answers teammates\' points' : S.ai.mode === 'key' ? 'Re-ranking with the key on this device; this device also answers teammates\' points. Keep it open and online.' : viaOnly ? `${S.ai.via}'s device ranks for this session. If it is closed, matching stays in keyword order.` : 'No model yet: matches use keyword order until a teammate with a key opens the session.';
 }
 function renderViews() {
   document.querySelectorAll('.colhead .tab, .filters .tab').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === S.view)));
@@ -658,7 +719,7 @@ function renderLog() {
     const busy = S.ai.busy.has(p.id);
     const open = S.openPts.has(p.id);
     const shown = open ? ids : ids.slice(0, 3);
-    const rank = busy ? 'Haiku ranking…' : ai ? 'Haiku order' : 'keyword order';
+    const rank = busy ? 'Haiku ranking…' : ai ? 'Haiku order' : (S.ai.via && Date.now() - p.t < 20000 ? 'asking ' + S.ai.via + '…' : 'keyword order');
     const rerank = open && S.ai.mode !== 'none' && !busy ? `<button class="lnk" data-rerank="${p.id}">${ai ? 'Re-rank' : 'Rank with Haiku'}</button>` : '';
     const line = ai && p.rerank.line ? `<div class="link-line">${esc(p.rerank.line)}</div>` : '';
     const cards = shown.length ? shown.map(id => cardHTML(BY_ID.get(id), {open: S.open.has(p.id + ':' + id), chosen: p.pins.has(id), foot: `<button class="lnk ${p.pins.has(id) ? 'on' : ''}" data-pin="${p.id}" data-cid="${id}">${p.pins.has(id) ? 'Using this in the outline' : 'Use this in the outline'}</button>`})).join('') : `<p class="empty">No card matches those words. Try a synonym, or search the corpus.</p>`;
@@ -772,7 +833,7 @@ function openDrawer() {
       <dt>Unsent</dt><dd>${S.outbox.length}</dd>
       <dt>Model</dt><dd>${S.ai.mode === 'none' ? 'none, keyword order' : esc(MODEL) + (S.ai.mode === 'sample' ? ' via your Claude account' : ' via API key')}</dd>
       <dt>Corpus</dt><dd>${CORPUS.length} cards, ${CORPUS.filter(c => c.flagged).length} with an unfetched source, built ${esc(RAW.built || 'n/a')}</dd></dl>
-    ${standalone ? `<h2>Haiku</h2><p>Optional. An Anthropic API key lets <span class="mono">${MODEL}</span> re-order matches from this browser. It stays on this device.</p>
+    ${standalone ? `<h2>Haiku</h2><p>One key for the room. Enter an Anthropic API key on one device and that device answers for everyone in the session: teammates' points reach it through the sync, it asks <span class="mono">${MODEL}</span>, and the ranking goes back out. The key never leaves this browser. Keep this device open and online during the round.</p>
     <div class="field"><input class="txt" id="keyInput" type="password" value="${esc(S.ai.key)}" autocomplete="off" placeholder="sk-ant-…" aria-label="Anthropic API key"><button class="lnk" id="saveKey">Save</button></div>` : `<h2>Haiku</h2><p>Re-ranking runs through the Claude account of whoever is viewing; the first use asks to allow it.</p>`}
     <h2>This device</h2>
     <div class="field"><button class="lnk" id="exportBtn">Export session JSON</button><button class="lnk" id="clearLocal">Forget session locally</button></div>
@@ -789,7 +850,7 @@ function openDrawer() {
     S.ai.key = el('keyInput').value.trim(); LS.set('rb:key', S.ai.key); S.ai.mode = S.ai.key ? 'key' : 'none'; render();
     if (!S.ai.key) { toast('Key removed'); return; }
     toast('Testing the key…');
-    try { const out = await askHaiku('Reply with only this JSON: {"ok":true}'); toast(out && out.ok ? 'Haiku answered. Re-ranking is on for this device.' : 'Key works; unexpected reply, re-ranking still on.'); }
+    try { const out = await askHaiku('Reply with only this JSON: {"ok":true}'); toast(out && (out.ok || out.ids) ? 'Haiku answered. This device now ranks for everyone in the session.' : 'Key works; unexpected reply, re-ranking still on.'); keepAwake(); drainServe(); }
     catch (err) { aiFailed(err); }
   };
   el('exportBtn').onclick = () => { const out = el('exportOut'); out.hidden = false; out.textContent = JSON.stringify({session: S.session, exported: new Date().toISOString(), events: [...S.events.values()]}, null, 1); };
