@@ -1,0 +1,106 @@
+\section{Counting and configurations}
+
+\begin{recognise}
+Arrangements, colourings, tilings, subsets with a property, lattice points, sequences with a forbidden pattern. People and acquaintances, teams and matches, committees and members, which are graphs and incidence structures in plain clothes. The question is how many, or whether a configuration exists, or whether it is impossible, or the largest size a configuration can have. The last two usually need two arguments: a proof that nothing bigger works and a construction that achieves the bound.
+\end{recognise}
+
+\begin{theorem}[Double counting]
+Let $A$ and $B$ be finite sets and $R\subseteq A\times B$. For $a\in A$ let $d(a)$ be the number of $b$ with $(a,b)\in R$, and for $b\in B$ let $d(b)$ be the number of $a$ with $(a,b)\in R$. Then $\sum_{a\in A}d(a)=|R|=\sum_{b\in B}d(b)$.
+\end{theorem}
+
+\begin{proof}
+Both sides count the pairs in $R$, once grouped by the first coordinate and once by the second.
+\end{proof}
+
+Consequences used constantly: in a finite graph the degrees sum to twice the number of edges, so the number of odd-degree vertices is even; in a family of $k$-element subsets of an $n$-set in which every element lies in exactly $r$ sets, $kF=rn$ where $F$ is the number of sets; and $\sum_k k\binom nk=n2^{n-1}$, by counting pairs (subset, marked element) both ways.
+
+\begin{theorem}[Bijections and inclusion-exclusion]
+If $f\colon X\to Y$ is a bijection of finite sets then $|X|=|Y|$. For finite sets $A_1,\dots,A_n$ inside a finite $U$,
+\[
+\Bigl|\bigcup_iA_i\Bigr|=\sum_{\emptyset\ne S\subseteq\{1,\dots,n\}}(-1)^{|S|+1}\Bigl|\bigcap_{i\in S}A_i\Bigr|,
+\]
+and the number of elements of $U$ in none of the $A_i$ is $|U|$ minus this, which for $n=1$ is complementary counting.
+\end{theorem}
+
+\begin{proof}
+For a bijection, pair each element with its image. For inclusion-exclusion, fix $u\in U$ and let $m$ be the number of $A_i$ containing it. Pointwise, $1-\prod_i(1-\mathbf 1_{A_i}(u))$ equals $1$ if $m\ge 1$ and $0$ if $m=0$; expanding the product gives $\sum_{S\ne\emptyset}(-1)^{|S|+1}\prod_{i\in S}\mathbf 1_{A_i}(u)$. Sum over $u$.
+\end{proof}
+
+\begin{theorem}[Averaging and the probabilistic method]
+If a finite set of objects has total score $T$ and there are $N$ objects, some object has score at least $T/N$ and some object has score at most $T/N$. If an object is chosen at random and the expected number of ``bad events'' is less than $1$, some object has no bad event.
+\end{theorem}
+
+\begin{proof}
+If every score were less than $T/N$ the total would be less than $T$. The second statement is the first applied to the number of bad events, which is a non-negative integer, so an object with fewer than $1$ of them has none.
+\end{proof}
+
+\begin{proposition}[Colouring arguments for tilings]
+Suppose the cells of a board are coloured, and every tile of a given shape, however placed, covers cells whose colour counts form the same vector $t=(t_1,\dots,t_c)$, or more generally whose colour counts satisfy a fixed linear relation. If the board's colour counts $(b_1,\dots,b_c)$ are not a non-negative integer multiple of $t$ (or fail the relation), the board cannot be tiled by that shape. The argument proves only impossibility; a possible case still needs an explicit tiling.
+\end{proposition}
+
+\begin{proof}
+A tiling with $N$ tiles covers each cell once, so the colour counts of the board equal the sum over tiles of their colour counts, which is $Nt$.
+\end{proof}
+
+The standard colourings: the chessboard colouring, under which a domino covers one cell of each colour; the colouring of column $j$ by $j\bmod k$, under which a $1\times k$ bar covers every colour once but a $k\times 1$ bar covers $k$ cells of one colour; and a colouring by $(i+j)\bmod k$ or $(i+2j)\bmod k$, chosen so that each placement of an awkward tile covers a prescribed pattern. Weighted colourings, with a number in each cell, are the same argument with the sum in place of the count.
+
+\begin{lemma}[Cycles]
+A finite graph in which every vertex has degree at least $2$ contains a cycle. A connected graph on $n$ vertices has at least $n-1$ edges, with equality exactly for trees, and any graph on $n$ vertices with at least $n$ edges contains a cycle.
+\end{lemma}
+
+\begin{proof}
+Walk from any vertex, never immediately reversing; degree at least $2$ makes this always possible, and the finite graph forces a repeated vertex, which closes a cycle. For the second part, remove edges from cycles until none remain; connectivity is preserved and a connected acyclic graph has exactly $n-1$ edges (induction on $n$, removing a vertex of degree $1$, which exists by the first statement since there is no cycle and the graph is connected).
+\end{proof}
+
+\begin{firstmoves}
+List every object for $n=2$ and $n=3$ and count by hand. Colour the board. Count by rows and by columns, or by objects and by properties, and compare. Translate people and relations into a graph and ask about degrees. Build a bijection to something already counted: binary strings, lattice paths, subsets. For a maximum, guess the extremal configuration from the small cases, prove the bound by double counting or averaging, and present the construction separately. For a parity claim, look for an involution without fixed points.
+\end{firstmoves}
+
+\begin{example}
+For a nonempty subset $S$ of $\{1,\dots,n\}$, let $w(S)=\max S-\min S$. Find $\sum_S w(S)$ over all nonempty subsets $S$.
+\end{example}
+
+\begin{proof}[Solution]
+Count pairs $(S,k)$ with $S$ nonempty and $\min S\le k<\max S$, where $k$ is an integer. Grouped by $S$, there are $w(S)$ such $k$ for each $S$, so the number of pairs is the sum we want. Grouped by $k$, with $1\le k\le n-1$, the subsets $S$ that qualify are those containing at least one element in $\{1,\dots,k\}$ and at least one in $\{k+1,\dots,n\}$; there are $(2^k-1)(2^{n-k}-1)$ of them. Hence
+\[
+\sum_S w(S)=\sum_{k=1}^{n-1}(2^k-1)(2^{n-k}-1)=\sum_{k=1}^{n-1}\bigl(2^n-2^k-2^{n-k}+1\bigr)=(n-1)2^n-2(2^n-2)+(n-1),
+\]
+which simplifies to $(n-3)2^n+n+3$.
+
+Check at $n=2$: only $\{1,2\}$ contributes, with $w=1$; the formula gives $-4+5=1$. At $n=3$: the three pairs contribute $1,2,1$ and the full set contributes $2$, total $6$; the formula gives $0+6=6$. The sum could also be done as $\sum_S\max S-\sum_S\min S$ with $\sum_S\max S=\sum_kk2^{k-1}$, but the pair count did both at once and needed no identity for $\sum k2^{k-1}$.
+\end{proof}
+
+\begin{example}
+Let $n\ge 1$. Find the number of pairs $(A,B)$ of subsets of $\{1,\dots,n\}$ with $A\subseteq B$ and $|B\setminus A|$ odd.
+\end{example}
+
+\begin{proof}[Solution]
+Each element is in one of three states: outside $B$, in $B\setminus A$, or in $A$. So there are $3^n$ pairs in all, and the number with exactly $k$ elements in $B\setminus A$ is $\binom nk2^{n-k}$. The answer is $\sum_{k\text{ odd}}\binom nk2^{n-k}$.
+
+Rather than sum this, pair the configurations off. Given $(A,B)$ with $A\ne\{1,\dots,n\}$, let $j$ be the smallest element not in $A$ and move it between the states ``outside $B$'' and ``in $B\setminus A$''. This changes $|B\setminus A|$ by one, so it swaps odd and even, and doing it twice returns to the start; it is an involution on the pairs with $A\ne\{1,\dots,n\}$ with no fixed points. The only unpaired configuration is $A=B=\{1,\dots,n\}$, with $|B\setminus A|=0$, even. So the number of even pairs exceeds the number of odd pairs by exactly $1$, and with $3^n$ pairs in total the number of odd pairs is $(3^n-1)/2$.
+
+Check at $n=1$: the pairs are $(\emptyset,\emptyset)$, $(\emptyset,\{1\})$, $(\{1\},\{1\})$, and exactly one has an odd difference; $(3-1)/2=1$. At $n=2$: nine pairs, and the odd ones have $|B\setminus A|=1$, of which there are $\binom21\cdot2=4=(9-1)/2$. The binomial sum confirms it: $\sum_{k\text{ odd}}\binom nk2^{n-k}=\tfrac12\bigl((2+1)^n-(2-1)^n\bigr)$, which is the generating-function view of the same involution.
+\end{proof}
+
+\begin{trap}
+Overcounting symmetric arrangements: a necklace counted as a sequence, a handshake counted from both ends, a pair counted as an ordered pair. A bijection that is not onto, or not well defined on the whole domain, which is why the inverse map should be written down. A colouring that proves impossibility and forgets the construction for the possible cases, or a construction given for one $n$ when the claim is for all $n$. Inclusion-exclusion with the signs reversed or a term missed; write the $n=2$ case to fix the pattern. Reading a graph problem as being about the specific people in it rather than the degrees. A maximum claimed from the small cases without the proof that nothing larger exists, or proved without the example that attains it.
+\end{trap}
+
+\begin{ladder}
+\item \seminar{PS 10 \#1}. A square grid and an L-shaped tile; can it be tiled.
+\item \seminar{PS 10 \#4}. Digit strings with a divisibility condition; how many.
+\item \seminar{PS 10 \#7}. The first $n$ integers into boxes of equal sum; when possible.
+\item \putnam{2018 B1}. A set of lattice vectors; remove one so the rest split into two equal-sum halves.
+\item \putnam{2019 B1}. Lattice points on a family of circles; count the squares among them.
+\item \putnam{2023 B1}. Coins sliding on a grid; which configurations are reachable.
+\item \putnam{2024 B1}. A grid with prescribed values along a transversal; feasibility.
+\item \putnam{2017 A4}. Quiz scores; split the class into two halves with equal averages.
+\item \putnam{2022 B4}. Cyclic sequences in which consecutive triples form progressions; which lengths.
+\item \putnam{2016 A4}. Tiling a rectangle with a given tile; the minimum number of tiles.
+\item \putnam{2025 A5}. Permutations with a sign pattern of differences; the pattern maximising the count.
+\item \putnam{2024 A3}. Order statistics of a random arrangement in a rectangle; a balanced pair exists.
+\end{ladder}
+
+\begin{hides}
+Everywhere. A number theory problem that asks how many residues or how many integers of a form (\putnam{2020 A1}, \putnam{2022 A3}). A probability that is a count divided by a total (\putnam{2021 B1}, \putnam{2024 A3}). A linear algebra problem whose matrix is an incidence matrix (\putnam{2018 A2}, \putnam{2022 B2}). A geometry problem about lattice points (\putnam{2019 B1}, \putnam{2025 B1}). An invariant problem where the reachable set has to be counted once the invariant is found (\putnam{2023 B1}, \putnam{2024 B1}). A recurrence whose terms count something (\putnam{2020 A5}, \putnam{2024 B5}).
+\end{hides}

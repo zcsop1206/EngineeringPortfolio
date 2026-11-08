@@ -2,7 +2,9 @@ Written by a model for Adit. Not Adit's words.
 
 # Putnam
 
-Second iteration, 2026-11-07, for the sitting on 2026-12-05. Every section is a topic you can mark with a lost, easy or forgot comment, as the README describes; the next `/teach` run rewrites it to your level.
+Second iteration, 2026-11-07, for the sitting on 2026-12-05. This is the summary; the detailed document, with every result stated and proved, worked examples and the ladders as tables, is the PDF below. Every section here is a topic you can mark with a lost, easy or forgot comment, as the README describes, and a passage highlighted in the PDF can be pasted under its heading as a quote and marked the same way; the next `/teach` run rewrites both files to your level.
+
+![[putnam/putnam.pdf]]
 
 No problem is copied here. Problems are named by source and number only. Two sources carry the whole plan. The archive at https://kskedlaya.org/putnam-archive/ has every paper from 1985 and solutions from 1995; a year's paper is `2024.pdf` and its solutions `2024s.pdf`. The MIT seminar 18.A34, Fall 2018, by Yufei Zhao, at https://ocw.mit.edu/courses/18-a34-mathematical-problem-solving-putnam-seminar-fall-2018/pages/assignments/ (CC BY-NC-SA 4.0), has eleven topic sets and four older sets from its 2007 edition. "PS 9 #14" below means problem 14 of the seminar's set 9; "Pigeonhole #7", "Limits #15", "Roots #6" and "Floor #12" are the older sets. "2021 A1" is the Putnam problem. The topic tags on Putnam problems in this doc are a model's reading of the statements, not of the solutions; when you settle a call blind, the tag was wrong too, and that is worth a mark on the section.
 

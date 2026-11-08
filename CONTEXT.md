@@ -42,9 +42,12 @@ out and how to delete it. `.claude/skills/profile` and `.claude/skills/teach` ar
 recoverable from git history before that date.
 
 `content/teach/` (added 2026-11-07) holds docs written by a model and rewritten to the owner's level
-from `%% lost %%`, `%% easy %%` and `%% forgot %%` comments, plus a generated `levels.md`. Every file
-in it is a model's, and its `README.md` says so; the rule that prose is the owner's does not apply there.
-The site does not read it.
+from `%% lost %%`, `%% easy %%` and `%% forgot %%` comments: each doc is a LaTeX document with its
+built PDF plus a markdown summary that carries the marks, built by `content/teach/build.cmd`, plus a
+generated `levels.md`. Every file in it is a model's, and its `README.md` says so; the rule that prose is
+the owner's does not apply there. The site does not read it. The Obsidian plugin `calls` (repo
+`Documents/obsidian-calls`, installed copy in `.obsidian/plugins/calls/`, gitignored; listed in the
+committed `community-plugins.json`) gives the call, settle and mark lines a form on both devices.
 
 Local-only folders that git ignores: `social/`, `drafts/`, `interview-prep/`, `content/learning/`. The learning notes vault lives outside the repo at `Documents/learning-vault/`.
 

@@ -1,0 +1,136 @@
+\section{Congruences and number theory}
+\label{sec:numbertheory}
+
+The largest tag in the easy slots. The tools are few and old, and the problems are mostly about choosing a modulus.
+
+\begin{recognise}
+Integers, divisibility, remainders, digits, primes, factorials, greatest common divisors. An equation to be solved in integers. A polynomial or a recurrence asked about modulo something. A count of integers with a divisibility property. Anything with ``for all $n$'' where $n$ is an exponent. A statement that is false over the reals and true over the integers is a number theory statement.
+\end{recognise}
+
+\subsection*{The model}
+
+\begin{definition}
+For an integer $n \ge 1$, $a \equiv b \pmod n$ means $n$ divides $a - b$. This is an equivalence relation with $n$ classes, and it respects addition and multiplication: if $a \equiv b$ and $c \equiv d$ then $a + c \equiv b + d$ and $ac \equiv bd$. So any polynomial expression in integers can be reduced term by term.
+\end{definition}
+
+Division is the exception. Cancelling $c$ from $ac \equiv bc \pmod n$ is allowed only when $\gcd(c, n) = 1$, because then $c$ has an inverse modulo $n$. The classes coprime to $n$ form a group under multiplication, of size $\varphi(n)$, Euler's function; for a prime $p$, $\varphi(p) = p - 1$ and every nonzero class is invertible.
+
+\begin{theorem}[Fermat and Euler]
+If $p$ is prime and $p \nmid a$, then $a^{p-1} \equiv 1 \pmod p$. More generally, if $\gcd(a, n) = 1$ then $a^{\varphi(n)} \equiv 1 \pmod n$.
+\end{theorem}
+
+\begin{proof}
+Let $u_1, \dots, u_k$ be the $k = \varphi(n)$ classes coprime to $n$. Multiplication by $a$ permutes them: $a u_i \equiv a u_j$ implies $u_i \equiv u_j$ by cancelling the invertible $a$, so the map is injective on a finite set. Hence $\prod (a u_i) \equiv \prod u_i$, that is, $a^k \prod u_i \equiv \prod u_i$, and cancelling the invertible product gives $a^k \equiv 1$.
+\end{proof}
+
+\begin{definition}
+For $\gcd(a, n) = 1$, the \emph{order} of $a$ modulo $n$, written $\ord_n(a)$, is the smallest positive $d$ with $a^d \equiv 1 \pmod n$.
+\end{definition}
+
+\begin{lemma}[Orders]
+$a^m \equiv 1 \pmod n$ if and only if $\ord_n(a)$ divides $m$. In particular $\ord_n(a)$ divides $\varphi(n)$, and for a prime $p$ it divides $p - 1$.
+\end{lemma}
+
+\begin{proof}
+Write $d = \ord_n(a)$ and $m = qd + r$ with $0 \le r < d$. Then $a^m = (a^d)^q a^r \equiv a^r$, so $a^m \equiv 1$ exactly when $a^r \equiv 1$, which by minimality of $d$ means $r = 0$. The particular case is Euler's theorem.
+\end{proof}
+
+\begin{lemma}[Smallest prime factor]
+Let $n > 1$ and let $p$ be the smallest prime factor of $n$. Then $\gcd(n, p - 1) = 1$. Consequently, if $a^n \equiv 1 \pmod p$ and $p \nmid a$, then $a \equiv 1 \pmod p$.
+\end{lemma}
+
+\begin{proof}
+Every prime factor of $p - 1$ is smaller than $p$, so none of them divides $n$. For the consequence, $\ord_p(a)$ divides both $n$ and $p - 1$, hence divides their greatest common divisor, which is $1$.
+\end{proof}
+
+This lemma is the standard tool against statements of the form ``$n$ never divides $a^n - 1$'' or ``$n$ divides $a^n - b^n$ only when''. Taking the smallest prime factor turns a statement about $n$ into one about a single prime where the order is pinned down.
+
+\begin{theorem}[Chinese remainder theorem]
+If $\gcd(m, n) = 1$, then for any $a$, $b$ there is exactly one class $x$ modulo $mn$ with $x \equiv a \pmod m$ and $x \equiv b \pmod n$.
+\end{theorem}
+
+\begin{proof}
+The map sending $x$ modulo $mn$ to the pair of its residues modulo $m$ and modulo $n$ is injective: if two classes agree in both coordinates, their difference is divisible by $m$ and by $n$, hence by $mn$ since they are coprime. An injective map between finite sets of the same size $mn$ is a bijection.
+\end{proof}
+
+So a congruence modulo a composite number is a system of congruences modulo prime powers, solved one prime at a time, and a count of residues modulo $mn$ with a multiplicative property is a product of counts.
+
+\begin{theorem}[Lifting a simple root]
+Let $f$ be a polynomial with integer coefficients, $p$ a prime, and $a$ an integer with $f(a) \equiv 0 \pmod p$ and $f'(a) \not\equiv 0 \pmod p$. Then there is exactly one $t$ modulo $p$ such that $f(a + tp) \equiv 0 \pmod{p^2}$.
+\end{theorem}
+
+\begin{proof}
+Expanding $f(a + tp)$ in powers of $tp$, every term with $(tp)^2$ or higher is divisible by $p^2$, and the coefficients $f^{(j)}(a)/j!$ are integers, so $f(a + tp) \equiv f(a) + tp f'(a) \pmod{p^2}$. Write $f(a) = pm$. The condition becomes $p(m + t f'(a)) \equiv 0 \pmod{p^2}$, that is, $t f'(a) \equiv -m \pmod p$, which has exactly one solution $t$ because $f'(a)$ is invertible modulo $p$.
+\end{proof}
+
+The same step lifts from $p^k$ to $p^{k+1}$, so a simple root modulo $p$ gives a root modulo every power of $p$. A root with $f'(a) \equiv 0$ may lift to several classes or to none, which is the case Putnam problems like to hide.
+
+\begin{theorem}[The exponent of a prime in a factorial]
+For a prime $p$ and $n \ge 1$, the exponent of $p$ in $n!$ is
+\[
+v_p(n!) = \sum_{k \ge 1} \left\lfloor \frac{n}{p^k} \right\rfloor = \frac{n - s_p(n)}{p - 1},
+\]
+where $s_p(n)$ is the sum of the digits of $n$ in base $p$.
+\end{theorem}
+
+\begin{proof}
+Among $1, \dots, n$ there are $\lfloor n/p \rfloor$ multiples of $p$, $\lfloor n/p^2 \rfloor$ multiples of $p^2$, and so on; a number divisible by $p^j$ exactly is counted $j$ times, once in each of the first $j$ terms. For the closed form, write $n = \sum d_i p^i$ and compute $\lfloor n / p^k \rfloor = \sum_{i \ge k} d_i p^{i-k}$; summing over $k$ gives $\sum_i d_i (p^{i-1} + \dots + 1) = \sum_i d_i (p^i - 1)/(p - 1)$.
+\end{proof}
+
+For Diophantine equations the model is a procedure rather than a theorem: factor what factors, bound what can be bounded, and reduce modulo $3$, $4$, $5$, $7$, $8$, $9$ until the cases die. The useful tables, worth knowing cold: squares are $0, 1 \pmod 3$; $0, 1 \pmod 4$; $0, 1, 4 \pmod 5$; $0, 1, 4 \pmod 8$; $0, 1, 4, 7 \pmod 9$. Cubes are $0, \pm 1 \pmod 7$ and $0, \pm 1 \pmod 9$. Fourth powers are $0, 1 \pmod{16}$ and $0, 1 \pmod 5$.
+
+\begin{firstmoves}
+The smallest cases by hand, and more of them than feels necessary: a solution at $n = 2$ that does not persist is the shape of the whole answer. Reduce modulo $4$ and modulo $3$ first, then modulo $8$ and $9$. Factor anything that factors, including differences of powers and $x^2 + x + 1$-type forms. For an exponent in the statement, compute the order of the base modulo the small primes involved. For a factorial, apply Legendre's formula. For ``find all $n$'', separate $n$ prime from $n$ composite, and for composite $n$ take the smallest prime factor.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+Let $n$ be a positive integer. Show that every prime factor of $n^4 + n^2 + 1$ is either $3$ or congruent to $1$ modulo $6$.
+\end{example}
+
+\begin{proof}[Solution]
+Let $p$ be a prime dividing $N = n^4 + n^2 + 1$. First, $p \nmid n$, since $p \mid n$ would give $p \mid N - n^4 - n^2 = 1$. Second, $p$ is odd: if $n$ is even then $N$ is odd, and if $n$ is odd then $N \equiv 1 + 1 + 1 = 3 \pmod 2$ is odd.
+
+Now $(n^2 - 1) N = n^6 - 1$, so $n^6 \equiv 1 \pmod p$, and by the lemma on orders $d = \ord_p(n)$ divides $6$. If $d$ is $1$ or $2$, then $n^2 \equiv 1 \pmod p$, so $N \equiv 1 + 1 + 1 = 3 \pmod p$ and $p \mid 3$, giving $p = 3$. If $d$ is $3$ or $6$, then $3 \mid d$ and $d \mid p - 1$, so $3 \mid p - 1$; since $p$ is odd, also $2 \mid p - 1$, and therefore $6 \mid p - 1$.
+\end{proof}
+
+Both branches occur: $n = 1$ gives $3$, and $n = 2$ gives $21 = 3 \times 7$. The argument is the template for every ``prime factors of $f(n)$'' statement: find the cyclotomic-type identity that puts $n$ in a group of known exponent, then let the order do the sorting.
+
+\begin{example}
+Find all pairs of positive integers $(x, y)$ with $x^2 = y! + 7$.
+\end{example}
+
+\begin{proof}[Solution]
+Small cases first. $y = 1$: $1 + 7 = 8$, not a square. $y = 2$: $2 + 7 = 9 = 3^2$, a solution. $y = 3$: $6 + 7 = 13$, no. $y = 4$: $24 + 7 = 31$, no.
+
+For $y \ge 5$, the factorial $y!$ is divisible by $5$, so $x^2 \equiv 7 \equiv 2 \pmod 5$. But the squares modulo $5$ are $0$, $1$ and $4$. So there is no solution with $y \ge 5$, and the only pair is $(x, y) = (3, 2)$.
+\end{proof}
+
+The modulus was chosen to make the factorial vanish and to leave the constant in a class that is not a square. Modulo $3$ would not have worked ($7 \equiv 1$ is a square), nor modulo $4$ ($7 \equiv 3$, not a square, but $y!$ vanishes modulo $4$ only from $y = 4$, which still works here and is worth noticing as the alternative). The habit is to try the small moduli in turn and keep the first one that kills the equation, then check that every $y$ below the threshold was handled by hand.
+
+\begin{trap}
+Dividing a congruence by something not coprime to the modulus: $2 \cdot 3 \equiv 2 \cdot 0 \pmod 6$ does not give $3 \equiv 0$. A modulus that kills the information needed: reducing $x^2 + y^2 = z^2$ modulo $2$ says nothing, modulo $4$ says a great deal. Forgetting that $2$ is prime, so that an argument ``for every odd prime'' has a case left over, and forgetting that $p = 3$ behaves differently from other primes in anything involving $n^2 + n + 1$ or sixth roots of unity. Euler's theorem used with $\gcd(a, n) \ne 1$. Applying Fermat with the modulus and the exponent swapped. A lift from $p$ to $p^2$ asserted for a root where the derivative vanishes.
+\end{trap}
+
+\begin{ladder}
+\item \putnam{2018 A1}. An equation in positive integers built from unit fractions; find all solutions. Clear denominators, factor, bound.
+\item \putnam{2017 B2}. Sums of consecutive integers; the smallest first term with a property. Parity and divisibility of a sum of an arithmetic progression.
+\item \seminar{PS 9 \#14}. A classic statement that an integer never divides a certain exponential expression. Smallest prime factor and orders.
+\item \seminar{PS 9 \#15}. The companion statement for odd integers and a shifted expression. The same lemma, one twist.
+\item \putnam{2020 A1}. Integers whose decimal digits follow a block pattern; how many are divisible by a given integer. Factor the pattern as a product, then orders.
+\item \putnam{2024 A1}. An exponential equation in integers; for which exponents it has solutions. Reduce modulo small numbers until the cases die.
+\item \putnam{2021 A1}. Fixed-length hops in the plane; the minimum number to reach a given point. Tagged pigeonhole; the modular obstruction on the hop lengths is the number theory.
+\item \putnam{2023 B2}. The binary digits of the multiples of an integer; a minimum over the multiples. Structure of multiples with few ones.
+\item \putnam{2018 B3}. Integers satisfying linked divisibility conditions; find all. Orders and the size of exponents.
+\item \putnam{2024 A4}. Powers rearranged into an arithmetic progression modulo a prime; which primes. Primitive roots and residues.
+\item \putnam{2021 A5}. Power sums over the residues coprime to a modulus; which exponents give divisibility. The group structure of the units.
+\item \putnam{2025 B3}. A set of integers closed under divisors, built from exponential differences; whether it is everything. Orders modulo each candidate.
+\end{ladder}
+
+Seminar: \seminar{PS 9}, with \seminar{\#1, \#4, \#12, \#31} as warm-ups and \seminar{\#16, \#17, \#19} for power towers, where Euler's theorem is applied to the exponent. \seminar{Floor \#2} is the exponent of a prime in a factorial; \seminar{Floor \#12} to \seminar{\#15} are Putnam floor-function problems with their score statistics printed, which is a useful calibration.
+
+\begin{hides}
+Polynomials (week 2 of the ladders): an integer polynomial modulo a prime has at most its degree in roots, and a power series with integer coefficients can be read modulo $2$. Counting: the binary digits of a count (\putnam{2020 B1}) are a number theory statement about a sum. Games with integers (\putnam{2023 A6}): the winning condition is a congruence. Recurrences: a sequence modulo $m$ is eventually periodic, and the period is an order. Abstract algebra: the multiplicative group modulo $n$ is a group, and Lagrange's theorem is Euler's theorem.
+\end{hides}
+

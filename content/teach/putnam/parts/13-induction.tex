@@ -1,0 +1,116 @@
+\section{Induction}
+\label{sec:induction}
+
+Induction proves a statement about every positive integer by proving it for the first one and showing that each case follows from the ones before it. Everyone knows the shape. The Putnam skill is in two choices: which smaller cases to use, and what statement to prove, since the statement given is often not the one that the step can be run on.
+
+\begin{recognise}
+A natural number $n$ in the statement, and an object for $n$ that is built from objects for smaller values: a sequence from its earlier terms, a board from a smaller board, a set from a set with one fewer element, a polynomial of degree $n$ from one of degree $n-1$. ``Show that for all $n$'' is the usual signal; so is ``show that the process always'' with a size that shrinks. A closed form guessed from the first terms of a recurrence is proved by induction; an inequality with a product or a sum of $n$ terms is often one too.
+\end{recognise}
+
+\subsection*{The model}
+
+\begin{theorem}[Induction]
+Let $P(n)$ be a statement about the integer $n$. If $P(1)$ holds, and $P(n-1)$ implies $P(n)$ for every $n \ge 2$, then $P(n)$ holds for every $n \ge 1$.
+\end{theorem}
+
+\begin{proof}
+Suppose not, and let $n$ be the smallest integer for which $P(n)$ fails; it exists because the positive integers are well ordered. Then $n \ge 2$ since $P(1)$ holds, so $P(n-1)$ holds by minimality, so $P(n)$ holds by the step. Contradiction.
+\end{proof}
+
+\begin{theorem}[Strong induction]
+If $P(1)$ holds, and for every $n \ge 2$ the statements $P(1), \dots, P(n-1)$ together imply $P(n)$, then $P(n)$ holds for every $n \ge 1$.
+\end{theorem}
+
+\begin{proof}
+Apply ordinary induction to the statement $Q(n)$: ``$P(k)$ holds for all $k \le n$''. $Q(1)$ is $P(1)$, and $Q(n-1)$ implies $Q(n)$ by the hypothesis.
+\end{proof}
+
+The proof shows that strong induction is ordinary induction applied to a stronger statement. That is the general pattern: whenever the step from $n-1$ to $n$ cannot be made, the remedy is to prove more.
+
+\begin{proposition}[Strengthening]
+Suppose $P(n)$ is to be proved for all $n$, and let $P'(n)$ be a statement that implies $P(n)$. If $P'(1)$ holds and $P'(n-1)$ implies $P'(n)$, then $P(n)$ holds for all $n$.
+\end{proposition}
+
+This is immediate, and it is the most useful sentence in the section. A bound of the form ``$S_n < C$'' almost never passes from $n-1$ to $n$, because the hypothesis $S_{n-1} < C$ gives no room: adding a positive term to something below $C$ need not stay below $C$. The strengthened statement ``$S_n \le C - f(n)$'' with $f$ decreasing to $0$ does pass, provided $f(n-1) - f(n)$ is at least the $n$-th term. Choosing $f$ is the work, and the first example below does it.
+
+Two further shapes:
+
+\begin{itemize}[nosep,leftmargin=*]
+\item \emph{Induction on a different variable.} A statement about pairs $(m, n)$ can be proved by induction on $m$ with $n$ fixed, on $n$ with $m$ fixed, on $m + n$, or on $\max(m, n)$. The right choice is the one for which the step has something to use.
+\item \emph{Induction with several base cases.} If the step uses $P(n-2)$, or $P(\lfloor n/2 \rfloor)$, the base cases must cover every $n$ that the step cannot reach; the step from $P(n-2)$ needs both $P(1)$ and $P(2)$.
+\end{itemize}
+
+\begin{firstmoves}
+Compute the cases $n = 1, 2, 3, 4$ by hand. Try the step on the statement as given. When it fails, write down exactly what fact about $n - 1$ you wished you had, and add that fact to the claim. For a bound, guess a correction term $c/n$ or $c/n^2$ and solve for the constant $c$ that makes the step work; then check the base case against it. For a structural statement, ask what object for $n - 1$ sits inside the object for $n$, and whether there might be several (then strong induction). For a recurrence, guess the closed form from the first six terms and let the induction verify it.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+Show that for every positive integer $n$,
+\[
+\prod_{k=1}^{n} \left(1 + \frac{1}{k^3}\right) < 3 .
+\]
+\end{example}
+
+\begin{proof}[Solution]
+Let $P_n$ be the product. The values begin $P_1 = 2$, $P_2 = 9/4$, $P_3 = 7/3$, $P_4 \approx 2.37$, so the statement is plausible. The direct step fails: from $P_{n-1} < 3$ one gets only $P_n < 3(1 + 1/n^3)$, which is more than $3$.
+
+Strengthen the claim to
+\[
+P_n \le 3 - \frac{1}{n} \qquad (n \ge 1).
+\]
+The base case is $P_1 = 2 \le 3 - 1$, with equality. For the step, let $n \ge 2$ and assume $P_{n-1} \le 3 - 1/(n-1)$. Then
+\[
+P_n = P_{n-1}\left(1 + \frac{1}{n^3}\right) \le \left(3 - \frac{1}{n-1}\right)\left(1 + \frac{1}{n^3}\right)
+= 3 - \frac{1}{n-1} + \frac{3}{n^3} - \frac{1}{(n-1)n^3}.
+\]
+We want this to be at most $3 - 1/n$. Since $\frac{1}{n-1} - \frac{1}{n} = \frac{1}{n(n-1)}$, the requirement is
+\[
+\frac{3}{n^3} - \frac{1}{(n-1)n^3} \le \frac{1}{n(n-1)} .
+\]
+Multiplying by the positive number $(n-1) n^3$ turns this into $3(n-1) - 1 \le n^2$, that is, $n^2 - 3n + 4 \ge 0$, which holds for every real $n$ because $n^2 - 3n + 4 = (n - \tfrac32)^2 + \tfrac74 > 0$. So $P_n \le 3 - 1/n < 3$.
+\end{proof}
+
+The constant $1$ in the correction $1/n$ was found by running the step with an unknown $c$ and asking what $c$ makes the resulting inequality true for all $n \ge 2$; the inequality becomes $3(n-1) \le c(n^2 + 1)$, and $c = 1$ is the smallest integer that works. Then the base case was checked, and it happened to hold with equality, which is a sign the strengthening is tight. The actual limit of $P_n$ is about $2.43$.
+
+\begin{example}
+Let $t_k = 1 + \dfrac{k(k-1)}{2}$ for $k \ge 1$, so the sequence begins $1, 2, 4, 7, 11, 16, 22$. Show that every positive integer is a sum of distinct terms of this sequence.
+\end{example}
+
+\begin{proof}[Solution]
+Strong induction on $n$. For $n = 1$, take $t_1$ alone.
+
+Let $n \ge 2$ and suppose every positive integer less than $n$ is a sum of distinct terms. Let $k$ be the largest index with $t_k \le n$; it exists because the sequence is increasing and unbounded, and $k \ge 2$ since $t_2 = 2 \le n$. By the choice of $k$, $n < t_{k+1} = t_k + k$. Put $m = n - t_k$, so $0 \le m < k$.
+
+If $m = 0$ then $n = t_k$ and we are done. Otherwise $1 \le m < k$, and we need the small fact
+\[
+t_k - k = 1 + \frac{k(k-1)}{2} - k = \frac{(k-1)(k-2)}{2} \ge 0 ,
+\]
+so $k \le t_k$ and hence $m < t_k$. By the induction hypothesis, $m$ is a sum of distinct terms of the sequence. Each of those terms is at most $m$, hence less than $t_k$, so none of them is $t_k$. Adding $t_k$ gives a representation of $n$ as a sum of distinct terms.
+\end{proof}
+
+The induction hypothesis was used at $m$, which is not $n - 1$; ordinary induction would have been useless here. The fact $k \le t_k$ is the kind of lemma that the step demands and the statement never mentions, and finding it is the whole problem. The same argument shows that any increasing sequence starting at $1$ in which each term is at most one more than the sum of all earlier terms has this property; the sequence above satisfies the stronger condition $t_{k+1} - t_k \le t_k$, which is what was actually used.
+
+\begin{trap}
+A base case that is not the one the step starts from. If the step is valid only for $n \ge 3$, then $P(1)$ and $P(2)$ both need checking by hand. If the step uses $P(n-2)$, two base cases. If the step uses $P(\lfloor n/2 \rfloor)$, the base case is $n = 1$ and the step must handle $n = 2$ and $n = 3$ correctly, since both reduce to $n = 1$.
+
+A step that silently uses $n \ge 2$, or divides by $n - 1$, or picks ``an element other than the first'' from a set that might have one element. Read the step at $n = 2$ specifically.
+
+A strengthening that is too strong. The claim $S_n \le C - 2/n$ might make the step easier and the base case false. Always check the base case against the strengthened claim, not the original one.
+
+Induction that proves the closed form but not the recurrence. If a problem defines a sequence by a recurrence and asks for a property, proving the property for a guessed closed form only helps once the closed form is itself proved by induction.
+\end{trap}
+
+\begin{ladder}
+\item \putnam{2017 A1}. A set of positive integers closed under two rules; find the elements not in it. Induction on the integer, with the small cases as base.
+\item \seminar{PS 4 \#1}. A third-order recurrence; express it through known sequences. Guess and verify.
+\item \seminar{PS 4 \#3}. The parity of the integer part of a power; a pattern in $n$. Induction carried by a conjugate.
+\item \seminar{PS 4 \#5}. A ceiling of a power of a surd; divisibility by a power of two. Strengthen to a statement about the conjugate pair.
+\item \putnam{2016 A5}. A finite group; every element is a short word in two generators. Induction on the size of the set reached.
+\end{ladder}
+
+\begin{hides}
+Recurrences: every closed form guessed from the first terms is proved by induction, and the strengthening is usually a second sequence (a conjugate, a companion) carried alongside. Inequalities: products of the form $\prod (1 + a_k)$ and Bernoulli-type bounds, as in the first example. Combinatorics: a counting formula verified by removing one element; a tiling of a board built from tilings of smaller boards. Games: the characterisation of losing positions in Section~\ref{sec:games} is an induction on the distance to the end. Analysis: a sequence shown monotone and bounded by proving both at once, which is a strengthening.
+\end{hides}
+

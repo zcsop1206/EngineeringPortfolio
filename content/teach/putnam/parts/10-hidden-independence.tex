@@ -1,0 +1,110 @@
+\section{Hidden independence and uniformity}
+
+\begin{recognise}
+The problem has a symmetry it does not mention. Points are chosen at random and the question is about their order or their arrangement. A sum runs over all permutations, all subsets, or all residues, and the summand is built from one coordinate. A quantity is asked for that, once computed, turns out not to depend on a parameter the problem made a fuss about. A sign pattern or a weight pairs terms off against each other. The answer to the smallest case is suspiciously clean: a probability of $1/2$ or $1/n$, an integer where a fraction was expected, a sum that is zero.
+\end{recognise}
+
+The model has three pieces. Uniformity: when a random object is drawn from a set that a bijection maps to itself, the image is drawn from the same distribution, so anything invariant under the bijection can be computed in the most convenient representative. Linearity: an expectation of a sum is a sum of expectations, whether or not the parts are independent, so a complicated count becomes a sum of probabilities of simple events. Independence proper: when a joint distribution factors, a probability of a conjunction is a product, and one hard event becomes several easy ones.
+
+\begin{definition}
+A random variable $X$ taking values in a finite set $S$ is uniform if $\Pr(X=s)=1/|S|$ for every $s\in S$. Events $A_1,\dots,A_n$ are independent if $\Pr(A_{i_1}\cap\dots\cap A_{i_k})=\Pr(A_{i_1})\cdots\Pr(A_{i_k})$ for every choice of distinct indices; pairwise independence is the case $k=2$ only.
+\end{definition}
+
+\begin{lemma}[Transport of uniformity]
+Let $X$ be uniform on a finite set $S$ and let $\varphi\colon S\to S$ be a bijection. Then $\varphi(X)$ is uniform on $S$, and for every function $g$ on $S$, $\E\, g(X)=\E\, g(\varphi(X))$.
+\end{lemma}
+
+\begin{proof}
+$\Pr(\varphi(X)=s)=\Pr(X=\varphi^{-1}(s))=1/|S|$. The second claim is the first one applied to the distribution of $g$.
+\end{proof}
+
+\begin{lemma}[Equal fibres]
+Let a finite group $G$ act on a finite set $X$, let $A$ be a finite abelian group, and let $f\colon X\to A$ and a surjective homomorphism $\chi\colon G\to A$ satisfy $f(g\cdot x)=f(x)+\chi(g)$ for all $g$, $x$. Then every fibre $f^{-1}(a)$ has the same size $|X|/|A|$.
+\end{lemma}
+
+\begin{proof}
+For $a,b\in A$ pick $g$ with $\chi(g)=b-a$. Then $x\mapsto g\cdot x$ maps $f^{-1}(a)$ into $f^{-1}(b)$, and $x\mapsto g^{-1}\cdot x$ maps it back, so the two fibres are in bijection.
+\end{proof}
+
+The lemma is the formal version of ``shift everything by one and the sum shifts by a unit''. It is why the sum of $n$ fair dice is uniform modulo $6$, why a residue class of a symmetric count is as large as any other, and why so many answers are $1/p$.
+
+\begin{theorem}[Linearity of expectation]
+For random variables $X_1,\dots,X_n$ with finite expectations, $\E(X_1+\dots+X_n)=\E X_1+\dots+\E X_n$. In particular, if $N$ counts how many of the events $A_1,\dots,A_n$ occur, then $\E N=\sum_i \Pr(A_i)$.
+\end{theorem}
+
+\begin{proof}
+Expectation is a sum (or integral) weighted by the probability measure, and sums commute with sums. For the second statement write $N=\sum_i \mathbf 1_{A_i}$, where the indicator $\mathbf 1_{A}$ is $1$ on $A$ and $0$ elsewhere, and use $\E\,\mathbf 1_{A}=\Pr(A)$.
+\end{proof}
+
+\begin{proposition}[Exchangeability]
+Let $X_1,\dots,X_n$ be independent with the same continuous distribution. Then every one of the $n!$ orderings of their values is equally likely, so $\Pr(X_k \text{ is the largest})=1/n$ for each $k$, and more generally any event defined by the relative order of the $X_i$ has probability equal to its share of the $n!$ orderings.
+\end{proposition}
+
+\begin{proof}
+Ties have probability zero. Permuting the coordinates is a bijection of the sample space that preserves the product measure, and it maps the event ``the order is $\sigma$'' to ``the order is $\tau\sigma$''; so all orderings have the same probability, which must be $1/n!$.
+\end{proof}
+
+\begin{lemma}[Sign-reversing involution]
+Let $S$ be a finite set, $f\colon S\to\R$, and $\sigma\colon S\to S$ an involution with $f(\sigma(s))=-f(s)$ whenever $\sigma(s)\neq s$. Then $\sum_{s\in S} f(s)=\sum_{s:\ \sigma(s)=s} f(s)$.
+\end{lemma}
+
+\begin{proof}
+The non-fixed points split into two-element orbits $\{s,\sigma(s)\}$, each contributing $f(s)+f(\sigma(s))=0$.
+\end{proof}
+
+\begin{firstmoves}
+Pair the terms: $k$ with $n-k$, a subset with its complement, a permutation with its inverse or with its composite with a fixed transposition, a point with its reflection. Ask whether the answer depends on the parameter at all; if the problem gives a specific large number, compute the case with $2$ or $3$ in its place and see whether the number was ever used. Write the quantity as a sum of indicators and compute one probability. Fix the thing that was random and randomise the thing that was fixed; the probability does not change, and often the second version is the easy one.
+\end{firstmoves}
+
+\begin{example}
+A permutation $\sigma$ of $\{1,\dots,n\}$, $n\ge 2$, is chosen uniformly at random. Call a position $i$ with $1\le i\le n-1$ a step if $|\sigma(i+1)-\sigma(i)|=1$. Find the expected number of steps.
+\end{example}
+
+\begin{proof}[Solution]
+Let $N$ be the number of steps and $A_i$ the event that position $i$ is a step. By linearity $\E N=\sum_{i=1}^{n-1}\Pr(A_i)$. For a fixed $i$ the ordered pair $(\sigma(i),\sigma(i+1))$ is uniform on the $n(n-1)$ ordered pairs of distinct values, because every permutation of the values maps the set of permutations bijectively to itself (transport of uniformity). Exactly $2(n-1)$ ordered pairs of distinct values differ by $1$: the pairs $(k,k+1)$ and $(k+1,k)$ for $1\le k\le n-1$. So $\Pr(A_i)=2(n-1)/(n(n-1))=2/n$ for every $i$, and
+\[
+\E N=(n-1)\cdot\frac{2}{n}=\frac{2(n-1)}{n}.
+\]
+Check at $n=2$: both permutations have one step, and the formula gives $1$. At $n=3$: the six permutations have step counts $2,1,1,1,1,2$, average $4/3$, as the formula says. The events $A_i$ are far from independent, and nothing above needed them to be.
+\end{proof}
+
+\begin{example}
+For $n\ge 1$ let $\operatorname{fix}(\sigma)$ be the number of fixed points of a permutation $\sigma$ of $\{1,\dots,n\}$ and $\operatorname{sgn}(\sigma)$ its sign. Compute
+\[
+T_n=\sum_{\sigma\in S_n}\operatorname{sgn}(\sigma)\operatorname{fix}(\sigma).
+\]
+\end{example}
+
+\begin{proof}[Solution]
+Write $\operatorname{fix}(\sigma)=\sum_{i=1}^n \mathbf 1[\sigma(i)=i]$ and swap the sums:
+\[
+T_n=\sum_{i=1}^n\ \sum_{\sigma:\ \sigma(i)=i}\operatorname{sgn}(\sigma).
+\]
+Permutations fixing $i$ are permutations of the other $n-1$ elements with the same sign, so each inner sum is $\sum_{\tau\in S_{n-1}}\operatorname{sgn}(\tau)$. For $n-1\ge 2$ this is zero: composing with a fixed transposition $(a\,b)$ of two of the $n-1$ elements is a sign-reversing involution with no fixed points. For $n-1=1$ the inner sum is $1$, and for $n-1=0$ it is $1$ as well (the empty permutation has sign $1$). Hence $T_1=1$, $T_2=2$, and $T_n=0$ for all $n\ge 3$.
+
+Check at $n=2$: the identity contributes $+2$, the transposition contributes $0$. At $n=3$: the identity gives $+3$, the three transpositions give $-1$ each, the two $3$-cycles give $0$; total $0$.
+
+The lesson is in the small cases. The involution that kills the sum needs two elements to swap, and when there are not two the sum survives. A pairing argument always needs its fixed points listed.
+\end{proof}
+
+\begin{trap}
+An independence that looks obvious and is false. Whether the first and second largest of a random sample land in particular positions are not independent events; whether two given positions of a random permutation are fixed points is not independent. The smallest case usually exposes it, so list all outcomes for $n=3$ before multiplying anything. The opposite trap: a uniformity that is true but was never used. The sum of $n$ fair dice is uniform modulo $6$ by the equal-fibres lemma, but modulo $7$ it is not (one die gives probability $0$ of a multiple of $7$), because $7$ is not the size of any coordinate's range. A pairing that leaves a fixed point unpaired, as in the second example, gives the wrong answer for exactly the cases where the fixed points exist. Finally, when a quantity does not depend on a parameter, say so and prove it; graders do not accept ``by symmetry'' without the bijection that realises it.
+\end{trap}
+
+\begin{ladder}
+\item \seminar{PS 1 \#1}. Independent draws; the chance they come out in a given order.
+\item \seminar{PS 1 \#2}. Ways of writing an integer as an ordered sum; a count by a bijection.
+\item \seminar{PS 1 \#3}. Zero-one matrices with a parity condition on lines; how many.
+\item \putnam{2018 B1}. A set of lattice vectors; remove one so the rest split into two equal-sum halves.
+\item \putnam{2020 B1}. A signed sum over integers by the parity of their binary digits; a residue.
+\item \seminar{PS 1 \#12}. Passengers taking seats with one rule broken; a probability about the last one.
+\item \seminar{PS 1 \#20}. Particles on a segment that swap on collision; a time to clear.
+\item \putnam{2019 A4}. A function with vanishing averages over all spheres of one size; must it be zero.
+\item \putnam{2021 A4}. A double integral over a growing disc; the limit.
+\item \putnam{2023 B3}. A random sequence and a longest subsequence of alternating type; its expectation.
+\item \putnam{2017 A6}. Colourings of the edges of a polyhedron with a local condition; a count.
+\end{ladder}
+
+\begin{hides}
+Inside number theory, where a residue count is the same in every class because translation moves the sum by a unit (\putnam{2020 B1}, \putnam{2017 B6}). Inside probability, where ``expected'' hides a sum of indicators (\putnam{2023 B3}, \putnam{2016 B4}). Inside analysis, where an integral over a symmetric region vanishes by an odd reflection (\putnam{2019 A4}, \putnam{2021 A4}). Inside counting, where a set is split into two equal halves by an involution (\putnam{2018 B1}). Inside recurrences, where a sequence returns to a value because the map that defines it is a bijection of a finite set (\putnam{2018 B4}).
+\end{hides}

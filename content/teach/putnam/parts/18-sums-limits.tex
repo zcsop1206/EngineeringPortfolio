@@ -1,0 +1,137 @@
+\section{Sums, integrals and limits}
+
+\begin{recognise}
+A sum or an integral has to be evaluated in closed form, or bounded above and below. A limit of a sequence or a function is asked for, often of the form something to the power of something, or of a sum with $n$ terms each depending on $n$. A sequence has to be shown to converge. A product with many factors appears, which is a sum after a logarithm. A double sum or a double integral appears, which is usually easier in the other order. The seminar's second set is the reference; the notes before its problems state every theorem below.
+\end{recognise}
+
+\begin{lemma}[Telescoping]
+For any sequence $f$, $\sum_{k=m}^{n}\bigl(f(k+1)-f(k)\bigr)=f(n+1)-f(m)$. The series $\sum_{k\ge m}(f(k+1)-f(k))$ converges if and only if $\lim f(n)$ exists, and then equals $\lim f(n)-f(m)$.
+\end{lemma}
+
+\begin{proof}
+Write the terms out; every $f(k)$ with $m<k\le n$ appears once with each sign. The series statement is the finite one with $n\to\infty$.
+\end{proof}
+
+The work in a telescoping problem is finding $f$. Partial fractions give it for rational terms; the difference of a product with one more factor gives it for products; $\arctan$ addition gives it for $\arctan$ of a rational function; $\ln$ gives it for products.
+
+\begin{theorem}[Tonelli and Fubini for sums]
+Let $(a_{jk})_{j,k\ge 1}$ be a double sequence.
+\begin{enumerate}[nosep]
+\item (Tonelli) If $a_{jk}\ge 0$ for all $j,k$, then $\sum_j\sum_k a_{jk}=\sum_k\sum_j a_{jk}$, both sides being possibly $+\infty$.
+\item (Fubini) If $\sum_j\sum_k|a_{jk}|<\infty$, then both iterated sums $\sum_j\sum_k a_{jk}$ and $\sum_k\sum_j a_{jk}$ converge and are equal, and so is the sum in any order of enumeration of the pairs.
+\end{enumerate}
+The same statements hold for integrals and for mixed sums and integrals, with ``$\ge 0$'' and ``absolutely integrable'' in place of the two hypotheses.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+For Tonelli, let $S$ be the supremum of the finite sums $\sum_{j\le J}\sum_{k\le K}a_{jk}$ over all rectangles. Every partial sum of either iterated sum is at most $S$, and every rectangle sum is at most either iterated sum, so both iterated sums equal $S$. For Fubini, write $a_{jk}=a^+_{jk}-a^-_{jk}$ with $a^\pm\ge 0$ and $a^\pm\le|a|$; Tonelli applies to each part separately with finite value, and subtraction is allowed because both parts are finite.
+\end{proof}
+
+Why the hypothesis matters: take $a_{jj}=1$, $a_{j,j+1}=-1$, all other entries $0$. Every row sums to $0$, so $\sum_j\sum_k a_{jk}=0$; the first column sums to $1$ and every other column to $0$, so $\sum_k\sum_j a_{jk}=1$. The absolute sum is infinite, and the two orders disagree.
+
+\begin{theorem}[Riemann sums]
+Let $f$ be continuous on $[a,b]$. Then
+\[
+\lim_{n\to\infty}\frac{b-a}{n}\sum_{k=1}^{n}f\Bigl(a+k\,\frac{b-a}{n}\Bigr)=\int_a^b f(x)\,dx,
+\]
+and the same holds with $k$ running from $0$ to $n-1$, or with any choice of sample point in each subinterval.
+\end{theorem}
+
+\begin{proof}
+Continuous on a closed interval means uniformly continuous: for $\varepsilon>0$ there is $\delta$ with $|f(x)-f(y)|<\varepsilon$ when $|x-y|<\delta$. For $(b-a)/n<\delta$, on each subinterval $I_k$ the sample value differs from $f(x)$ by less than $\varepsilon$ for all $x\in I_k$, so the sum differs from $\sum_k\int_{I_k}f=\int_a^b f$ by less than $\varepsilon(b-a)$.
+\end{proof}
+
+The recognition pattern: a sum of $n$ terms, a factor $1/n$ (sometimes hidden as $n/n^2$ or as $1/\sqrt{n^2}$), and each term a function of $k/n$ alone. A product $\prod_{k=1}^n g(k/n)^{1/n}$ is $\exp$ of a Riemann sum of $\ln g$.
+
+\begin{lemma}[Integral comparison]
+Let $f$ be non-negative and non-increasing on $[m,\infty)$, with $m$ an integer. Then for $n\ge m$,
+\[
+\int_m^{n+1}f(x)\,dx\ \le\ \sum_{k=m}^{n}f(k)\ \le\ f(m)+\int_m^{n}f(x)\,dx.
+\]
+In particular $\sum_{k\ge m}f(k)$ converges if and only if $\int_m^\infty f$ does.
+\end{lemma}
+
+\begin{proof}
+On $[k,k+1]$, $f(k+1)\le f(x)\le f(k)$. Integrating gives $f(k+1)\le\int_k^{k+1}f\le f(k)$; sum the right inequality over $k=m,\dots,n$ for the lower bound and the left one over $k=m,\dots,n-1$ for the upper bound.
+\end{proof}
+
+With $f(x)=1/x$: $\ln(n+1)\le H_n\le 1+\ln n$. With $f(x)=x^{-1/2}$: $2\sqrt{n+1}-2\le\sum_{k=1}^n k^{-1/2}\le 2\sqrt n-1$. These two are worth knowing by heart, and the method gives the first-order growth of any monotone sum.
+
+\begin{proposition}[First surviving term]
+Let $u(x)=c\,x^{p}+o(x^{p})$ and $v(x)=d\,x^{q}+o(x^{q})$ as $x\to 0$, with $c,d\ne 0$. Then $u(x)/v(x)\to c/d$ if $p=q$, to $0$ if $p>q$, and is unbounded if $p<q$. If $u(x)\to 0$ and $w(x)\to\infty$ with $u(x)w(x)\to L$, then $(1+u(x))^{w(x)}\to e^{L}$.
+\end{proposition}
+
+\begin{proof}
+Divide numerator and denominator by $x^q$. For the second statement, $\ln(1+u)=u+O(u^2)$ as $u\to 0$, so $w\ln(1+u)=wu+O(wu^2)=wu+O(u\cdot wu)\to L$, and $\exp$ is continuous.
+\end{proof}
+
+In practice: take the logarithm of anything of the form $A^B$, expand each factor with Taylor's theorem to one more order than seems necessary, cancel, and the first term that does not cancel gives the limit. If it is of order $x^0$ the limit is finite; the orders tell you how many terms were needed only after the cancellation is seen.
+
+\begin{theorem}[Monotone convergence of sequences]
+A non-decreasing sequence of reals that is bounded above converges to its supremum; a non-increasing one bounded below converges to its infimum. If $|x_{n+1}-L|\le q|x_n-L|$ for all $n$ with a fixed $q<1$, then $x_n\to L$.
+\end{theorem}
+
+\begin{proof}
+Let $s=\sup x_n$. For $\varepsilon>0$ some $x_N>s-\varepsilon$, and then $s-\varepsilon<x_n\le s$ for all $n\ge N$. The contraction statement is $|x_n-L|\le q^n|x_0-L|\to 0$.
+\end{proof}
+
+For a recurrence $x_{n+1}=g(x_n)$ with continuous $g$, the route is: show the sequence is monotone and bounded (often by induction, comparing $x_n$ with the fixed point), conclude it converges to some $L$, and only then pass to the limit in the recurrence to get $L=g(L)$.
+
+\begin{firstmoves}
+Write the first three terms of a sum out in full. Look for a difference $f(k+1)-f(k)$; try partial fractions. Put $1/n$ in front and ask whether what remains is a function of $k/n$. Take a logarithm of a product or a power. Compare with an integral for growth. For a limit of a sequence given by a recurrence, find the fixed point, then prove monotone and bounded. For a double sum, write the region of summation and swap, after checking non-negativity or absolute convergence. For a limit of an integral depending on a parameter, substitute to make the interval fixed and then look for a dominating function.
+\end{firstmoves}
+
+\begin{example}
+Evaluate $\displaystyle\lim_{n\to\infty}\sum_{k=1}^{n}\frac{n}{n^2+nk+k^2}$.
+\end{example}
+
+\begin{proof}[Solution]
+Divide numerator and denominator by $n^2$:
+\[
+\sum_{k=1}^n\frac{n}{n^2+nk+k^2}=\frac1n\sum_{k=1}^n\frac{1}{1+(k/n)+(k/n)^2},
+\]
+a Riemann sum for $f(x)=1/(1+x+x^2)$ on $[0,1]$ with right endpoints. $f$ is continuous, so the limit is
+\[
+\int_0^1\frac{dx}{1+x+x^2}=\int_0^1\frac{dx}{(x+\frac12)^2+\frac34}=\frac{2}{\sqrt3}\Bigl[\arctan\frac{2x+1}{\sqrt3}\Bigr]_0^1=\frac{2}{\sqrt3}\Bigl(\frac\pi3-\frac\pi6\Bigr)=\frac{\pi}{3\sqrt3}.
+\]
+Sanity check: $f$ lies between $1/3$ and $1$ on $[0,1]$, so the answer must lie between $1/3$ and $1$; $\pi/(3\sqrt3)\approx 0.605$. At $n=1$ the sum is $1/3$, at $n=2$ it is $2/7+2/12\approx 0.452$, rising towards the limit as the terms near $k/n\approx 0$ gain weight.
+\end{proof}
+
+\begin{example}
+Evaluate $\displaystyle\lim_{n\to\infty}n^2\Bigl(\bigl(1+\tfrac1n\bigr)^{n+\frac12}-e\Bigr)$.
+\end{example}
+
+\begin{proof}[Solution]
+Let $L_n=(n+\tfrac12)\ln(1+\tfrac1n)$, so the expression is $n^2(e^{L_n}-e)=n^2e\,(e^{L_n-1}-1)$. Expand with $h=1/n$:
+\begin{align*}
+\ln(1+h)&=h-\frac{h^2}{2}+\frac{h^3}{3}-O(h^4),\\
+L_n=\Bigl(\frac1h+\frac12\Bigr)\ln(1+h)&=1-\frac h2+\frac{h^2}{3}+\frac h2-\frac{h^2}{4}+O(h^3)=1+\frac{h^2}{12}+O(h^3).
+\end{align*}
+The $h$ terms cancel, which is why the exponent $n+\tfrac12$ was chosen, and the first surviving term is $h^2/12$. Then $e^{L_n-1}-1=\frac{h^2}{12}+O(h^3)$, and
+\[
+n^2\Bigl(\bigl(1+\tfrac1n\bigr)^{n+\frac12}-e\Bigr)=e\cdot\frac{1}{h^2}\Bigl(\frac{h^2}{12}+O(h^3)\Bigr)\longrightarrow\frac{e}{12}.
+\]
+Had the exponent been $n$ alone, $L_n=1-h/2+O(h^2)$, the $h$ term would survive, and $n\bigl((1+\frac1n)^n-e\bigr)\to-e/2$ while the $n^2$ version diverges. The number of Taylor terms needed is not visible until the cancellation is done, so expand one order further than the question seems to want.
+\end{proof}
+
+\begin{trap}
+Swapping the order of summation when the double series is only conditionally convergent; the diagonal example above is the picture to keep. A Riemann sum whose endpoints are off by one term that matters: $\frac1n\sum_{k=1}^n f(k/n)$ and $\frac1n\sum_{k=0}^{n-1}f(k/n)$ have the same limit for continuous $f$, but if $f$ blows up at an endpoint the single term can carry the whole answer. A limit taken inside an integral or an infinite sum without a reason; the reasons are monotone convergence (the integrands increase to the limit) and dominated convergence (a fixed integrable function bounds them all), and one of the two must be named. Keeping too few terms of an expansion, so the first surviving term is actually an error term. Solving $L=g(L)$ for the limit of a recurrence that does not converge; $x_{n+1}=2x_n$ has fixed point $0$. Comparing with an integral when the function is not monotone.
+\end{trap}
+
+\begin{ladder}
+\item \seminar{Limits \#15}. A sum of $n$ rational terms; recognise an integral.
+\item \seminar{Limits \#12}. A product of $n$ factors with a normalising power; logarithms.
+\item \putnam{2016 B1}. A sequence defined through logarithms; sum a series from it.
+\item \putnam{2022 A1}. A line and a logarithmic curve meeting exactly once; the parameters.
+\item \putnam{2019 B2}. A trigonometric sum; its asymptotic limit.
+\item \putnam{2021 A2}. A function defined by a limit; an asymptotic ratio.
+\item \putnam{2020 A2}. A sum of binomial coefficients; a closed form.
+\item \putnam{2024 B3}. Gaps between the fixed points of a tangent-type function; a two-sided bound.
+\item \putnam{2023 A1}. A product of cosines; its second derivative at a point exceeds a threshold.
+\item \putnam{2017 B4}. An alternating series of logarithms; evaluate.
+\item \putnam{2016 B6}. A double alternating series; evaluate.
+\end{ladder}
+
+\begin{hides}
+Inside inequalities, as the bound that squeezes a sequence or a function (\putnam{2017 A3}, \putnam{2023 A3}, \putnam{2025 B2}). Inside probability, where an expectation is a sum or an integral and a limiting probability is a limit of a recurrence (\putnam{2022 A4}, \putnam{2020 A4}). Inside recurrences, where the asymptotic growth of a sequence is found by comparing with an integral (\seminar{PS 4 \#18}, \putnam{2020 A3}). Inside functional equations, where the answer is an integral of the unknown function (\putnam{2016 A3}). Inside polynomials, where a product of many factors is bounded through its logarithm (\putnam{2023 A1}).
+\end{hides}

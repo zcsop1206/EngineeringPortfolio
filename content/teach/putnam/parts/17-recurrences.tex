@@ -1,0 +1,109 @@
+\section{Recurrences}
+
+\begin{recognise}
+A sequence is defined from its earlier terms and something is asked about a far term, about divisibility of the terms, about their growth or their limit. A count for $n$ splits according to what happens first or last, which builds it from counts for smaller $n$. A sequence of polynomials, matrices or functions is defined by iteration. A problem about ``the $2026$th term'' is a problem about the period. A rational recurrence whose terms stay integers, or a nonlinear one whose terms stay bounded, is almost always a linear one in disguise.
+\end{recognise}
+
+\begin{definition}
+A linear recurrence of order $k$ with constant coefficients is $a_{n+k}=c_{k-1}a_{n+k-1}+\dots+c_0a_n$ for all $n\ge 0$, with $c_0\ne 0$. Its characteristic polynomial is $p(x)=x^k-c_{k-1}x^{k-1}-\dots-c_0$. Writing $E$ for the shift $(Ea)_n=a_{n+1}$, the recurrence says $p(E)a=0$.
+\end{definition}
+
+\begin{theorem}[Solving a linear recurrence]
+The sequences satisfying a linear recurrence of order $k$ form a vector space $V$ of dimension $k$. If $p(x)=\prod_{i=1}^s(x-r_i)^{m_i}$ with distinct $r_i\ne 0$, then the $k$ sequences $n^jr_i^{\,n}$, $0\le j<m_i$, form a basis of $V$. So every solution is
+\[
+a_n=\sum_{i=1}^s P_i(n)\,r_i^{\,n},\qquad \deg P_i<m_i,
+\]
+and when all roots are simple, $a_n=\sum_i C_ir_i^{\,n}$ with constants $C_i$ fixed by the first $k$ terms.
+\end{theorem}
+
+\begin{proof}
+A solution is determined by $(a_0,\dots,a_{k-1})$ and every choice of those values gives a solution, so the map $V\to\R^k$ (or $\C^k$) sending a solution to its first $k$ terms is a linear bijection and $\dim V=k$.
+
+For a single factor: $(E-r)$ applied to $n^jr^n$ gives $(n+1)^jr^{n+1}-r\cdot n^jr^n=r^{n+1}\bigl((n+1)^j-n^j\bigr)$, and $(n+1)^j-n^j$ is a polynomial in $n$ of degree $j-1$ (zero when $j=0$). So each application of $(E-r)$ lowers the polynomial degree by one, and $(E-r)^{m}$ kills $n^jr^n$ for every $j<m$. The factors $(E-r_i)^{m_i}$ commute, so $p(E)$ kills all $k$ listed sequences and they lie in $V$.
+
+Linear independence: suppose $\sum_iP_i(n)r_i^n=0$ for all $n$ with some $P_i\ne 0$. Order the roots with $|r_1|\ge|r_2|\ge\dots$; among the roots of largest modulus and largest $\deg P_i$, divide by $n^{d}r_1^{\,n}$ where $d$ is that degree. Terms with smaller modulus or smaller degree tend to $0$, and what remains is a finite sum of the form $\sum_j c_j\,e^{in\theta_j}$ with distinct $\theta_j$ and not all $c_j$ zero, which does not tend to $0$ (its average over $n$ of $|\cdot|^2$ is $\sum|c_j|^2>0$). Contradiction. Hence the $k$ sequences are independent and, by dimension, a basis.
+\end{proof}
+
+A check worth doing once by hand: $a_{n+2}=4a_{n+1}-4a_n$ has $p(x)=(x-2)^2$, so $a_n=(\alpha+\beta n)2^n$; with $a_0=1$, $a_1=4$ this is $(1+n)2^n$, and indeed $a_2=4\cdot4-4\cdot1=12=3\cdot 4$. Forgetting the factor $n$ for the repeated root is the commonest error in this section.
+
+\begin{proposition}[Eventual periodicity modulo $m$]
+Let $m\ge 2$ and let a sequence satisfy
+\[
+a_{n+k}=f(a_n,\dots,a_{n+k-1}),
+\]
+where $f$ maps $(\Z/m)^k$ to $\Z/m$. Then the sequence $(a_n \bmod m)$ is eventually periodic with period at most $m^k$. If moreover $f$ is a bijection in its first argument for every fixed value of the others (for a linear recurrence, when $c_0$ is a unit modulo $m$), the sequence is periodic from the start.
+\end{proposition}
+
+\begin{proof}
+The state $s_n=(a_n,\dots,a_{n+k-1})\bmod m$ determines all later states, and there are only $m^k$ states, so two of $s_0,\dots,s_{m^k}$ coincide, say $s_i=s_j$ with $i<j$; then $s_{n+(j-i)}=s_n$ for all $n\ge i$. When $f$ is invertible in its first argument, $s_{n}$ is recovered from $s_{n+1}$ as well, so the map on states is a bijection of a finite set and every orbit is a cycle: $s_i=s_j$ implies $s_0=s_{j-i}$.
+\end{proof}
+
+\begin{proposition}[Linearisation by substitution]
+Each of the following nonlinear recurrences is a linear one after a change of variable.
+\begin{enumerate}[nosep]
+\item $x_{n+1}=\dfrac{\alpha x_n+\beta}{\gamma x_n+\delta}$ with $M=\begin{pmatrix}\alpha&\beta\\ \gamma&\delta\end{pmatrix}$ invertible. If $(p_{n+1},q_{n+1})^{T}=M(p_n,q_n)^{T}$ and $x_0=p_0/q_0$, then $x_n=p_n/q_n$ whenever $q_n\ne 0$. So $x_n$ is a ratio of two sequences satisfying the linear recurrence with characteristic polynomial $\det(xI-M)$, and $M^k$ scalar forces period $k$.
+\item $x_{n+1}=x_n^2-2$: with $x_n=t_n+t_n^{-1}$ one gets $t_{n+1}=t_n^2$, so $x_n=t_0^{2^n}+t_0^{-2^n}$; this needs $|x_0|\ge 2$ for real $t_0$, else $x_0=2\cos\theta$ and $x_n=2\cos(2^n\theta)$.
+\item $x_{n+1}=\dfrac{x_n+c}{1-cx_n}$: with $x_n=\tan\theta_n$ and $c=\tan\varphi$ one gets $\theta_{n+1}=\theta_n+\varphi$.
+\item $x_{n+1}=x_n^{\,r}\cdot K$: take logarithms, $\ln x_{n+1}=r\ln x_n+\ln K$, a first-order linear recurrence.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) $\dfrac{p_{n+1}}{q_{n+1}}=\dfrac{\alpha p_n+\beta q_n}{\gamma p_n+\delta q_n}=\dfrac{\alpha x_n+\beta}{\gamma x_n+\delta}$ after dividing by $q_n$. By Cayley-Hamilton both $p_n$ and $q_n$ satisfy $u_{n+2}=\tr(M)u_{n+1}-\det(M)u_n$. (2) $(t+t^{-1})^2-2=t^2+t^{-2}$. (3) is the tangent addition formula. (4) is immediate.
+\end{proof}
+
+The other two pieces of the model come from neighbouring sections. A closed form guessed from the first terms is proved by induction, and the induction step is usually just the recurrence. A count $c_n$ that splits by the first object satisfies $c_n=\sum_j(\text{ways the first part is }j)\cdot c_{n-j}$, which is the convolution shape that generating functions handle.
+
+\begin{firstmoves}
+Compute six terms and look at them: Fibonacci, Lucas, Catalan, powers of $2$, factorials, triangular numbers and their small relatives are the usual disguises. Compute the first differences and the ratios of consecutive terms. Compute modulo $2$, $3$, $4$ and $5$ and look for the period. For a linear recurrence write the characteristic polynomial and factor it; a repeated root or a root of unity is a flag. For a rational or square-root recurrence try the substitutions above, in the order ratio, tangent, $t+1/t$, logarithm. For a recurrence with polynomial coefficients, write the generating function.
+\end{firstmoves}
+
+\begin{example}
+Define $a_0=0$, $a_1=1$ and $a_{n+2}=6a_{n+1}-a_n$ for $n\ge 0$. Find a closed form for $a_n$, and show that $7$ divides $a_n$ if and only if $3$ divides $n$.
+\end{example}
+
+\begin{proof}[Solution]
+The characteristic polynomial is $x^2-6x+1$ with roots $r=3+2\sqrt2$ and $\bar r=3-2\sqrt2$, distinct, so $a_n=Cr^n+D\bar r^{\,n}$. From $a_0=0$, $D=-C$; from $a_1=1$, $C(r-\bar r)=4\sqrt2\,C=1$. Hence
+\[
+a_n=\frac{(3+2\sqrt2)^n-(3-2\sqrt2)^n}{4\sqrt2}.
+\]
+The first terms are $0,1,6,35,204,1189,6930$, and $35=5\cdot7$, $6930=7\cdot 990$, while the others are not multiples of $7$. This suggests the claim.
+
+Modulo $7$ the coefficient of $a_n$ in the recurrence is $-1$, a unit, so the residues are purely periodic by the proposition. Compute: $a_0\equiv0$, $a_1\equiv1$, $a_2\equiv6$, $a_3\equiv 36-1=35\equiv0$, $a_4\equiv 0-6\equiv1$, $a_5\equiv 6-0=6$, and the state $(a_3,a_4)\equiv(0,1)=(a_0,a_1)$ has returned. So the residues repeat with period $3$: $a_n\equiv 0,1,6$ according as $n\equiv 0,1,2\pmod 3$, and $7\mid a_n$ exactly when $3\mid n$.
+
+Two remarks. The closed form was not needed for the divisibility, and could not have given it without more work; the finite state space did. And the proof of periodicity is the two lines of computation plus the sentence saying why a returning state closes the cycle, which is the sentence graders look for.
+\end{proof}
+
+\begin{example}
+Let $x_0=2$ and $x_{n+1}=\dfrac{x_n+1}{1-x_n}$ for $n\ge0$. Show that $x_n$ is defined for every $n$, and find $x_{2026}$.
+\end{example}
+
+\begin{proof}[Solution]
+The recurrence is the Möbius map with matrix $M=\begin{pmatrix}1&1\\-1&1\end{pmatrix}$. Compute $M^2=\begin{pmatrix}0&2\\-2&0\end{pmatrix}$ and $M^4=(M^2)^2=\begin{pmatrix}-4&0\\0&-4\end{pmatrix}=-4I$, a scalar. So if $(p_n,q_n)^T=M^n(2,1)^T$, then $(p_{n+4},q_{n+4})=-4(p_n,q_n)$ and $x_{n+4}=x_n$ whenever the quotients are defined.
+
+Directly: $x_0=2$, $x_1=3/(-1)=-3$, $x_2=(-2)/4=-\tfrac12$, $x_3=(\tfrac12)/(\tfrac32)=\tfrac13$, $x_4=(\tfrac43)/(\tfrac23)=2=x_0$. None of these four values is $1$, so the denominator never vanishes, and the sequence is periodic with period $4$ from the start. Since $2026=4\cdot506+2$, $x_{2026}=x_2=-\tfrac12$.
+
+The substitution view says the same thing: with $x_n=\tan\theta_n$ the map is $\theta_{n+1}=\theta_n+\pi/4$, and four steps add $\pi$, which does not change the tangent. Either view is a complete proof once the four values are listed; the matrix view also explains why the period is $4$ before any term is computed, since $M$ is $\sqrt2$ times a rotation by $45^\circ$.
+\end{proof}
+
+\begin{trap}
+A repeated characteristic root, which needs the factor $n$; check by computing one more term than the number of constants. Initial terms that break the pattern: a recurrence valid for $n\ge 2$ with $a_0$, $a_1$ not fitting the closed form, so the closed form must be stated for $n\ge 2$ and the early terms listed separately. Assuming periodicity starts at the first term when the map on states is not a bijection; $a_{n+1}=a_n^2 \bmod 10$ from $a_0=2$ runs $2,4,6,6,6,\dots$ and is eventually constant, not periodic from the start. A substitution that is only valid on part of the domain, like $t+1/t$ for $|x|\ge 2$. Reporting a period found numerically without the sentence that a repeated state forces it. A limit of a recurrence computed by solving $L=f(L)$ before the sequence has been shown to converge.
+\end{trap}
+
+\begin{ladder}
+\item \putnam{2016 B1}. A sequence defined through logarithms; sum a series built from it.
+\item \seminar{PS 4 \#1}. A third-order linear recurrence; the terms as a sum of familiar sequences.
+\item \seminar{PS 4 \#3}. The parity of the integer part of a power; a recurrence hidden in a surd.
+\item \seminar{PS 4 \#5}. The ceiling of a power of a surd; divisibility by a power of two.
+\item \seminar{PS 4 \#9}. A second-order recurrence; one specific far term.
+\item \putnam{2017 A2}. A rational recurrence whose terms turn out to be integer polynomials.
+\item \putnam{2025 A1}. An iteration on fractions; the terms eventually coprime.
+\item \putnam{2020 A3}. An iterated sine; convergence of a series of the terms.
+\item \putnam{2018 B4}. A cosine-like recurrence; one zero term forces periodicity.
+\item \putnam{2021 B4}. A product of powers reduced modulo a Fibonacci number; the remainder.
+\item \putnam{2019 B5}. A polynomial interpolating a famous recurrence; extrapolate one step.
+\end{ladder}
+
+\begin{hides}
+Inside counting, where the count for $n$ splits by the first part (\putnam{2020 A5}, \putnam{2022 A3}, \putnam{2024 B5}). Inside probability, where conditioning on the first step turns a probability or an expectation into a recurrence (\putnam{2020 A4}, \putnam{2020 B3}, \putnam{2024 B4}). Inside number theory, where the exact power of a prime dividing a term follows the recurrence (\putnam{2025 A6}, \putnam{2021 B4}). Inside polynomials, where a sequence of polynomials is defined by iteration (\putnam{2017 A2}, \putnam{2019 B5}). Inside linear algebra, where the recurrence is a power of a matrix (\seminar{PS 7 \#24}, \seminar{PS 7 \#25}).
+\end{hides}

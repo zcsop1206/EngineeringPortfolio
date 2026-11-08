@@ -1,0 +1,102 @@
+\section{Geometry}
+
+\begin{recognise}
+Points, lines, circles, triangles, polygons or lattice points appear. A figure is built in steps (erect a square, take a midpoint, rotate) and a property of the result is asked for. A set of points in the plane or in space has a metric condition and a count or an existence is asked. A quantity is claimed not to depend on a point that was chosen freely. The seminar has no geometry set, but six of the forty easy Putnam slots in the last decade were geometry, so the tools below have to be at hand without a reference set to practise on.
+\end{recognise}
+
+\begin{proposition}[Coordinates]
+Place the origin at the figure's natural centre (a midpoint, a circumcentre, a vertex with a right angle) and an axis along a natural line. Then the signed area of the triangle with vertices $A,B,C$ is $\tfrac12\det(B-A,\ C-A)=\tfrac12\bigl((b_1-a_1)(c_2-a_2)-(b_2-a_2)(c_1-a_1)\bigr)$, positive when $ABC$ is counterclockwise; three points are collinear exactly when this is $0$; and the area of a polygon with vertices $P_1,\dots,P_n$ in order is $\tfrac12\sum_i\det(P_i,P_{i+1})$ with $P_{n+1}=P_1$.
+\end{proposition}
+
+\begin{proof}
+The determinant is the area of the parallelogram spanned by two vectors, which is base times height, and the triangle is half of it. The polygon formula is the triangle formula applied to the triangles $OP_iP_{i+1}$ and summed; the parts outside the polygon cancel in pairs by sign.
+\end{proof}
+
+\begin{proposition}[Complex numbers for rotations]
+Identify the plane with $\C$. The rotation by angle $\theta$ about the point $c$ is $z\mapsto c+e^{i\theta}(z-c)$. The composition of a rotation by $\alpha$ and a rotation by $\beta$ is a rotation by $\alpha+\beta$ when $\alpha+\beta$ is not a multiple of $2\pi$, and a translation otherwise. The angle from the ray $AB$ to the ray $AC$ is the argument of $(c-a)/(b-a)$; this ratio is real exactly when $A,B,C$ are collinear. The vertices of a regular $n$-gon centred at $0$ are $r e^{i\varphi}\omega^k$ with $\omega=e^{2\pi i/n}$, and $1+\omega+\dots+\omega^{n-1}=0$. The triangle $abc$ is equilateral, with $a,b,c$ counterclockwise, if and only if $a+\omega b+\omega^2c=0$ for $\omega=e^{2\pi i/3}$.
+\end{proposition}
+
+\begin{proof}
+A rotation about $0$ is multiplication by $e^{i\theta}$, and conjugating by the translation $z\mapsto z-c$ moves the centre. Composing $z\mapsto c_1+e^{i\alpha}(z-c_1)$ with $z\mapsto c_2+e^{i\beta}(z-c_2)$ gives $z\mapsto e^{i(\alpha+\beta)}z+\text{constant}$, which is a rotation about the fixed point $z_0=\text{constant}/(1-e^{i(\alpha+\beta)})$ when that denominator is nonzero. The angle statement is the polar form of a quotient. The roots of unity sum to $0$ because they are the roots of $x^n-1$, whose $x^{n-1}$ coefficient is $0$. For the last claim, $1+\omega+\omega^2=0$ gives $a+\omega b+\omega^2c=(a-c)+\omega(b-c)$, which vanishes exactly when $a-c=-\omega(b-c)=e^{-i\pi/3}(b-c)$, that is, when $A$ is obtained from $B$ by rotating about $C$ through $-60^\circ$.
+\end{proof}
+
+\begin{proposition}[Vectors and the classical centres]
+Let $A,B,C$ be the position vectors of the vertices of a triangle.
+\begin{enumerate}[nosep]
+\item The centroid is $G=\tfrac13(A+B+C)$; it lies on each median and divides it in the ratio $2:1$ from the vertex.
+\item If the origin is the circumcentre $O$, the orthocentre is $H=A+B+C$, so $O$, $G$, $H$ are collinear with $OH=3\,OG$.
+\item The incentre is $I=(aA+bB+cC)/(a+b+c)$, where $a,b,c$ are the side lengths opposite $A,B,C$; it is where the angle bisectors meet and is equidistant from the three sides.
+\item (Inscribed angle) An angle inscribed in a circle is half the central angle on the same arc; in particular, angles on the same arc are equal, and an angle in a semicircle is right.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) The midpoint of $BC$ is $M=\tfrac12(B+C)$, and $A+\tfrac23(M-A)=\tfrac13(A+B+C)$, the same for all three medians. (2) $(H-A)\cdot(B-C)=(B+C)\cdot(B-C)=|B|^2-|C|^2=0$ since $|A|=|B|=|C|$; so the line $AH$ is the altitude from $A$, and likewise for $B$ and $C$; then $H=3G$. (3) The bisector from $A$ meets $BC$ at the point $D$ dividing $BC$ in the ratio $c:b$ (angle bisector theorem, from the sine rule in the two sub-triangles), so $D=(bB+cC)/(b+c)$; the point $I$ above lies on $AD$ since $I=\frac{a}{a+b+c}A+\frac{b+c}{a+b+c}D$, and by symmetry on the other two bisectors. (4) Join the centre to the three points; the two isosceles triangles give the inscribed angle as the sum of two base angles, each half of its exterior angle at the centre.
+\end{proof}
+
+\begin{proposition}[Lattice points]
+A square is $0$ or $1$ modulo $4$, so $x^2+y^2$ is never $3$ modulo $4$, and $x^2+y^2\equiv 2\pmod4$ forces $x,y$ both odd. The area of a polygon with lattice-point vertices is a multiple of $\tfrac12$ (Pick: area $=I+B/2-1$ with $I$ interior and $B$ boundary lattice points). There is no equilateral triangle with all three vertices at lattice points. The number of lattice points on the segment from $(0,0)$ to $(p,q)$, excluding the origin, is $\gcd(p,q)$.
+\end{proposition}
+
+\begin{proof}
+Squares modulo $4$: $(2k)^2=4k^2$ and $(2k+1)^2=4k(k+1)+1$. The half-integer area follows from the determinant formula, whose terms are integers. For an equilateral lattice triangle with side $s$, $s^2$ is an integer, and the area $\tfrac{\sqrt3}4s^2$ is irrational, contradicting the half-integer area. The lattice points $(tp,tq)$ with $0<t\le1$ require $t=k/\gcd(p,q)$.
+\end{proof}
+
+\begin{proposition}[Pigeonhole in the plane and extremal points]
+To show two of $n$ points in a region are within distance $d$, partition the region into fewer than $n$ pieces each of diameter at most $d$. Among finitely many points, the pair at maximum distance, the point farthest from a line, and the triangle of largest area are the natural extremal objects; the largest-area triangle $ABC$ in a finite set has every other point inside the triangle with sides parallel to those of $ABC$ through the opposite vertices (four times the area).
+\end{proposition}
+
+\begin{proof}
+Two points in one piece are at most its diameter apart. For the largest triangle, a point beyond the line through $A$ parallel to $BC$ would form a triangle with $B$ and $C$ of larger height, hence larger area.
+\end{proof}
+
+\begin{firstmoves}
+Draw it to scale, twice, with different shapes for the free parts of the figure, and see what stays the same. Put coordinates with the origin at the symmetric point; for a right angle, put it at the origin with legs along the axes. For rotations and regular polygons, use complex numbers. For midpoints, centroids and parallel lines, use vectors. For lattice points, reduce modulo $4$ and compute an area. Compute the smallest case or a degenerate case (a point at the centre, a triangle collapsed to a segment) to find the answer before proving it.
+\end{firstmoves}
+
+\begin{example}
+Let $A$ and $B$ be distinct points in the plane. A point $P$ is rotated by $90^\circ$ counterclockwise about $A$ to give $P_1$, and $P_1$ is rotated by $90^\circ$ counterclockwise about $B$ to give $P_2$. Show that the midpoint of $PP_2$ does not depend on $P$, and describe it.
+\end{example}
+
+\begin{proof}[Solution]
+Work in $\C$ with $A=a$, $B=b$, $P=z$. The first rotation gives $p_1=a+i(z-a)$ and the second
+\[
+p_2=b+i(p_1-b)=b+i\bigl(a+i(z-a)-b\bigr)=-z+a+b+i(a-b).
+\]
+So $p_2=-z+2c$ with $c=\tfrac12\bigl(a+b+i(a-b)\bigr)$, which does not involve $z$: the composite map is the half-turn about $c$, as the composition of two quarter-turns must be, and the midpoint of $PP_2$ is $\tfrac12(z+p_2)=c$ for every $P$.
+
+To describe $c$: $c-a=\tfrac12(b-a)(1-i)$ and $c-b=\tfrac12(a-b)(1+i)$, so $|c-a|=|c-b|=|a-b|/\sqrt2$, and $(c-a)/(c-b)=-(1-i)/(1+i)=i$, so the angle at $c$ is a right angle. $C$ is the apex of the isosceles right triangle with hypotenuse $AB$. Which of the two apexes: with $a=0$, $b=1$ one gets $c=\tfrac12(1-i)$, below the real axis, so $C$ lies to the right of the directed segment from $A$ to $B$.
+
+Check with $P=A$: $P_1=A$, and $P_2=b+i(a-b)$; the midpoint of $A$ and $P_2$ is $\tfrac12(a+b+i(a-b))=c$. The general fact behind this, that two rotations compose to a rotation by the sum of the angles about a centre determined by the two centres and angles alone, is the whole content; the complex numbers merely locate the centre.
+\end{proof}
+
+\begin{example}
+Let $N$ be a positive integer that is neither a perfect square nor twice a perfect square. Show that the number of lattice points $(x,y)$ with $x^2+y^2=N$ is divisible by $8$.
+\end{example}
+
+\begin{proof}[Solution]
+The eight maps $(x,y)\mapsto(\pm x,\pm y)$ and $(x,y)\mapsto(\pm y,\pm x)$ preserve $x^2+y^2$, so they permute the solutions, and they form a group (the symmetries of the square). The solutions split into orbits under this group, and the orbit of $(x,y)$ has exactly $8$ elements unless two of the eight images coincide, which happens only when $x=0$, or $y=0$, or $|x|=|y|$.
+
+If $x=0$ or $y=0$ then $N=y^2$ or $N=x^2$ is a perfect square, excluded. If $|x|=|y|$ then $N=2x^2$ is twice a square, excluded. So under the hypothesis every orbit has exactly $8$ elements, and the number of solutions, being a disjoint union of orbits, is a multiple of $8$.
+
+Check: $N=5$ has the eight solutions $(\pm1,\pm2)$ and $(\pm2,\pm1)$; $N=25$, a square, has twelve, namely $(\pm5,0)$, $(0,\pm5)$ and the eight from $(3,4)$; $N=50$, twice a square, has twelve, from $(\pm5,\pm5)$ and $(1,7)$. For $N\equiv3\pmod4$ the count is $0$, which is also a multiple of $8$; the parity of squares modulo $4$ and the symmetry argument are both at work, and the symmetry argument is the one that generalises: any set of lattice points invariant under a group of $8$ symmetries has size $\equiv$ (number of points with a nontrivial stabiliser) modulo $8$.
+\end{proof}
+
+\begin{trap}
+A configuration drawn in a special position that the problem did not promise, so a property that holds in the drawing is read as general; redraw with the free points moved. A sign lost in a coordinate or an orientation lost in a rotation; the two apexes in the first example differ by the sign of $i$, and the problem's ``counterclockwise'' picks one. Dividing by a length that may be zero in a degenerate case the problem allows. Using the inscribed angle theorem across the wrong arc, where the angle is supplementary rather than equal. Treating ``lattice point'' as ``integer coordinates'' and forgetting that a circle or line through lattice points can carry non-lattice points too. Picking coordinates that make the algebra heavy when a different origin would make half the terms vanish.
+\end{trap}
+
+\begin{ladder}
+\item \putnam{2019 A2}. A triangle in which a line through two centres is parallel to a side; an angle.
+\item \putnam{2017 B1}. Two distinct lines in the plane; a point of one scaled onto the other.
+\item \putnam{2019 B1}. Lattice points on a family of circles; count the squares among them.
+\item \putnam{2021 B1}. A random square on a grid; the chance it avoids certain points.
+\item \putnam{2024 B2}. A chain of quadrilaterals each built from the last; infinitely many non-congruent.
+\item \putnam{2025 B1}. A two-colouring of the plane closed under circumcentres; a monochromatic configuration.
+\item \putnam{2021 A3}. A sphere passing through the vertices of an integer regular tetrahedron; which radii.
+\item \putnam{2016 B3}. A finite set of points in the plane; one bounded triangle covers it.
+\end{ladder}
+
+\begin{hides}
+Inside counting, where the objects counted are lattice points or configurations in the plane (\putnam{2019 B1}, \putnam{2025 B1}, \putnam{2016 A4}). Inside probability, where the chance is a ratio of areas (\putnam{2021 B1}, \putnam{2024 A5}). Inside number theory, where a Diophantine equation is the equation of a circle or a sphere (\putnam{2021 A3}, \putnam{2018 A6}). Inside linear algebra, where lines and planes are vectors and a Gram matrix encodes the distances (\putnam{2017 B1}, \putnam{2018 A6}). Inside inequalities, where unit complex numbers or centroids of regions are compared (\putnam{2020 B5}, \putnam{2025 B2}). Inside pigeonhole and extremal arguments, where the plane is cut into small pieces or the farthest pair is taken (\putnam{2016 B3}, \putnam{2017 B5}).
+\end{hides}
