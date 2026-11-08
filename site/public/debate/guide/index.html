@@ -5,69 +5,81 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Rebuttal Board guide</title>
 <meta name="robots" content="noindex">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap">
 <style>
-:root{--bg:#f7f8f6;--fg:#17201d;--muted:#6b7773;--line:#e1e6e3;--accent:#1f6a52;--warn:#9a6a0e;
-  --ui:"Source Sans 3",system-ui,sans-serif;--speech:"Source Serif 4",Georgia,serif;--mono:ui-monospace,Menlo,Consolas,monospace}
-@media (prefers-color-scheme:dark){:root{--bg:#101513;--fg:#e6ebe8;--muted:#95a19b;--line:#242d29;--accent:#72c4a4;--warn:#dcae57;color-scheme:dark}}
-html,body{margin:0;background:var(--bg);color:var(--fg)}
-body{font:16px/1.5 var(--ui);padding-block:40px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-main{max-width:62ch;margin:0 auto}
-h1{font-size:22px;font-weight:600;margin:0 0 4px}
-.sub{color:var(--muted);margin:0 0 28px}
-h2{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600;margin:28px 0 6px}
-p,li{margin:0 0 8px}
-ol,ul{padding-left:20px}
-a{color:var(--accent)}
-.say{font-family:var(--speech);font-size:17px}
-code{font-family:var(--mono);font-size:.88em}
-.warn{color:var(--warn)}
-.open{display:inline-block;margin:0 0 20px;padding:8px 14px;border:1px solid var(--fg);border-radius:4px;color:var(--fg);text-decoration:none;font-weight:600}
+:root{--text:#111;--bg:#fff;--muted:#5c5c5c;--rule:#d4d4d4;--red:#c8102e;--sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--small:.85rem;--lede:1.15rem}
+@media (prefers-color-scheme:dark){:root{--text:#e8e8e8;--bg:#121212;--muted:#a3a3a3;--rule:#3a3a3a;--red:#ff6b6b;color-scheme:dark}}
+html{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6}
+body{margin:0;font-size:1.0625rem;padding:1.5rem max(16px,env(safe-area-inset-right,0px)) 4rem max(16px,env(safe-area-inset-left,0px))}
+main{width:min(680px,100%);margin:0 auto}
+h1{font-size:1.75rem;font-weight:600;line-height:1.25;margin:0 0 .5rem}
+.lede{font-size:var(--lede);color:var(--muted);margin:0 0 1.5rem}
+h2{font-size:1.3rem;font-weight:600;line-height:1.25;margin:2.25rem 0 .75rem}
+p,ul,ol{margin:0 0 1rem} ul,ol{padding-left:1.4rem} li{margin:.2rem 0}
+a{color:inherit;text-decoration:underline;text-underline-offset:.15em;text-decoration-thickness:1px} a:hover{text-decoration-thickness:2px}
+code{font-family:var(--mono);font-size:.92em;background:#f3f3f3;padding:.05em .25em}
+@media (prefers-color-scheme:dark){code{background:#1e1e1e}}
+.red{color:var(--red)} .muted{color:var(--muted)}
+table{border-collapse:collapse;font-size:var(--small);font-variant-numeric:tabular-nums;margin:0 0 1rem}
+th,td{text-align:left;vertical-align:top;padding:.35rem .75rem .35rem 0;border-bottom:1px solid var(--rule)}
+thead th{font-weight:600;border-bottom-color:var(--text)}
+.btn{display:inline-block;font-size:var(--small);color:var(--text);background:var(--bg);border:1px solid var(--rule);padding:.25rem .6rem;text-decoration:none;margin:0 0 1.5rem}
+.btn:hover{border-color:var(--text)}
 </style>
 </head>
 <body>
 <main>
 <h1>Rebuttal Board</h1>
-<p class="sub">MIE315 · against the motion "Individual action has more impact on the environment than government policy."</p>
-<a class="open" href="../">Open the board</a>
+<p class="lede">MIE315. Against the motion "Individual action has more impact on the environment than government policy."</p>
+<a class="btn" href="../">Open the board</a>
+
+<h2>The round</h2>
+<p>For opens (5 min). We open (5). For rebuts (4). We rebut (4). We close (2). For closes (2). The board is built for the nine minutes between the end of their opening and the start of our rebuttal.</p>
 
 <h2>Before the round</h2>
 <ol>
-  <li>One person opens the board and presses <b>Session</b>, then <b>New</b>. The code appears after <code>#s-</code> in the address bar.</li>
-  <li>Everyone else opens the same link, or presses Session and types the code. Four people, four devices, one log.</li>
-  <li>Type your first name in the header once. Everything you log carries it.</li>
-  <li>Read the Corpus tab once. The order inside each group is strongest argument first; the greyed groups at the bottom are our own frames and measured wins.</li>
-  <li>One device holds the Haiku key: Session, paste the key, Save. That device then ranks for the whole room, so keep it open, plugged in and online. Nobody else enters anything; their header shows "Haiku via" that person's name once the first ranking arrives.</li>
+  <li>One person opens the board, presses <b>Session</b>, then <b>New</b>. The code sits after <code>#s-</code> in the address bar. Everyone else opens the same link. Four people, four devices, one log.</li>
+  <li>Type your first name in the header. Everything you log carries it.</li>
+  <li>One device holds the Anthropic key: Session, paste, Save. That device answers for the room, so keep it open, plugged in and online. Nobody else enters anything; their header shows <code>model via</code> that person's name once the first answer lands.</li>
+  <li>Read the Corpus tab once. Our own cards: <code>F1–F6</code> frames and definitions, <code>M1–M5</code> measured examples, <code>OP1–OP4</code> the opening's examples, <code>CL1–CL2</code> the closing's two pillars. Theirs, with our rebuttals: <code>A/B/C</code> by tier, <code>FP/PL/MK</code> researched by angle.</li>
 </ol>
 
-<h2>During their speech</h2>
+<h2>During their opening</h2>
 <ol>
-  <li>Type what they said, in their words, and press Enter. Short is fine: <span class="say">"vegan cuts footprint 73 percent"</span>.</li>
-  <li>Three cards appear under it at once, best match first. The line in serif is the line to say aloud. Tap a card's title for the detail, the sources, and what to say if they push back.</li>
-  <li>If Haiku is on, it re-orders the cards a second or two later and adds one italic linking sentence. That sentence is Haiku's phrasing, not a fact; the facts are on the cards.</li>
-  <li>Press <b>More</b> on a point to see all matches, attach a note or link, re-rank, or remove it. Press <b>Use this in the outline</b> on the card you intend to run.</li>
+  <li>Type each claim and each example as they say it, in their words, and press Enter. Short is fine.</li>
+  <li>Matching cards appear underneath, best first; the model re-orders them a second later. Tap a card's title for the detail, the sources, and what to say if they push back.</li>
+  <li>A point no card answers is marked <span class="red">gap</span> and lands in Strategy. On the key device the model researches it at once with web search and attaches a draft with links.</li>
 </ol>
 
-<h2>Building the speeches</h2>
-<ul>
-  <li><b>Outline → Build</b> under Rebuttal gives up to six beats for four minutes, each with a time mark, the line to say and the source to name. Everyone sees the latest build.</li>
-  <li>Build the Closing the same way: a frame that resets the motion, the wins that beat what they actually argued, and the line to end on. <b>Copy</b> gives plain text.</li>
-  <li>The take-away line is on card F4: <span class="say">Individuals choose from the menu. Government writes the menu.</span></li>
-</ul>
+<h2>The nine minutes</h2>
+<ol>
+  <li><b>Gaps.</b> Open Strategy. Each gap shows the research draft if one exists. A teammate opens the links, then presses <b>Links check out</b> or <b>Wrong, drop it</b>. A gap the model could not answer is a teammate's job: press <b>Add a finding</b> and paste what you find, with the link. <b>Copy gaps as text</b> pastes the list into a doc if you prefer working there.</li>
+  <li><b>Their case.</b> Tag each point: main claim, load-bearing, weak, or skip. The rebuttal is built from what you tag, not from everything they said.</li>
+  <li><b>Counter-claim.</b> Write the one sentence that refutes their main claim, or press <b>Propose a strategy</b>: the model names their thesis, suggests roles for each point and a counter-claim, and drafts beats. <b>Apply</b> sets all of it; then edit.</li>
+  <li><b>Rebuttal.</b> Add beats from Their case, reorder with the arrows, swap a beat's card with ⇄, remove with ×. Time marks assume four minutes split evenly. <b>Copy</b> gives plain text.</li>
+  <li><b>Closing.</b> Auto-build picks a frame that resets the motion, the wins that beat what they argued, and the line to end on. Reorder the same way.</li>
+</ol>
+
+<h2>How long research takes</h2>
+<p>Measured on 2026-11-08 with four claims the corpus did not cover (Danish wind co-ops, The Ocean Cleanup, US beef consumption, Dutch cycling), each researched by a model with web search:</p>
+<table><thead><tr><th>Claim</th><th>Time</th><th>Sources opened</th><th>Confidence</th></tr></thead><tbody>
+<tr><td>Danish wind cooperatives</td><td>44 s</td><td>2 of 4</td><td>medium</td></tr>
+<tr><td>The Ocean Cleanup</td><td>45 s</td><td>1 of 4</td><td>medium</td></tr>
+<tr><td>US beef consumption</td><td>60 s</td><td>2 of 4</td><td>medium</td></tr>
+<tr><td>Dutch cycling protests</td><td>52 s</td><td>0 of 4</td><td>low to medium</td></tr>
+</tbody></table>
+<p>So: a sourced line arrives in about a minute, but only one or two of its sources were actually opened; the rest are search snippets. The fast path is the model first, a human second: the key device researches every gap as it appears, and a teammate spends their minutes opening the links and pressing the check button, rather than searching from scratch. Reserve human research for the gaps the model marks low confidence, and never read a number aloud from a draft nobody checked.</p>
 
 <h2>Reading the marks</h2>
 <ul>
-  <li><span class="warn">?</span> or <span class="warn">check source</span>: a source on that card was never fetched by us. Say the point, soften or skip the number.</li>
-  <li><span class="warn">weak</span>: the best answer we have, but a judge may not buy it. Answer briefly and move on.</li>
-  <li>Card ids: <code>F1–F4</code> frames, <code>M1–M5</code> measured examples, <code>A/B/C</code> Adit's rebuttals by tier, <code>FP/PL/MK</code> researched For arguments (footprint, politics, markets), <code>OW/FR</code> further wins and frames.</li>
+  <li><span class="red">?</span> or <span class="red">check source</span>: a source on that card was never fetched by us. Say the point; soften or skip the number.</li>
+  <li><span class="muted">weak</span>: the best answer we have, but a judge may not buy it. Answer briefly and move on.</li>
+  <li>The italic line under a point is the model's link between the point and the first card. It is phrasing, not a fact. The facts are on the cards.</li>
 </ul>
 
 <h2>If something breaks</h2>
 <ul>
-  <li>The header dot shows sync. Green means shared and live. Red means offline: keep logging, entries queue and send when the connection returns.</li>
-  <li>"Keyword only" means no model has answered yet. Matching still works, in keyword order. If the key device is closed or asleep, points stay in keyword order and outlines build in keyword order after a 20-second wait.</li>
+  <li>The header shows sync: <code>shared</code> means live; <code>offline</code> means keep logging, entries queue and send when the connection returns.</li>
+  <li><code>keyword only</code> means no model has answered yet. Matching, outlines and the corpus still work. If the key device is closed, outlines build in keyword order after a 20-second wait.</li>
   <li>Anyone who knows the session code can read and add to the log, so use a fresh code for the real round.</li>
 </ul>
 </main>
