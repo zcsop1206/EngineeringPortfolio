@@ -4,7 +4,7 @@ Docs that rewrite themselves to Adit's level, and a record of that level per top
 
 ## What a doc is
 
-A pair. The detailed document is LaTeX, `<name>/<name>.tex` with one file per section in `<name>/parts/`, built to `<name>/<name>.pdf`; read the PDF in Obsidian on either device. The summary is `<name>.md` beside it, one compact paragraph per section under the same headings, with the PDF embedded at the top. Marks go on the summary; the pass rewrites both. The first doc is [putnam.md](putnam.md) with [putnam/putnam.pdf](putnam/putnam.pdf).
+A pair. The detailed document is LaTeX, `<name>/<name>.tex` with one file per section in `<name>/parts/` and a shared `_preamble.tex`, built to `<name>/<name>.pdf`; read the PDF in Obsidian on either device. Each technique section is also built on its own from a wrapper in `<name>/split/` to `<name>/split/topic-<slug>.pdf`, for reading one technique on the iPad without the whole document. The summary is `<name>.md` beside it, one compact paragraph per section under the same headings, with the PDF embedded at the top. Marks go on the summary; the pass rewrites both. The first doc is [putnam.md](putnam.md) with [putnam/putnam.pdf](putnam/putnam.pdf).
 
 ## Marking
 
@@ -27,7 +27,7 @@ The pass rewrites only the marked passages (lost: from further back, with terms 
 
 ## Building by hand
 
-`content\teach\build.cmd` builds every doc; `build.cmd putnam` builds one. It uses TinyTeX's xelatex at `%APPDATA%\TinyTeX\bin\windows\` and deletes the auxiliary files. Laptop only; the iPad reads the PDFs the sync brings.
+`content\teach\build.cmd` builds every doc and its per-topic wrappers; `build.cmd putnam` builds one doc. It uses TinyTeX's xelatex at `%APPDATA%\TinyTeX\bin\windows\` and deletes the auxiliary files. Laptop only; the iPad reads the PDFs the sync brings.
 
 ## levels.md
 
