@@ -785,7 +785,13 @@ function openDrawer() {
   el('joinBtn').onclick = () => { const v = el('sessInput').value.trim(); if (v && v.replace(/[^a-z0-9]/gi, '').toLowerCase() !== S.session) setSession(v, true); else d.remove(); };
   el('newSess').onclick = () => setSession(Math.random().toString(36).slice(2, 8), true);
   el('copyLink').onclick = () => { const u = location.href.split('#')[0] + '#s-' + S.session; navigator.clipboard.writeText(u).then(() => toast('Link copied'), () => toast(u)); };
-  if (standalone) el('saveKey').onclick = () => { S.ai.key = el('keyInput').value.trim(); LS.set('rb:key', S.ai.key); S.ai.mode = S.ai.key ? 'key' : 'none'; render(); toast(S.ai.key ? 'Key saved on this device' : 'Key removed'); };
+  if (standalone) el('saveKey').onclick = async () => {
+    S.ai.key = el('keyInput').value.trim(); LS.set('rb:key', S.ai.key); S.ai.mode = S.ai.key ? 'key' : 'none'; render();
+    if (!S.ai.key) { toast('Key removed'); return; }
+    toast('Testing the key…');
+    try { const out = await askHaiku('Reply with only this JSON: {"ok":true}'); toast(out && out.ok ? 'Haiku answered. Re-ranking is on for this device.' : 'Key works; unexpected reply, re-ranking still on.'); }
+    catch (err) { aiFailed(err); }
+  };
   el('exportBtn').onclick = () => { const out = el('exportOut'); out.hidden = false; out.textContent = JSON.stringify({session: S.session, exported: new Date().toISOString(), events: [...S.events.values()]}, null, 1); };
   el('clearLocal').onclick = () => { LS.del('rb:ev:' + S.session); LS.del('rb:out:' + S.session); S.events = new Map(); S.outbox = []; render(); toast('Local copy cleared'); };
 }
