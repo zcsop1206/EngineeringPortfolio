@@ -112,6 +112,15 @@ form.log textarea{width:100%;resize:none;min-height:3.2rem;font-size:var(--lede)
 .beat .ctl button:hover{color:var(--text)}
 .proposal{padding-left:.75rem;border-left:1px solid var(--rule);display:flex;flex-direction:column;gap:.35rem;font-size:var(--small);margin-top:.5rem}
 .proposal .k{color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.75rem;margin-right:.4rem}
+.sg{padding-left:.75rem;border-left:1px solid var(--rule);margin-top:.6rem;font-size:var(--small);display:flex;flex-direction:column;gap:.2rem}
+.sg .k{color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.75rem;margin-top:.3rem}
+.sgl,.ex{display:flex;gap:.5rem;flex-wrap:wrap;align-items:baseline;font-size:var(--small)}
+.ex{margin:.15rem 0 0 3ch}
+.sub{padding:.5rem 0;border-top:1px solid var(--rule)}
+.sub .row{flex-wrap:nowrap}
+.subh{margin:1rem 0 .1rem;font-size:var(--small);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:400}
+.grow{flex:1;min-width:0}
+.sub select.txt{max-width:22ch;color:var(--muted)}
 .dir{display:flex;flex-direction:column;gap:.35rem;margin-top:.6rem}
 .dir input.txt{width:100%}
 .dir label,.beatedit label{display:inline-flex;gap:.3rem;align-items:baseline;color:var(--muted)}
@@ -270,7 +279,7 @@ const LS = { get(k, d) { try { const v = localStorage.getItem(k); return v == nu
 const S = {
   session: '', name: LS.get('rb:name', ''), events: new Map(), outbox: [],
   sync: {mode: 'local', status: 'starting', note: ''}, ai: {mode: 'none', sample: null, key: LS.get('rb:key', ''), busy: new Set(), via: ''},
-  view: 'board', mview: 'log', side: 'all', q: '', open: new Set(), openPts: new Set(), attOpen: new Set(), waiting: {}, proposal: null, proposing: false, researching: new Set(), editBeat: null, showProps: false, drafts: {},
+  view: 'board', mview: 'log', side: 'all', q: '', open: new Set(), openPts: new Set(), attOpen: new Set(), waiting: {}, proposal: null, proposing: false, researching: new Set(), editBeat: null, showProps: false, drafts: {}, suggesting: null, editSub: null,
   dir: Object.assign({text: '', open: '', end: 'F4', n: 4, keep: true}, LS.get('rb:dir', {})),
 };
 const HAIKU = 'claude-haiku-5-5', SONNET = 'claude-sonnet-5-5';
@@ -295,7 +304,8 @@ function applyEvent(e, fromRemote) {
   S.events.set(e.id, e);
   if (fromRemote) {
     const i = S.outbox.findIndex(x => x.id === e.id); if (i >= 0) S.outbox.splice(i, 1);
-    if ((e.k === 'rerank' || e.k === 'research' || e.k === 'proposal') && e.by !== me()) { S.ai.via = e.by; renderStatus(); }
+    if ((e.k === 'rerank' || e.k === 'research' || e.k === 'proposal' || (e.k === 'suggest' && e.model !== 'keyword')) && e.by !== me()) { S.ai.via = e.by; renderStatus(); }
+    if (e.k === 'suggest' && S.waiting['sg:' + e.stage]) { clearTimeout(S.waiting['sg:' + e.stage]); delete S.waiting['sg:' + e.stage]; if (S.suggesting === e.stage) S.suggesting = null; }
     if (e.k === 'outline' && S.waiting[e.type]) { clearTimeout(S.waiting[e.type]); delete S.waiting[e.type]; }
     serve(e);
   }
@@ -307,14 +317,17 @@ function emit(partial) {
 }
 function shrink(e) { // relay messages must stay under 4 KB
   const cap = (k, n) => { if (typeof e[k] === 'string' && e[k].length > n) e[k] = e[k].slice(0, n - 1) + '…'; };
-  cap('text', 1200); cap('url', 500); cap('line', 300); cap('why', 200); cap('dir', 300);
+  cap('text', 1200); cap('url', 500); cap('line', 300); cap('why', 200); cap('dir', 300); cap('claim', 240);
+  const capList = (lst, f, n) => Array.isArray(lst) && lst.forEach(x => { if (x && typeof x[f] === 'string' && x[f].length > n) x[f] = x[f].slice(0, n - 1) + '…'; });
+  if (e.k === 'suggest') { for (const k of ['alts', 'subs', 'per']) { capList(e[k], 'text', 180); capList(e[k], 'sharper', 180); capList(e[k], 'why', 90); } }
+  if (Array.isArray(e.order)) capList(e.order, 'head', 200);
   if (Array.isArray(e.order)) for (const b of e.order) { if (b.say) b.say = String(b.say).slice(0, 280); if (b.text) b.text = String(b.text).slice(0, 280); if (b.note) b.note = String(b.note).slice(0, 90); }
   if (e.card) { e.card.detail = String(e.card.detail || '').slice(0, 700); e.card.accurate = String(e.card.accurate || '').slice(0, 400); e.card.sources = (e.card.sources || []).slice(0, 4).map(s => ({title: String(s.title || '').slice(0, 120), publisher: String(s.publisher || '').slice(0, 60), year: s.year || '', url: String(s.url || '').slice(0, 300), finding: String(s.finding || '').slice(0, 160)})); }
   if (JSON.stringify(e).length > 3800 && Array.isArray(e.order)) e.order = e.order.slice(0, 8);
 }
 function derive() {
   const evs = [...S.events.values()].sort((a, b) => (a.t - b.t) || (a.id < b.id ? -1 : 1));
-  const pts = new Map(), outlines = {rebuttal: null, closing: null}, deleted = new Set(); let counter = null;
+  const pts = new Map(), outlines = {rebuttal: null, closing: null}, deleted = new Set(), subs = new Map(), suggest = {main: null, subs: null}; let counter = null;
   for (const e of evs) {
     if (e.k === 'point') pts.set(e.id, {id: e.id, text: e.text, by: e.by, t: e.t, att: [], rerank: null, pins: new Set(), role: '', research: null, rcheck: null, gapflag: false});
     else if (e.k === 'attach') { const p = pts.get(e.pid); if (p) p.att.push(e); }
@@ -325,11 +338,13 @@ function derive() {
     else if (e.k === 'research') { const p = pts.get(e.pid); if (p) { p.research = e; p.rcheck = null; } }
     else if (e.k === 'rcheck') { const p = pts.get(e.pid); if (p) p.rcheck = e; }
     else if (e.k === 'counter') counter = e;
+    else if (e.k === 'sub' && e.sid) { if (e.del) subs.delete(e.sid); else { const prev = subs.get(e.sid); subs.set(e.sid, {sid: e.sid, text: e.text != null ? String(e.text) : (prev ? prev.text : ''), ids: Array.isArray(e.ids) ? e.ids.filter(id => BY_ID.has(id)) : (prev ? prev.ids : []), t0: prev ? prev.t0 : e.t, by: e.by, t: e.t}); } }
+    else if (e.k === 'suggest' && (e.stage === 'main' || e.stage === 'subs')) suggest[e.stage] = e;
     else if (e.k === 'del') { if (e.pid) pts.delete(e.pid); if (e.aid) deleted.add(e.aid); }
     else if (e.k === 'outline' && (e.type === 'rebuttal' || e.type === 'closing')) outlines[e.type] = e;
   }
   for (const p of pts.values()) { p.att = p.att.filter(a => !deleted.has(a.id)); p.gap = isGap(p); }
-  return {points: [...pts.values()].sort((a, b) => b.t - a.t), outlines, counter};
+  return {points: [...pts.values()].sort((a, b) => b.t - a.t), outlines, counter, subs: [...subs.values()].sort((a, b) => a.t0 - b.t0), suggest};
 }
 function isGap(p) {
   if (p.research && p.rcheck && p.rcheck.ok) return false;
@@ -343,27 +358,50 @@ function chosenFor(p) {
 }
 
 // ───────────────────────── sync ─────────────────────────
-const RELAY = 'https://ntfy.sh/', topicOf = s => 'mie315-rb-' + s;
+const RELAY_DEFAULT = 'https://ntfy.sh/';
+const validRelay = r => /^https:\/\/[a-z0-9.-]+(:\d+)?\/?$/i.test(String(r || ''));
+function relayBase() { // any ntfy-compatible server; ?relay= in the link wins and is remembered
+  let r = ''; try { r = new URLSearchParams(location.search).get('relay') || ''; } catch {}
+  if (validRelay(r)) LS.set('rb:relay', r); else r = LS.get('rb:relay', '');
+  if (!validRelay(r)) r = RELAY_DEFAULT; return r.endsWith('/') ? r : r + '/';
+}
+const RELAY = relayBase(), topicOf = s => 'mie315-rb-' + s;
+const relayHost = () => { try { return new URL(RELAY).host; } catch { return 'relay'; } };
 let adapter = null;
 class RelaySync {
-  constructor() { this.es = null; this.lastId = ''; this.alive = false; }
-  start() { this.open(); setInterval(() => this.poll(), 15000); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') this.poll(); }); } // a background tab's stream can drop silently; a cheap poll since the last id catches up
+  constructor() { this.es = null; this.lastId = ''; this.alive = false; this.delay = 4000; this.timer = null; }
+  // The stream is reopened on our own schedule with a growing delay: a browser's automatic 3-second retries
+  // against a relay that is down would spend the relay's per-address request allowance for nothing.
+  start() { this.open(); setInterval(() => this.poll(), 45000); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') this.poll(); }); }
   open() {
-    try { this.es && this.es.close(); } catch {}
+    clearTimeout(this.timer); try { this.es && this.es.close(); } catch {}
     try {
-      this.es = new EventSource(RELAY + topicOf(S.session) + '/sse?since=all');
-      this.es.onopen = () => { this.alive = true; setSync('relay', 'live', ''); };
-      this.es.onmessage = ev => this.take(ev.data);
-      this.es.onerror = () => { this.alive = false; setSync('relay', 'offline', navigator.onLine ? 'relay unreachable, working locally' : 'offline, working locally'); };
-    } catch { setSync('relay', 'offline', 'relay unavailable here, working locally'); }
+      const es = this.es = new EventSource(RELAY + topicOf(S.session) + '/sse?since=' + (this.lastId || 'all'));
+      es.onopen = () => { this.alive = true; this.delay = 4000; setSync('relay', 'live', ''); flushOutbox(); };
+      es.onmessage = ev => this.take(ev.data);
+      es.onerror = () => { this.alive = false; try { es.close(); } catch {} this.down(); clearTimeout(this.timer); this.timer = setTimeout(() => this.open(), this.delay); this.delay = Math.min(this.delay * 2, 60000); };
+    } catch { this.down(); }
   }
+  down() { setSync('relay', 'offline', navigator.onLine ? `The relay (${relayHost()}) is not answering. Everything still works on this device; entries queue and send when it returns. Session has a copy-and-paste way to catch teammates up.` : 'This device is offline. Entries queue and send when the connection returns.'); }
   take(raw) { let m; try { m = JSON.parse(raw); } catch { return; } if (m.id) this.lastId = m.id; if (m.event !== 'message' || !m.message) return; let e; try { e = JSON.parse(m.message); } catch { return; } if (applyEvent(e, true)) { saveMirror(); scheduleRender(); } }
   async poll() {
-    try { const r = await withTimeout(fetch(RELAY + topicOf(S.session) + '/json?poll=1&since=' + (this.lastId || 'all')), 8000); if (!r.ok) throw 0; (await r.text()).split('\n').forEach(l => l.trim() && this.take(l)); if (S.sync.status !== 'live') setSync('relay', 'live', 'polling'); flushOutbox(); if (!this.alive) this.open(); }
-    catch { setSync('relay', 'offline', navigator.onLine ? 'relay unreachable, working locally' : 'offline, working locally'); }
+    try { const r = await withTimeout(fetch(RELAY + topicOf(S.session) + '/json?poll=1&since=' + (this.lastId || 'all')), 8000); if (!r.ok) throw 0; (await r.text()).split('\n').forEach(l => l.trim() && this.take(l)); if (S.sync.status !== 'live') setSync('relay', 'live', 'polling'); flushOutbox(); if (!this.alive) { this.delay = 4000; this.open(); } }
+    catch { if (!this.alive) this.down(); }
   }
   async send(e) { const r = await withTimeout(fetch(RELAY + topicOf(S.session), {method: 'POST', body: JSON.stringify(e)}), 8000); if (!r.ok) throw new Error('relay ' + r.status); try { const m = await r.json(); if (m && m.id) this.lastId = m.id; } catch {} }
 }
+// A session as pasteable text, for catching teammates up when no relay is reachable.
+async function packSession() {
+  const json = JSON.stringify({s: S.session, e: [...S.events.values()]});
+  try { const buf = new Uint8Array(await new Response(new Blob([json]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer()); let bin = ''; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000)); return 'RB1.' + btoa(bin); }
+  catch { return json; }
+}
+async function unpackSession(text) {
+  text = String(text || '').trim(); let json = text;
+  if (text.startsWith('RB1.')) { const bin = atob(text.slice(4).replace(/\s+/g, '')); json = await new Response(new Blob([Uint8Array.from(bin, c => c.charCodeAt(0))]).stream().pipeThrough(new DecompressionStream('gzip'))).text(); }
+  const d = JSON.parse(json); return Array.isArray(d) ? d : (d.e || d.events || []);
+}
+async function mergeSession(text) { const evs = await unpackSession(text); let n = 0; for (const e of evs) if (applyEvent(e, true)) n++; if (n) { saveMirror(); render(); } return n; }
 class DbSync {
   constructor(db) { this.db = db; this.readonly = false; this.timer = null; }
   col() { return this.db.collection('sessions/' + S.session + '/events'); }
@@ -422,7 +460,7 @@ async function callModel(prompt, {model = HAIKU, web = false, maxTokens = 800, e
   if (S.ai.mode === 'key' && S.ai.key === 'demo') return demoModel(prompt, web);
   if (S.ai.mode === 'sample') return await S.ai.sample.json(prompt, {model, modelTier: model === HAIKU ? 'quick' : 'default', effort: effort || 'low', cache: false});
   if (S.ai.mode !== 'key') throw new Error('no model');
-  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), web ? 170000 : 25000);
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), web ? 170000 : model === HAIKU ? 25000 : 90000); // Sonnet thinks before it answers
   try {
     // Thinking tokens count against max_tokens on these models, so a small ceiling can return no text at all.
     // Haiku answers these short JSON tasks without thinking; Sonnet keeps adaptive thinking with a large ceiling.
@@ -441,7 +479,8 @@ async function callModel(prompt, {model = HAIKU, web = false, maxTokens = 800, e
     }
     if (!text.trim()) throw new Error('empty reply, stop_reason ' + stop);
     try { return extractJson(text); } catch { throw new Error('no json in reply (stop_reason ' + stop + '): ' + text.slice(0, 60)); }
-  } finally { clearTimeout(t); }
+  } catch (err) { if (err && err.name === 'AbortError') throw new Error('timed out'); throw err; }
+  finally { clearTimeout(t); }
 }
 async function demoModel(prompt, web) { // plumbing test without a real key
   await new Promise(r => setTimeout(r, web ? 2500 : 600));
@@ -449,6 +488,9 @@ async function demoModel(prompt, web) { // plumbing test without a real key
   const pids = [...new Set((prompt.match(/\bP\d+\b/g) || []))];
   if (web) return {accurate: 'Demo: not researched.', say: 'Demo research draft for this claim; no real sources were fetched.', detail: 'This is the stub model. With a real key, Sonnet searches the web and returns sources it opened.', sources: [{title: 'Demo source', publisher: 'none', year: 2026, url: 'https://example.com/', finding: 'placeholder'}]};
   if (/^You rank rebuttal cards/.test(prompt) && /\bgaptest\b/i.test(prompt)) return {ids: [], line: '', gap: 'demo: corpus has nothing on this'};
+  const oursIds = ids.filter(id => BY_ID.has(id) && BY_ID.get(id).side === 'ours');
+  if (/STAGE: main claim/.test(prompt)) return {alts: [{text: 'Demo alternative: scale decides, and only policy has scale.', why: 'demo: leans on CL1'}, {text: 'Demo alternative: individuals choose from a menu that policy writes.', why: 'demo: leans on F2'}, {text: 'Demo alternative: count what was measured, not what could be.', why: 'demo: leans on F1'}], subs: oursIds.slice(0, 3).map((id, i) => ({text: 'Demo subclaim ' + (i + 1), ids: [id], why: 'demo'}))};
+  if (/STAGE: subclaims/.test(prompt)) { const sids = [...new Set(prompt.match(/\bS\d+\b/g) || [])]; return {per: sids.map((sid, i) => ({sid, sharper: i === 0 ? 'Demo sharper wording of ' + sid : '', ids: oursIds.slice(i, i + 2), why: 'demo'})), alts: oursIds.slice(4, 6).map((id, i) => ({text: 'Demo alternative subclaim ' + (i + 1), ids: [id], why: 'demo'}))}; }
   if (/counter-claim/i.test(prompt)) return {thesis: 'Demo: their thesis paraphrase.', counter: 'Demo counter-claim: individuals choose from the menu, government writes it.', roles: pids.map((pid, i) => ({pid, role: ['load', 'weak', 'skip', 'thesis'][i % 4], why: 'demo'})), beats: pids.slice(0, 3).map((pid, i) => ({pid, ids: [ids[i]].filter(Boolean), note: 'demo beat'}))};
   return {ids: ids.slice(0, 3), order: pids.map((pid, i) => ({pid, ids: [ids[i % Math.max(1, ids.length)]].filter(Boolean)})), line: 'Demo model: no real ranking was done.'};
 }
@@ -500,7 +542,7 @@ function cleanDir(d) { d = d || {}; return {text: trunc(d.text, 300), open: BY_I
 async function proposeStrategy(dir, serving) {
   dir = cleanDir(dir || S.dir);
   if (S.ai.mode === 'none' && !S.ai.via) { toast('No model in this session yet.'); return; }
-  if (S.ai.mode === 'none') { emit({k: 'ask', what: 'proposal', dir}); toast('Asked ' + S.ai.via + "'s device for a proposal."); return; }
+  if (S.ai.mode === 'none') { emit({k: 'ask', what: 'proposal', dir}); toast(S.sync.status === 'live' ? 'Asked ' + S.ai.via + "'s device for a proposal." : 'Sync is down, so ' + S.ai.via + "'s device cannot hear this yet. It goes out when the connection returns."); return; }
   if (S.proposing) return;
   S.proposing = true; renderStrategy();
   const {points, counter, outlines} = derive(); const pts = [...points].reverse(); const num = new Map(pts.map((p, i) => [p.id, i + 1]));
@@ -532,6 +574,79 @@ async function proposeStrategy(dir, serving) {
   } catch (err) { aiFailed(err, 'Strategy'); }
   finally { S.proposing = false; renderStrategy(); }
 }
+// ── co-work on our case: the speaker proposes, the model offers alternatives; every example is a corpus card ──
+const oursCards = () => CORPUS.filter(c => c.side === 'ours' && c.kind !== 'fallacy');
+const oursRef = () => oursCards().map(c => { const s0 = c.sources[0]; return `${c.id} | ${c.kind} | ${c.title} | ${trunc(c.say, 110)} | ${s0 ? (s0.publisher || s0.title) + (s0.year ? ' ' + s0.year : '') + (c.flagged ? ' (source not fully checked)' : '') : 'no source'}`; }).join('\n');
+const oursIdsOf = (lst, n) => (Array.isArray(lst) ? lst : []).map(String).filter(id => BY_ID.has(id) && BY_ID.get(id).side === 'ours' && BY_ID.get(id).kind !== 'fallacy').slice(0, n);
+const theirPointsText = points => [...points].reverse().filter(p => p.role !== 'skip').map((p, i) => `P${i + 1}${p.role ? ' (' + p.role + ')' : ''}: "${trunc(p.text, 160)}"`).join('\n') || '(nothing logged yet)';
+function keywordSuggest(stage) { // no model reachable: the matcher still finds frames and examples
+  const {points, counter, subs} = derive(); const claim = counter ? counter.text : ''; const ours = new Set(oursCards().map(c => c.id));
+  const rank = (text, kinds, skip = new Set()) => scored(text).map(x => x.id).filter(id => ours.has(id) && kinds.includes(BY_ID.get(id).kind) && !skip.has(id));
+  if (stage === 'main') {
+    const ctx = claim + ' ' + points.map(p => p.text).join(' ');
+    const alts = rank(ctx, ['frame']).slice(0, 3).map(id => ({text: BY_ID.get(id).say || BY_ID.get(id).title, why: 'our frame ' + id}));
+    const subsOut = rank(claim || ctx, ['win']).slice(0, 4).map(id => ({text: BY_ID.get(id).title, ids: [id], why: 'keyword match'}));
+    emit({k: 'suggest', stage, claim, alts, subs: subsOut, model: 'keyword'});
+  } else {
+    const used = new Set(subs.flatMap(x => x.ids));
+    const per = subs.map(x => ({sid: x.sid, sharper: '', ids: rank(x.text, ['win', 'frame'], new Set(x.ids)).slice(0, 2), why: 'keyword match'}));
+    const alts = rank(claim + ' ' + points.map(p => p.text).join(' '), ['win'], used).slice(0, 3).map(id => ({text: BY_ID.get(id).title, ids: [id], why: 'keyword match'}));
+    emit({k: 'suggest', stage, claim, per, alts, model: 'keyword'});
+  }
+}
+async function suggestCase(stage, opts = {}) {
+  let {points, counter, subs} = derive();
+  const draft = !opts.serving && S.drafts.counter != null ? S.drafts.counter.trim() : '';
+  if (draft && (!counter || counter.text !== draft)) { delete S.drafts.counter; emit({k: 'counter', text: draft}); ({points, counter, subs} = derive()); }
+  const claim = counter ? counter.text : '';
+  if (stage === 'main' && !claim) { toast('Write your main claim first; the alternatives are measured against it.'); return; }
+  if (stage === 'subs' && !subs.length) { toast('Add at least one subclaim first; the examples are chosen for it.'); return; }
+  if (S.ai.mode === 'none') {
+    if (!opts.serving && S.ai.via && S.sync.status === 'live') {
+      emit({k: 'ask', what: 'suggest', stage}); S.suggesting = stage; renderStrategy();
+      S.waiting['sg:' + stage] = setTimeout(() => { delete S.waiting['sg:' + stage]; if (S.suggesting === stage) { S.suggesting = null; keywordSuggest(stage); toast(S.ai.via + "'s device did not answer; these are keyword suggestions."); } }, 30000);
+      return;
+    }
+    keywordSuggest(stage); if (!opts.serving) toast('No model reachable; these are keyword suggestions from the corpus.'); return;
+  }
+  if (S.suggesting) return; S.suggesting = stage; renderStrategy();
+  const head = `You are the sparring partner of the closing speaker of a university debate team arguing AGAINST the motion "${MOTION}". The speaker decides; you offer options. Every idea must come from the cards below; add no fact, number or source of your own.
+Opponent points logged so far (role tags are the speaker's):
+${theirPointsText(points)}
+Our cards (id | kind | title | our line | first source):
+${oursRef()}`;
+  const prompt = stage === 'main' ? `${head}
+STAGE: main claim. The speaker proposes this main claim for the rebuttal: "${trunc(claim, 240)}"
+Reply with only JSON:
+{"alts":[{"text":"an alternative main claim, at most 25 words","why":"at most 14 words: what it does better than the speaker's, or what it risks"}],
+ "subs":[{"text":"a subclaim that would support the speaker's own claim, at most 18 words","ids":["M1"],"why":"at most 12 words: which opponent point it answers"}]}
+Give 3 alternatives that are different strategic choices (for example scale, who writes the menu, measured against potential, concede and turn), not rewordings of the speaker's claim. Give 4 subclaims for the speaker's claim as written, each with 1 or 2 card ids whose evidence carries it.`
+    : `${head}
+STAGE: subclaims. The chosen main claim: "${trunc(claim, 240)}"
+The speaker's subclaims, with the example cards already attached:
+${subs.map((x, i) => `S${i + 1}: "${trunc(x.text, 180)}" [${x.ids.join(', ') || 'no example yet'}]`).join('\n')}
+Reply with only JSON:
+{"per":[{"sid":"S1","sharper":"a tighter wording at most 18 words, or empty if the speaker's is already good","ids":["M2","OW04"],"why":"at most 12 words: why these examples fit"}],
+ "alts":[{"text":"an alternative or missing subclaim, at most 18 words","ids":["OW09"],"why":"at most 12 words: which opponent point it answers or which gap it fills"}]}
+For every subclaim give the 1 to 3 cards that are its best examples, preferring cards whose source is fully checked and that are not already attached. Then give 3 alternative subclaims the speaker has not thought of, each with its example cards.`;
+  try {
+    const out = await callModel(prompt, {model: S.ai.mode === 'key' ? SONNET : HAIKU, maxTokens: 1500, effort: 'low'});
+    const model = S.ai.mode === 'key' ? SONNET : HAIKU; const list = v => Array.isArray(v) ? v : [];
+    if (stage === 'main') {
+      const alts = list(out && out.alts).map(a => ({text: trunc(a.text, 180), why: trunc(a.why, 90)})).filter(a => a.text).slice(0, 4);
+      const subsOut = list(out && out.subs).map(a => ({text: trunc(a.text, 180), ids: oursIdsOf(a.ids, 2), why: trunc(a.why, 90)})).filter(a => a.text).slice(0, 5);
+      if (!alts.length && !subsOut.length) throw new Error('empty');
+      emit({k: 'suggest', stage, claim, alts, subs: subsOut, model});
+    } else {
+      const per = list(out && out.per).map(a => ({sid: subs[(parseInt(String(a.sid).replace(/\D/g, ''), 10) || 0) - 1]?.sid, sharper: trunc(a.sharper, 180), ids: oursIdsOf(a.ids, 3), why: trunc(a.why, 90)})).filter(a => a.sid);
+      const alts = list(out && out.alts).map(a => ({text: trunc(a.text, 180), ids: oursIdsOf(a.ids, 2), why: trunc(a.why, 90)})).filter(a => a.text).slice(0, 4);
+      if (!per.length && !alts.length) throw new Error('empty');
+      emit({k: 'suggest', stage, claim, per, alts, model});
+    }
+  } catch (err) { aiFailed(err, 'Suggestions'); keywordSuggest(stage); }
+  finally { S.suggesting = null; renderStrategy(); }
+}
+function subBeat(x, old) { const b = x.ids.length ? {ids: x.ids.slice(0, 2), head: x.text, sub: x.sid} : {ids: [], text: x.text, sub: x.sid}; if (old && old.sec > 0) b.sec = old.sec; if (old && old.lock) b.lock = true; return b; }
 function latestProposal() { let best = null; for (const e of S.events.values()) if (e.k === 'proposal' && (!best || e.t > best.t)) best = e; return best; }
 function mergeLocked(current, next) { // beats the speaker locked survive a rebuild or an applied proposal
   const locked = ((current && current.order) || []).filter(b => b.lock); if (!locked.length) return next.slice(0, 8);
@@ -555,7 +670,7 @@ function serve(e) {
   const fresh = ms => Date.now() - e.t < ms;
   if (e.k === 'point' && fresh(15 * 60 * 1000)) serveQueue.push({kind: 'point', id: e.id, t: e.t});
   else if (e.k === 'build' && fresh(90 * 1000)) serveQueue.push({kind: 'build', type: e.type, t: e.t});
-  else if (e.k === 'ask' && fresh(120 * 1000)) serveQueue.push({kind: e.what === 'proposal' ? 'proposal' : 'research', id: e.pid, t: e.t, dir: e.dir});
+  else if (e.k === 'ask' && fresh(120 * 1000)) serveQueue.push({kind: e.what === 'proposal' ? 'proposal' : e.what === 'suggest' ? 'suggest' : 'research', id: e.pid, t: e.t, dir: e.dir, stage: e.stage});
   else return;
   setTimeout(drainServe, 1200 + Math.random() * 800);
 }
@@ -567,6 +682,7 @@ async function drainServe() {
       if (job.kind === 'point') { const p = points.find(x => x.id === job.id); if (p && !p.rerank && !S.ai.busy.has(p.id)) await rerankPoint(p); }
       else if (job.kind === 'build') { const o = outlines[job.type]; if (!o || o.t < job.t) await buildOutline(job.type, true); }
       else if (job.kind === 'research') { const p = points.find(x => x.id === job.id); if (p && (!p.research || p.research.t < job.t)) await researchPoint(p); }
+      else if (job.kind === 'suggest') { const sg = derive().suggest[job.stage]; if (!sg || sg.t < job.t) await suggestCase(job.stage, {serving: true}); }
       else if (job.kind === 'proposal') { const pr = latestProposal(); if (!pr || pr.t < job.t) await proposeStrategy(job.dir, true); }
     }
   } finally { serving = false; }
@@ -641,7 +757,7 @@ function render() { renderStatus(); renderLog(); renderBoard(); renderStrategy()
 function renderName() { el('nameInput').value = S.name; }
 function renderStatus() {
   const st = el('syncText'); const s = S.sync.status; const pending = S.outbox.length ? ` · ${S.outbox.length} unsent` : '';
-  st.textContent = (s === 'live' ? 'shared · ' + S.session : s === 'readonly' ? 'read-only · ' + S.session : s === 'connecting' ? 'connecting' : s === 'starting' ? 'starting' : 'offline · local') + pending;
+  st.textContent = (s === 'live' ? 'shared · ' + S.session : s === 'readonly' ? 'read-only · ' + S.session : s === 'connecting' ? 'connecting' : s === 'starting' ? 'starting' : (S.sync.mode === 'relay' && navigator.onLine ? 'relay down · working locally' : 'offline · working locally')) + pending;
   st.title = (S.sync.note || 'Session code ' + S.session) + (pending ? '. Unsent items retry automatically.' : '');
   const at = el('aiText'); const viaOnly = S.ai.mode === 'none' && S.ai.via;
   at.textContent = S.ai.mode !== 'none' ? (canResearch() ? 'haiku + research on, serving the room' : 'haiku on, serving the room') : viaOnly ? 'model via ' + S.ai.via : 'keyword only';
@@ -742,7 +858,7 @@ function renderBoard() {
   host.innerHTML = html;
 }
 function renderStrategy() {
-  const {points, outlines, counter} = derive(); const host = el('strategy'); const pts = pointsForOutline(points); const byPid = new Map(pts.map(p => [p.id, p]));
+  const {points, outlines, counter, subs, suggest} = derive(); const host = el('strategy'); const pts = pointsForOutline(points); const byPid = new Map(pts.map(p => [p.id, p]));
   const num = new Map(pts.map((p, i) => [p.id, i + 1]));
   const modelHere = S.ai.mode !== 'none' || S.ai.via;
   // 1. their case
@@ -769,8 +885,34 @@ function renderStrategy() {
   const cardOpts = (sel, blank) => `<option value="">${blank}</option>` + ours.map(c => `<option value="${esc(c.id)}" ${c.id === sel ? 'selected' : ''}>${esc(c.id)} · ${esc(trunc(c.title, 36))}</option>`).join('');
   const dirHtml = modelHere ? `<div class="dir"><input class="txt" id="dirText" value="${esc(S.dir.text)}" maxlength="300" placeholder="Direction for the proposal: lead with scale, concede Montreal, skip their recycling point…" aria-label="Direction for the proposal">
       <div class="row small"><label>open on <select class="txt" id="dirOpen">${cardOpts(S.dir.open, 'model decides')}</select></label><label>end on <select class="txt" id="dirEnd">${cardOpts(S.dir.end, 'model decides')}</select></label><label>beats <select class="txt" id="dirN">${[3, 4, 5, 6].map(n => `<option ${n === S.dir.n ? 'selected' : ''}>${n}</option>`).join('')}</select></label><label><input type="checkbox" id="dirKeep" ${S.dir.keep ? 'checked' : ''}> keep my roles and counter-claim</label><button class="btn" id="proposeBtn" ${S.proposing ? 'disabled' : ''}>${S.proposing ? 'Proposing…' : props.length ? 'Propose another' : 'Propose a strategy'}</button></div></div>` : '';
-  const counterHtml = `<textarea class="txt" id="counterText" rows="2" placeholder="Your one-sentence counter-claim against their main claim" aria-label="Counter-claim">${esc(S.drafts.counter != null ? S.drafts.counter : counter ? counter.text : '')}</textarea>
-    <div class="row small" style="margin-top:.35rem"><button class="btn" id="saveCounter">Save</button><span class="muted">${counter ? esc(counter.by) + ' · ' + ago(counter.t) : ''}</span></div>${dirHtml}${prHtml}`;
+  const sgBusy = st => S.suggesting === st; const claimNow = counter ? counter.text : '';
+  const sgHead = sg => `<div class="muted">Suggestions · ${esc(sg.by)} · ${ago(sg.t)} · ${sg.model === 'keyword' ? 'keyword match, no model' : sg.model === SONNET ? 'Sonnet' : 'Haiku'}${sg.claim && sg.claim !== claimNow ? ' · for an earlier main claim' : ''}</div>`;
+  const exLine = (id, sid, attached) => { const c = BY_ID.get(id); if (!c) return ''; const s0 = c.sources[0];
+    return `<div class="ex"><span class="mono">${esc(c.id)}</span><span title="${esc(c.say)}">${esc(c.title)}</span>${s0 ? `<span class="muted">${esc(s0.publisher || s0.title)}${s0.year ? ' ' + esc(s0.year) : ''}</span>` : ''}${c.flagged ? '<span class="red">check source</span>' : ''}${attached ? `<button class="lnk" data-rmex="${sid}:${esc(id)}" title="Detach">×</button>` : `<button class="lnk" data-attachex="${sid}:${esc(id)}">attach</button>`}</div>`; };
+  const idsText = ids => (ids || []).map(id => { const c = BY_ID.get(id); return c ? `<span class="mono" title="${esc(c.title + ': ' + c.say)}">${esc(id)}</span>` : ''; }).join(' ');
+  const sgm = suggest.main, sgs = suggest.subs;
+  const mainSgHtml = sgm ? `<div class="sg">${sgHead(sgm)}
+      ${(sgm.alts || []).length ? `<div class="k">Alternative main claims</div>${sgm.alts.map((a, i) => `<div class="sgl"><span>${esc(a.text)}</span>${a.why ? `<span class="muted">${esc(a.why)}</span>` : ''}<button class="lnk" data-usealt="${i}">use</button></div>`).join('')}` : ''}
+      ${(sgm.subs || []).length ? `<div class="k">Subclaims that would carry yours</div>${sgm.subs.map((a, i) => `<div class="sgl"><span>${esc(a.text)}</span>${idsText(a.ids)}${a.why ? `<span class="muted">${esc(a.why)}</span>` : ''}<button class="lnk" data-addsub="main:${i}">add</button></div>`).join('')}` : ''}</div>` : '';
+  const perBy = new Map(((sgs && sgs.per) || []).map(x => [x.sid, x]));
+  const subHtml = subs.map((x, i) => {
+    const per = perBy.get(x.sid); const fresh = per ? per.ids.filter(id => !x.ids.includes(id)) : []; const kw = keywordMatch(x.text, 12).filter(id => BY_ID.get(id).side === 'ours' && BY_ID.get(id).kind !== 'fallacy' && !x.ids.includes(id)).slice(0, 5);
+    const opt = id => `<option value="${esc(id)}">${esc(id)} · ${esc(trunc(BY_ID.get(id).title, 40))}</option>`;
+    return `<div class="sub"><div class="row"><span class="mono muted small">S${i + 1}</span>${S.editSub === x.sid
+        ? `<form class="attform grow" data-subedit="${x.sid}"><input class="txt" id="subEdit-${x.sid}" name="text" maxlength="200" value="${esc(S.drafts['sub:' + x.sid] != null ? S.drafts['sub:' + x.sid] : x.text)}" aria-label="Subclaim"><button class="lnk" type="submit">Save</button></form>`
+        : `<span class="grow">${esc(x.text)}</span>`}<span class="small" style="display:flex;gap:.6rem"><button class="lnk" data-editsub="${x.sid}">${S.editSub === x.sid ? 'cancel' : 'edit'}</button><button class="lnk" data-subbeat="${x.sid}">beat</button><button class="lnk" data-delsub="${x.sid}" title="Remove">×</button></span></div>
+      ${x.ids.map(id => exLine(id, x.sid, true)).join('')}
+      ${per && per.sharper && per.sharper !== x.text ? `<div class="ex"><span class="muted">sharper</span><span>${esc(per.sharper)}</span><button class="lnk" data-usesharp="${x.sid}">use</button></div>` : ''}
+      ${fresh.length ? `<div class="ex muted">suggested examples${per.why ? ' · ' + esc(per.why) : ''}</div>${fresh.map(id => exLine(id, x.sid, false)).join('')}` : ''}
+      <div class="ex"><select class="txt" data-subcard="${x.sid}" aria-label="Attach a card to S${i + 1}"><option value="">attach a card…</option>${kw.length ? `<optgroup label="Matches">${kw.map(opt).join('')}</optgroup>` : ''}<optgroup label="All our cards">${oursCards().filter(c => !kw.includes(c.id) && !x.ids.includes(c.id)).map(c => opt(c.id)).join('')}</optgroup></select></div></div>`;
+  }).join('');
+  const altSubHtml = sgs && (sgs.alts || []).length ? `<div class="sg">${sgHead(sgs)}<div class="k">Subclaims you have not listed</div>${sgs.alts.map((a, i) => `<div class="sgl"><span>${esc(a.text)}</span>${idsText(a.ids)}${a.why ? `<span class="muted">${esc(a.why)}</span>` : ''}<button class="lnk" data-addsub="subs:${i}">add</button></div>`).join('')}</div>` : '';
+  const counterHtml = `<textarea class="txt" id="counterText" rows="2" placeholder="Your main claim: the one sentence that refutes theirs" aria-label="Main claim">${esc(S.drafts.counter != null ? S.drafts.counter : claimNow)}</textarea>
+    <div class="row small" style="margin-top:.35rem"><button class="btn" id="saveCounter">Save</button><button class="btn" data-suggest="main" ${sgBusy('main') ? 'disabled' : ''}>${sgBusy('main') ? 'Thinking…' : 'Suggest alternatives and subclaims'}</button><span class="muted">${counter ? 'saved · ' + esc(counter.by) + ' · ' + ago(counter.t) : 'not saved yet'}</span></div>${mainSgHtml}
+    <h3 class="subh">Subclaims</h3>${subHtml || `<p class="empty">The two or three points that carry the main claim. Add your own, or add from the suggestions above.</p>`}
+    <form class="attform" data-newsub="1" style="margin-top:.4rem"><input class="txt" id="newSubText" name="text" maxlength="200" placeholder="Add a subclaim" aria-label="New subclaim" value="${esc(S.drafts.newsub || '')}"><button class="lnk" type="submit">Add</button></form>
+    ${subs.length ? `<div class="row small" style="margin-top:.5rem"><button class="btn" data-suggest="subs" ${sgBusy('subs') ? 'disabled' : ''}>${sgBusy('subs') ? 'Thinking…' : 'Suggest examples and alternatives'}</button><button class="btn" data-buildsubs="1">Build beats from subclaims</button></div>` : ''}${altSubHtml}`;
+  const proposalHtml = dirHtml || prHtml ? `<section><h2>Proposal</h2><p class="empty" style="margin-bottom:.25rem">Or have the model draft roles and beats in one go. What you type in the direction line is sent with the request and quoted back on the proposal.</p>${dirHtml}${prHtml}</section>` : '';
   // 4. beats: each has a card or your own words, an optional fixed time, and a lock that survives rebuilds
   const editForm = (key, b, first, alt, total, dur) => {
     const d = S.drafts['beat:' + key] || {say: b.say || b.text || (first ? first.say || first.title : ''), card: (b.ids || [])[0] || '', sec: b.sec > 0 ? b.sec : '', lock: !!b.lock};
@@ -792,7 +934,7 @@ function renderStrategy() {
       let body;
       if (S.editBeat === key) body = editForm(key, b, first, alt, total, dur);
       else {
-        body = `${p ? `<div class="ans">P${num.get(p.id)} · ${esc(trunc(p.text, 160))}${p.role ? ' · ' + esc(p.role === 'load' ? 'load-bearing' : p.role) : ''}</div>` : ''}
+        body = `${p ? `<div class="ans">P${num.get(p.id)} · ${esc(trunc(p.text, 160))}${p.role ? ' · ' + esc(p.role === 'load' ? 'load-bearing' : p.role) : ''}</div>` : ''}${b.head ? `<div class="ans">Subclaim · ${esc(b.head)}</div>` : ''}
         ${first ? `<div class="say">${esc(b.say || first.say || first.title)}</div><div class="cite"><span class="mono">${esc(first.id)}</span> ${esc(first.title)}${cite ? ' · ' + cite : ''}${b.say ? ' · your wording' : ''}${b.note ? ' · ' + esc(b.note) : ''}${b.lock ? ' · kept' : ''}</div>`
           : b.text ? `<div class="say">${esc(b.text)}</div><div class="cite">your own words, no card${b.lock ? ' · kept' : ''}</div>` : `<div class="say muted">Empty beat: press edit</div>`}
         ${cards.slice(1).map(c => `<div class="cite">then <span class="mono">${esc(c.id)}</span> ${esc(trunc(c.say, 120))}</div>`).join('')}`;
@@ -811,7 +953,8 @@ function renderStrategy() {
   const focusKey = inHost ? (act.id || (act.form && act.form.dataset.beatedit ? act.form.dataset.beatedit + '/' + act.name : '')) : ''; const sel = inHost && act.selectionStart != null ? [act.selectionStart, act.selectionEnd] : null;
   host.innerHTML = `<section class="case"><h2>Their case</h2>${caseHtml}</section>
     <section><h2>Gaps${gaps.length ? ' · ' + gaps.length : ''}</h2>${gapsHtml}${gaps.length ? `<div class="row small" style="margin-top:.5rem"><button class="lnk" id="copyGaps">Copy gaps as text</button><span class="muted">paste into the research doc</span></div>` : ''}</section>
-    <section class="counter"><h2>Counter-claim</h2>${counterHtml}</section>
+    <section class="counter"><h2>Our case</h2>${counterHtml}</section>
+    ${proposalHtml}
     ${block('rebuttal', 'Rebuttal · 4 min', 'or add beats from Their case or in your own words; arrows reorder, ⇄ swaps the card, edit sets wording, seconds and a lock')}
     ${block('closing', 'Closing · 2 min', 'a frame that resets the motion, the wins that beat what they argued, the line to end on')}`;
   if (focusKey) { const [fk, fname] = focusKey.split('/'); const target = fname ? host.querySelector(`form[data-beatedit="${fk}"] [name="${fname}"]`) : el(fk); if (target) { target.focus({preventScroll: true}); if (sel && target.setSelectionRange) try { target.setSelectionRange(sel[0], sel[1]); } catch {} } }
@@ -837,7 +980,7 @@ function outlineText(type) {
   if (o.line && o.line !== (counter && counter.text)) lines.push('Open: ' + o.line);
   o.order.forEach((b, i) => {
     const p = b.pid ? byPid.get(b.pid) : null; const cards = (b.ids || []).map(id => BY_ID.get(id)).filter(Boolean); const {at, dur} = times[i];
-    lines.push(''); lines.push(`${i + 1}. [${stamp(at)}, ${dur}s] ${p ? 'They said: ' + p.text + (p.role ? ' (' + p.role + ')' : '') : ''}${b.note ? ' — ' + b.note : ''}`.trim());
+    lines.push(''); lines.push(`${i + 1}. [${stamp(at)}, ${dur}s] ${p ? 'They said: ' + p.text + (p.role ? ' (' + p.role + ')' : '') : ''}${b.head ? 'Subclaim: ' + b.head : ''}${b.note ? ' — ' + b.note : ''}`.trim());
     if (!cards.length && b.text) lines.push(`   SAY (own words): ${b.text}`);
     cards.forEach((c, j) => { const s = c.sources[0]; lines.push(`   SAY [${c.id}]: ${j === 0 && b.say ? b.say : c.say}`); if (j === 0 && b.say) lines.push(`   card says: ${c.say}`); if (s) lines.push(`   source: ${s.publisher || ''} ${s.year || ''} ${s.title ? '— ' + s.title : ''}${s.verified === true ? '' : ' (CHECK)'}`.trim()); });
   });
@@ -864,6 +1007,10 @@ function openDrawer() {
       <dt>Corpus</dt><dd>${CORPUS.length} cards, ${CORPUS.filter(c => c.flagged).length} with an unfetched source, built ${esc(RAW.built || 'n/a')}</dd></dl>
     ${standalone ? `<h2>One key for the room</h2><p>Enter an Anthropic API key on one device. That device ranks with Haiku, researches gaps with Sonnet and web search, and proposes strategy, for everyone in the session. The key never leaves this browser. Keep this device open and online during the round.</p>
     <div class="field"><input class="txt" id="keyInput" type="password" value="${esc(S.ai.key)}" autocomplete="off" placeholder="sk-ant-…" aria-label="Anthropic API key"><button class="lnk" id="saveKey">Save</button></div>` : `<h2>Models</h2><p>Ranking runs through the Claude account of whoever holds the page open; the first use asks to allow it. Web research needs the hosted page with a key.</p>`}
+    <h2>If sync is down</h2>
+    <p>Each device keeps working alone. To catch up without the relay: one person presses Copy session and pastes the text in the team chat; the others paste it here and press Merge. Merging twice is harmless.</p>
+    <div class="field"><button class="lnk" id="copySess">Copy session</button><input class="txt" id="mergeIn" placeholder="Paste a copied session" aria-label="Pasted session" autocomplete="off"><button class="lnk" id="mergeBtn">Merge</button></div>
+    ${standalone ? `<div class="field"><input class="txt" id="relayIn" value="${esc(RELAY)}" aria-label="Relay address" autocapitalize="off" autocomplete="off"><button class="lnk" id="relaySave">Use this relay</button></div><p class="muted">Any ntfy-compatible server. Everyone must be on the same one; Copy link carries it.</p>` : ''}
     <h2>This device</h2>
     <div class="field"><button class="lnk" id="exportBtn">Export session JSON</button><button class="lnk" id="clearLocal">Forget session locally</button></div>
     <p class="muted">The corpus, matching and outlines work offline. Logged points queue until the connection returns.</p>
@@ -874,7 +1021,7 @@ function openDrawer() {
   el('closeDrawer').onclick = () => d.remove();
   el('joinBtn').onclick = () => { const v = el('sessInput').value.trim(); if (v && v.replace(/[^a-z0-9]/gi, '').toLowerCase() !== S.session) setSession(v, true); else d.remove(); };
   el('newSess').onclick = () => setSession(Math.random().toString(36).slice(2, 8), true);
-  el('copyLink').onclick = () => { const u = location.href.split('#')[0] + '#s-' + S.session; navigator.clipboard.writeText(u).then(() => toast('Link copied'), () => toast(u)); };
+  el('copyLink').onclick = () => { const u = location.origin + location.pathname + (RELAY !== RELAY_DEFAULT ? '?relay=' + encodeURIComponent(RELAY) : '') + '#s-' + S.session; navigator.clipboard.writeText(u).then(() => toast('Link copied'), () => toast(u)); };
   if (standalone) el('saveKey').onclick = async () => {
     S.ai.key = el('keyInput').value.trim(); LS.set('rb:key', S.ai.key); S.ai.mode = S.ai.key ? 'key' : 'none'; render();
     if (!S.ai.key) { toast('Key removed'); return; }
@@ -882,6 +1029,9 @@ function openDrawer() {
     try { const out = await callModel('Reply with only this JSON: {"ok":true}', {model: HAIKU, maxTokens: 50}); toast(out && (out.ok || out.ids) ? 'Haiku answered. This device now serves the session.' : 'Key works; unexpected reply.'); keepAwake(); drainServe(); }
     catch (err) { aiFailed(err, 'Haiku'); }
   };
+  el('copySess').onclick = async () => copyText(await packSession());
+  el('mergeBtn').onclick = async () => { try { const n = await mergeSession(el('mergeIn').value); el('mergeIn').value = ''; toast(n ? `Merged ${n} new entr${n === 1 ? 'y' : 'ies'}.` : 'Nothing new in that session.'); } catch { toast('That text is not a copied session.'); } };
+  if (el('relaySave')) el('relaySave').onclick = () => { const v = el('relayIn').value.trim(); if (!validRelay(v)) { toast('A relay address looks like https://host/'); return; } LS.set('rb:relay', v); location.href = location.origin + location.pathname + '#s-' + S.session; location.reload(); };
   el('exportBtn').onclick = () => { const out = el('exportOut'); out.hidden = false; out.textContent = JSON.stringify({session: S.session, exported: new Date().toISOString(), events: [...S.events.values()]}, null, 1); };
   el('clearLocal').onclick = () => { LS.del('rb:ev:' + S.session); LS.del('rb:out:' + S.session); S.events = new Map(); S.outbox = []; render(); toast('Local copy cleared'); };
 }
@@ -897,7 +1047,7 @@ function wire() {
   el('q').addEventListener('input', e => { S.q = e.target.value; renderBoard(); });
   document.querySelectorAll('#sideSeg button').forEach(b => b.onclick = () => { S.side = b.dataset.side; document.querySelectorAll('#sideSeg button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); renderBoard(); });
   document.addEventListener('click', e => {
-    const t = e.target.closest('[data-toggle],[data-rerank],[data-pin],[data-more],[data-att],[data-del],[data-delatt],[data-copy],[data-build],[data-role],[data-research],[data-askresearch],[data-rcheck],[data-gapflag],[data-addbeat],[data-mv],[data-rm],[data-swap],[data-applyprop],[data-edit],[data-canceledit],[data-ownbeat],[data-undo],[data-showprops]');
+    const t = e.target.closest('[data-toggle],[data-rerank],[data-pin],[data-more],[data-att],[data-del],[data-delatt],[data-copy],[data-build],[data-role],[data-research],[data-askresearch],[data-rcheck],[data-gapflag],[data-addbeat],[data-mv],[data-rm],[data-swap],[data-applyprop],[data-edit],[data-canceledit],[data-ownbeat],[data-undo],[data-showprops],[data-suggest],[data-usealt],[data-addsub],[data-usesharp],[data-attachex],[data-rmex],[data-editsub],[data-delsub],[data-subbeat],[data-buildsubs]');
     if (!t) return; const d = t.dataset; const {points} = derive(); const find = id => points.find(x => x.id === id);
     if (d.toggle) { const inBoard = !!t.closest('#board'); const key = inBoard ? 'b:' + d.toggle : (t.closest('.point') ? t.closest('.point').dataset.pid + ':' + d.toggle : 'b:' + d.toggle); S.open.has(key) ? S.open.delete(key) : S.open.add(key); inBoard ? renderBoard() : renderLog(); }
     else if (d.rerank) { const p = find(d.rerank); if (p) rerankPoint(p); }
@@ -923,12 +1073,24 @@ function wire() {
     else if (d.canceledit) { delete S.drafts['beat:' + S.editBeat]; S.editBeat = null; renderStrategy(); }
     else if (d.ownbeat) { S.editBeat = d.ownbeat + ':new'; renderStrategy(); setTimeout(() => { const f = document.querySelector('form.beatedit textarea'); if (f) f.focus(); }, 0); }
     else if (d.undo) undoOutline(d.undo);
+    else if (d.suggest) suggestCase(d.suggest);
+    else if (d.usealt) { const a = derive().suggest.main; const alt = a && a.alts[+d.usealt]; if (alt) { delete S.drafts.counter; emit({k: 'counter', text: alt.text}); toast('Main claim replaced.'); } }
+    else if (d.addsub) { const [st, i] = d.addsub.split(':'); const sg = derive().suggest[st]; const a = sg && (st === 'main' ? sg.subs : sg.alts)[+i]; if (a) emit({k: 'sub', sid: uid(), text: a.text, ids: a.ids || []}); }
+    else if (d.usesharp) { const per = ((derive().suggest.subs || {}).per || []).find(x => x.sid === d.usesharp); if (per && per.sharper) emit({k: 'sub', sid: d.usesharp, text: per.sharper}); }
+    else if (d.attachex || d.rmex) { const [sid, cid] = (d.attachex || d.rmex).split(':'); const x = derive().subs.find(y => y.sid === sid); if (x) emit({k: 'sub', sid, ids: d.attachex ? [...new Set([...x.ids, cid])].slice(0, 4) : x.ids.filter(id => id !== cid)}); }
+    else if (d.editsub) { S.editSub = S.editSub === d.editsub ? null : d.editsub; delete S.drafts['sub:' + d.editsub]; renderStrategy(); const f = el('subEdit-' + d.editsub); if (f) f.focus(); }
+    else if (d.delsub) emit({k: 'sub', sid: d.delsub, del: true});
+    else if (d.subbeat) { const x = derive().subs.find(y => y.sid === d.subbeat); if (x) editOutline('rebuttal', o => { if (o.some(b => b.sub === x.sid)) return o.map(b => b.sub === x.sid ? subBeat(x, b) : b); o.push(subBeat(x)); return o; }); }
+    else if (d.buildsubs) { const xs = derive().subs; if (xs.length) { const live = new Set(xs.map(x => x.sid)); let added = 0; editOutline('rebuttal', o => { const kept = o.filter(b => !b.sub || live.has(b.sub)).map(b => b.sub ? subBeat(xs.find(x => x.sid === b.sub), b) : b); for (const x of xs) if (!kept.some(b => b.sub === x.sid)) { kept.push(subBeat(x)); added++; } return kept; }); toast(added ? `Added ${added} beat${added === 1 ? '' : 's'} from the subclaims; the others were refreshed.` : 'Subclaim beats refreshed.'); } }
   });
   document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-toggle]')) { e.preventDefault(); e.target.click(); } });
   document.addEventListener('input', e => { const t = e.target; if (!el('strategy').contains(t)) return;
-    if (t.id === 'counterText') S.drafts.counter = t.value; else if (/^dir/.test(t.id)) readDir();
+    if (t.id === 'counterText') S.drafts.counter = t.value; else if (/^dir/.test(t.id)) readDir(); else if (t.id === 'newSubText') S.drafts.newsub = t.value; else if (/^subEdit-/.test(t.id)) S.drafts['sub:' + t.id.slice(8)] = t.value;
     else if (t.form && t.form.dataset.beatedit) { const f = t.form; S.drafts['beat:' + f.dataset.beatedit] = {say: f.say.value, card: f.card.value, sec: f.sec.value, lock: f.lock.checked}; if (t.name === 'card') renderStrategy(); } });
+  document.addEventListener('change', e => { const t = e.target; if (t.dataset && t.dataset.subcard && t.value) { const x = derive().subs.find(y => y.sid === t.dataset.subcard); if (x) emit({k: 'sub', sid: x.sid, ids: [...new Set([...x.ids, t.value])].slice(0, 4)}); } });
   document.addEventListener('submit', e => { const be = e.target.closest('form[data-beatedit]'); if (be) { e.preventDefault(); saveBeat(be); return; }
+    const ns = e.target.closest('form[data-newsub]'); if (ns) { e.preventDefault(); const v = ns.text.value.trim(); if (v) { delete S.drafts.newsub; emit({k: 'sub', sid: uid(), text: v, ids: []}); const f = el('newSubText'); if (f) f.focus(); } return; }
+    const se = e.target.closest('form[data-subedit]'); if (se) { e.preventDefault(); const v = se.text.value.trim(); const sid = se.dataset.subedit; S.editSub = null; delete S.drafts['sub:' + sid]; if (v) emit({k: 'sub', sid, text: v}); else renderStrategy(); return; }
     const f = e.target.closest('form[data-attach]'); if (!f) return; e.preventDefault(); const text = f.text.value.trim(), url = f.url.value.trim(); if (!text && !url) return; S.attOpen.delete(f.dataset.attach); emit({k: 'attach', pid: f.dataset.attach, text: text || url, url: /^https?:\/\//i.test(url) ? url : ''}); });
   window.addEventListener('hashchange', () => { const h = sessionFromHash(); if (h && h !== S.session) setSession(h, true); });
   matchMedia('(max-width:860px)').addEventListener('change', renderViews);
