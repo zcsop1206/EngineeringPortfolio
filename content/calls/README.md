@@ -49,7 +49,7 @@ Working, read off the Verdict:
 
 Not working: a completed week with commits under content/projects/ and no call; open calls past the window piling up; a miss rate below the band; no arrival by 2027-01-18.
 
-Putnam, 2026-12-05: calls on paper per problem during the exam, typed in after with the date, settled against the published solutions. Evidence: the putnam row under Domains and its lines under Misses. ASIC, due 2027-01-18: the first asic call dated before the first tool prompt. Evidence: the asic date in the Verdict row "test domains first call", the asic row under Domains, and Arrivals.
+Putnam, 2026-12-05: four 90-minute sessions of three problems, a call per problem on the exam's scratch paper at the start of each. That paper is handed in, so the lines are rewritten from memory in the breaks and kept off the vault, which is public, because the rules forbid discussing the questions online before Tuesday 2026-12-08. From that day they are typed in with 2026-12-05 at the start of each line and settled against the published solutions. Evidence: the putnam row under Domains and its lines under Misses. ASIC, due 2027-01-18: the first asic call dated before the first tool prompt. Evidence: the asic date in the Verdict row "test domains first call", the asic row under Domains, and Arrivals.
 
 The knobs. Change one value and its date at a time; tally.mjs reads this table.
 
