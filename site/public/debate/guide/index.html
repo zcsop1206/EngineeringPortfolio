@@ -33,33 +33,37 @@ thead th{font-weight:600;border-bottom-color:var(--text)}
 <a class="btn" href="../">Open the board</a>
 
 <h2>The round</h2>
-<p>For opens (5 min). We open (5). For rebuts (4). We rebut (4). We close (2). For closes (2). The board is built for the nine minutes between the end of their opening and the start of our rebuttal.</p>
+<p>For opens (5 min). We open (5). For rebuts (4). We rebut (4). We close (2). For closes (2). The board does two jobs: take down their case while they speak, and build ours in the nine minutes before our rebuttal. The left side is their case. The right side switches between the Corpus and Strategy.</p>
 
 <h2>Before the round</h2>
 <ol>
-  <li>One person opens the board, presses <b>Session</b>, then <b>New</b>. The code sits after <code>#s-</code> in the address bar. Everyone else opens the same link. Four people, four devices, one log.</li>
+  <li>One person opens the board, presses <b>Session</b>, then <b>New</b>. The code sits after <code>#s-</code> in the address bar. Everyone else opens the same link. Four people, four devices, one page.</li>
   <li>Type your first name in the header. Everything you log carries it.</li>
   <li>One device holds the Anthropic key: Session, paste, Save. That device answers for the room, so keep it open, plugged in and online. Nobody else enters anything; their header shows <code>model via</code> that person's name once the first answer lands.</li>
   <li>Read the Corpus tab once; 166 cards in twelve groups. First group, <b>their case</b> (<code>TC01–TC12</code>): the claims in the For team's own draft, in their words, with our answers. Then their likely arguments by angle, strongest first within each: consumption, markets, policy fragility, policy failures, movements, legitimacy, communities, norms and ethics (<code>A/B/C</code>, <code>FP/PL/MK</code>, <code>PF/CV/GL/BH</code>). Then ours: frames and definitions (<code>F1–F6</code>, <code>FR</code>, <code>CL</code>), measured policy wins (<code>M1–M5</code>, <code>OW</code>, <code>OP</code>) and the pre-empts for the counters they have already scripted against us (<code>PE1–PE5</code>). Last, <b>fallacies</b> (<code>FL01–FL18</code>): twelve errors to name when they make them, six our own case is exposed to, each with the sentence that closes it.</li>
   <li>Open any of their cards and read <b>Other routes</b>: two to four different ways to answer it, labelled deny, reframe, outweigh, turn or fallacy. Pick the route that fits the speech you are giving; the say line is only the default.</li>
 </ol>
 
-<h2>During their opening</h2>
+<h2>During their opening: take down their case</h2>
 <ol>
-  <li>Type each claim and each example as they say it, in their words, and press Enter. Short is fine.</li>
-  <li>Matching cards appear underneath, best first; the model re-orders them a second later. Tap a card's title for the detail, the sources, and what to say if they push back.</li>
-  <li>A point no card answers is marked <span class="red">gap</span> and lands in Strategy. On the key device the model researches it at once with web search and attaches a draft with links.</li>
+  <li>The box at the bottom left is the only thing you type in. Type a point in their words and press Enter. It becomes <code>P1</code>, <code>P2</code>, and so on, in the order they spoke.</li>
+  <li>Press <b>Tab</b> and the lines that follow go under the last point as its subpoints. <b>Shift+Tab</b> goes back to points. The four words above the box (Point, Sub, Example, Source) show where the next line will land, and tapping one does the same as the keys.</li>
+  <li>Start a line with <code>eg</code> for an example they gave, or <code>src</code> for a source they cited. A bare link is filed as a source. A line starting with <code>-</code> is a subpoint wherever you are.</li>
+  <li>Under each line sit the two or three cards that answer it, as a short id and title. Tap one to open it: what to say, the other routes, what they will say back, and the sources. Tap again to close it.</li>
+  <li>A point no card answers is marked <span class="red">gap</span>, and the count sits at the top of the column. Tap any line to select it: you can mark or clear a gap, research it, turn a subpoint into a point, or remove it. Lines you add next go under the selected point.</li>
+  <li>If you have their case as text beforehand, paste it in one go. Each line becomes a point, and indented or dashed lines become its subpoints.</li>
 </ol>
 
-<h2>The nine minutes</h2>
+<h2>The nine minutes: build ours</h2>
 <ol>
-  <li><b>Gaps.</b> Open Strategy. Each gap shows the research draft if one exists. A teammate opens the links, then presses <b>Links check out</b> or <b>Wrong, drop it</b>. A gap the model could not answer is a teammate's job: press <b>Add a finding</b> and paste what you find, with the link. <b>Copy gaps as text</b> pastes the list into a doc if you prefer working there.</li>
-  <li><b>Their case.</b> Tag each point: main claim, load-bearing, weak, or skip. The rebuttal is built from what you tag, not from everything they said.</li>
-  <li><b>Our case.</b> You propose, the model offers options, you choose. Write your main claim, the one sentence that refutes theirs, and press <b>Suggest alternatives and subclaims</b>. It returns three different main claims (press <b>use</b> to take one) and the subclaims that would carry yours (press <b>add</b>). Then list your own subclaims and press <b>Suggest examples and alternatives</b>: under each subclaim it proposes a sharper wording and the corpus cards that are its best examples, each shown with its source and a red mark if that source was not fully checked, and it lists subclaims you have not thought of. <b>attach</b> takes an example, the dropdown attaches any card by hand. Every example is a corpus card; the model adds no fact of its own. With no model reachable the same buttons answer from keyword matching.</li>
-  <li><b>Beats from the case.</b> <b>Build beats from subclaims</b> turns each subclaim into a beat with its example cards underneath; <b>beat</b> on one subclaim adds just that one. Existing beats stay.</li>
-  <li><b>Proposal.</b> The other route: type a direction ("lead with scale, concede Montreal"), pick the cards to open and end on, and <b>Propose a strategy</b> drafts roles and beats in one go. The proposal quotes your direction back so you can see it was used. Apply all of it, or only the roles, the counter or the beats.</li>
-  <li><b>Rebuttal.</b> Add beats from Their case or press <b>Own beat</b> for a beat in your own words. Press <b>edit</b> on any beat to reword it, pick a different card from the whole corpus, give it a fixed number of seconds, or tick "keep when rebuilding" so an Auto-build or an applied proposal plans around it. Arrows reorder, ⇄ cycles the matching cards, × removes, <b>Undo</b> steps back through earlier versions. Beats without a fixed time share what is left of the four minutes; the view says when you are over. <b>Copy</b> gives plain text with the time marks.</li>
-  <li><b>Closing.</b> Auto-build picks a frame that resets the motion, the wins that beat what they argued, and the line to end on. Reorder the same way.</li>
+  <li><b>Main claim.</b> Open Strategy and write the one sentence that refutes theirs. It saves when you leave the box.</li>
+  <li><b>Subclaims.</b> Type a subclaim and press Enter. Two or three for you. Each one is a heading you can reword in place; the arrows reorder, × removes.</li>
+  <li><b>Examples.</b> Under a subclaim, type in the example line: it searches the cards as you type, Enter attaches the top one, and the last row adds what you typed in your own words. Or go the other way: open any card on the left or in the Corpus and press the subclaim's name beside <b>Use in</b>. An attached card shows the line to say and its source.</li>
+  <li><b>Your teammate's minute.</b> Press <b>to teammate</b> on a subclaim and it moves under Teammate. Your subclaims share the first three minutes, theirs share the last one, and each shows the time it starts.</li>
+  <li><b>Suggest.</b> One button. It reads their case, your claim and your subclaims, and offers other main claims (<b>use</b>), subclaims you have not listed (<b>add</b>), and under each of your subclaims a sharper wording and cards that fit (<b>attach</b>). Every suggestion comes from the cards; the model adds no fact. With no model reachable the button answers from keyword matching. <b>hide</b> puts the suggestions away.</li>
+  <li><b>Research.</b> On the key device a gap is researched with web search as soon as it appears, and the draft lands under the line with its links. Open the links, then press <b>Links check out</b> or <b>Wrong, drop it</b>. <b>Use in</b> on a draft adds it to a subclaim as your own example.</li>
+  <li><b>Closing.</b> One box of notes for the two-minute close.</li>
+  <li><b>Speaking.</b> <b>Start 4:00</b> runs a clock everyone in the session sees. It turns red fifteen seconds before 3:00, when you hand over, and again before 4:00. <b>Copy speech</b> gives the whole plan as plain text with the time marks.</li>
 </ol>
 
 <h2>How long research takes</h2>
@@ -76,8 +80,7 @@ thead th{font-weight:600;border-bottom-color:var(--text)}
 <ul>
   <li><span class="red">?</span> or <span class="red">check source</span>: a source on that card was never fetched by us. Say the point; soften or skip the number.</li>
   <li><span class="muted">weak</span>: the best answer we have, but a judge may not buy it. Answer briefly and move on.</li>
-  <li>The italic line under a point is the model's link between the point and the first card. It is phrasing, not a fact. The facts are on the cards.</li>
-  <li><span class="muted">your wording</span> on a beat means a teammate rewrote the card's line; the card's own line is still in the copied text. <span class="muted">your own words, no card</span> means the beat has no source behind it.</li>
+  <li><span class="muted">own</span> under a subclaim: an example in your own words, with no card and no checked source behind it.</li>
   <li>A fallacy card's say line is written to land as reasoning, not as an accusation. Name the error once, then move to the card that answers the point; a judge rewards the answer, not the label.</li>
 </ul>
 
@@ -86,8 +89,8 @@ thead th{font-weight:600;border-bottom-color:var(--text)}
   <li>The header shows sync: <code>shared</code> means live. <code>relay down · working locally</code> means the public relay the board syncs through is not answering (it was down for a while on 8 November); <code>offline</code> means this device has no connection. In both cases keep working: everything runs on your device, entries queue, and they send when the relay returns.</li>
   <li>To catch teammates up while sync is down: Session, <b>Copy session</b>, paste the text in the team chat; each teammate opens Session, pastes it, and presses <b>Merge</b>. Merging twice is harmless. The key device then answers for what it received.</li>
   <li>Two backups worth setting up before the round. First, share the claude.ai version of the board with teammates by email as Editors; it syncs through claude.ai, not the relay. Second, Session has a relay address field: any ntfy-compatible server works, everyone must be on the same one, and <b>Copy link</b> carries it.</li>
-  <li>A strategy request can take up to a minute and a half with the larger model. The button reads Thinking… or Proposing… while it runs; if it fails, a message says why and keyword suggestions appear instead.</li>
-  <li><code>keyword only</code> means no model has answered yet. Matching, outlines and the corpus still work. If the key device is closed, outlines build in keyword order after a 20-second wait.</li>
+  <li>Suggest can take up to a minute and a half with the larger model. The button reads Thinking… while it runs; if it fails, a message says why and keyword suggestions appear instead.</li>
+  <li><code>keyword only</code> means no model has answered yet. The outline, the matching cards, the Corpus and Strategy all still work.</li>
   <li>Anyone who knows the session code can read and add to the log, so use a fresh code for the real round.</li>
 </ul>
 </main>
