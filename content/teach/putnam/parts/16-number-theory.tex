@@ -1,86 +1,235 @@
 \section{Congruences and number theory}
 \label{sec:numbertheory}
 
-The largest tag in the easy slots. The tools are few and old, and the problems are mostly about choosing a modulus.
+The largest tag in the easy slots. The tools are few and old, and the problems are mostly about choosing what to divide by. This section starts from division with remainder and defines every word before it is used.
 
 \begin{recognise}
-Integers, divisibility, remainders, digits, primes, factorials, greatest common divisors. An equation to be solved in integers. A polynomial or a recurrence asked about modulo something. A count of integers with a divisibility property. Anything with ``for all $n$'' where $n$ is an exponent. A statement that is false over the reals and true over the integers is a number theory statement.
+Integers, divisibility, remainders, digits, primes, factorials, greatest common divisors. An equation to be solved in integers. A polynomial or a recurrence asked about ``modulo'' something, which means only its remainders matter. A count of integers with a divisibility property. Anything with ``for all $n$'' where $n$ is an exponent. A statement that is false over the reals and true over the integers is a number theory statement.
 \end{recognise}
 
-\subsection*{The model}
+\subsection*{The model, from the ground}
 
-\begin{definition}
-For an integer $n \ge 1$, $a \equiv b \pmod n$ means $n$ divides $a - b$. This is an equivalence relation with $n$ classes, and it respects addition and multiplication: if $a \equiv b$ and $c \equiv d$ then $a + c \equiv b + d$ and $ac \equiv bd$. So any polynomial expression in integers can be reduced term by term.
+\paragraph{Dividing and remainders.} For integers $d \ne 0$ and $m$, the phrase ``$d$ divides $m$'', written $d \mid m$, means $m = dk$ for some integer $k$. Written $d \nmid m$, it does not. So $3 \mid 12$ and $3 \nmid 14$, and every nonzero integer divides $0$. One fact is used constantly: if $d$ divides $a$ and $b$, then $d$ divides $a + b$, $a - b$ and every multiple of $a$.
+
+For any integer $a$ and any integer $n \ge 1$ there is exactly one way to write
+\[
+a = qn + r \qquad \text{with integers } q, r \text{ and } 0 \le r < n .
+\]
+The number $r$ is the \emph{remainder} of $a$ on division by $n$. For $n = 5$: $17 = 3 \cdot 5 + 2$ and $-3 = (-1) \cdot 5 + 2$, so $17$ and $-3$ both have remainder $2$.
+
+\begin{definition}[Congruence]
+Fix an integer $n \ge 1$, called the \emph{modulus}. Two integers $a$ and $b$ are \emph{congruent modulo $n$}, written $a \equiv b \pmod n$, when $n$ divides $a - b$.
 \end{definition}
 
-Division is the exception. Cancelling $c$ from $ac \equiv bc \pmod n$ is allowed only when $\gcd(c, n) = 1$, because then $c$ has an inverse modulo $n$. The classes coprime to $n$ form a group under multiplication, of size $\varphi(n)$, Euler's function; for a prime $p$, $\varphi(p) = p - 1$ and every nonzero class is invertible.
+Congruent means the same remainder. Write $a = qn + r$ and $b = q'n + r'$. Then $a - b = (q - q')n + (r - r')$, and $r - r'$ lies strictly between $-n$ and $n$, so $n$ divides $a - b$ exactly when $r - r' = 0$. So $17 \equiv 2 \equiv -3 \pmod 5$. A clock is arithmetic modulo $12$: five hours after ten o'clock is three o'clock, because $15 \equiv 3 \pmod{12}$.
+
+\paragraph{Classes.} Congruence modulo $n$ sorts the integers into $n$ piles, one for each possible remainder $0, 1, \dots, n - 1$. Each pile is called a \emph{class} modulo $n$, or a \emph{residue class}; \emph{residue} is another word for remainder. For $n = 5$ the five piles are
+
+\begin{center}\small
+\begin{tabular}{ll}
+\toprule
+Remainder & The pile \\
+\midrule
+$0$ & $\dots, -10, -5, 0, 5, 10, \dots$ \\
+$1$ & $\dots, -9, -4, 1, 6, 11, \dots$ \\
+$2$ & $\dots, -8, -3, 2, 7, 12, \dots$ \\
+$3$ & $\dots, -7, -2, 3, 8, 13, \dots$ \\
+$4$ & $\dots, -6, -1, 4, 9, 14, \dots$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Every integer is in exactly one pile, and two integers are congruent exactly when they are in the same pile. Working modulo $n$ means treating a whole pile as one object and naming it by any of its members, usually the remainder.
+
+That is all the phrase ``an equivalence relation with $n$ classes'' says. An \emph{equivalence relation} is any rule for calling two things the same for present purposes that obeys three laws: each thing is the same as itself; if $a$ is the same as $b$ then $b$ is the same as $a$; and if $a$ is the same as $b$ and $b$ the same as $c$, then $a$ is the same as $c$. Any such rule sorts things into piles, called its \emph{equivalence classes}. Congruence obeys the three laws: $n$ divides $a - a = 0$; if $n$ divides $a - b$ it divides $b - a$; and if $n$ divides $a - b$ and $b - c$ it divides their sum $a - c$. Its piles are the $n$ classes in the table.
+
+\begin{proposition}[Arithmetic respects classes]
+If $a \equiv b$ and $c \equiv d \pmod n$, then $a + c \equiv b + d$, $a - c \equiv b - d$ and $ac \equiv bd \pmod n$. Consequently $a^k \equiv b^k \pmod n$ for every $k \ge 1$.
+\end{proposition}
+
+\begin{proof}
+By assumption $a - b$ and $c - d$ are multiples of $n$. Then $(a + c) - (b + d) = (a - b) + (c - d)$ is a sum of two multiples of $n$, and the difference is handled the same way. For the product, $ac - bd = a(c - d) + d(a - b)$, again a sum of two multiples of $n$. The statement about powers is the product rule applied $k - 1$ times.
+\end{proof}
+
+So in any expression built by adding, subtracting and multiplying integers, any number may be replaced at any moment by another member of its pile, and the pile of the result does not change. Three uses.
+
+\begin{itemize}[nosep,leftmargin=*]
+\item The remainder of $2^{100}$ on division by $7$. Since $2^3 = 8 \equiv 1$, we get $2^{100} = (2^3)^{33} \cdot 2 \equiv 1^{33} \cdot 2 = 2 \pmod 7$. Nobody computed $2^{100}$.
+\item The last digit of an integer is its class modulo $10$.
+\item An integer is congruent modulo $9$ to the sum of its digits, because $10 \equiv 1 \pmod 9$ gives $10^k \equiv 1$. So $4725 \equiv 4 + 7 + 2 + 5 = 18 \equiv 0 \pmod 9$, and $9$ divides $4725$.
+\end{itemize}
+
+\paragraph{Division, inverses and units.} Division is the exception. Modulo $6$, $2 \cdot 3 \equiv 2 \cdot 0$, since both sides are multiples of $6$, yet $3 \not\equiv 0$. The factor $2$ could not be cancelled. To see when cancelling is allowed, ask what dividing means. Among real numbers, dividing by $c$ is multiplying by $1/c$, the number whose product with $c$ is $1$. The same idea is used for classes.
+
+\begin{definition}[Inverse, unit]
+An \emph{inverse} of $c$ modulo $n$ is an integer $x$ with $cx \equiv 1 \pmod n$. If one exists, $c$ is called \emph{invertible} modulo $n$, or a \emph{unit} modulo $n$.
+\end{definition}
+
+Modulo $7$: $3 \cdot 5 = 15 \equiv 1$, so $5$ is an inverse of $3$. Also $1 \cdot 1$, $2 \cdot 4 = 8$ and $6 \cdot 6 = 36$ are all congruent to $1$, so each of $1, 2, 3, 4, 5, 6$ is a unit modulo $7$. Modulo $6$: $1 \cdot 1 \equiv 1$ and $5 \cdot 5 = 25 \equiv 1$, so $1$ and $5$ are units. But $2x$ and $4x$ are always even and $3x$ is always a multiple of $3$, while a number congruent to $1$ modulo $6$ is neither, so $2$, $3$ and $4$ have no inverse. Being a unit is a property of the whole pile, because replacing $c$ by another member of its pile does not change the pile of $cx$.
+
+A unit can be cancelled. If $ac \equiv bc \pmod n$ and $x$ is an inverse of $c$, multiply both sides by $x$: $a \equiv acx \equiv bcx \equiv b$.
+
+Which numbers are units is decided by common factors. The \emph{greatest common divisor} $\gcd(a, b)$ is the largest positive integer dividing both $a$ and $b$. The two are \emph{coprime} when $\gcd(a, b) = 1$, that is, when no prime divides both.
+
+\begin{lemma}[B\'ezout]
+For integers $c$ and $n \ge 1$ there are integers $x$ and $y$ with $cx + ny = \gcd(c, n)$.
+\end{lemma}
+
+\begin{proof}
+Look at all the positive integers of the form $cx + ny$ with $x, y$ integers. There is at least one, $n$ itself. Let $d = c x_0 + n y_0$ be the smallest. Divide $c$ by $d$: $c = qd + r$ with $0 \le r < d$. Then $r = c - qd = c(1 - q x_0) + n(-q y_0)$ is of the same form and is smaller than $d$, so it cannot be positive. Hence $r = 0$ and $d$ divides $c$. The same argument shows $d$ divides $n$. So $d$ is a common divisor. And every common divisor of $c$ and $n$ divides $c x_0 + n y_0 = d$, so none is larger than $d$. Therefore $d = \gcd(c, n)$.
+\end{proof}
+
+\begin{proposition}[Which numbers are units]
+$c$ is invertible modulo $n$ exactly when $\gcd(c, n) = 1$.
+\end{proposition}
+
+\begin{proof}
+If $\gcd(c, n) = 1$, B\'ezout gives integers with $cx + ny = 1$, so $cx - 1$ is a multiple of $n$, which is $cx \equiv 1 \pmod n$. Conversely, if $cx \equiv 1$ then $cx - 1 = nk$ for some integer $k$, so $cx - nk = 1$. A common divisor of $c$ and $n$ divides the left side, hence divides $1$, so it is $1$.
+\end{proof}
+
+For $c = 3$ and $n = 7$ the B\'ezout identity is $3 \cdot 5 + 7 \cdot (-2) = 1$, which is the inverse $5$ found above.
+
+\begin{definition}[Euler's function]
+$\varphi(n)$ is the number of integers among $1, 2, \dots, n$ that are coprime to $n$. By the proposition it is the number of invertible classes modulo $n$.
+\end{definition}
+
+\begin{center}\small
+\begin{tabular}{lll}
+\toprule
+$n$ & Units modulo $n$ & $\varphi(n)$ \\
+\midrule
+$5$ & $1, 2, 3, 4$ & $4$ \\
+$6$ & $1, 5$ & $2$ \\
+$7$ & $1, 2, 3, 4, 5, 6$ & $6$ \\
+$8$ & $1, 3, 5, 7$ & $4$ \\
+$9$ & $1, 2, 4, 5, 7, 8$ & $6$ \\
+$10$ & $1, 3, 7, 9$ & $4$ \\
+$12$ & $1, 5, 7, 11$ & $4$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For a prime $p$, every one of $1, 2, \dots, p - 1$ is coprime to $p$, because a prime has no divisors other than $1$ and itself. So $\varphi(p) = p - 1$. This is what ``for a prime $p$ every nonzero class is invertible'' says. The class of $0$ is the pile of multiples of $p$. A nonzero class is any other pile. Each of those has an inverse. Modulo a prime you may divide by anything that is not congruent to $0$, exactly as with real numbers.
+
+\paragraph{The word group.} Under multiplication, the units modulo $n$ have four properties.
+
+\begin{enumerate}[nosep,leftmargin=*]
+\item The product of two units is a unit: if $cx \equiv 1$ and $dy \equiv 1$ then $(cd)(xy) \equiv 1$.
+\item Multiplication does not care about bracketing: $(ab)c = a(bc)$.
+\item The number $1$ is a unit, and multiplying by it changes nothing.
+\item Every unit has an inverse, and that inverse is again a unit.
+\end{enumerate}
+
+A set with an operation that has these four properties is called a \emph{group}, and the number of its members is its \emph{size}. So the sentence ``the classes coprime to $n$ form a group under multiplication, of size $\varphi(n)$'' says exactly this: there are $\varphi(n)$ invertible classes, the product of two of them is another, and each can be divided by. Nothing more is meant, and nothing about groups beyond this list is used in this section. The multiplication table of the units modulo $8$ shows the four properties at work:
+
+\begin{center}\small
+\begin{tabular}{c|cccc}
+$\times$ & $1$ & $3$ & $5$ & $7$ \\
+\midrule
+$1$ & $1$ & $3$ & $5$ & $7$ \\
+$3$ & $3$ & $1$ & $7$ & $5$ \\
+$5$ & $5$ & $7$ & $1$ & $3$ \\
+$7$ & $7$ & $5$ & $3$ & $1$ \\
+\end{tabular}
+\end{center}
+
+Every row contains each unit exactly once. Multiplying all the units by one fixed unit only shuffles them. That observation is the whole proof of the next theorem.
 
 \begin{theorem}[Fermat and Euler]
 If $p$ is prime and $p \nmid a$, then $a^{p-1} \equiv 1 \pmod p$. More generally, if $\gcd(a, n) = 1$ then $a^{\varphi(n)} \equiv 1 \pmod n$.
 \end{theorem}
 
 \begin{proof}
-Let $u_1, \dots, u_k$ be the $k = \varphi(n)$ classes coprime to $n$. Multiplication by $a$ permutes them: $a u_i \equiv a u_j$ implies $u_i \equiv u_j$ by cancelling the invertible $a$, so the map is injective on a finite set. Hence $\prod (a u_i) \equiv \prod u_i$, that is, $a^k \prod u_i \equiv \prod u_i$, and cancelling the invertible product gives $a^k \equiv 1$.
+One instance first, $n = 7$ and $a = 3$. The units are $1, 2, 3, 4, 5, 6$. Multiplied by $3$ they become $3, 6, 9, 12, 15, 18$, which are congruent to $3, 6, 2, 5, 1, 4$: the same six classes in another order. So the two products agree, $(3 \cdot 1)(3 \cdot 2) \cdots (3 \cdot 6) \equiv 1 \cdot 2 \cdots 6$, that is, $3^6 \cdot 720 \equiv 720 \pmod 7$. The number $720$ is a product of units, so it is a unit and can be cancelled, leaving $3^6 \equiv 1$. Indeed $3^6 = 729 = 104 \cdot 7 + 1$.
+
+In general, let $u_1, \dots, u_k$ be the units modulo $n$, one from each invertible class, so $k = \varphi(n)$. Each $a u_i$ is a unit, by the first property above. If $a u_i \equiv a u_j$ then $u_i \equiv u_j$, by cancelling the unit $a$. So $a u_1, \dots, a u_k$ are $k$ units lying in $k$ different classes, which makes them all of the units in some order. Multiplying them together, $a^k U \equiv U \pmod n$ where $U = u_1 u_2 \cdots u_k$. The product $U$ is a unit, and cancelling it gives $a^k \equiv 1$. For a prime $p$, $k = p - 1$, and $\gcd(a, p) = 1$ is the same as $p \nmid a$.
 \end{proof}
 
-\begin{definition}
-For $\gcd(a, n) = 1$, the \emph{order} of $a$ modulo $n$, written $\ord_n(a)$, is the smallest positive $d$ with $a^d \equiv 1 \pmod n$.
+\begin{definition}[Order]
+For $\gcd(a, n) = 1$, the \emph{order} of $a$ modulo $n$, written $\ord_n(a)$, is the smallest positive integer $d$ with $a^d \equiv 1 \pmod n$. Euler's theorem guarantees that such a $d$ exists and is at most $\varphi(n)$.
 \end{definition}
+
+Modulo $7$ the powers of $2$ are $2, 4, 1$, so $\ord_7(2) = 3$. The powers of $3$ are $3, 2, 6, 4, 5, 1$, so $\ord_7(3) = 6$. The powers of $6$ are $6, 1$, so $\ord_7(6) = 2$. After reaching $1$ the powers repeat, since $a^{m + d} = a^m a^d \equiv a^m$. The three orders $3$, $6$ and $2$ all divide $6 = \varphi(7)$, and that is no accident.
 
 \begin{lemma}[Orders]
 $a^m \equiv 1 \pmod n$ if and only if $\ord_n(a)$ divides $m$. In particular $\ord_n(a)$ divides $\varphi(n)$, and for a prime $p$ it divides $p - 1$.
 \end{lemma}
 
 \begin{proof}
-Write $d = \ord_n(a)$ and $m = qd + r$ with $0 \le r < d$. Then $a^m = (a^d)^q a^r \equiv a^r$, so $a^m \equiv 1$ exactly when $a^r \equiv 1$, which by minimality of $d$ means $r = 0$. The particular case is Euler's theorem.
+Write $d = \ord_n(a)$ and divide $m$ by $d$: $m = qd + r$ with $0 \le r < d$. Then $a^m = (a^d)^q a^r \equiv 1^q a^r = a^r$. So $a^m \equiv 1$ exactly when $a^r \equiv 1$. Since $r < d$ and $d$ is the smallest positive exponent that gives $1$, this happens only for $r = 0$, which is the statement that $d$ divides $m$. The particular case takes $m = \varphi(n)$, where Euler's theorem says $a^m \equiv 1$.
 \end{proof}
+
+A unit whose order is the full $\varphi(n)$, so that its powers run through every unit, is called a \emph{primitive root} modulo $n$. Modulo $7$, $3$ is a primitive root and $2$ is not. Every prime has a primitive root. That fact is not proved here, and it is needed only on the harder rungs of the ladder.
 
 \begin{lemma}[Smallest prime factor]
 Let $n > 1$ and let $p$ be the smallest prime factor of $n$. Then $\gcd(n, p - 1) = 1$. Consequently, if $a^n \equiv 1 \pmod p$ and $p \nmid a$, then $a \equiv 1 \pmod p$.
 \end{lemma}
 
 \begin{proof}
-Every prime factor of $p - 1$ is smaller than $p$, so none of them divides $n$. For the consequence, $\ord_p(a)$ divides both $n$ and $p - 1$, hence divides their greatest common divisor, which is $1$.
+Every prime factor of $p - 1$ is at most $p - 1$, so it is smaller than $p$. If it divided $n$, it would be a prime factor of $n$ smaller than the smallest one. So $n$ and $p - 1$ have no common prime factor, and $\gcd(n, p - 1) = 1$.
+
+For the consequence, let $d = \ord_p(a)$. By the lemma on orders, $d$ divides $n$, because $a^n \equiv 1$. By the same lemma $d$ divides $p - 1$. B\'ezout gives integers with $nx + (p - 1)y = 1$, and $d$ divides the left side, so $d$ divides $1$. Hence $d = 1$, which says $a^1 \equiv 1 \pmod p$.
 \end{proof}
 
 This lemma is the standard tool against statements of the form ``$n$ never divides $a^n - 1$'' or ``$n$ divides $a^n - b^n$ only when''. Taking the smallest prime factor turns a statement about $n$ into one about a single prime where the order is pinned down.
 
 \begin{theorem}[Chinese remainder theorem]
-If $\gcd(m, n) = 1$, then for any $a$, $b$ there is exactly one class $x$ modulo $mn$ with $x \equiv a \pmod m$ and $x \equiv b \pmod n$.
+If $\gcd(m, n) = 1$, then for any integers $a$ and $b$ there is exactly one class $x$ modulo $mn$ with $x \equiv a \pmod m$ and $x \equiv b \pmod n$.
 \end{theorem}
 
+In words: when $m$ and $n$ are coprime, a remainder modulo $m$ and a remainder modulo $n$ can be chosen freely, and together they fix the remainder modulo $mn$. For $m = 3$ and $n = 5$, here is each $x$ from $0$ to $14$ with its pair of remainders (modulo $3$, modulo $5$):
+
+\begin{center}\small
+\begin{tabular}{lllll}
+$0\colon (0,0)$ & $1\colon (1,1)$ & $2\colon (2,2)$ & $3\colon (0,3)$ & $4\colon (1,4)$ \\
+$5\colon (2,0)$ & $6\colon (0,1)$ & $7\colon (1,2)$ & $8\colon (2,3)$ & $9\colon (0,4)$ \\
+$10\colon (1,0)$ & $11\colon (2,1)$ & $12\colon (0,2)$ & $13\colon (1,3)$ & $14\colon (2,4)$ \\
+\end{tabular}
+\end{center}
+
+All fifteen possible pairs appear, each exactly once. The number with remainder $2$ modulo $3$ and remainder $3$ modulo $5$ is $8$, and every other such number is congruent to $8$ modulo $15$.
+
 \begin{proof}
-The map sending $x$ modulo $mn$ to the pair of its residues modulo $m$ and modulo $n$ is injective: if two classes agree in both coordinates, their difference is divisible by $m$ and by $n$, hence by $mn$ since they are coprime. An injective map between finite sets of the same size $mn$ is a bijection.
+Send each class $x$ modulo $mn$ to the pair of its remainders modulo $m$ and modulo $n$. There are $mn$ classes and $mn$ possible pairs. Two different classes never give the same pair. Suppose $x$ and $x'$ agree in both remainders. Then $m$ and $n$ both divide $x - x'$. Write $x - x' = mk$. B\'ezout gives $mu + nv = 1$, and multiplying by $k$ gives $k = mku + nkv$. Here $n$ divides $mk$ and so divides the first term, and it visibly divides the second, so $n$ divides $k$. Hence $mn$ divides $mk = x - x'$, and $x$ and $x'$ are the same class. So $mn$ classes go to $mn$ pairs with no pair used twice, which means every pair is used exactly once.
 \end{proof}
 
-So a congruence modulo a composite number is a system of congruences modulo prime powers, solved one prime at a time, and a count of residues modulo $mn$ with a multiplicative property is a product of counts.
+So a congruence modulo a composite number is a system of congruences modulo prime powers, solved one prime at a time, and a count of classes modulo $mn$ with a property that can be checked separately modulo $m$ and modulo $n$ is a product of two counts.
 
 \begin{theorem}[Lifting a simple root]
-Let $f$ be a polynomial with integer coefficients, $p$ a prime, and $a$ an integer with $f(a) \equiv 0 \pmod p$ and $f'(a) \not\equiv 0 \pmod p$. Then there is exactly one $t$ modulo $p$ such that $f(a + tp) \equiv 0 \pmod{p^2}$.
+Let $f$ be a polynomial with integer coefficients and $f'$ its derivative, computed term by term by the usual rule. Let $p$ be a prime and $a$ an integer with $f(a) \equiv 0 \pmod p$ and $f'(a) \not\equiv 0 \pmod p$. Then there is exactly one $t$ modulo $p$ such that $f(a + tp) \equiv 0 \pmod{p^2}$.
 \end{theorem}
 
+An integer $a$ with $f(a) \equiv 0 \pmod p$ is called a \emph{root of $f$ modulo $p$}. The theorem says that a root modulo $p$ can be corrected, in exactly one way, into a root modulo $p^2$.
+
 \begin{proof}
-Expanding $f(a + tp)$ in powers of $tp$, every term with $(tp)^2$ or higher is divisible by $p^2$, and the coefficients $f^{(j)}(a)/j!$ are integers, so $f(a + tp) \equiv f(a) + tp f'(a) \pmod{p^2}$. Write $f(a) = pm$. The condition becomes $p(m + t f'(a)) \equiv 0 \pmod{p^2}$, that is, $t f'(a) \equiv -m \pmod p$, which has exactly one solution $t$ because $f'(a)$ is invertible modulo $p$.
+First, for integers $a$ and $h$ and any $k \ge 1$, the binomial theorem gives $(a + h)^k = a^k + k a^{k-1} h + (\text{terms containing } h^2)$, so $(a + h)^k \equiv a^k + k a^{k-1} h \pmod{h^2}$. Multiplying by the coefficients of $f$ and adding over its terms, $f(a + h) \equiv f(a) + h f'(a) \pmod{h^2}$.
+
+Now put $h = tp$, so that $h^2$ is a multiple of $p^2$: $f(a + tp) \equiv f(a) + tp f'(a) \pmod{p^2}$. Since $p$ divides $f(a)$, write $f(a) = pm$. The right side is $p(m + t f'(a))$, and it is a multiple of $p^2$ exactly when $p$ divides $m + t f'(a)$, that is, when $t f'(a) \equiv -m \pmod p$. Because $f'(a)$ is not congruent to $0$ modulo the prime $p$, it is a unit, with an inverse $x$. Multiplying by $x$ gives $t \equiv -mx \pmod p$, exactly one class.
 \end{proof}
+
+An instance: $f(x) = x^2 - 2$, $p = 7$, $a = 3$. Here $f(3) = 7$, so $m = 1$, and $f'(3) = 6$. The condition is $6t \equiv -1 \equiv 6 \pmod 7$, so $t = 1$ and the corrected root is $3 + 7 = 10$. Indeed $10^2 - 2 = 98 = 2 \cdot 49$.
 
 The same step lifts from $p^k$ to $p^{k+1}$, so a simple root modulo $p$ gives a root modulo every power of $p$. A root with $f'(a) \equiv 0$ may lift to several classes or to none, which is the case Putnam problems like to hide.
 
-\begin{theorem}[The exponent of a prime in a factorial]
-For a prime $p$ and $n \ge 1$, the exponent of $p$ in $n!$ is
+\paragraph{Primes inside a factorial.} Three pieces of notation. For a prime $p$ and a positive integer $m$, $v_p(m)$ is the exponent of $p$ in $m$: the largest $e$ such that $p^e$ divides $m$. So $v_2(40) = 3$, since $40 = 2^3 \cdot 5$. The \emph{floor} $\lfloor x \rfloor$ is the largest integer not exceeding $x$, so $\lfloor 10/4 \rfloor = 2$. And $s_p(n)$ is the sum of the digits of $n$ written in base $p$.
+
+\begin{theorem}[The exponent of a prime in a factorial (Legendre's formula)]
+For a prime $p$ and $n \ge 1$,
 \[
-v_p(n!) = \sum_{k \ge 1} \left\lfloor \frac{n}{p^k} \right\rfloor = \frac{n - s_p(n)}{p - 1},
+v_p(n!) = \sum_{k \ge 1} \left\lfloor \frac{n}{p^k} \right\rfloor = \frac{n - s_p(n)}{p - 1}.
 \]
-where $s_p(n)$ is the sum of the digits of $n$ in base $p$.
 \end{theorem}
 
+For $n = 10$ and $p = 2$ the sum is $\lfloor 10/2 \rfloor + \lfloor 10/4 \rfloor + \lfloor 10/8 \rfloor = 5 + 2 + 1 = 8$. In base $2$, ten is $1010$, with digit sum $2$, and $(10 - 2)/(2 - 1) = 8$ as well. Indeed $10! = 3628800 = 2^8 \cdot 14175$ with $14175$ odd.
+
 \begin{proof}
-Among $1, \dots, n$ there are $\lfloor n/p \rfloor$ multiples of $p$, $\lfloor n/p^2 \rfloor$ multiples of $p^2$, and so on; a number divisible by $p^j$ exactly is counted $j$ times, once in each of the first $j$ terms. For the closed form, write $n = \sum d_i p^i$ and compute $\lfloor n / p^k \rfloor = \sum_{i \ge k} d_i p^{i-k}$; summing over $k$ gives $\sum_i d_i (p^{i-1} + \dots + 1) = \sum_i d_i (p^i - 1)/(p - 1)$.
+Among $1, 2, \dots, n$ there are $\lfloor n/p \rfloor$ multiples of $p$, $\lfloor n/p^2 \rfloor$ multiples of $p^2$, and so on. A number whose exponent of $p$ is exactly $j$ is counted $j$ times, once as a multiple of each of $p, p^2, \dots, p^j$, and $j$ is what it contributes to $v_p(n!)$. That is the sum. For the closed form, write $n = \sum_i d_i p^i$ in base $p$. Then $\lfloor n / p^k \rfloor = \sum_{i \ge k} d_i p^{i-k}$, and summing over $k \ge 1$, the digit $d_i$ is multiplied by $p^{i-1} + \dots + p + 1 = (p^i - 1)/(p - 1)$. So the total is $\sum_i d_i (p^i - 1)/(p - 1) = (n - s_p(n))/(p - 1)$.
 \end{proof}
 
-For Diophantine equations the model is a procedure rather than a theorem: factor what factors, bound what can be bounded, and reduce modulo $3$, $4$, $5$, $7$, $8$, $9$ until the cases die. The useful tables, worth knowing cold: squares are $0, 1 \pmod 3$; $0, 1 \pmod 4$; $0, 1, 4 \pmod 5$; $0, 1, 4 \pmod 8$; $0, 1, 4, 7 \pmod 9$. Cubes are $0, \pm 1 \pmod 7$ and $0, \pm 1 \pmod 9$. Fourth powers are $0, 1 \pmod{16}$ and $0, 1 \pmod 5$.
+\paragraph{Equations in integers.} A \emph{Diophantine equation} is an equation whose solutions are required to be integers. For these the model is a procedure rather than a theorem: factor what factors, bound what can be bounded, and reduce modulo $3$, $4$, $5$, $7$, $8$, $9$ until the cases die. Reducing works because a square can only fall in a few classes. The list for a modulus $m$ is found by squaring $0, 1, \dots, m - 1$ and taking remainders. Modulo $5$: $0, 1, 4, 9, 16$ give $0, 1, 4, 4, 1$, so a square is $0$, $1$ or $4$ modulo $5$ and never $2$ or $3$. The lists worth knowing cold: squares are $0, 1 \pmod 3$; $0, 1 \pmod 4$; $0, 1, 4 \pmod 5$; $0, 1, 4 \pmod 8$; $0, 1, 4, 7 \pmod 9$. Cubes are $0, \pm 1 \pmod 7$ and $0, \pm 1 \pmod 9$. Fourth powers are $0, 1 \pmod{16}$ and $0, 1 \pmod 5$.
 
 \begin{firstmoves}
-The smallest cases by hand, and more of them than feels necessary: a solution at $n = 2$ that does not persist is the shape of the whole answer. Reduce modulo $4$ and modulo $3$ first, then modulo $8$ and $9$. Factor anything that factors, including differences of powers and $x^2 + x + 1$-type forms. For an exponent in the statement, compute the order of the base modulo the small primes involved. For a factorial, apply Legendre's formula. For ``find all $n$'', separate $n$ prime from $n$ composite, and for composite $n$ take the smallest prime factor.
+The smallest cases by hand, and more of them than feels necessary: a solution at $n = 2$ that does not persist is the shape of the whole answer. Reduce modulo $4$ and modulo $3$ first, then modulo $8$ and $9$. Factor anything that factors, including differences of powers and forms like $x^2 + x + 1$. For an exponent in the statement, compute the order of the base modulo the small primes involved. For a factorial, apply Legendre's formula. For ``find all $n$'', separate $n$ prime from $n$ composite, and for composite $n$ take the smallest prime factor.
 \end{firstmoves}
 
 \subsection*{Worked examples}
@@ -90,12 +239,12 @@ Let $n$ be a positive integer. Show that every prime factor of $n^4 + n^2 + 1$ i
 \end{example}
 
 \begin{proof}[Solution]
-Let $p$ be a prime dividing $N = n^4 + n^2 + 1$. First, $p \nmid n$, since $p \mid n$ would give $p \mid N - n^4 - n^2 = 1$. Second, $p$ is odd: if $n$ is even then $N$ is odd, and if $n$ is odd then $N \equiv 1 + 1 + 1 = 3 \pmod 2$ is odd.
+Let $p$ be a prime dividing $N = n^4 + n^2 + 1$. First, $p \nmid n$, since $p \mid n$ would give $p \mid N - n^4 - n^2 = 1$. Second, $p$ is odd, because $N$ is odd: if $n$ is even then $N$ is even plus even plus $1$, and if $n$ is odd then $N$ is a sum of three odd numbers.
 
-Now $(n^2 - 1) N = n^6 - 1$, so $n^6 \equiv 1 \pmod p$, and by the lemma on orders $d = \ord_p(n)$ divides $6$. If $d$ is $1$ or $2$, then $n^2 \equiv 1 \pmod p$, so $N \equiv 1 + 1 + 1 = 3 \pmod p$ and $p \mid 3$, giving $p = 3$. If $d$ is $3$ or $6$, then $3 \mid d$ and $d \mid p - 1$, so $3 \mid p - 1$; since $p$ is odd, also $2 \mid p - 1$, and therefore $6 \mid p - 1$.
+Now $(n^2 - 1) N = n^6 - 1$, so $n^6 \equiv 1 \pmod p$, and by the lemma on orders $d = \ord_p(n)$ divides $6$. If $d$ is $1$ or $2$, then $n^2 \equiv 1 \pmod p$, so $N \equiv 1 + 1 + 1 = 3 \pmod p$. Since $p$ divides $N$, this gives $p \mid 3$, so $p = 3$. If $d$ is $3$ or $6$, then $3 \mid d$, and $d \mid p - 1$ by the lemma on orders, so $3 \mid p - 1$. Since $p$ is odd, also $2 \mid p - 1$, and therefore $6 \mid p - 1$, which says $p \equiv 1 \pmod 6$.
 \end{proof}
 
-Both branches occur: $n = 1$ gives $3$, and $n = 2$ gives $21 = 3 \times 7$. The argument is the template for every ``prime factors of $f(n)$'' statement: find the cyclotomic-type identity that puts $n$ in a group of known exponent, then let the order do the sorting.
+Both branches occur: $n = 1$ gives $3$, and $n = 2$ gives $21 = 3 \times 7$. The argument is the template for every ``prime factors of $f(n)$'' statement: find an identity that makes some power of $n$ congruent to $1$ modulo the prime, then let the order do the sorting.
 
 \begin{example}
 Find all pairs of positive integers $(x, y)$ with $x^2 = y! + 7$.
@@ -110,7 +259,7 @@ For $y \ge 5$, the factorial $y!$ is divisible by $5$, so $x^2 \equiv 7 \equiv 2
 The modulus was chosen to make the factorial vanish and to leave the constant in a class that is not a square. Modulo $3$ would not have worked ($7 \equiv 1$ is a square), nor modulo $4$ ($7 \equiv 3$, not a square, but $y!$ vanishes modulo $4$ only from $y = 4$, which still works here and is worth noticing as the alternative). The habit is to try the small moduli in turn and keep the first one that kills the equation, then check that every $y$ below the threshold was handled by hand.
 
 \begin{trap}
-Dividing a congruence by something not coprime to the modulus: $2 \cdot 3 \equiv 2 \cdot 0 \pmod 6$ does not give $3 \equiv 0$. A modulus that kills the information needed: reducing $x^2 + y^2 = z^2$ modulo $2$ says nothing, modulo $4$ says a great deal. Forgetting that $2$ is prime, so that an argument ``for every odd prime'' has a case left over, and forgetting that $p = 3$ behaves differently from other primes in anything involving $n^2 + n + 1$ or sixth roots of unity. Euler's theorem used with $\gcd(a, n) \ne 1$. Applying Fermat with the modulus and the exponent swapped. A lift from $p$ to $p^2$ asserted for a root where the derivative vanishes.
+Dividing a congruence by something not coprime to the modulus: $2 \cdot 3 \equiv 2 \cdot 0 \pmod 6$ does not give $3 \equiv 0$. A modulus that kills the information needed: reducing $x^2 + y^2 = z^2$ modulo $2$ says nothing, modulo $4$ says a great deal. Forgetting that $2$ is prime, so that an argument ``for every odd prime'' has a case left over, and forgetting that $p = 3$ behaves differently from other primes in anything involving $n^2 + n + 1$ or sixth powers. Euler's theorem used with $\gcd(a, n) \ne 1$. Applying Fermat with the modulus and the exponent swapped. A lift from $p$ to $p^2$ asserted for a root where the derivative vanishes.
 \end{trap}
 
 \begin{ladder}
@@ -131,6 +280,5 @@ Dividing a congruence by something not coprime to the modulus: $2 \cdot 3 \equiv
 Seminar: \seminar{PS 9}, with \seminar{\#1, \#4, \#12, \#31} as warm-ups and \seminar{\#16, \#17, \#19} for power towers, where Euler's theorem is applied to the exponent. \seminar{Floor \#2} is the exponent of a prime in a factorial; \seminar{Floor \#12} to \seminar{\#15} are Putnam floor-function problems with their score statistics printed, which is a useful calibration.
 
 \begin{hides}
-Polynomials (week 2 of the ladders): an integer polynomial modulo a prime has at most its degree in roots, and a power series with integer coefficients can be read modulo $2$. Counting: the binary digits of a count (\putnam{2020 B1}) are a number theory statement about a sum. Games with integers (\putnam{2023 A6}): the winning condition is a congruence. Recurrences: a sequence modulo $m$ is eventually periodic, and the period is an order. Abstract algebra: the multiplicative group modulo $n$ is a group, and Lagrange's theorem is Euler's theorem.
+Polynomials (week 2 of the ladders): an integer polynomial modulo a prime has at most its degree in roots, and a power series with integer coefficients can be read modulo $2$. Counting: the binary digits of a count (\putnam{2020 B1}) are a number theory statement about a sum. Games with integers (\putnam{2023 A6}): the winning condition is a congruence. Recurrences: a sequence modulo $m$ is eventually periodic, and the period is an order. Abstract algebra: the units modulo $n$ are the first example of a group, and Euler's theorem is Lagrange's theorem for that group.
 \end{hides}
-
