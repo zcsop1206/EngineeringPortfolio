@@ -108,7 +108,16 @@ form.log textarea{width:100%;resize:none;min-height:3.2rem;font-size:var(--lede)
 .beat .ctl{display:flex;flex-direction:column;gap:.1rem;align-items:flex-end}
 .beat .ctl button{background:none;border:0;padding:0 .2rem;cursor:pointer;color:var(--muted);font-size:var(--small)}
 .beat .ctl button:hover{color:var(--text)}
-.proposal{padding-left:.75rem;border-left:1px solid var(--rule);display:flex;flex-direction:column;gap:.35rem;font-size:var(--small)}
+.proposal{padding-left:.75rem;border-left:1px solid var(--rule);display:flex;flex-direction:column;gap:.35rem;font-size:var(--small);margin-top:.5rem}
+.proposal .k{color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.75rem;margin-right:.4rem}
+.dir{display:flex;flex-direction:column;gap:.35rem;margin-top:.6rem}
+.dir input.txt{width:100%}
+.dir label,.beatedit label{display:inline-flex;gap:.3rem;align-items:baseline;color:var(--muted)}
+.dir select.txt,.beatedit select.txt{max-width:16ch;text-overflow:ellipsis}
+.beat .t span{display:block;font-size:.7rem}
+.beatedit{display:flex;flex-direction:column;gap:.35rem}
+.beatedit textarea{width:100%;resize:vertical;min-height:2.4rem}
+.beatedit input[type=number]{width:6ch}
 .empty{color:var(--muted);font-size:var(--small);max-width:52ch}
 pre.plain{white-space:pre-wrap;font:var(--small)/1.5 var(--mono);background:var(--code-bg);padding:.75rem 1rem;max-height:40vh;overflow:auto;margin:.5rem 0 0}
 
@@ -258,7 +267,8 @@ const LS = { get(k, d) { try { const v = localStorage.getItem(k); return v == nu
 const S = {
   session: '', name: LS.get('rb:name', ''), events: new Map(), outbox: [],
   sync: {mode: 'local', status: 'starting', note: ''}, ai: {mode: 'none', sample: null, key: LS.get('rb:key', ''), busy: new Set(), via: ''},
-  view: 'board', mview: 'log', side: 'all', q: '', open: new Set(), openPts: new Set(), attOpen: new Set(), waiting: {}, proposal: null, proposing: false, researching: new Set(),
+  view: 'board', mview: 'log', side: 'all', q: '', open: new Set(), openPts: new Set(), attOpen: new Set(), waiting: {}, proposal: null, proposing: false, researching: new Set(), editBeat: null, showProps: false, drafts: {},
+  dir: Object.assign({text: '', open: '', end: 'F4', n: 4, keep: true}, LS.get('rb:dir', {})),
 };
 const HAIKU = 'claude-haiku-5-5', SONNET = 'claude-sonnet-5-5';
 const MOTION = 'Individual action has more impact on the environment than government policy.';
@@ -294,7 +304,8 @@ function emit(partial) {
 }
 function shrink(e) { // relay messages must stay under 4 KB
   const cap = (k, n) => { if (typeof e[k] === 'string' && e[k].length > n) e[k] = e[k].slice(0, n - 1) + '…'; };
-  cap('text', 1200); cap('url', 500); cap('line', 300); cap('why', 200);
+  cap('text', 1200); cap('url', 500); cap('line', 300); cap('why', 200); cap('dir', 300);
+  if (Array.isArray(e.order)) for (const b of e.order) { if (b.say) b.say = String(b.say).slice(0, 280); if (b.text) b.text = String(b.text).slice(0, 280); if (b.note) b.note = String(b.note).slice(0, 90); }
   if (e.card) { e.card.detail = String(e.card.detail || '').slice(0, 700); e.card.accurate = String(e.card.accurate || '').slice(0, 400); e.card.sources = (e.card.sources || []).slice(0, 4).map(s => ({title: String(s.title || '').slice(0, 120), publisher: String(s.publisher || '').slice(0, 60), year: s.year || '', url: String(s.url || '').slice(0, 300), finding: String(s.finding || '').slice(0, 160)})); }
   if (JSON.stringify(e).length > 3800 && Array.isArray(e.order)) e.order = e.order.slice(0, 8);
 }
@@ -482,42 +493,57 @@ Reply with only JSON: {"accurate":"1-2 sentences: what is true and what is not",
   } catch (err) { aiFailed(err, 'Research'); }
   finally { S.researching.delete(p.id); renderStrategy(); renderLog(); }
 }
-async function proposeStrategy() {
+function cleanDir(d) { d = d || {}; return {text: trunc(d.text, 300), open: BY_ID.has(d.open) ? d.open : '', end: BY_ID.has(d.end) ? d.end : '', n: Math.min(6, Math.max(3, parseInt(d.n, 10) || 4)), keep: d.keep !== false}; }
+async function proposeStrategy(dir, serving) {
+  dir = cleanDir(dir || S.dir);
   if (S.ai.mode === 'none' && !S.ai.via) { toast('No model in this session yet.'); return; }
-  if (S.ai.mode === 'none') { emit({k: 'ask', what: 'proposal'}); toast('Asked ' + S.ai.via + "'s device for a proposal."); return; }
+  if (S.ai.mode === 'none') { emit({k: 'ask', what: 'proposal', dir}); toast('Asked ' + S.ai.via + "'s device for a proposal."); return; }
   if (S.proposing) return;
   S.proposing = true; renderStrategy();
-  const {points, counter} = derive(); const pts = [...points].reverse();
-  const prompt = `You help the closing speaker of a university debate team arguing AGAINST the motion "${MOTION}" plan a 4-minute rebuttal. The speaker does not want a linear reply to every point. They want one cohesive counter-claim that refutes the opponents' main claim, then a strategic choice of subclaims: the load-bearing ones (if they fall, the case falls) and the weak ones (cheap to knock down), skipping the rest.
-Opponent points as logged, oldest first (P-id, text, our matched cards in brackets, current role if the speaker set one):
-${pts.map((p, i) => `P${i + 1}: "${trunc(p.text, 200)}" [${chosenFor(p).slice(0, 3).join(', ')}]${p.role ? ' role=' + p.role : ''}${p.gap ? ' (no card yet)' : ''}`).join('\n') || '(nothing logged yet)'}
-Card reference (id | title | our one-line rebuttal):
-${[...new Set([...pts.flatMap(p => chosenFor(p).slice(0, 2)), 'F1', 'F2', 'F3', 'F4', 'M1'])].filter(id => BY_ID.has(id)).map(id => `${id} | ${BY_ID.get(id).title} | ${trunc(BY_ID.get(id).say, 130)}`).join('\n')}
-${counter && counter.text ? `The speaker's current counter-claim: "${trunc(counter.text, 200)}"; keep it unless a clearly better one follows from the points.` : ''}
-Reply with only JSON:
+  const {points, counter, outlines} = derive(); const pts = [...points].reverse(); const num = new Map(pts.map((p, i) => [p.id, i + 1]));
+  const locked = ((outlines.rebuttal && outlines.rebuttal.order) || []).filter(b => b.lock);
+  const refIds = [...new Set([...pts.flatMap(p => chosenFor(p).slice(0, 2)), ...locked.flatMap(b => b.ids || []), dir.open, dir.end, 'F1', 'F2', 'F3', 'F4', 'M1'])].filter(id => BY_ID.has(id));
+  const lines = [
+    `You help the closing speaker of a university debate team arguing AGAINST the motion "${MOTION}" plan a 4-minute rebuttal. The speaker does not want a linear reply to every point. They want one cohesive counter-claim that refutes the opponents' main claim, then a strategic choice of subclaims: the load-bearing ones (if they fall, the case falls) and the weak ones (cheap to knock down), skipping the rest.`,
+    `Opponent points as logged, oldest first (P-id, text, our matched cards in brackets, current role if the speaker set one):`,
+    pts.map((p, i) => `P${i + 1}: "${trunc(p.text, 200)}" [${chosenFor(p).slice(0, 3).join(', ')}]${p.role ? ' role=' + p.role : ''}${p.gap ? ' (no card yet)' : ''}`).join('\n') || '(nothing logged yet)',
+    `Card reference (id | title | our one-line rebuttal):`,
+    refIds.map(id => `${id} | ${BY_ID.get(id).title} | ${trunc(BY_ID.get(id).say, 130)}`).join('\n'),
+    dir.text ? `The speaker's direction, which overrides the defaults below: "${dir.text}"` : '',
+    counter && counter.text ? (dir.keep ? `The speaker's counter-claim is fixed; return it unchanged: "${trunc(counter.text, 200)}"` : `The speaker's current counter-claim: "${trunc(counter.text, 200)}"; keep it unless a clearly better one follows from the points.`) : '',
+    dir.keep && pts.some(p => p.role) ? 'Roles the speaker has already set are decisions: keep them and suggest roles only for untagged points.' : '',
+    locked.length ? `Beats the speaker has locked; plan around them and do not repeat them:\n${locked.map((b, i) => `${i + 1}. ${b.pid ? 'P' + (num.get(b.pid) || '?') + ' ' : ''}${(b.ids || []).join(' ')}${b.text ? ' "' + trunc(b.text, 80) + '"' : ''}`).join('\n')}` : '',
+    `Reply with only JSON:
 {"thesis":"their main claim as they are running it, at most 20 words, their framing",
  "counter":"our one-sentence counter-claim, at most 25 words, built only from ideas on the cards",
  "roles":[{"pid":"P1","role":"thesis|load|weak|skip","why":"at most 12 words"}],
- "beats":[{"pid":"P2","ids":["F2"],"note":"at most 15 words on what this beat does"}]}
-Give 3 to 5 beats: open on the counter-claim against the load-bearing subclaim, use weak subclaims as quick hits, end on F4. Use only card ids from the reference. Add no facts or numbers of your own.`;
+ "beats":[{"pid":"P2","ids":["F2"],"note":"at most 15 words on what this beat does"}]}`,
+    `Give ${dir.n} beats${locked.length ? ' in addition to the locked ones' : ''}: ${dir.open ? `open on card ${dir.open}` : 'open on the counter-claim against the load-bearing subclaim'}, use weak subclaims as quick hits${dir.end ? `, end on ${dir.end}` : ''}. Use only card ids from the reference. Add no facts or numbers of your own.`,
+  ].filter(Boolean);
   try {
-    const out = await callModel(prompt, {model: S.ai.mode === 'key' ? SONNET : HAIKU, maxTokens: 1200, effort: 'medium'});
+    const out = await callModel(lines.join('\n'), {model: S.ai.mode === 'key' ? SONNET : HAIKU, maxTokens: 1200, effort: 'medium'});
     const roles = Array.isArray(out && out.roles) ? out.roles.map(r => ({pid: pts[(parseInt(String(r.pid).replace(/\D/g, ''), 10) || 0) - 1]?.id, role: ['thesis', 'load', 'weak', 'skip'].includes(r.role) ? r.role : '', why: trunc(r.why, 80)})).filter(r => r.pid && r.role) : [];
     const beats = Array.isArray(out && out.beats) ? out.beats.map(b => ({pid: b.pid ? pts[(parseInt(String(b.pid).replace(/\D/g, ''), 10) || 0) - 1]?.id || null : null, ids: (b.ids || []).map(String).filter(id => BY_ID.has(id)).slice(0, 2), note: trunc(b.note, 90)})).filter(b => b.ids.length || b.pid).slice(0, 6) : [];
     if (!roles.length && !beats.length) throw new Error('empty');
-    emit({k: 'proposal', thesis: trunc(out.thesis, 200), counter: trunc(out.counter, 220), roles, beats, model: S.ai.mode === 'key' ? SONNET : HAIKU});
+    emit({k: 'proposal', thesis: trunc(out.thesis, 200), counter: trunc(out.counter, 220), roles, beats, dir: dir.text, opts: {open: dir.open, end: dir.end, n: dir.n, keep: dir.keep}, model: S.ai.mode === 'key' ? SONNET : HAIKU});
   } catch (err) { aiFailed(err, 'Strategy'); }
   finally { S.proposing = false; renderStrategy(); }
 }
 function latestProposal() { let best = null; for (const e of S.events.values()) if (e.k === 'proposal' && (!best || e.t > best.t)) best = e; return best; }
-function applyProposal(pr) {
-  const {points, outlines} = derive(); const have = new Set(points.map(p => p.id));
-  for (const r of pr.roles || []) if (have.has(r.pid)) { const p = points.find(x => x.id === r.pid); if (p && p.role !== r.role) emit({k: 'tag', pid: r.pid, role: r.role, why: r.why}); }
-  if (pr.counter) emit({k: 'counter', text: pr.counter});
-  const order = (pr.beats || []).filter(b => !b.pid || have.has(b.pid)).map(b => ({pid: b.pid || undefined, ids: b.ids, note: b.note}));
-  if (order.length) emit({k: 'outline', type: 'rebuttal', order, line: pr.counter || (outlines.rebuttal && outlines.rebuttal.line) || '', model: pr.model});
-  toast('Applied. Edit roles, the counter-claim and the beat order as you like.');
+function mergeLocked(current, next) { // beats the speaker locked survive a rebuild or an applied proposal
+  const locked = ((current && current.order) || []).filter(b => b.lock); if (!locked.length) return next.slice(0, 8);
+  const taken = new Set(locked.map(b => b.pid).filter(Boolean)); return [...locked, ...next.filter(b => !(b.pid && taken.has(b.pid)))].slice(0, 8);
 }
+function applyProposal(pr, part) {
+  part = part || 'all'; const {points, outlines} = derive(); const have = new Set(points.map(p => p.id)); const keep = !pr.opts || pr.opts.keep !== false; let n = 0;
+  if (part === 'all' || part === 'roles') for (const r of pr.roles || []) if (have.has(r.pid)) { const p = points.find(x => x.id === r.pid); if (p && p.role !== r.role && (part === 'roles' || !keep || !p.role)) { emit({k: 'tag', pid: r.pid, role: r.role, why: r.why}); n++; } }
+  if ((part === 'all' || part === 'counter') && pr.counter) { emit({k: 'counter', text: pr.counter}); delete S.drafts.counter; n++; }
+  if (part === 'all' || part === 'beats') { const order = mergeLocked(outlines.rebuttal, (pr.beats || []).filter(b => !b.pid || have.has(b.pid)).map(b => ({pid: b.pid || undefined, ids: b.ids, note: b.note}))); if (order.length) { emit({k: 'outline', type: 'rebuttal', order, line: pr.counter || (outlines.rebuttal && outlines.rebuttal.line) || '', model: pr.model}); n++; } }
+  toast(!n ? 'Nothing to change.' : part !== 'all' ? 'Applied the ' + part + '.' : keep ? 'Applied; your own roles and locked beats were kept.' : 'Applied.');
+}
+const outlineHistory = type => [...S.events.values()].filter(e => e.k === 'outline' && e.type === type).sort((a, b) => b.t - a.t);
+function undoTarget(type) { const h = outlineHistory(type); if (!h.length) return null; const anchor = h[0].rest ? h.findIndex(e => e.id === h[0].rest) : 0; return anchor < 0 ? h[1] || null : h[anchor + 1] || null; }
+function undoOutline(type) { const tgt = undoTarget(type); if (!tgt) { toast('Nothing earlier to go back to.'); return; } S.editBeat = null; emit({k: 'outline', type, order: tgt.order, line: tgt.line || '', model: 'manual', rest: tgt.id}); }
 
 // ── the device that has a model answers for the room ──
 const serveQueue = []; let serving = false;
@@ -526,7 +552,7 @@ function serve(e) {
   const fresh = ms => Date.now() - e.t < ms;
   if (e.k === 'point' && fresh(15 * 60 * 1000)) serveQueue.push({kind: 'point', id: e.id, t: e.t});
   else if (e.k === 'build' && fresh(90 * 1000)) serveQueue.push({kind: 'build', type: e.type, t: e.t});
-  else if (e.k === 'ask' && fresh(120 * 1000)) serveQueue.push({kind: e.what === 'proposal' ? 'proposal' : 'research', id: e.pid, t: e.t});
+  else if (e.k === 'ask' && fresh(120 * 1000)) serveQueue.push({kind: e.what === 'proposal' ? 'proposal' : 'research', id: e.pid, t: e.t, dir: e.dir});
   else return;
   setTimeout(drainServe, 1200 + Math.random() * 800);
 }
@@ -538,7 +564,7 @@ async function drainServe() {
       if (job.kind === 'point') { const p = points.find(x => x.id === job.id); if (p && !p.rerank && !S.ai.busy.has(p.id)) await rerankPoint(p); }
       else if (job.kind === 'build') { const o = outlines[job.type]; if (!o || o.t < job.t) await buildOutline(job.type, true); }
       else if (job.kind === 'research') { const p = points.find(x => x.id === job.id); if (p && (!p.research || p.research.t < job.t)) await researchPoint(p); }
-      else if (job.kind === 'proposal') { const pr = latestProposal(); if (!pr || pr.t < job.t) await proposeStrategy(); }
+      else if (job.kind === 'proposal') { const pr = latestProposal(); if (!pr || pr.t < job.t) await proposeStrategy(job.dir, true); }
     }
   } finally { serving = false; }
 }
@@ -547,6 +573,8 @@ async function keepAwake() { if (S.ai.mode === 'none' || !navigator.wakeLock || 
 
 // ───────────────────────── outlines ─────────────────────────
 const pointsForOutline = points => [...points].reverse();
+const stamp = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+function beatTimes(order, total) { const fixed = order.reduce((s, b) => s + (b.sec > 0 ? b.sec : 0), 0); const free = order.filter(b => !(b.sec > 0)).length; const each = free ? Math.max(0, Math.floor((total - fixed) / free)) : 0; let t = 0; return order.map(b => { const dur = b.sec > 0 ? b.sec : each; const at = t; t += dur; return {at, dur, end: t}; }); }
 const strengthOf = ids => Math.max(0, ...ids.map(id => (BY_ID.get(id) || {}).strength || 0));
 async function buildOutline(type, serving) {
   const {points, outlines} = derive(); const pts = pointsForOutline(points);
@@ -593,7 +621,7 @@ Reply with only JSON: {"ids":["FR01","OW03"],"line":"..."}`;
       order = [fr[0], ...bestWins, fr[1], fr[2]].filter(Boolean).slice(0, 5).map(c => ({ids: [c.id]}));
     }
   }
-  S.building = null;
+  S.building = null; order = mergeLocked(outlines[type], order);
   emit({k: 'outline', type, order, line: line || (outlines[type] && outlines[type].line) || '', model});
 }
 function editOutline(type, fn) {
@@ -718,51 +746,91 @@ function renderStrategy() {
       <div class="row small" style="margin-top:.25rem">${p.rerank && p.rerank.gap ? `<span class="muted">${esc(p.rerank.gap)}</span>` : p.gap ? '<span class="muted">no close card</span>' : ''}${S.researching.has(p.id) ? '<span>researching, usually under two minutes…</span>' : canResearch() && !p.research ? `<button class="lnk" data-research="${p.id}">Research with Sonnet</button>` : !canResearch() && S.ai.via && !p.research ? `<button class="lnk" data-askresearch="${p.id}">Ask ${esc(S.ai.via)}'s device to research</button>` : ''}<button class="lnk" data-att="${p.id}">Add a finding</button></div>
       ${draftHTML(p)}${p.att.map(a => `<div class="att"><span class="muted">${esc(a.by)}</span><span>${esc(a.text)}</span>${a.url ? `<a href="${esc(a.url)}" target="_blank" rel="noopener">link</a>` : ''}</div>`).join('')}${S.attOpen.has(p.id) ? `<form class="attform" data-attach="${p.id}"><input class="txt" name="text" placeholder="Finding" aria-label="Finding" maxlength="600"><input class="txt" name="url" placeholder="Link" aria-label="Link" inputmode="url" style="flex:0 1 12ch"><button class="lnk" type="submit">Add</button></form>` : ''}</div>`).join('')
     : `<p class="empty">No gaps. A point lands here when no card answers it; a teammate can research it, or the key device can run Sonnet with web search and attach a draft with sources to check.</p>`;
-  // 3. proposal + counter
-  const pr = latestProposal();
-  const prHtml = pr ? `<div class="proposal"><div class="muted">Proposal · ${esc(pr.by)} · ${ago(pr.t)} · ${esc(pr.model === SONNET ? 'Sonnet' : 'Haiku')}</div>
-      ${pr.thesis ? `<div><span class="k" style="color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.75rem;margin-right:.4rem">Their thesis</span>${esc(pr.thesis)}</div>` : ''}
-      ${pr.counter ? `<div><span class="k" style="color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.75rem;margin-right:.4rem">Counter</span>${esc(pr.counter)}</div>` : ''}
+  // 3. proposals, counter-claim, direction
+  const props = [...S.events.values()].filter(e => e.k === 'proposal').sort((a, b) => b.t - a.t);
+  const propHtml = pr => `<div class="proposal"><div class="muted">Proposal · ${esc(pr.by)} · ${ago(pr.t)} · ${esc(pr.model === SONNET ? 'Sonnet' : 'Haiku')}${pr.dir ? ' · “' + esc(trunc(pr.dir, 70)) + '”' : ''}</div>
+      ${pr.thesis ? `<div><span class="k">Their thesis</span>${esc(pr.thesis)}</div>` : ''}
+      ${pr.counter ? `<div><span class="k">Counter</span>${esc(pr.counter)}</div>` : ''}
       ${(pr.roles || []).map(r => `<div>P${num.get(r.pid) || '?'} → ${esc(r.role === 'load' ? 'load-bearing' : r.role)}${r.why ? ` <span class="muted">· ${esc(r.why)}</span>` : ''}</div>`).join('')}
       ${(pr.beats || []).map((b, i) => `<div>${i + 1}. ${b.pid ? 'P' + (num.get(b.pid) || '?') + ' · ' : ''}<span class="mono">${esc(b.ids.join(' '))}</span>${b.note ? ` <span class="muted">· ${esc(b.note)}</span>` : ''}</div>`).join('')}
-      <div class="row" style="margin-top:.25rem"><button class="btn" data-applyprop="1">Apply proposal</button><span class="muted">sets the roles, the counter-claim and the beats; you edit from there</span></div></div>` : '';
-  const counterHtml = `<textarea class="txt" id="counterText" rows="2" placeholder="Your one-sentence counter-claim against their main claim" aria-label="Counter-claim">${esc(counter ? counter.text : '')}</textarea>
-    <div class="row small" style="margin-top:.35rem"><button class="btn" id="saveCounter">Save</button>${modelHere ? `<button class="btn" id="proposeBtn" ${S.proposing ? 'disabled' : ''}>${S.proposing ? 'Proposing…' : 'Propose a strategy'}</button>` : ''}<span class="muted">${counter ? esc(counter.by) + ' · ' + ago(counter.t) : ''}</span></div>${prHtml}`;
-  // 4. beats
+      <div class="row small" style="margin-top:.25rem"><button class="btn" data-applyprop="${pr.id}" data-part="all">Apply</button><span class="muted">or only the</span><button class="lnk" data-applyprop="${pr.id}" data-part="roles">roles</button><button class="lnk" data-applyprop="${pr.id}" data-part="counter">counter</button><button class="lnk" data-applyprop="${pr.id}" data-part="beats">beats</button></div></div>`;
+  const prHtml = props.length ? propHtml(props[0]) + (props.length > 1 ? `<div class="row small" style="margin-top:.35rem"><button class="lnk" data-showprops="1">${S.showProps ? 'Hide' : 'Show'} ${props.length - 1} earlier proposal${props.length > 2 ? 's' : ''}</button></div>${S.showProps ? props.slice(1).map(propHtml).join('') : ''}` : '') : '';
+  const ours = CORPUS.filter(c => c.side !== 'for');
+  const cardOpts = (sel, blank) => `<option value="">${blank}</option>` + ours.map(c => `<option value="${esc(c.id)}" ${c.id === sel ? 'selected' : ''}>${esc(c.id)} · ${esc(trunc(c.title, 36))}</option>`).join('');
+  const dirHtml = modelHere ? `<div class="dir"><input class="txt" id="dirText" value="${esc(S.dir.text)}" maxlength="300" placeholder="Direction for the proposal: lead with scale, concede Montreal, skip their recycling point…" aria-label="Direction for the proposal">
+      <div class="row small"><label>open on <select class="txt" id="dirOpen">${cardOpts(S.dir.open, 'model decides')}</select></label><label>end on <select class="txt" id="dirEnd">${cardOpts(S.dir.end, 'model decides')}</select></label><label>beats <select class="txt" id="dirN">${[3, 4, 5, 6].map(n => `<option ${n === S.dir.n ? 'selected' : ''}>${n}</option>`).join('')}</select></label><label><input type="checkbox" id="dirKeep" ${S.dir.keep ? 'checked' : ''}> keep my roles and counter-claim</label><button class="btn" id="proposeBtn" ${S.proposing ? 'disabled' : ''}>${S.proposing ? 'Proposing…' : props.length ? 'Propose another' : 'Propose a strategy'}</button></div></div>` : '';
+  const counterHtml = `<textarea class="txt" id="counterText" rows="2" placeholder="Your one-sentence counter-claim against their main claim" aria-label="Counter-claim">${esc(S.drafts.counter != null ? S.drafts.counter : counter ? counter.text : '')}</textarea>
+    <div class="row small" style="margin-top:.35rem"><button class="btn" id="saveCounter">Save</button><span class="muted">${counter ? esc(counter.by) + ' · ' + ago(counter.t) : ''}</span></div>${dirHtml}${prHtml}`;
+  // 4. beats: each has a card or your own words, an optional fixed time, and a lock that survives rebuilds
+  const editForm = (key, b, first, alt, total, dur) => {
+    const d = S.drafts['beat:' + key] || {say: b.say || b.text || (first ? first.say || first.title : ''), card: (b.ids || [])[0] || '', sec: b.sec > 0 ? b.sec : '', lock: !!b.lock};
+    const opt = c => `<option value="${esc(c.id)}" ${c.id === d.card ? 'selected' : ''}>${esc(c.id)} · ${esc(trunc(c.title, 36))}</option>`;
+    return `<form class="beatedit" data-beatedit="${key}">
+          <textarea class="txt" name="say" rows="2" maxlength="280" aria-label="What to say" placeholder="${d.card ? 'Your wording of this card' : 'Your own beat, in your words'}">${esc(d.say)}</textarea>
+          <div class="row small"><label>card <select class="txt" name="card"><option value="">none, own words</option>${alt.length ? `<optgroup label="Matches">${alt.map(id => opt(BY_ID.get(id))).join('')}</optgroup>` : ''}<optgroup label="All cards">${CORPUS.filter(c => !alt.includes(c.id)).map(opt).join('')}</optgroup></select></label>
+          <label>seconds <input class="txt" name="sec" type="number" min="5" max="${total}" step="5" value="${esc(d.sec)}" placeholder="${dur}"></label>
+          <label><input type="checkbox" name="lock" ${d.lock ? 'checked' : ''}> keep when rebuilding</label><button class="lnk" type="submit">Save</button><button class="lnk" type="button" data-canceledit="1">Cancel</button></div></form>`;
+  };
+  const pendingBeat = type => S.editBeat === type + ':new' ? `<div class="beat"><div class="t">new</div><div>${editForm(type + ':new', {ids: []}, null, [], type === 'rebuttal' ? 240 : 120, 30)}</div><div class="ctl"></div></div>` : '';
   const beatsOf = (o, type) => {
-    const total = type === 'rebuttal' ? 240 : 120, n = Math.max(1, o.order.length), each = Math.floor(total / n); let t = 0;
-    return o.order.map((b, i) => {
-      const p = b.pid ? byPid.get(b.pid) : null; const cards = (b.ids || []).map(id => BY_ID.get(id)).filter(Boolean); const first = cards[0];
-      const stamp = `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`; t += each; const s0 = first && first.sources[0];
+    const total = type === 'rebuttal' ? 240 : 120; const times = beatTimes(o.order, total);
+    const rows = o.order.map((b, i) => {
+      const p = b.pid ? byPid.get(b.pid) : null; const cards = (b.ids || []).map(id => BY_ID.get(id)).filter(Boolean); const first = cards[0]; const {at, dur} = times[i];
+      const s0 = first && first.sources[0];
       const cite = s0 ? `${esc(s0.publisher || s0.title)}${s0.year ? ' ' + esc(s0.year) : ''}${s0.verified === true ? '' : ' <span class="red">check source</span>'}` : '';
-      const alt = p ? chosenFor(p) : [];
-      return `<div class="beat"><div class="t">${stamp}</div><div>
-        ${p ? `<div class="ans">P${num.get(p.id)} · ${esc(trunc(p.text, 160))}${p.role ? ' · ' + esc(p.role === 'load' ? 'load-bearing' : p.role) : ''}</div>` : ''}
-        ${first ? `<div class="say">${esc(first.say || first.title)}</div><div class="cite"><span class="mono">${esc(first.id)}</span> ${esc(first.title)}${cite ? ' · ' + cite : ''}${b.note ? ' · ' + esc(b.note) : ''}</div>` : `<div class="say muted">No card chosen</div>`}
-        ${cards.slice(1).map(c => `<div class="cite">then <span class="mono">${esc(c.id)}</span> ${esc(trunc(c.say, 120))}</div>`).join('')}
-      </div><div class="ctl"><button data-mv="${type}:${i}:-1" title="Move up">↑</button><button data-mv="${type}:${i}:1" title="Move down">↓</button>${alt.length > 1 ? `<button data-swap="${type}:${i}" title="Next matching card">⇄</button>` : ''}<button data-rm="${type}:${i}" title="Remove">×</button></div></div>`;
-    }).join('');
+      const alt = p ? chosenFor(p) : []; const key = type + ':' + i;
+      let body;
+      if (S.editBeat === key) body = editForm(key, b, first, alt, total, dur);
+      else {
+        body = `${p ? `<div class="ans">P${num.get(p.id)} · ${esc(trunc(p.text, 160))}${p.role ? ' · ' + esc(p.role === 'load' ? 'load-bearing' : p.role) : ''}</div>` : ''}
+        ${first ? `<div class="say">${esc(b.say || first.say || first.title)}</div><div class="cite"><span class="mono">${esc(first.id)}</span> ${esc(first.title)}${cite ? ' · ' + cite : ''}${b.say ? ' · your wording' : ''}${b.note ? ' · ' + esc(b.note) : ''}${b.lock ? ' · kept' : ''}</div>`
+          : b.text ? `<div class="say">${esc(b.text)}</div><div class="cite">your own words, no card${b.lock ? ' · kept' : ''}</div>` : `<div class="say muted">Empty beat: press edit</div>`}
+        ${cards.slice(1).map(c => `<div class="cite">then <span class="mono">${esc(c.id)}</span> ${esc(trunc(c.say, 120))}</div>`).join('')}`;
+      }
+      return `<div class="beat"><div class="t">${stamp(at)}<br><span>${dur}s</span></div><div>${body}</div><div class="ctl"><button data-mv="${type}:${i}:-1" title="Move up">↑</button><button data-mv="${type}:${i}:1" title="Move down">↓</button>${alt.length > 1 ? `<button data-swap="${type}:${i}" title="Next matching card">⇄</button>` : ''}<button data-rm="${type}:${i}" title="Remove">×</button><button data-edit="${key}" title="Wording, card, seconds, lock">${S.editBeat === key ? 'close' : 'edit'}</button></div></div>`;
+    });
+    const end = times.length ? times[times.length - 1].end : 0;
+    return rows.join('') + pendingBeat(type) + (end > total ? `<div class="small red" style="margin-top:.4rem">Over by ${end - total} s. Shorten a fixed beat or remove one.</div>` : '');
   };
   const block = (type, title, emptyText) => {
-    const o = outlines[type]; const building = S.building === type;
-    return `<section><h2>${title}</h2>${o ? `<div class="row small muted" style="margin-bottom:.25rem"><span>${esc(o.by)} · ${ago(o.t)} · ${o.model === 'manual' ? 'your order' : o.model === 'keyword' ? 'keyword order' : 'model order'}</span><span class="spacer"></span><button class="lnk" data-build="${type}" ${building ? 'disabled' : ''}>${building ? 'Building…' : 'Auto-build'}</button><button class="lnk" data-copy="${type}">Copy</button></div>${o.line ? `<div class="link-line">${esc(o.line)}</div>` : ''}${beatsOf(o, type)}`
-      : `<div class="row small"><button class="btn" data-build="${type}" ${building ? 'disabled' : ''}>${building ? 'Building…' : 'Auto-build'}</button><span class="empty">${emptyText}</span></div>`}</section>`;
+    const o = outlines[type]; const building = S.building === type; const canUndo = !!undoTarget(type);
+    return `<section><h2>${title}</h2>${o ? `<div class="row small muted" style="margin-bottom:.25rem"><span>${esc(o.by)} · ${ago(o.t)} · ${o.model === 'manual' ? 'your order' : o.model === 'keyword' ? 'keyword order' : 'model order'}</span><span class="spacer"></span><button class="lnk" data-ownbeat="${type}">Own beat</button><button class="lnk" data-build="${type}" ${building ? 'disabled' : ''}>${building ? 'Building…' : 'Auto-build'}</button>${canUndo ? `<button class="lnk" data-undo="${type}">Undo</button>` : ''}<button class="lnk" data-copy="${type}">Copy</button></div>${o.line ? `<div class="link-line">${esc(o.line)}</div>` : ''}${beatsOf(o, type)}`
+      : `<div class="row small"><button class="btn" data-build="${type}" ${building ? 'disabled' : ''}>${building ? 'Building…' : 'Auto-build'}</button><button class="lnk" data-ownbeat="${type}">Own beat</button><span class="empty">${emptyText}</span></div>${pendingBeat(type)}`}</section>`;
   };
+  const act = document.activeElement; const inHost = host.contains(act) && /^(INPUT|TEXTAREA|SELECT)$/.test(act.tagName);
+  const focusKey = inHost ? (act.id || (act.form && act.form.dataset.beatedit ? act.form.dataset.beatedit + '/' + act.name : '')) : ''; const sel = inHost && act.selectionStart != null ? [act.selectionStart, act.selectionEnd] : null;
   host.innerHTML = `<section class="case"><h2>Their case</h2>${caseHtml}</section>
     <section><h2>Gaps${gaps.length ? ' · ' + gaps.length : ''}</h2>${gapsHtml}${gaps.length ? `<div class="row small" style="margin-top:.5rem"><button class="lnk" id="copyGaps">Copy gaps as text</button><span class="muted">paste into the research doc</span></div>` : ''}</section>
     <section class="counter"><h2>Counter-claim</h2>${counterHtml}</section>
-    ${block('rebuttal', 'Rebuttal · 4 min', 'or add beats from Their case; arrows reorder, ⇄ swaps the card, × removes')}
+    ${block('rebuttal', 'Rebuttal · 4 min', 'or add beats from Their case or in your own words; arrows reorder, ⇄ swaps the card, edit sets wording, seconds and a lock')}
     ${block('closing', 'Closing · 2 min', 'a frame that resets the motion, the wins that beat what they argued, the line to end on')}`;
-  const sc = el('saveCounter'); if (sc) sc.onclick = () => { const v = el('counterText').value.trim(); if (v) emit({k: 'counter', text: v}); };
-  const pb = el('proposeBtn'); if (pb) pb.onclick = proposeStrategy;
+  if (focusKey) { const [fk, fname] = focusKey.split('/'); const target = fname ? host.querySelector(`form[data-beatedit="${fk}"] [name="${fname}"]`) : el(fk); if (target) { target.focus({preventScroll: true}); if (sel && target.setSelectionRange) try { target.setSelectionRange(sel[0], sel[1]); } catch {} } }
+  const sc = el('saveCounter'); if (sc) sc.onclick = () => { const v = el('counterText').value.trim(); if (v) { delete S.drafts.counter; emit({k: 'counter', text: v}); } };
+  const pb = el('proposeBtn'); if (pb) pb.onclick = () => { readDir(); proposeStrategy(); };
   const cg = el('copyGaps'); if (cg) cg.onclick = () => copyText(gaps.map(p => `P${num.get(p.id)}: ${p.text}${p.rerank && p.rerank.gap ? ' [' + p.rerank.gap + ']' : ''}${p.research ? '\n   draft: ' + p.research.card.say + '\n   ' + (p.research.card.sources || []).map(s => s.url).join(' ') : ''}`).join('\n\n'));
 }
+function saveBeat(f) {
+  const key = f.dataset.beatedit; const [type, i] = key.split(':'); const v = {say: f.say.value.trim(), card: f.card.value, sec: parseInt(f.sec.value, 10), lock: f.lock.checked};
+  delete S.drafts['beat:' + key]; S.editBeat = null;
+  editOutline(type, o => {
+    if (i === 'new') { if (!v.say && !v.card) return o; o.push({ids: []}); } const b = o[i === 'new' ? o.length - 1 : +i]; if (!b) return o; const old = (b.ids || [])[0] ? BY_ID.get(b.ids[0]) : null;
+    if (v.card && BY_ID.has(v.card)) { const c = BY_ID.get(v.card); b.ids = [v.card, ...(b.ids || []).filter(x => x !== v.card)].slice(0, 2); delete b.text; const isDefault = !v.say || v.say === (c.say || c.title) || (old && v.say === (old.say || old.title)); if (isDefault) delete b.say; else b.say = v.say; }
+    else { b.ids = []; delete b.say; if (v.say) b.text = v.say; else { o.splice(+i, 1); return o; } }
+    if (v.sec > 0) b.sec = Math.min(v.sec, 600); else delete b.sec; if (v.lock) b.lock = true; else delete b.lock; return o;
+  });
+}
+function readDir() { if (!el('dirText')) return; S.dir = cleanDir({text: el('dirText').value, open: el('dirOpen').value, end: el('dirEnd').value, n: el('dirN').value, keep: el('dirKeep').checked}); LS.set('rb:dir', S.dir); }
 function outlineText(type) {
   const {points, outlines, counter} = derive(); const o = outlines[type]; if (!o) return '';
-  const byPid = new Map(points.map(p => [p.id, p])); const lines = [type === 'rebuttal' ? 'REBUTTAL (4 min)' : 'CLOSING (2 min)'];
+  const byPid = new Map(points.map(p => [p.id, p])); const lines = [type === 'rebuttal' ? 'REBUTTAL (4 min)' : 'CLOSING (2 min)']; const times = beatTimes(o.order, type === 'rebuttal' ? 240 : 120);
   if (counter && type === 'rebuttal') lines.push('Counter-claim: ' + counter.text);
   if (o.line && o.line !== (counter && counter.text)) lines.push('Open: ' + o.line);
-  o.order.forEach((b, i) => { const p = b.pid ? byPid.get(b.pid) : null; const cards = (b.ids || []).map(id => BY_ID.get(id)).filter(Boolean); lines.push(''); lines.push(`${i + 1}. ${p ? 'They said: ' + p.text + (p.role ? ' (' + p.role + ')' : '') : ''}${b.note ? ' — ' + b.note : ''}`.trim()); cards.forEach(c => { const s = c.sources[0]; lines.push(`   SAY [${c.id}]: ${c.say}`); if (s) lines.push(`   source: ${s.publisher || ''} ${s.year || ''} ${s.title ? '— ' + s.title : ''}${s.verified === true ? '' : ' (CHECK)'}`.trim()); }); });
+  o.order.forEach((b, i) => {
+    const p = b.pid ? byPid.get(b.pid) : null; const cards = (b.ids || []).map(id => BY_ID.get(id)).filter(Boolean); const {at, dur} = times[i];
+    lines.push(''); lines.push(`${i + 1}. [${stamp(at)}, ${dur}s] ${p ? 'They said: ' + p.text + (p.role ? ' (' + p.role + ')' : '') : ''}${b.note ? ' — ' + b.note : ''}`.trim());
+    if (!cards.length && b.text) lines.push(`   SAY (own words): ${b.text}`);
+    cards.forEach((c, j) => { const s = c.sources[0]; lines.push(`   SAY [${c.id}]: ${j === 0 && b.say ? b.say : c.say}`); if (j === 0 && b.say) lines.push(`   card says: ${c.say}`); if (s) lines.push(`   source: ${s.publisher || ''} ${s.year || ''} ${s.title ? '— ' + s.title : ''}${s.verified === true ? '' : ' (CHECK)'}`.trim()); });
+  });
   return lines.join('\n');
 }
 let toastTimer = null;
@@ -819,7 +887,7 @@ function wire() {
   el('q').addEventListener('input', e => { S.q = e.target.value; renderBoard(); });
   document.querySelectorAll('#sideSeg button').forEach(b => b.onclick = () => { S.side = b.dataset.side; document.querySelectorAll('#sideSeg button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); renderBoard(); });
   document.addEventListener('click', e => {
-    const t = e.target.closest('[data-toggle],[data-rerank],[data-pin],[data-more],[data-att],[data-del],[data-delatt],[data-copy],[data-build],[data-role],[data-research],[data-askresearch],[data-rcheck],[data-gapflag],[data-addbeat],[data-mv],[data-rm],[data-swap],[data-applyprop]');
+    const t = e.target.closest('[data-toggle],[data-rerank],[data-pin],[data-more],[data-att],[data-del],[data-delatt],[data-copy],[data-build],[data-role],[data-research],[data-askresearch],[data-rcheck],[data-gapflag],[data-addbeat],[data-mv],[data-rm],[data-swap],[data-applyprop],[data-edit],[data-canceledit],[data-ownbeat],[data-undo],[data-showprops]');
     if (!t) return; const d = t.dataset; const {points} = derive(); const find = id => points.find(x => x.id === id);
     if (d.toggle) { const inBoard = !!t.closest('#board'); const key = inBoard ? 'b:' + d.toggle : (t.closest('.point') ? t.closest('.point').dataset.pid + ':' + d.toggle : 'b:' + d.toggle); S.open.has(key) ? S.open.delete(key) : S.open.add(key); inBoard ? renderBoard() : renderLog(); }
     else if (d.rerank) { const p = find(d.rerank); if (p) rerankPoint(p); }
@@ -836,13 +904,22 @@ function wire() {
     else if (d.rcheck) emit({k: 'rcheck', pid: d.rcheck, ok: d.ok === '1'});
     else if (d.gapflag) emit({k: 'gapflag', pid: d.gapflag, on: d.on === '1'});
     else if (d.addbeat) { const p = find(d.addbeat); if (p) editOutline('rebuttal', o => { if (o.some(b => b.pid === p.id)) return o; o.push({pid: p.id, ids: chosenFor(p).slice(0, 1)}); return o; }); }
-    else if (d.mv) { const [type, i, dir] = d.mv.split(':'); const a = +i, b = a + (+dir); editOutline(type, o => { if (b < 0 || b >= o.length) return o; [o[a], o[b]] = [o[b], o[a]]; return o; }); }
-    else if (d.rm) { const [type, i] = d.rm.split(':'); editOutline(type, o => { o.splice(+i, 1); return o; }); }
+    else if (d.mv) { S.editBeat = null; const [type, i, dir] = d.mv.split(':'); const a = +i, b = a + (+dir); editOutline(type, o => { if (b < 0 || b >= o.length) return o; [o[a], o[b]] = [o[b], o[a]]; return o; }); }
+    else if (d.rm) { S.editBeat = null; const [type, i] = d.rm.split(':'); editOutline(type, o => { o.splice(+i, 1); return o; }); }
     else if (d.swap) { const [type, i] = d.swap.split(':'); editOutline(type, o => { const b = o[+i]; const p = b && b.pid ? find(b.pid) : null; if (!p) return o; const alt = chosenFor(p); const cur = alt.indexOf(b.ids[0]); b.ids = [alt[(cur + 1) % alt.length]]; return o; }); }
-    else if (d.applyprop) { const pr = latestProposal(); if (pr) applyProposal(pr); }
+    else if (d.applyprop) { const pr = S.events.get(d.applyprop) || latestProposal(); if (pr) applyProposal(pr, d.part); }
+    else if (d.showprops) { S.showProps = !S.showProps; renderStrategy(); }
+    else if (d.edit) { S.editBeat = S.editBeat === d.edit ? null : d.edit; renderStrategy(); }
+    else if (d.canceledit) { delete S.drafts['beat:' + S.editBeat]; S.editBeat = null; renderStrategy(); }
+    else if (d.ownbeat) { S.editBeat = d.ownbeat + ':new'; renderStrategy(); setTimeout(() => { const f = document.querySelector('form.beatedit textarea'); if (f) f.focus(); }, 0); }
+    else if (d.undo) undoOutline(d.undo);
   });
   document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-toggle]')) { e.preventDefault(); e.target.click(); } });
-  document.addEventListener('submit', e => { const f = e.target.closest('form[data-attach]'); if (!f) return; e.preventDefault(); const text = f.text.value.trim(), url = f.url.value.trim(); if (!text && !url) return; S.attOpen.delete(f.dataset.attach); emit({k: 'attach', pid: f.dataset.attach, text: text || url, url: /^https?:\/\//i.test(url) ? url : ''}); });
+  document.addEventListener('input', e => { const t = e.target; if (!el('strategy').contains(t)) return;
+    if (t.id === 'counterText') S.drafts.counter = t.value; else if (/^dir/.test(t.id)) readDir();
+    else if (t.form && t.form.dataset.beatedit) { const f = t.form; S.drafts['beat:' + f.dataset.beatedit] = {say: f.say.value, card: f.card.value, sec: f.sec.value, lock: f.lock.checked}; if (t.name === 'card') renderStrategy(); } });
+  document.addEventListener('submit', e => { const be = e.target.closest('form[data-beatedit]'); if (be) { e.preventDefault(); saveBeat(be); return; }
+    const f = e.target.closest('form[data-attach]'); if (!f) return; e.preventDefault(); const text = f.text.value.trim(), url = f.url.value.trim(); if (!text && !url) return; S.attOpen.delete(f.dataset.attach); emit({k: 'attach', pid: f.dataset.attach, text: text || url, url: /^https?:\/\//i.test(url) ? url : ''}); });
   window.addEventListener('hashchange', () => { const h = sessionFromHash(); if (h && h !== S.session) setSession(h, true); });
   matchMedia('(max-width:860px)').addEventListener('change', renderViews);
   setInterval(renderLog, 60000);
