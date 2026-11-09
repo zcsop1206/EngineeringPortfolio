@@ -123,6 +123,7 @@ form.log .row{font-size:var(--small);gap:.75rem}
 .own .id{font-family:var(--mono);font-size:.8rem;color:var(--muted);min-width:4ch}
 .sgx{font-size:var(--small);color:var(--muted);display:flex;gap:.5rem;flex-wrap:wrap;align-items:baseline;margin-top:.25rem}
 .sgx .is{color:var(--text)}
+.ck{color:var(--red)}
 input.exin{width:100%;font-size:var(--small);margin-top:.4rem;display:block}
 .exres{display:flex;flex-direction:column;font-size:var(--small)}
 .exres button{background:none;border:0;padding:.2rem 0;cursor:pointer;text-align:left;color:var(--muted);display:flex;gap:.5rem;flex-wrap:wrap;align-items:baseline}
@@ -289,8 +290,8 @@ const LS = { get(k, d) { try { const v = localStorage.getItem(k); return v == nu
 const S = {
   session: '', name: LS.get('rb:name', ''), events: new Map(), outbox: [],
   sync: {mode: 'local', status: 'starting', note: ''}, ai: {mode: 'none', sample: null, key: LS.get('rb:key', ''), busy: new Set(), via: ''},
-  view: 'board', mview: 'log', side: 'all', q: '', open: new Set(), more: new Set(), waiting: {}, researching: new Set(), drafts: {}, suggesting: false,
-  kind: 'point', sel: '', hideSg: LS.get('rb:hidesg', ''), scrollLog: false, clockAt: 0,
+  view: 'board', mview: 'log', side: 'all', q: '', open: new Set(), more: new Set(), waiting: {}, researching: new Set(), drafts: {}, suggesting: false, reviewing: false,
+  kind: 'point', sel: '', hideSg: LS.get('rb:hidesg', ''), hideRv: LS.get('rb:hiderv', ''), scrollLog: false, clockAt: 0,
 };
 const HAIKU = 'claude-haiku-5-5', SONNET = 'claude-sonnet-5-5';
 const MOTION = 'Individual action has more impact on the environment than government policy.';
@@ -314,8 +315,9 @@ function applyEvent(e, fromRemote) {
   S.events.set(e.id, e);
   if (fromRemote) {
     const i = S.outbox.findIndex(x => x.id === e.id); if (i >= 0) S.outbox.splice(i, 1);
-    if ((e.k === 'rerank' || e.k === 'research' || (e.k === 'suggest' && e.model !== 'keyword')) && e.by !== me()) { S.ai.via = e.by; renderStatus(); }
+    if ((e.k === 'rerank' || e.k === 'research' || ((e.k === 'suggest' || e.k === 'review') && e.model !== 'keyword')) && e.by !== me()) { S.ai.via = e.by; renderStatus(); }
     if (e.k === 'suggest' && S.waiting.sg) { clearTimeout(S.waiting.sg); delete S.waiting.sg; S.suggesting = false; }
+    if (e.k === 'review' && S.waiting.rv) { clearTimeout(S.waiting.rv); delete S.waiting.rv; S.reviewing = false; }
     serve(e);
   }
   return true;
@@ -328,6 +330,7 @@ function shrink(e) { // relay messages must stay under 4 KB
   const cap = (k, n) => { if (typeof e[k] === 'string' && e[k].length > n) e[k] = e[k].slice(0, n - 1) + '…'; };
   cap('text', 1200); cap('url', 500); cap('line', 300); cap('claim', 240);
   const capList = (lst, f, n) => Array.isArray(lst) && lst.forEach(x => { if (x && typeof x[f] === 'string' && x[f].length > n) x[f] = x[f].slice(0, n - 1) + '…'; });
+  if (e.k === 'review') { capList(e.subs, 'text', 180); capList(e.subs, 'why', 90); cap('thread', 220); }
   if (e.k === 'suggest') { for (const k of ['alts', 'subs', 'per']) { capList(e[k], 'text', 180); capList(e[k], 'sharper', 180); capList(e[k], 'why', 90); } }
   if (Array.isArray(e.notes)) { capList(e.notes, 'text', 300); capList(e.notes, 'url', 300); }
   if (e.card) { e.card.detail = String(e.card.detail || '').slice(0, 700); e.card.accurate = String(e.card.accurate || '').slice(0, 400); e.card.sources = (e.card.sources || []).slice(0, 4).map(s => ({title: String(s.title || '').slice(0, 120), publisher: String(s.publisher || '').slice(0, 60), year: s.year || '', url: String(s.url || '').slice(0, 300), finding: String(s.finding || '').slice(0, 160)})); }
@@ -336,7 +339,7 @@ function shrink(e) { // relay messages must stay under 4 KB
 // Our case is a main claim, the subclaims that carry it (each said by the speaker or the teammate), and a closing.
 function derive() {
   const evs = [...S.events.values()].sort((a, b) => (a.t - b.t) || (a.id < b.id ? -1 : 1));
-  const pts = new Map(), nodes = new Map(), deleted = new Set(), subs = new Map(); let counter = null, closing = null, suggest = null, clock = 0;
+  const pts = new Map(), nodes = new Map(), deleted = new Set(), subs = new Map(); let counter = null, closing = null, suggest = null, review = null, clock = 0;
   for (const e of evs) {
     if (e.k === 'point') { const p = {id: e.id, kind: 'point', text: e.text, by: e.by, t: e.t, items: [], rerank: null, research: null, rcheck: null, gapSet: null}; pts.set(e.id, p); nodes.set(e.id, p); }
     else if (e.k === 'attach') { const p = pts.get(e.pid); if (p) { const it = {id: e.id, pid: e.pid, kind: e.kind === 'ex' || e.kind === 'src' ? e.kind : 'sub', text: e.text || '', url: e.url || '', by: e.by, t: e.t, research: null, rcheck: null, gapSet: null}; p.items.push(it); nodes.set(e.id, it); } }
@@ -348,6 +351,7 @@ function derive() {
     else if (e.k === 'closing') closing = e;
     else if (e.k === 'clock') clock = Number(e.at) || 0;
     else if (e.k === 'suggest') suggest = e;
+    else if (e.k === 'review') review = e;
     else if (e.k === 'sub' && e.sid) {
       if (e.del) { subs.delete(e.sid); continue; }
       const prev = subs.get(e.sid) || {text: '', ids: [], notes: [], who: 'me', ord: e.t, t0: e.t};
@@ -360,7 +364,7 @@ function derive() {
   for (const p of pts.values()) { p.items = p.items.filter(a => !deleted.has(a.id)); p.gap = isGap(p); for (const it of p.items) { it.full = p.text + ' — ' + it.text; it.gap = isGap(it); } }
   for (const id of deleted) nodes.delete(id);
   const rank = x => (x.who === 'mate' ? 1 : 0);
-  return {points: [...pts.values()].sort((a, b) => a.t - b.t), nodes, counter, closing, suggest, clock, subs: [...subs.values()].sort((a, b) => (rank(a) - rank(b)) || (a.ord - b.ord) || (a.t0 - b.t0))};
+  return {points: [...pts.values()].sort((a, b) => a.t - b.t), nodes, counter, closing, suggest, review, clock, subs: [...subs.values()].sort((a, b) => (rank(a) - rank(b)) || (a.ord - b.ord) || (a.t0 - b.t0))};
 }
 function isGap(n) {
   if (n.research && n.rcheck && n.rcheck.ok) return false;
@@ -505,6 +509,8 @@ async function demoModel(prompt, web) { // plumbing test without a real key
   const ids = [...new Set((prompt.match(/\b(?:F|M|A|B|C|FP|PL|MK|OW|FR|CV|GL|BH|PF|FL|TC|PE)\d{1,2}\b/g) || []))];
   if (web) return {accurate: 'Demo: not researched.', say: 'Demo research draft for this claim; no real sources were fetched.', detail: 'This is the stub model. With a real key, Sonnet searches the web and returns sources it opened.', sources: [{title: 'Demo source', publisher: 'none', year: 2026, url: 'https://example.com/', finding: 'placeholder'}]};
   if (/^You rank rebuttal cards/.test(prompt) && /\bgaptest\b/i.test(prompt)) return {ids: [], line: '', gap: 'demo: corpus has nothing on this'};
+  if (/strict editor/.test(prompt)) { const sids = [...prompt.matchAll(/^S(\d+) \(/gm)].map(m => 'S' + m[1]);
+    return {claim: {text: '', why: ''}, subs: sids.map((sid, i) => i === 0 ? {sid, verdict: 'reword', text: 'Demo tighter wording of ' + sid, why: 'demo: vague'} : i === 1 ? {sid, verdict: 'merge', into: 'S1', why: 'demo: same point as S1'} : {sid, verdict: 'keep', why: ''}), order: [...sids].reverse(), thread: 'Demo thread: each subclaim narrows the same point.'}; }
   if (/sparring partner/.test(prompt)) {
     const oursIds = ids.filter(id => BY_ID.has(id) && BY_ID.get(id).side === 'ours'); const sids = [...new Set(prompt.match(/\bS\d+\b/g) || [])];
     return {alts: [{text: 'Demo alternative: scale decides, and only policy has scale.', why: 'demo'}, {text: 'Demo alternative: individuals choose from a menu that policy writes.', why: 'demo'}, {text: 'Demo alternative: count what was measured, not what could be.', why: 'demo'}],
@@ -611,6 +617,62 @@ Give 3 alts that are different strategic choices (for example scale, who writes 
   } catch (err) { aiFailed(err, 'Suggestions'); keywordSuggest(); }
   finally { S.suggesting = false; renderStrategy(); }
 }
+// ── Check: an editor's pass over the case as it stands. Relevance, overlap, flow; every fix is one click ──
+const caseFp = (claim, subs) => { const s = claim + '|' + subs.map(x => x.sid + x.who + x.text + x.ids.join(',') + x.notes.length).join('|'); let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return String(h); };
+function keywordReview() { // no model reachable: only what can be counted, which is wording overlap and repeated cards
+  const {counter, subs} = derive(); const claim = counter ? counter.text : ''; const tk = subs.map(x => new Set(toks(x.text))); const seen = new Set(), out = [];
+  subs.forEach((x, i) => {
+    const r = {sid: x.sid, verdict: 'keep', why: '', drop: []};
+    for (let j = 0; j < i; j++) { const inter = [...tk[i]].filter(t => tk[j].has(t)).length, uni = new Set([...tk[i], ...tk[j]]).size; if (uni && inter / uni >= 0.5 && out[j].verdict !== 'merge') { r.verdict = 'merge'; r.into = subs[j].sid; r.why = 'nearly the same wording'; break; } }
+    for (const id of x.ids) { if (seen.has(id)) r.drop.push(id); else seen.add(id); }
+    if (r.verdict === 'keep' && !x.ids.length && !x.notes.length) { r.warn = true; r.why = 'no example yet'; }
+    out.push(r);
+  });
+  emit({k: 'review', claim, fp: caseFp(claim, subs), subs: out, order: [], thread: '', model: 'keyword'});
+}
+async function reviewCase(opts = {}) {
+  if (!opts.serving) flushDrafts();
+  const {points, counter, subs} = derive(); const claim = counter ? counter.text : '';
+  if (!subs.length) { toast('Add a subclaim first; Check reads what you have.'); return; }
+  S.hideRv = ''; LS.set('rb:hiderv', '');
+  if (S.ai.mode === 'none') {
+    if (!opts.serving && S.ai.via && S.sync.status === 'live') {
+      emit({k: 'ask', what: 'review'}); S.reviewing = true; renderStrategy();
+      S.waiting.rv = setTimeout(() => { delete S.waiting.rv; if (S.reviewing) { S.reviewing = false; keywordReview(); toast(S.ai.via + "'s device did not answer; this is the keyword check."); } }, 30000);
+      return;
+    }
+    keywordReview(); if (!opts.serving) toast('No model reachable; this check only counts wording overlap and repeated cards.'); return;
+  }
+  if (S.reviewing) return; S.reviewing = true; renderStrategy();
+  const prompt = `You are the strict editor of a rebuttal plan for the closing speaker of a university debate team arguing AGAINST the motion "${MOTION}". The rebuttal is 4 minutes: the speaker has 3 minutes, then a teammate has 1 minute.
+Their case as logged (P is a point; the indented lines are its subpoints, examples and sources):
+${theirCaseText(points)}
+The speaker's main claim: ${claim ? '"' + trunc(claim, 240) + '"' : '(none yet)'}
+The subclaims in speaking order, who says each, and under each its examples (card id | title | the line to say, or own: the speaker's own words):
+${subs.map((x, i) => `S${i + 1} (${x.who === 'mate' ? 'teammate' : 'speaker'}): "${trunc(x.text, 180)}"${x.ids.map(id => `\n   ${id} | ${BY_ID.get(id).title} | ${trunc(BY_ID.get(id).say, 120)}`).join('')}${x.notes.map(n => `\n   own: ${trunc(n.text, 120)}`).join('')}`).join('\n')}
+Check three things and nothing else.
+Relevance: does each subclaim carry the main claim, and does it answer something they actually said? Does each example prove the subclaim it sits under?
+Redundancy: do two subclaims make the same point? Is the same card, or the same piece of evidence, used twice?
+Cohesion: do the subclaims build on each other in this order, and do they add up to the main claim?
+Reply with only JSON:
+{"claim":{"text":"a rewording of the main claim, only if the subclaims no longer add up to it; otherwise empty","why":"at most 14 words"},
+ "subs":[{"sid":"S1","verdict":"keep|reword|merge|drop","text":"the new wording if reword, at most 18 words","into":"S2 if merge","why":"at most 14 words, empty if keep","drop":["ids of cards under this subclaim that do not prove it or repeat another subclaim's evidence"]}],
+ "order":["S2","S1","S3"],
+ "thread":"one sentence of at most 25 words that links the subclaims into a single argument, using only what they already say"}
+List every subclaim in subs. Prefer keep: flag only what a judge would notice. order is the best speaking order for all subclaims, the speaker's first and the teammate's after; repeat the current order if it is already right. Add no fact, number or source of your own.`;
+  try {
+    const model = S.ai.mode === 'key' ? SONNET : HAIKU; const list = v => Array.isArray(v) ? v : [];
+    const out = await callModel(prompt, {model, maxTokens: 1200, effort: 'low'});
+    const sidOf = v => (subs[(parseInt(String(v || '').replace(/\D/g, ''), 10) || 0) - 1] || {}).sid || '';
+    const rs = list(out && out.subs).map(a => { const sid = sidOf(a.sid), x = subs.find(y => y.sid === sid); if (!x) return null;
+      let verdict = ['keep', 'reword', 'merge', 'drop'].includes(a.verdict) ? a.verdict : 'keep'; const into = verdict === 'merge' ? sidOf(a.into) : ''; if (verdict === 'merge' && (!into || into === sid)) verdict = 'keep';
+      return {sid, verdict, text: verdict === 'reword' ? trunc(a.text, 180) : '', into, why: trunc(a.why, 90), drop: list(a.drop).map(String).filter(id => x.ids.includes(id))}; }).filter(Boolean);
+    if (!rs.length) throw new Error('empty');
+    const order = list(out.order).map(sidOf).filter(Boolean); const fix = out.claim && typeof out.claim.text === 'string' && out.claim.text.trim() ? {text: trunc(out.claim.text, 240), why: trunc(out.claim.why, 90)} : null;
+    emit({k: 'review', claim, fp: caseFp(claim, subs), claimFix: fix, subs: rs, order: order.length === subs.length && new Set(order).size === subs.length ? order : [], thread: trunc(out.thread, 220), model});
+  } catch (err) { aiFailed(err, 'Check'); keywordReview(); }
+  finally { S.reviewing = false; renderStrategy(); }
+}
 // Speaking plan: the speaker's subclaims share 3:00 after a short opening on the main claim; the teammate's share the last 1:00.
 const ME_SEC = 180, MATE_SEC = 60, OPEN_SEC = 20;
 const stamp = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -638,7 +700,7 @@ function serve(e) {
   if (S.ai.mode === 'none') return;
   const fresh = ms => Date.now() - e.t < ms;
   if (e.k === 'point' && fresh(15 * 60 * 1000)) serveQueue.push({kind: 'point', id: e.id, t: e.t});
-  else if (e.k === 'ask' && fresh(120 * 1000) && (e.what === 'suggest' || e.what === 'research')) serveQueue.push({kind: e.what, id: e.pid, t: e.t});
+  else if (e.k === 'ask' && fresh(120 * 1000) && (e.what === 'suggest' || e.what === 'review' || e.what === 'research')) serveQueue.push({kind: e.what, id: e.pid, t: e.t});
   else return;
   setTimeout(drainServe, 1200 + Math.random() * 800);
 }
@@ -646,10 +708,11 @@ async function drainServe() {
   if (serving || S.ai.mode === 'none') return; serving = true;
   try {
     while (serveQueue.length) {
-      const job = serveQueue.shift(); const {nodes, suggest} = derive(); const n = job.id ? nodes.get(job.id) : null;
+      const job = serveQueue.shift(); const {nodes, suggest, review} = derive(); const n = job.id ? nodes.get(job.id) : null;
       if (job.kind === 'point') { if (n && n.kind === 'point' && !n.rerank && !S.ai.busy.has(n.id)) await rerankPoint(n); }
       else if (job.kind === 'research') { if (n && (!n.research || n.research.t < job.t)) await researchPoint(n); }
       else if (job.kind === 'suggest') { if (!suggest || suggest.t < job.t) await suggestCase({serving: true}); }
+      else if (job.kind === 'review') { if (!review || review.t < job.t) await reviewCase({serving: true}); }
     }
   } finally { serving = false; }
 }
@@ -801,9 +864,18 @@ function renderBoard() {
 }
 function renderStrategy() {
   if (hold) { pend = true; return; }
-  const {counter, closing, subs, suggest, clock} = derive(); const host = el('strategy'); S.clockAt = clock;
+  const {counter, closing, subs, suggest, review, clock} = derive(); const host = el('strategy'); S.clockAt = clock;
   const claim = counter ? counter.text : ''; const {mine, mate, at} = speechPlan(subs, !!claim);
   const val = (id, saved) => esc(S.drafts[id] != null ? S.drafts[id] : saved);
+  // Check results: a fix shows only while it still applies, so applied fixes clear themselves.
+  const rv = review && review.id !== S.hideRv ? review : null; const lab = sid => at.has(sid) ? at.get(sid).label : '?'; const rvRows = new Map(); let rvCount = 0;
+  if (rv) for (const r of rv.subs || []) { const x = subs.find(y => y.sid === r.sid); if (!x) continue; const rows = []; const why = r.why ? `<span>${esc(r.why)}</span>` : '';
+    if (r.verdict === 'reword' && r.text && r.text !== x.text) rows.push(`<span class="ck">reword</span><span class="is">${esc(r.text)}</span>${why}<button class="lnk" data-rvuse="${x.sid}">use</button>`);
+    else if (r.verdict === 'merge' && at.has(r.into)) rows.push(`<span class="ck">overlaps ${esc(lab(r.into))}</span>${why}<button class="lnk" data-rvmerge="${x.sid}">merge into ${esc(lab(r.into))}</button>`);
+    else if (r.verdict === 'drop') rows.push(`<span class="ck">off the main claim</span>${why}<button class="lnk" data-rvdrop="${x.sid}">remove</button>`);
+    else if (r.warn && !x.ids.length && !x.notes.length) rows.push(`<span class="ck">${esc(r.why)}</span>`);
+    for (const id of r.drop || []) if (x.ids.includes(id)) rows.push(`<span class="ck">${esc(id)} repeats or does not fit</span><button class="lnk" data-rvdetach="${x.sid}:${esc(id)}">detach</button>`);
+    if (rows.length) { rvCount += rows.length; rvRows.set(x.sid, rows.map(h => `<div class="sgx">${h}</div>`).join('')); } }
   const sg = suggest && suggest.id !== S.hideSg ? suggest : null; const perBy = new Map(((sg && sg.per) || []).map(x => [x.sid, x]));
   const idsText = ids => (ids || []).map(id => { const c = BY_ID.get(id); return c ? `<span class="mono" title="${esc(c.title + ': ' + c.say)}">${esc(id)}</span>` : ''; }).join(' ');
   const subRow = (x, i, list) => {
@@ -814,6 +886,7 @@ function renderStrategy() {
       <div class="body">
         ${x.ids.map(id => cardHTML(BY_ID.get(id), {open: S.open.has('s:' + x.sid + ':' + id), key: 's:' + x.sid + ':' + id, cite: true, tail: `<button class="lnk" data-rmex="${x.sid}:${esc(id)}" title="Detach">×</button>`})).join('')}
         ${x.notes.map((n, j) => `<div class="own"><span class="id">own</span><span class="grow">${esc(n.text)}${n.url ? ` <a href="${esc(n.url)}" target="_blank" rel="noopener">link</a>` : ''}</span><button class="lnk" data-rmnote="${x.sid}:${j}" title="Remove">×</button></div>`).join('')}
+        ${rvRows.get(x.sid) || ''}
         ${per && per.sharper && per.sharper !== x.text ? `<div class="sgx"><span>sharper</span><span class="is">${esc(per.sharper)}</span><button class="lnk" data-usesharp="${x.sid}">use</button></div>` : ''}
         ${fresh.map(id => { const c = BY_ID.get(id); return `<div class="sgx"><span>suggested</span><span class="mono">${esc(id)}</span><span class="is" title="${esc(c.say)}">${esc(c.title)}</span><span>${citeOf(c)}</span>${c.flagged ? '<span class="red">check source</span>' : ''}<button class="lnk" data-attachex="${x.sid}:${esc(id)}">attach</button></div>`; }).join('')}
         <form data-exform="${x.sid}"><input class="txt exin" id="ex-${x.sid}" maxlength="300" autocomplete="off" placeholder="Add an example: search the cards, or write your own" aria-label="Add an example to subclaim ${a.label}" value="${val('ex-' + x.sid, '')}"></form><div class="exres" id="exres-${x.sid}"></div>
@@ -823,12 +896,23 @@ function renderStrategy() {
   const sgHtml = sg && ((sg.alts || []).length || (sg.subs || []).length) ? `<div class="sg"><div class="row muted"><span>Suggestions · ${esc(sg.by)} · ${sg.model === 'keyword' ? 'keyword match, no model' : sg.model === SONNET ? 'Sonnet' : 'Haiku'}${sg.claim && claim && sg.claim.slice(0, 200) !== claim.slice(0, 200) ? ' · for an earlier main claim' : ''}</span><span class="spacer"></span><button class="lnk" data-hidesg="${sg.id}">hide</button></div>
       ${(sg.alts || []).length ? `<div class="k">Other main claims</div>${sg.alts.map((a, i) => `<div class="sgl"><span>${esc(a.text)}</span>${a.why ? `<span class="muted">${esc(a.why)}</span>` : ''}<button class="lnk" data-usealt="${i}">use</button></div>`).join('')}` : ''}
       ${(sg.subs || []).length ? `<div class="k">Subclaims to add</div>${sg.subs.map((a, i) => `<div class="sgl"><span>${esc(a.text)}</span>${idsText(a.ids)}${a.why ? `<span class="muted">${esc(a.why)}</span>` : ''}<button class="lnk" data-addsub="${i}">add</button></div>`).join('')}` : ''}</div>` : '';
+  let rvHtml = '';
+  if (rv) { const want = (rv.order || []).filter(sid => at.has(sid)); const seq = [...want.filter(sid => mine.some(x => x.sid === sid)), ...want.filter(sid => mate.some(x => x.sid === sid))]; const reorder = seq.length === subs.length && seq.join() !== subs.map(x => x.sid).join();
+    const fix = rv.claimFix && rv.claimFix.text && rv.claimFix.text !== claim ? rv.claimFix : null; const notes = [mine.length > 3 ? `${mine.length} subclaims share your 3:00, about ${at.get(mine[0].sid).dur} s each.` : '', subs.length && !mate.length ? 'Your teammate has no subclaim yet.' : ''].filter(Boolean);
+    rvHtml = `<div class="sg"><div class="row muted"><span>Check · ${esc(rv.by)} · ${rv.model === 'keyword' ? 'no model: wording overlap and repeated cards only' : rv.model === SONNET ? 'Sonnet' : 'Haiku'}${rv.fp !== caseFp(claim, subs) ? ' · the case has changed since' : ''}</span><span class="spacer"></span><button class="lnk" data-hiderv="${rv.id}">hide</button></div>
+      ${fix ? `<div class="sgl"><span class="ck">main claim</span><span>${esc(fix.text)}</span>${fix.why ? `<span class="muted">${esc(fix.why)}</span>` : ''}<button class="lnk" data-rvclaim="1">use</button></div>` : ''}
+      ${reorder ? `<div class="sgl"><span class="ck">order</span><span>say ${seq.map(sid => esc(lab(sid))).join(', then ')}</span><button class="lnk" data-rvorder="1">apply</button></div>` : ''}
+      ${rvCount ? `<div class="sgl"><span>${rvCount} fix${rvCount === 1 ? '' : 'es'} marked under the subclaims.</span></div>` : ''}
+      ${notes.map(n => `<div class="sgl"><span>${esc(n)}</span></div>`).join('')}
+      ${!fix && !reorder && !rvCount && !notes.length ? `<div class="sgl"><span>${rv.fp !== caseFp(claim, subs) ? 'No fixes left from this check. Check again after further changes.' : 'Nothing to fix' + (rv.model === 'keyword' ? ' that can be counted.' : ': each subclaim carries the claim, none overlap, the order holds.')}</span></div>` : ''}
+      ${rv.thread ? `<div class="sgl"><span class="muted">thread</span><span>${esc(rv.thread)}</span></div>` : ''}</div>`; }
   const act = document.activeElement; const fid = host.contains(act) && act.id ? act.id : ''; const sel = fid && act.selectionStart != null ? [act.selectionStart, act.selectionEnd] : null;
   host.innerHTML = `<div class="clockrow" id="clockRow"></div>
     <section><h2>Main claim</h2><textarea class="txt auto" id="counterText" rows="1" maxlength="300" placeholder="The one sentence that refutes theirs" aria-label="Main claim">${val('counterText', claim)}</textarea></section>
     <section><h2>You · 3:00</h2>${mine.map(subRow).join('')}${newSub('me', mine.length ? 'Add a subclaim' : 'A subclaim: one point that carries the main claim. Enter adds it.')}</section>
     <section><h2>Teammate · 1:00 <span class="muted">from 3:00</span></h2>${mate.map(subRow).join('')}${newSub('mate', 'Add a subclaim for your teammate')}</section>
-    <div class="row small"><button class="btn" data-suggest="1" ${S.suggesting ? 'disabled' : ''}>${S.suggesting ? 'Thinking…' : 'Suggest'}</button><span class="muted">other main claims, subclaims and examples, from the cards</span><span class="spacer"></span><button class="lnk" data-copy="1">Copy speech</button></div>
+    <div class="row small"><button class="btn" data-suggest="1" ${S.suggesting ? 'disabled' : ''}>${S.suggesting ? 'Thinking…' : 'Suggest'}</button><button class="btn" data-review="1" ${S.reviewing ? 'disabled' : ''}>${S.reviewing ? 'Checking…' : 'Check'}</button><span class="muted">Suggest offers options. Check reviews what you have for relevance, overlap and flow.</span><span class="spacer"></span><button class="lnk" data-copy="1">Copy speech</button></div>
+    ${rvHtml}
     ${sgHtml}
     <section><h2>Closing · 2:00</h2><textarea class="txt auto" id="closingText" rows="2" maxlength="1200" placeholder="What the round came down to, and the line to end on" aria-label="Closing">${val('closingText', closing ? closing.text : '')}</textarea></section>`;
   if (fid) { const t = el(fid); if (t) { t.focus({preventScroll: true}); if (sel && t.setSelectionRange) try { t.setSelectionRange(sel[0], sel[1]); } catch {} } }
@@ -933,7 +1017,7 @@ function wire() {
   document.querySelectorAll('#sideSeg button').forEach(b => b.onclick = () => { S.side = b.dataset.side; document.querySelectorAll('#sideSeg button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); renderBoard(); });
   document.addEventListener('click', e => {
     if (e.target.closest('a')) return;
-    const t = e.target.closest('[data-toggle],[data-chip],[data-morechips],[data-node],[data-kind],[data-del],[data-research],[data-askresearch],[data-rcheck],[data-gapflag],[data-promote],[data-usein],[data-newsubfrom],[data-usedraft],[data-suggest],[data-usealt],[data-addsub],[data-usesharp],[data-attachex],[data-ownex],[data-rmex],[data-rmnote],[data-delsub],[data-mvsub],[data-who],[data-hidesg],[data-copy],[data-clock]');
+    const t = e.target.closest('[data-toggle],[data-chip],[data-morechips],[data-node],[data-kind],[data-del],[data-research],[data-askresearch],[data-rcheck],[data-gapflag],[data-promote],[data-usein],[data-newsubfrom],[data-usedraft],[data-suggest],[data-review],[data-rvuse],[data-rvmerge],[data-rvdrop],[data-rvdetach],[data-rvclaim],[data-rvorder],[data-hiderv],[data-usealt],[data-addsub],[data-usesharp],[data-attachex],[data-ownex],[data-rmex],[data-rmnote],[data-delsub],[data-mvsub],[data-who],[data-hidesg],[data-copy],[data-clock]');
     if (!t) return; const d = t.dataset; const D = derive(); const node = id => D.nodes.get(id), sub = sid => D.subs.find(x => x.sid === sid);
     const flip = (set, key) => { set.has(key) ? set.delete(key) : set.add(key); };
     if (d.toggle) { flip(S.open, d.toggle); render(); }
@@ -951,6 +1035,14 @@ function wire() {
     else if (d.newsubfrom) { const c = BY_ID.get(d.newsubfrom); if (c) { emit({k: 'sub', sid: uid(), text: c.side === 'ours' ? c.title : '', ids: [c.id], who: 'me', ord: Date.now()}); toast('Added to Strategy as a new subclaim. Word it there.'); } }
     else if (d.usedraft) { const [sid, nid] = d.usedraft.split(':'); const x = sub(sid), n = node(nid); const c = n && n.research && n.research.card; if (x && c) { emit({k: 'sub', sid, notes: [...x.notes, {text: c.say, url: ((c.sources || [])[0] || {}).url || ''}].slice(0, 5)}); toast('Research draft added to the subclaim.'); } }
     else if (d.suggest) suggestCase();
+    else if (d.review) reviewCase();
+    else if (d.rvuse) { const r = ((D.review || {}).subs || []).find(x => x.sid === d.rvuse); if (r && r.text) { delete S.drafts['subText-' + d.rvuse]; emit({k: 'sub', sid: d.rvuse, text: r.text}); } }
+    else if (d.rvmerge) { const r = ((D.review || {}).subs || []).find(x => x.sid === d.rvmerge); const x = sub(d.rvmerge), into = r && sub(r.into); if (x && into) { emit({k: 'sub', sid: into.sid, ids: [...new Set([...into.ids, ...x.ids])].slice(0, 5), notes: [...into.notes, ...x.notes].slice(0, 5)}); emit({k: 'sub', sid: x.sid, del: true}); toast('Merged; its examples moved across.'); } }
+    else if (d.rvdrop) emit({k: 'sub', sid: d.rvdrop, del: true});
+    else if (d.rvdetach) { const [sid, cid] = d.rvdetach.split(':'); const x = sub(sid); if (x) emit({k: 'sub', sid, ids: x.ids.filter(id => id !== cid)}); }
+    else if (d.rvclaim) { const f = D.review && D.review.claimFix; if (f && f.text) { delete S.drafts.counterText; emit({k: 'counter', text: f.text}); } }
+    else if (d.rvorder) { const want = ((D.review || {}).order || []).filter(sid => sub(sid)); for (const who of ['me', 'mate']) want.filter(sid => sub(sid).who === who).forEach((sid, k) => { if (sub(sid).ord !== k) emit({k: 'sub', sid, ord: k}); }); }
+    else if (d.hiderv) { S.hideRv = d.hiderv; LS.set('rb:hiderv', S.hideRv); renderStrategy(); }
     else if (d.usealt) { const a = D.suggest && (D.suggest.alts || [])[+d.usealt]; if (a) { delete S.drafts.counterText; emit({k: 'counter', text: a.text}); } }
     else if (d.addsub) { const a = D.suggest && (D.suggest.subs || [])[+d.addsub]; if (a) emit({k: 'sub', sid: uid(), text: a.text, ids: a.ids || [], who: 'me', ord: Date.now()}); }
     else if (d.usesharp) { const per = ((D.suggest || {}).per || []).find(x => x.sid === d.usesharp); if (per && per.sharper) { delete S.drafts['subText-' + d.usesharp]; emit({k: 'sub', sid: d.usesharp, text: per.sharper}); } }
