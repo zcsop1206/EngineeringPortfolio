@@ -124,6 +124,10 @@ form.log .row{font-size:var(--small);gap:.75rem}
 .sgx{font-size:var(--small);color:var(--muted);display:flex;gap:.5rem;flex-wrap:wrap;align-items:baseline;margin-top:.25rem}
 .sgx .is{color:var(--text)}
 .ck{color:var(--red)}
+.k2{color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.75rem;margin:.8rem 0 .1rem calc(4ch + .5rem)}
+.opt{margin-left:calc(4ch + .5rem);padding:.45rem 0;border-top:1px solid var(--rule)}
+.opt .row{flex-wrap:nowrap}
+.opt .is{font-weight:600}
 input.exin{width:100%;font-size:var(--small);margin-top:.4rem;display:block}
 .exres{display:flex;flex-direction:column;font-size:var(--small)}
 .exres button{background:none;border:0;padding:.2rem 0;cursor:pointer;text-align:left;color:var(--muted);display:flex;gap:.5rem;flex-wrap:wrap;align-items:baseline}
@@ -290,7 +294,7 @@ const LS = { get(k, d) { try { const v = localStorage.getItem(k); return v == nu
 const S = {
   session: '', name: LS.get('rb:name', ''), events: new Map(), outbox: [],
   sync: {mode: 'local', status: 'starting', note: ''}, ai: {mode: 'none', sample: null, key: LS.get('rb:key', ''), busy: new Set(), via: ''},
-  view: 'board', mview: 'log', side: 'all', q: '', open: new Set(), more: new Set(), waiting: {}, researching: new Set(), drafts: {}, suggesting: false, reviewing: false,
+  view: 'board', mview: 'log', side: 'all', q: '', open: new Set(), more: new Set(), waiting: {}, researching: new Set(), drafts: {}, suggesting: false, reviewing: false, showTrim: false,
   kind: 'point', sel: '', rvDone: new Set(), hideSg: LS.get('rb:hidesg', ''), hideRv: LS.get('rb:hiderv', ''), scrollLog: false, clockAt: 0,
 };
 const HAIKU = 'claude-haiku-5-5', SONNET = 'claude-sonnet-5-5';
@@ -331,8 +335,8 @@ function shrink(e) { // relay messages must stay under 4 KB
   const cap = (k, n) => { if (typeof e[k] === 'string' && e[k].length > n) e[k] = e[k].slice(0, n - 1) + '…'; };
   cap('text', 1200); cap('url', 500); cap('line', 300); cap('claim', 240);
   const capList = (lst, f, n) => Array.isArray(lst) && lst.forEach(x => { if (x && typeof x[f] === 'string' && x[f].length > n) x[f] = x[f].slice(0, n - 1) + '…'; });
-  if (e.k === 'review') { capList(e.subs, 'text', 180); capList(e.subs, 'why', 100); capList(e.missed, 'why', 90); cap('thread', 220); }
-  if (e.k === 'suggest') { for (const k of ['alts', 'subs', 'per']) { capList(e[k], 'text', 180); capList(e[k], 'sharper', 180); capList(e[k], 'why', 90); } }
+  if (e.k === 'review') { capList(e.subs, 'text', 180); capList(e.subs, 'why', 100); cap('thread', 220); }
+  if (e.k === 'suggest') { for (const k of ['alts', 'subs', 'mate']) { capList(e[k], 'text', 180); capList(e[k], 'why', 90); } }
   if (Array.isArray(e.notes)) { capList(e.notes, 'text', 300); capList(e.notes, 'url', 300); }
   if (e.card) { e.card.detail = String(e.card.detail || '').slice(0, 700); e.card.accurate = String(e.card.accurate || '').slice(0, 400); e.card.sources = (e.card.sources || []).slice(0, 4).map(s => ({title: String(s.title || '').slice(0, 120), publisher: String(s.publisher || '').slice(0, 60), year: s.year || '', url: String(s.url || '').slice(0, 300), finding: String(s.finding || '').slice(0, 160)})); }
 }
@@ -342,7 +346,7 @@ function derive() {
   const all = [...S.events.values()]; let rs = null; for (const e of all) if (e.k === 'reset' && (!rs || e.t > rs.t || (e.t === rs.t && e.id > rs.id))) rs = e;
   const cut = rs ? Number(rs.upto) || 0 : 0; // a clear hides everything logged up to that moment; undoing it moves the line back
   const evs = all.filter(e => e.k !== 'reset' && e.t > cut).sort((a, b) => (a.t - b.t) || (a.id < b.id ? -1 : 1));
-  const pts = new Map(), nodes = new Map(), deleted = new Set(), subs = new Map(); let counter = null, closing = null, suggest = null, review = null, clock = 0;
+  const pts = new Map(), nodes = new Map(), deleted = new Set(), subs = new Map(); const cuts = [], passed = new Set(); let counter = null, closing = null, suggest = null, review = null, clock = 0;
   for (const e of evs) {
     if (e.k === 'point') { const p = {id: e.id, kind: 'point', text: e.text, by: e.by, t: e.t, items: [], rerank: null, research: null, rcheck: null, gapSet: null}; pts.set(e.id, p); nodes.set(e.id, p); }
     else if (e.k === 'attach') { const p = pts.get(e.pid); if (p) { const it = {id: e.id, pid: e.pid, kind: e.kind === 'ex' || e.kind === 'src' ? e.kind : 'sub', text: e.text || '', url: e.url || '', by: e.by, t: e.t, research: null, rcheck: null, gapSet: null}; p.items.push(it); nodes.set(e.id, it); } }
@@ -356,18 +360,21 @@ function derive() {
     else if (e.k === 'suggest') suggest = e;
     else if (e.k === 'review') review = e;
     else if (e.k === 'sub' && e.sid) {
-      if (e.del) { subs.delete(e.sid); continue; }
-      const prev = subs.get(e.sid) || {text: '', ids: [], notes: [], who: 'me', ord: e.t, t0: e.t};
-      subs.set(e.sid, {sid: e.sid, text: e.text != null ? String(e.text) : prev.text, ids: Array.isArray(e.ids) ? e.ids.filter(id => BY_ID.has(id)).slice(0, 5) : prev.ids,
-        notes: Array.isArray(e.notes) ? e.notes.filter(n => n && n.text).slice(0, 5).map(n => ({text: String(n.text), url: n.url ? String(n.url) : ''})) : prev.notes,
-        who: e.who === 'mate' || e.who === 'me' ? e.who : prev.who, ord: typeof e.ord === 'number' ? e.ord : prev.ord, t0: prev.t0});
+      const prev = subs.get(e.sid);
+      if (e.del) { if (prev && e.cut && prev.text) { cuts.push(prev.text); if (cuts.length > 8) cuts.shift(); } subs.delete(e.sid); continue; }
+      const p0 = prev || {text: '', ids: [], notes: [], who: 'me', was: '', ans: [], ok: '', ord: e.t, t0: e.t};
+      subs.set(e.sid, {sid: e.sid, text: e.text != null ? String(e.text) : p0.text, ids: Array.isArray(e.ids) ? e.ids.filter(id => BY_ID.has(id)).slice(0, 5) : p0.ids,
+        notes: Array.isArray(e.notes) ? e.notes.filter(n => n && n.text).slice(0, 5).map(n => ({text: String(n.text), url: n.url ? String(n.url) : ''})) : p0.notes,
+        who: e.who === 'mate' || e.who === 'me' || e.who === 'offer' ? e.who : p0.who, was: typeof e.was === 'string' ? e.was : p0.was, ans: Array.isArray(e.ans) ? e.ans.map(String).slice(0, 6) : p0.ans, ok: typeof e.ok === 'string' ? e.ok : p0.ok,
+        ord: typeof e.ord === 'number' ? e.ord : p0.ord, t0: p0.t0});
     }
+    else if (e.k === 'pass' && e.key) passed.add(String(e.key));
     else if (e.k === 'del') { if (e.pid) { pts.delete(e.pid); nodes.delete(e.pid); } if (e.aid) deleted.add(e.aid); }
   }
   for (const p of pts.values()) { p.items = p.items.filter(a => !deleted.has(a.id)); p.gap = isGap(p); for (const it of p.items) { it.full = p.text + ' — ' + it.text; it.gap = isGap(it); } }
   for (const id of deleted) nodes.delete(id);
-  const rank = x => (x.who === 'mate' ? 1 : 0);
-  return {reset: rs && cut ? rs : null, points: [...pts.values()].sort((a, b) => a.t - b.t), nodes, counter, closing, suggest, review, clock, subs: [...subs.values()].sort((a, b) => (rank(a) - rank(b)) || (a.ord - b.ord) || (a.t0 - b.t0))};
+  const rank = x => (x.who === 'mate' ? 1 : x.who === 'offer' ? 2 : 0);
+  return {reset: rs && cut ? rs : null, points: [...pts.values()].sort((a, b) => a.t - b.t), nodes, counter, closing, suggest, review, clock, cuts, passed, subs: [...subs.values()].sort((a, b) => (rank(a) - rank(b)) || (a.ord - b.ord) || (a.t0 - b.t0))};
 }
 function clearAll() { const d = derive(); let upto = Date.now(); for (const e of S.events.values()) if (e.k !== 'reset' && e.t > upto) upto = e.t; emit({k: 'reset', upto, prev: d.reset ? Number(d.reset.upto) || 0 : 0}); }
 function undoClear() { const d = derive(); if (d.reset) emit({k: 'reset', upto: Number(d.reset.prev) || 0, prev: 0}); }
@@ -515,13 +522,16 @@ async function demoModel(prompt, web) { // plumbing test without a real key
   const ids = [...new Set((prompt.match(/\b(?:F|M|A|B|C|FP|PL|MK|OW|FR|CV|GL|BH|PF|FL|TC|PE)\d{1,2}\b/g) || []))];
   if (web) return {accurate: 'Demo: not researched.', say: 'Demo research draft for this claim; no real sources were fetched.', detail: 'This is the stub model. With a real key, Sonnet searches the web and returns sources it opened.', sources: [{title: 'Demo source', publisher: 'none', year: 2026, url: 'https://example.com/', finding: 'placeholder'}]};
   if (/^You rank rebuttal cards/.test(prompt) && /\bgaptest\b/i.test(prompt)) return {ids: [], line: '', gap: 'demo: corpus has nothing on this'};
-  if (/strict editor/.test(prompt)) { const rows = [...prompt.matchAll(/^S(\d+) \((speaker|teammate)/gm)].map(m => ({sid: 'S' + m[1], who: m[2]})); const me = rows.filter(r => r.who === 'speaker'); const pids = [...new Set(prompt.match(/^P\d+/gm) || [])];
-    return {claim: {text: '', why: ''}, subs: rows.map((r, i) => ({sid: r.sid, answers: pids.slice(i % Math.max(1, pids.length), (i % Math.max(1, pids.length)) + 1), rank: i + 1, ...(me.indexOf(r) >= 3 ? {verdict: 'cut', why: 'demo: weakest of the speaker\'s subclaims'} : i === 0 ? {verdict: 'reword', text: 'Demo tighter wording of ' + r.sid, why: 'demo: vague'} : i === 1 ? {verdict: 'merge', into: 'S1', why: 'demo: same point as S1'} : {verdict: 'keep', why: ''})})),
-      missed: pids.slice(-1).map(pid => ({pid, why: 'demo: their case rests on it'})), order: [...rows].reverse().map(r => r.sid), thread: 'Demo thread: each subclaim narrows the same point.'}; }
+  const pids = [...new Set(prompt.match(/^P\d+/gm) || [])]; const rows = [...prompt.matchAll(/^S(\d+) \((speaker|teammate|offered)[^)]*?(?:, (OPEN|SETTLED)[^)]*)?\)/gm)].map(m => ({sid: 'S' + m[1], who: m[2], st: m[3] || ''}));
+  if (/strict editor/.test(prompt)) { const open = rows.filter(r => r.st === 'OPEN'); const verdict = r => { const i = open.indexOf(r); return i < 0 ? {} : i === 0 ? {verdict: 'reword', text: 'Demo tighter wording of ' + r.sid, why: 'demo: vague'} : i === 1 && r.sid !== 'S1' ? {verdict: 'merge', into: 'S1', why: 'demo: same point as S1'} : i >= 3 ? {verdict: 'cut', why: 'demo: answers nothing they said'} : {verdict: 'keep', why: ''}; };
+    const subs = rows.map((r, i) => ({sid: r.sid, answers: pids.slice(i % Math.max(1, pids.length), (i % Math.max(1, pids.length)) + 1), strength: Math.max(1, 5 - i), ex: [], ...verdict(r)})); const stay = subs.filter(s => s.verdict !== 'cut' && s.verdict !== 'merge'); const me = stay.filter(s => rows.find(r => r.sid === s.sid).who === 'speaker');
+    return {subs, core: pids.slice(0, 5), order: [...stay].reverse().map(s => s.sid), handoff: me.length > 1 ? {sid: me[me.length - 1].sid, why: 'demo: stands on its own'} : {sid: '', why: ''}, claim: {text: '', why: ''}, thread: 'Demo thread: each subclaim narrows the same point.'}; }
   if (/sparring partner/.test(prompt)) {
-    const oursIds = ids.filter(id => BY_ID.has(id) && BY_ID.get(id).side === 'ours'); const sids = [...new Set(prompt.match(/\bS\d+\b/g) || [])];
+    const oursIds = ids.filter(id => BY_ID.has(id) && BY_ID.get(id).side === 'ours'); const want = ((/unanswered\. Propose a subclaim for each of them first, in this order: ([^.]*)\./.exec(prompt) || [])[1] || '').split(',').map(s => s.trim()).filter(Boolean); const n = rows.length;
     return {alts: [{text: 'Demo alternative: scale decides, and only policy has scale.', why: 'demo'}, {text: 'Demo alternative: individuals choose from a menu that policy writes.', why: 'demo'}, {text: 'Demo alternative: count what was measured, not what could be.', why: 'demo'}],
-      subs: oursIds.slice(0, 3).map((id, i) => ({text: 'Demo subclaim ' + (i + 1), ids: [id], why: 'demo'})), per: sids.map((sid, i) => ({sid, sharper: i === 0 ? 'Demo sharper wording of ' + sid : '', ids: oursIds.slice(i + 3, i + 5)}))};
+      subs: [...want.map((p, i) => ({text: 'Demo answer to ' + p + ': ' + ((BY_ID.get(oursIds[i + 6]) || {}).title || ''), ids: oursIds.slice(i + 6, i + 7), answers: [p], why: 'demo: the check asked for it'})), ...oursIds.slice(0, 3).map((id, i) => ({text: 'Demo: ' + BY_ID.get(id).title, ids: [id], answers: pids.slice(i, i + 1), why: 'demo'}))],
+      mate: oursIds.slice(4, 6).map((id, i) => ({text: 'Demo for the teammate: ' + BY_ID.get(id).title, ids: [id], answers: pids.slice(i, i + 1), why: 'demo: one point, one example'})),
+      per: rows.map((r, i) => ({sid: r.sid, ids: oursIds.slice(i + 8, i + 9)}))};
   }
   return {ids: ids.slice(0, 3), line: 'Demo model: no real ranking was done.'};
 }
@@ -569,26 +579,58 @@ Reply with only JSON: {"accurate":"1-2 sentences: what is true and what is not",
   } catch (err) { aiFailed(err, 'Research'); }
   finally { S.researching.delete(n.id); renderLog(); }
 }
-// ── our case: the speaker writes the claim and subclaims; one Suggest offers options; every example is a card ──
+// ── our case. The speaker writes the claim and picks subclaims. Three helpers, one rubric:
+//    Suggest proposes, Check edits content, Trim fits the time. What the speaker decides stays decided. ──
 const oursCards = () => CORPUS.filter(c => c.side === 'ours' && c.kind !== 'fallacy');
 const refLine = c => { const s0 = c.sources[0]; return `${c.id} | ${c.side === 'for' ? 'answer to: ' + trunc(c.claim || c.title, 70) : c.kind} | ${c.title} | ${trunc(c.say, 110)} | ${s0 ? (s0.publisher || s0.title) + (s0.year ? ' ' + s0.year : '') + (c.flagged ? ' (source not fully checked)' : '') : 'no source'}`; };
 const cardIds = (lst, n) => (Array.isArray(lst) ? lst : []).map(String).filter(id => BY_ID.has(id) && BY_ID.get(id).kind !== 'fallacy').slice(0, n);
 const KIND_MARK = {sub: '-', ex: 'eg', src: 'src'};
 const theirCaseText = points => points.map((p, i) => `P${i + 1}: "${trunc(p.text, 180)}"${p.items.map(it => `\n  ${KIND_MARK[it.kind]} ${trunc(it.text, 140)}`).join('')}`).join('\n') || '(nothing logged yet)';
+const hashStr = s => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return String(h); };
+const subKey = x => hashStr(x.text + '|' + [...x.ids].sort().join(',') + '|' + x.notes.map(n => n.text).join('|')); // a subclaim's content; a verdict holds while this holds
+const caseKey = (points, claim) => hashStr(claim + '|' + points.map(p => p.text + ';' + p.items.map(i => i.text).join(';')).join('|'));
+const WPS = 2.5, ME_MAX = 3, MATE_MAX = 1; // a debate pace of about 150 words a minute; three subclaims fit 3:00, one fits 1:00
+const words = s => (String(s || '').trim().match(/\S+/g) || []).length;
+const sayTime = x => Math.ceil((words(x.text) + x.ids.reduce((n, id) => n + words((BY_ID.get(id) || {}).say), 0) + x.notes.reduce((n, o) => n + words(o.text), 0)) / WPS);
+const placed = subs => subs.filter(x => x.who !== 'offer');
+const overlap = (a, b) => { const A = new Set(toks(a)), B = new Set(toks(b)); const uni = new Set([...A, ...B]).size; return uni ? [...A].filter(t => B.has(t)).length / uni : 0; };
+const pLabel = (points, pid) => { const i = points.findIndex(p => p.id === pid); return i < 0 ? '' : 'P' + (i + 1); };
+// A subclaim is settled when the speaker acted on a check of it or chose to keep it ('ok'), unchanged since the last
+// check ('same', so that check's verdict stands), or open (new or edited: the next check judges it).
+function statusOf(d, x) { if (x.ok && x.ok === subKey(x)) return 'ok'; const r = d.review && (d.review.subs || []).find(y => y.sid === x.sid); return r && r.key === subKey(x) ? 'same' : 'open'; }
+const settle = (d, x, next) => statusOf(d, x) === 'open' ? {} : {ok: subKey(next)}; // a fix the system proposed does not reopen the subclaim
+// Their points the plan leaves unanswered: what the last check called central, minus what a subclaim answers, minus what the speaker chose to skip.
+function openMissed(d) {
+  const rv = d.review; if (!rv) return []; const answered = new Set(placed(d.subs).flatMap(x => [...x.ans, ...(((rv.subs || []).find(r => r.sid === x.sid) || {}).answers || [])]));
+  return (rv.core || []).filter(pid => d.points.some(p => p.id === pid) && !answered.has(pid) && !d.passed.has('missed:' + pid));
+}
+// One rubric for Suggest and Check, so what one proposes the other does not strike.
+const RUBRIC = `What makes a subclaim worth its time, in this order: (1) it answers a point their case rests on, meaning their main claim or one of their arguments and not an aside; (2) it carries the speaker's main claim; (3) its evidence is specific and its source is checked; (4) it says something no other subclaim says. The rebuttal is 4 minutes: the speaker has 3 minutes, which is about three subclaims, then a teammate has 1 minute, which is one subclaim. A teammate's subclaim must stand on its own: one point, one example, sayable in under a minute without the speaker's setup.`;
+const planText = (subs, tag) => subs.map((x, i) => `S${i + 1} (${x.who === 'mate' ? 'teammate' : x.who === 'offer' ? 'offered to the teammate, undecided' : 'speaker'}${tag ? ', ' + tag(x) : ''}): "${trunc(x.text, 180) || '(not worded yet)'}"${x.ids.map(id => { const c = BY_ID.get(id); return `\n   ${id} | ${c.title} | ${trunc(c.say, 120)}${c.flagged ? ' | source not fully checked' : ''}${c.weak ? ' | weak answer' : ''}`; }).join('')}${x.notes.map(n => `\n   own: ${trunc(n.text, 120)}`).join('')}`).join('\n') || '(none yet)';
+function decisionsText(d) { // neither Suggest nor Check reopens these
+  const lines = []; if (d.cuts.length) lines.push('Cut by the speaker, never propose these again: ' + d.cuts.map(t => '"' + trunc(t, 80) + '"').join('; '));
+  const skip = d.points.filter(p => d.passed.has('missed:' + p.id)).map(p => pLabel(d.points, p.id)); if (skip.length) lines.push('The speaker chose not to answer: ' + skip.join(', ') + '. Do not raise them.');
+  return lines.length ? 'Decisions the speaker has made, which stand:\n' + lines.join('\n') : '';
+}
+const notDup = (d, text, others) => !placed(d.subs).some(x => overlap(x.text, text) >= 0.5) && !d.cuts.some(t => overlap(t, text) >= 0.5) && !others.some(o => overlap(o.text, text) >= 0.6);
+function answeredBy(points, ids, text) { // without a model: a subclaim answers a point when it shares a card or two words with it
+  const tk = new Set(toks(text)); return points.filter(p => { const cards = new Set([...matchesFor(p).slice(0, 4), ...p.items.flatMap(it => matchesFor(it).slice(0, 2))]); const pt = new Set(toks(p.text + ' ' + p.items.map(i => i.text).join(' '))); return ids.some(id => cards.has(id)) || [...tk].filter(t => pt.has(t)).length >= 2; }).map(p => p.id);
+}
 function keywordSuggest() { // no model reachable: the matcher still finds frames and examples
-  const {points, counter, subs} = derive(); const claim = counter ? counter.text : ''; const ours = new Set(oursCards().map(c => c.id));
+  const d = derive(); const {points, counter, subs} = d; const live = placed(subs), claim = counter ? counter.text : ''; const ours = new Set(oursCards().map(c => c.id));
   const rank = (text, kinds, skip = new Set()) => scored(text).map(x => x.id).filter(id => ours.has(id) && kinds.includes(BY_ID.get(id).kind) && !skip.has(id));
-  const ctx = claim + ' ' + points.map(p => p.text + ' ' + p.items.map(i => i.text).join(' ')).join(' '); const used = new Set(subs.flatMap(x => x.ids));
-  emit({k: 'suggest', claim, model: 'keyword',
-    alts: rank(ctx, ['frame']).slice(0, 3).map(id => ({text: BY_ID.get(id).title, why: 'our frame ' + id})),
-    subs: rank(ctx, ['win'], used).slice(0, 4).map(id => ({text: BY_ID.get(id).title, ids: [id], why: 'keyword match'})),
-    per: subs.map(x => ({sid: x.sid, sharper: '', ids: scored(x.text).map(y => y.id).filter(id => BY_ID.get(id).kind !== 'fallacy' && !x.ids.includes(id)).slice(0, 2)}))});
+  const ctx = claim + ' ' + points.map(p => p.text + ' ' + p.items.map(i => i.text).join(' ')).join(' '); const used = new Set(subs.flatMap(x => x.ids)); const out = [];
+  for (const pid of openMissed(d)) { const p = points.find(q => q.id === pid); const id = matchesFor(p).find(c => !used.has(c)); if (id) { out.push({text: BY_ID.get(id).title, ids: [id], ans: [pid], why: 'answers ' + pLabel(points, pid)}); used.add(id); } }
+  for (const id of rank(ctx, ['win'], used)) { if (out.length >= 4) break; const o = {text: BY_ID.get(id).title, ids: [id], ans: answeredBy(points, [id], BY_ID.get(id).title), why: 'keyword match'}; if (notDup(d, o.text, out)) { out.push(o); used.add(id); } }
+  const mate = live.some(x => x.who === 'mate') || subs.some(x => x.who === 'offer') ? [] : rank(ctx, ['win'], used).slice(0, 2).map(id => ({text: BY_ID.get(id).title, ids: [id], ans: answeredBy(points, [id], BY_ID.get(id).title), why: 'one card, stands on its own'}));
+  emit({k: 'suggest', claim, model: 'keyword', alts: live.length ? [] : rank(ctx, ['frame']).slice(0, 3).map(id => ({text: BY_ID.get(id).title, why: 'our frame ' + id})), subs: out, mate,
+    per: live.filter(x => x.ids.length < 2).map(x => ({sid: x.sid, ids: scored(x.text).map(y => y.id).filter(id => BY_ID.get(id).kind !== 'fallacy' && !x.ids.includes(id)).slice(0, 2 - x.ids.length)}))});
 }
 async function suggestCase(opts = {}) {
   if (!opts.serving) flushDrafts();
-  const {points, counter, subs} = derive(); const claim = counter ? counter.text : '';
+  const d = derive(); const {points, counter, subs} = d; const claim = counter ? counter.text : '';
   if (!claim && !subs.length && !points.length) { toast('Log some of their case or write a main claim first.'); return; }
-  S.hideSg = '';
+  S.hideSg = ''; LS.set('rb:hidesg', '');
   if (S.ai.mode === 'none') {
     if (!opts.serving && S.ai.via && S.sync.status === 'live') {
       emit({k: 'ask', what: 'suggest'}); S.suggesting = true; renderStrategy();
@@ -598,61 +640,78 @@ async function suggestCase(opts = {}) {
     keywordSuggest(); if (!opts.serving) toast('No model reachable; these are keyword suggestions from the cards.'); return;
   }
   if (S.suggesting) return; S.suggesting = true; renderStrategy();
+  const live = placed(subs), mine = live.filter(x => x.who === 'me'), room = Math.max(0, ME_MAX - mine.length), missed = openMissed(d), first = !live.length;
+  const wantMate = !live.some(x => x.who === 'mate') && !subs.some(x => x.who === 'offer');
   const answers = [...new Set(points.flatMap(p => [...matchesFor(p).slice(0, 2), ...p.items.flatMap(it => matchesFor(it).slice(0, 1))]))].map(id => BY_ID.get(id)).filter(c => c.side === 'for').slice(0, 14);
   const prompt = `You are the sparring partner of the closing speaker of a university debate team arguing AGAINST the motion "${MOTION}". The speaker decides; you offer options. Every idea must come from the cards below; add no fact, number or source of your own.
+${RUBRIC}
 Their case as logged (P is a point; the indented lines are its subpoints, examples and sources):
 ${theirCaseText(points)}
 Our cards (id | kind | title | our line | first source):
 ${[...oursCards(), ...answers].map(refLine).join('\n')}
 The speaker's main claim: ${claim ? '"' + trunc(claim, 240) + '"' : '(none yet)'}
-The speaker's subclaims, who says each, and the example cards already attached:
-${subs.map((x, i) => `S${i + 1} (${x.who === 'mate' ? 'teammate' : 'speaker'}): "${trunc(x.text, 180)}" [${x.ids.join(', ') || 'no example yet'}]`).join('\n') || '(none yet)'}
-The rebuttal is 4 minutes: the speaker has 3 minutes, then a teammate has 1 minute. Two or three subclaims for the speaker and one for the teammate is the right size.
+The plan so far (S-id, who says it, and its example cards):
+${planText(subs)}
+${decisionsText(d)}
+${missed.length ? `An editor's check found these points of theirs unanswered. Propose a subclaim for each of them first, in this order: ${missed.map(pid => pLabel(points, pid)).join(', ')}.` : ''}
+The speaker has ${mine.length} of ${ME_MAX} subclaims. ${room ? `Propose up to ${room + 1} more, strongest first.` : 'The plan is full: propose a subclaim only if it would outrank one already there, and name the one it should replace in "instead".'}
 Reply with only JSON:
-{"alts":[{"text":"an alternative main claim, at most 25 words","why":"at most 14 words: what it does better, or what it risks"}],
- "subs":[{"text":"a subclaim the speaker has not listed, at most 18 words","ids":["M1"],"why":"at most 12 words: which opponent point it answers"}],
- "per":[{"sid":"S1","sharper":"a tighter wording at most 18 words, or empty if the speaker's is already good","ids":["M2"]}]}
-Give 3 alts that are different strategic choices (for example scale, who writes the menu, measured against potential, concede and turn), not rewordings of the speaker's claim. Give up to 4 subs, each with 1 or 2 card ids whose evidence carries it. For every subclaim the speaker listed, give in per the 1 to 3 cards that are its best examples, preferring cards whose source is fully checked and that are not already attached; per is empty when no subclaims are listed.`;
+{${first ? '"alts":[{"text":"an alternative main claim, at most 25 words","why":"at most 14 words: what it does better, or what it risks"}],\n ' : ''}"subs":[{"text":"a subclaim the plan does not have, at most 18 words","ids":["M1"],"answers":["P1"],"instead":"","why":"at most 12 words"}],
+ "mate":[{"text":"a subclaim for the teammate's minute, at most 18 words","ids":["M2"],"answers":["P2"],"why":"at most 12 words: why it stands on its own"}],
+ "per":[{"sid":"S1","ids":["M2"]}]}
+${first ? 'Give 3 alts that are different strategic choices (for example scale, who writes the menu, measured against potential, concede and turn), not rewordings of the speaker\'s claim. ' : ''}Every subclaim you propose must name the P points it answers and carry 1 or 2 card ids. Propose only what would pass the rubric, and nothing that repeats a subclaim in the plan or one the speaker cut. ${wantMate ? 'In mate, give 2 options for the teammate that do not repeat the speaker\'s subclaims.' : 'Leave mate empty: the teammate already has a subclaim or an offer.'} In per, list only the subclaims that have fewer than 2 examples, each with the 1 or 2 cards that best prove it and are not already attached.`;
   try {
-    const model = S.ai.mode === 'key' ? SONNET : HAIKU; const list = v => Array.isArray(v) ? v : [];
+    const model = S.ai.mode === 'key' ? SONNET : HAIKU; const list = v => Array.isArray(v) ? v : []; const num = v => parseInt(String(v || '').replace(/\D/g, ''), 10) || 0;
+    const pids = v => [...new Set(list(v).map(p => (points[num(p) - 1] || {}).id).filter(Boolean))].slice(0, 4);
     const out = await callModel(prompt, {model, maxTokens: 1500, effort: 'low'});
-    const alts = list(out && out.alts).map(a => ({text: trunc(a.text, 180), why: trunc(a.why, 90)})).filter(a => a.text).slice(0, 4);
-    const subsOut = list(out && out.subs).map(a => ({text: trunc(a.text, 180), ids: cardIds(a.ids, 2), why: trunc(a.why, 90)})).filter(a => a.text).slice(0, 5);
-    const per = list(out && out.per).map(a => ({sid: (subs[(parseInt(String(a.sid).replace(/\D/g, ''), 10) || 0) - 1] || {}).sid, sharper: trunc(a.sharper, 180), ids: cardIds(a.ids, 3)})).filter(a => a.sid);
-    if (!alts.length && !subsOut.length && !per.length) throw new Error('empty');
-    emit({k: 'suggest', claim, alts, subs: subsOut, per, model});
+    const alts = first ? list(out && out.alts).map(a => ({text: trunc(a.text, 180), why: trunc(a.why, 90)})).filter(a => a.text).slice(0, 4) : [];
+    const shape = a => ({text: trunc(a.text, 180), ids: cardIds(a.ids, 2), ans: pids(a.answers), why: trunc(a.why, 90)});
+    const subsOut = []; for (const a of list(out && out.subs)) { const o = shape(a); const inst = (subs[num(a.instead) - 1] || {}).sid; if (inst) o.instead = inst; if (o.text && notDup(d, o.text, subsOut)) subsOut.push(o); if (subsOut.length >= 5) break; }
+    const mate = []; if (wantMate) for (const a of list(out && out.mate)) { const o = shape(a); if (o.text && notDup(d, o.text, [...subsOut, ...mate])) mate.push(o); if (mate.length >= 2) break; }
+    const per = list(out && out.per).map(a => { const x = subs[num(a.sid) - 1]; return x && x.ids.length < 2 ? {sid: x.sid, ids: cardIds(a.ids, 3).filter(id => !x.ids.includes(id)).slice(0, 2 - x.ids.length)} : null; }).filter(a => a && a.ids.length);
+    if (!alts.length && !subsOut.length && !mate.length && !per.length) throw new Error('empty');
+    emit({k: 'suggest', claim, alts, subs: subsOut, mate, per, model});
   } catch (err) { aiFailed(err, 'Suggestions'); keywordSuggest(); }
   finally { S.suggesting = false; renderStrategy(); }
 }
-// ── Check: an editor's pass over the case as it stands. Selection first (only what earns its time), then
-// relevance, overlap and flow; every fix is one click ──
-const caseFp = (claim, subs) => { const s = claim + '|' + subs.map(x => x.sid + x.who + x.text + x.ids.join(',') + x.notes.length).join('|'); let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return String(h); };
-const WPS = 2.5, ME_MAX = 3, MATE_MAX = 1; // a debate pace of about 150 words a minute; three subclaims fit 3:00, one fits 1:00
-const words = s => (String(s || '').trim().match(/\S+/g) || []).length;
-const sayTime = x => Math.ceil((words(x.text) + x.ids.reduce((n, id) => n + words((BY_ID.get(id) || {}).say), 0) + x.notes.reduce((n, o) => n + words(o.text), 0)) / WPS);
-function keywordReview() { // no model reachable: only what can be counted
-  const {points, counter, subs} = derive(); const claim = counter ? counter.text : ''; const tk = subs.map(x => new Set(toks(x.text))); const seen = new Set(), out = [];
-  const ptCards = points.map(p => new Set([...matchesFor(p).slice(0, 4), ...p.items.flatMap(it => matchesFor(it).slice(0, 2))]));
-  const ptTok = points.map(p => new Set(toks(p.text + ' ' + p.items.map(i => i.text).join(' '))));
-  subs.forEach((x, i) => {
-    const r = {sid: x.sid, verdict: 'keep', why: '', drop: [], answers: [], score: 0};
-    for (let j = 0; j < i; j++) { const inter = [...tk[i]].filter(t => tk[j].has(t)).length, uni = new Set([...tk[i], ...tk[j]]).size; if (uni && inter / uni >= 0.5 && out[j].verdict !== 'merge') { r.verdict = 'merge'; r.into = subs[j].sid; r.why = 'nearly the same wording'; break; } }
-    for (const id of x.ids) { if (seen.has(id)) r.drop.push(id); else seen.add(id); }
-    for (const id of x.ids.filter(id => !r.drop.includes(id)).slice(2)) r.drop.push(id); // two examples a subclaim is what the time allows
-    points.forEach((p, k) => { const shared = [...tk[i]].filter(t => ptTok[k].has(t)).length; if (x.ids.some(id => ptCards[k].has(id)) || shared >= 2) r.answers.push(p.id); });
-    r.score = r.answers.length * 2 + (x.ids.length ? 1 : 0) + (x.notes.length ? 0.5 : 0);
+// ── Check: content only. Relevance, strength, overlap, coverage, order. It judges what is new or edited and
+//    carries its earlier verdicts for the rest, so applying its fixes and checking again finds nothing. ──
+function finishReview(d, raw, model) { // one place makes a review self-consistent, whoever produced it
+  const {points, counter, subs, review: prev, passed} = d; const claim = counter ? counter.text : ''; const prevBy = new Map(((prev && prev.subs) || []).map(r => [r.sid, r])); const rawBy = new Map((raw.subs || []).map(r => [r.sid, r]));
+  const core = ((raw.core && raw.core.length ? raw.core : (prev && prev.core)) || []).filter(pid => points.some(p => p.id === pid)).slice(0, 5);
+  const fin = subs.map(x => { const a = rawBy.get(x.sid) || {}, pr = prevBy.get(x.sid), st = statusOf(d, x);
+    const r = {sid: x.sid, key: subKey(x), answers: (a.answers && a.answers.length ? a.answers : (pr && pr.answers) || x.ans || []).filter(pid => points.some(p => p.id === pid)), strength: st !== 'open' && pr && pr.strength ? pr.strength : Math.max(1, Math.min(5, a.strength || (pr && pr.strength) || (x.ans.some(pid => core.slice(0, 2).includes(pid)) ? 4 : 3))), ex: (a.ex || []).filter(id => x.ids.includes(id)), verdict: 'keep', text: '', into: '', why: ''};
+    if (st === 'same' && pr) { r.verdict = pr.verdict || 'keep'; r.text = pr.text || ''; r.into = pr.into || ''; r.why = pr.why || ''; if (pr.warn) r.warn = true; }
+    else if (st === 'open') { r.verdict = ['keep', 'reword', 'merge', 'cut'].includes(a.verdict) ? a.verdict : 'keep'; r.text = r.verdict === 'reword' ? trunc(a.text, 180) : ''; r.into = r.verdict === 'merge' ? a.into || '' : ''; r.why = r.verdict === 'keep' ? '' : trunc(a.why, 100); if (a.warn) { r.warn = true; r.why = trunc(a.why, 100); } if (r.verdict === 'reword' && (!r.text || r.text === x.text)) r.verdict = 'keep'; }
+    return r; });
+  const by = new Map(fin.map(r => [r.sid, r])); const whoOf = sid => (subs.find(x => x.sid === sid) || {}).who;
+  for (const r of fin) if (r.verdict === 'merge') { const t = by.get(r.into); if (!t || t.sid === r.sid || t.verdict === 'cut' || t.verdict === 'merge') { r.verdict = 'keep'; r.into = ''; r.why = ''; } } // never merge into something on its way out
+  const gone = r => r.verdict === 'cut' || r.verdict === 'merge'; const mine = fin.filter(r => whoOf(r.sid) === 'me');
+  if (mine.length && mine.every(gone)) { const best = [...mine].sort((a, b) => b.strength - a.strength)[0]; best.verdict = 'keep'; best.why = ''; best.into = ''; } // the speaker always keeps something
+  const prevRank = sid => (prevBy.get(sid) || {}).rank || 99; [...fin].sort((a, b) => (b.strength - a.strength) || (prevRank(a.sid) - prevRank(b.sid)) || (subs.findIndex(x => x.sid === a.sid) - subs.findIndex(x => x.sid === b.sid))).forEach((r, i) => { r.rank = i + 1; });
+  const stay = fin.filter(r => !gone(r) && whoOf(r.sid) !== 'offer').map(r => r.sid); const anyOpen = subs.some(x => statusOf(d, x) === 'open');
+  const valid = o => Array.isArray(o) && stay.every(sid => o.includes(sid)) ? o.filter(sid => stay.includes(sid)) : [];
+  let order = valid(raw.order);
+  if (prev) { // a later check places what is new; it does not reshuffle what is already settled
+    const openSet = new Set(subs.filter(x => statusOf(d, x) === 'open').map(x => x.sid)), settled = stay.filter(sid => !openSet.has(sid)), pendOrder = (prev.order || []).filter(sid => settled.includes(sid));
+    const base = pendOrder.length === settled.length && !passed.has('order:' + (prev.order || []).join(',')) ? pendOrder : settled; const model = order; order = [...base];
+    for (const sid of stay.filter(id => openSet.has(id))) { const mi = model.indexOf(sid), after = mi < 0 ? [] : model.slice(mi + 1), at = order.findIndex(id => after.includes(id)); if (at < 0) order.push(sid); else order.splice(at, 0, sid); } }
+  const noMate = !subs.some(x => x.who === 'mate' || x.who === 'offer'); let handoff = null;
+  if (noMate) { const h = raw.handoff && stay.includes(raw.handoff.sid) && whoOf(raw.handoff.sid) === 'me' ? raw.handoff : (prev && prev.handoff && stay.includes(prev.handoff.sid) && whoOf(prev.handoff.sid) === 'me' ? prev.handoff : null); if (h && mine.filter(r => !gone(r)).length > 1 && !passed.has('handoff:' + h.sid)) handoff = {sid: h.sid, why: trunc(h.why, 90)}; }
+  let fix = null; if (!(counter && counter.ok)) { const c = prev && prev.claim === claim && prev.claimFix ? prev.claimFix : raw.claimFix; if (c && c.text && c.text !== claim && !passed.has('claim:' + hashStr(c.text))) fix = {text: trunc(c.text, 240), why: trunc(c.why, 90)}; }
+  return {k: 'review', claim, ckey: caseKey(points, claim), subs: fin, core, order, handoff, claimFix: fix, thread: trunc(raw.thread || (!anyOpen && prev ? prev.thread : ''), 220), model};
+}
+function keywordReview() { // no model reachable: only what can be counted, the same way every time
+  const d = derive(); const {points, subs} = d; const out = [];
+  subs.forEach((x, i) => { const r = {sid: x.sid, answers: answeredBy(points, x.ids, x.text), verdict: 'keep', why: ''};
+    for (let j = 0; j < i; j++) if (out[j].verdict !== 'merge' && overlap(x.text, subs[j].text) >= 0.5) { r.verdict = 'merge'; r.into = subs[j].sid; r.why = 'nearly the same wording'; break; }
     if (r.verdict === 'keep' && !x.ids.length && !x.notes.length) { r.warn = true; r.why = 'no example yet'; }
-    out.push(r);
-  });
-  // only what earns its time: beyond three for the speaker and one for the teammate, the least tied to their case goes
-  for (const [who, max] of [['me', ME_MAX], ['mate', MATE_MAX]]) { const grp = out.filter((r, i) => (subs[i].who === 'mate' ? 'mate' : 'me') === who && r.verdict === 'keep').sort((a, b) => b.score - a.score); grp.slice(max).forEach(r => { r.verdict = 'cut'; r.warn = false; r.why = `least tied to their case; ${max === 1 ? 'one fits 1:00' : 'three fit 3:00'}`; }); }
-  [...out].sort((a, b) => b.score - a.score).forEach((r, i) => { r.rank = i + 1; }); out.forEach(r => { delete r.score; });
-  const covered = new Set(out.filter(r => r.verdict !== 'cut').flatMap(r => r.answers));
-  emit({k: 'review', claim, fp: caseFp(claim, subs), subs: out, order: [], thread: '', missed: points.filter(p => !covered.has(p.id)).slice(0, 2).map(p => ({pid: p.id, why: 'no subclaim answers it'})), model: 'keyword'});
+    r.strength = Math.max(1, Math.min(5, 1 + r.answers.length + (x.ids.length ? 1 : 0) + (x.ids.some(id => !BY_ID.get(id).flagged) ? 1 : 0))); out.push(r); });
+  emit(finishReview(d, {subs: out, core: points.slice(0, 5).map(p => p.id), order: [], thread: ''}, 'keyword'));
 }
 async function reviewCase(opts = {}) {
   if (!opts.serving) flushDrafts();
-  const {points, counter, subs} = derive(); const claim = counter ? counter.text : '';
+  const d = derive(); const {points, counter, subs, review: prev} = d; const claim = counter ? counter.text : '';
   if (!subs.length) { toast('Add a subclaim first; Check reads what you have.'); return; }
   S.hideRv = ''; LS.set('rb:hiderv', '');
   if (S.ai.mode === 'none') {
@@ -661,50 +720,105 @@ async function reviewCase(opts = {}) {
       S.waiting.rv = setTimeout(() => { delete S.waiting.rv; if (S.reviewing) { S.reviewing = false; keywordReview(); toast(S.ai.via + "'s device did not answer; this is the keyword check."); } }, 45000);
       return;
     }
-    keywordReview(); if (!opts.serving) toast('No model reachable; this check only counts: matching words, shared cards and speaking time.'); return;
+    keywordReview(); if (!opts.serving) toast('No model reachable; this check only counts matching words and shared cards.'); return;
   }
+  const open = subs.filter(x => statusOf(d, x) === 'open');
+  if (prev && prev.model !== 'keyword' && !open.length && prev.ckey === caseKey(points, claim)) { // nothing to judge: the earlier findings stand, and settled additions take their place in the ranking
+    if (subs.some(x => !(prev.subs || []).some(r => r.sid === x.sid))) emit(finishReview(d, {subs: [], core: prev.core, order: prev.order, handoff: prev.handoff, claimFix: prev.claimFix, thread: prev.thread}, prev.model)); else renderStrategy();
+    if (!opts.serving) toast('Nothing has changed since the last check, so its findings stand.'); return; }
   if (S.reviewing) return; S.reviewing = true; renderStrategy();
-  const nMe = subs.filter(x => x.who !== 'mate').length, nMate = subs.length - nMe;
-  const prompt = `You are the strict editor of a rebuttal plan for the closing speaker of a university debate team arguing AGAINST the motion "${MOTION}". The rebuttal is 4 minutes: the speaker has 3 minutes, then a teammate has 1 minute. A rushed rebuttal loses: a subclaim needs about 50 seconds to be stated, evidenced and tied back. So the speaker can deliver at most ${ME_MAX} subclaims and the teammate ${MATE_MAX}. Fewer, stronger subclaims beat more.
+  const prevBy = new Map(((prev && prev.subs) || []).map(r => [r.sid, r]));
+  const tag = x => { const st = statusOf(d, x), pr = prevBy.get(x.sid); return st === 'ok' ? 'SETTLED: the speaker acted on your earlier check or chose to keep it' : st === 'same' ? `SETTLED: unchanged since your earlier verdict "${pr.verdict}"` : pr ? `OPEN: edited since your earlier verdict "${pr.verdict}"; do not reverse a keep unless the edit made it worse` : 'OPEN: new'; };
+  const prompt = `You are the strict editor of a rebuttal plan for the closing speaker of a university debate team arguing AGAINST the motion "${MOTION}".
+${RUBRIC}
 Their case as logged (P is a point; the indented lines are its subpoints, examples and sources):
 ${theirCaseText(points)}
-The speaker's main claim: ${claim ? '"' + trunc(claim, 240) + '"' : '(none yet)'}
-The subclaims in speaking order, who says each, roughly how long its material takes to say, and under each its examples (card id | title | the line to say, or own: the speaker's own words):
-${subs.map((x, i) => `S${i + 1} (${x.who === 'mate' ? 'teammate' : 'speaker'}, about ${sayTime(x)} s): "${trunc(x.text, 180)}"${x.ids.map(id => `\n   ${id} | ${BY_ID.get(id).title} | ${trunc(BY_ID.get(id).say, 120)}`).join('')}${x.notes.map(n => `\n   own: ${trunc(n.text, 120)}`).join('')}`).join('\n')}
-There are ${nMe} subclaims for the speaker and ${nMate} for the teammate.
-Work through four checks, in this order.
-1. Selection. For each subclaim, list the P points it actually answers. Rank all subclaims, 1 = most worth its time: a subclaim ranks high when it takes down a point their case rests on (their main claim or an argument, not an aside or a single example), when its evidence is specific, and when it can be said in its time. Then cut: if the speaker has more than ${ME_MAX} or the teammate more than ${MATE_MAX}, cut the lowest ranked until it fits. Also cut any subclaim that answers nothing they said, even when there is room. Never cut the speaker's last subclaim.
-2. Relevance. Does each kept subclaim carry the main claim? Does each example prove the subclaim it sits under? Keep at most the two best examples under a subclaim and list the rest in drop.
-3. Redundancy. Do two subclaims make the same point? Is the same card, or the same piece of evidence, used twice? Merge or drop.
-4. Cohesion. Do the kept subclaims build on each other in this order, and do they add up to the main claim?
-Then look at what is left uncovered: a P point their case rests on that no kept subclaim answers. Name at most two, and only if answering it matters more than something the plan keeps.
+The speaker's main claim: ${claim ? '"' + trunc(claim, 240) + '"' : '(none yet)'}${counter && counter.ok ? ' (SETTLED: do not reword it)' : ''}
+The plan in speaking order. OPEN means judge it now. SETTLED means its wording and its place stand; give it answers and strength but no verdict. Under each subclaim are its examples (card id | title | the line to say, or own: the speaker's words):
+${planText(subs, tag)}
+${decisionsText(d)}
+This is a check of content, not of length. A separate step trims for time, so never cut a subclaim only because there are many.
+Do it once and completely. If the speaker applies everything you list, a second check must find nothing left. So: give each OPEN subclaim exactly one verdict; never reword a subclaim you cut or merge; never merge into a subclaim you cut or merge; do not ask for anything a SETTLED subclaim already resolved.
+For every subclaim, OPEN or SETTLED: answers (the P points it actually answers), strength 1 to 5 by the rubric, and ex (its attached card ids, best proof first).
+For each OPEN subclaim, one verdict:
+- keep: it earns its place as worded.
+- reword: the point is right but the wording is vague, long or hedged. Give the wording.
+- merge: it makes the same point as another subclaim. Name the stronger one in into.
+- cut: it answers nothing they said, or does not carry the main claim, or its evidence does not prove it.
+For the plan as a whole:
+- core: the P points their case rests on, most important first, at most 5. The speaker sees which of these no subclaim answers.
+- order: every subclaim that survives, in the best speaking order: the strongest attack on their main claim first, each one setting up the next, the speaker's before the teammate's. Repeat the current order if it is already right.
+- handoff: only if the teammate has no subclaim and the speaker has more than one: the speaker subclaim that stands best on its own for the teammate's minute. Otherwise empty.
+- claim: a rewording of the main claim, only if it is not settled and the surviving subclaims no longer add up to it. Otherwise empty.
+- thread: one sentence of at most 25 words linking the surviving subclaims into one argument, using only what they already say.
 Reply with only JSON:
-{"claim":{"text":"a rewording of the main claim, only if the kept subclaims no longer add up to it; otherwise empty","why":"at most 14 words"},
- "subs":[{"sid":"S1","answers":["P1"],"rank":1,"verdict":"keep|reword|merge|cut","text":"the new wording if reword, at most 18 words","into":"S2 if merge","why":"at most 16 words; for a cut say what makes it the weakest; empty if keep","drop":["card ids under this subclaim to detach"]}],
- "missed":[{"pid":"P2","why":"at most 14 words: why their case rests on it"}],
- "order":["S2","S1","S3"],
- "thread":"one sentence of at most 25 words that links the kept subclaims into a single argument, using only what they already say"}
-List every subclaim in subs, with its answers and rank. order lists every subclaim, the speaker's first and the teammate's after; repeat the current order if it is already right. Add no fact, number or source of your own.`;
+{"subs":[{"sid":"S1","answers":["P1"],"strength":4,"ex":["M2"],"verdict":"keep|reword|merge|cut","text":"the wording if reword, at most 18 words","into":"S2 if merge","why":"at most 16 words; empty if keep"}],
+ "core":["P1","P3"],"order":["S2","S1"],"handoff":{"sid":"","why":"at most 12 words"},"claim":{"text":"","why":""},"thread":""}
+Add no fact, number or source of your own.`;
   try {
-    const model = S.ai.mode === 'key' ? SONNET : HAIKU; const list = v => Array.isArray(v) ? v : [];
-    const out = await callModel(prompt, {model, maxTokens: 1600, effort: 'medium'});
-    const num = v => parseInt(String(v || '').replace(/\D/g, ''), 10) || 0; const sidOf = v => (subs[num(v) - 1] || {}).sid || '', pidOf = v => (points[num(v) - 1] || {}).id || '';
-    const rs = list(out && out.subs).map(a => { const sid = sidOf(a.sid), x = subs.find(y => y.sid === sid); if (!x) return null;
-      let verdict = a.verdict === 'drop' ? 'cut' : ['keep', 'reword', 'merge', 'cut'].includes(a.verdict) ? a.verdict : 'keep'; const into = verdict === 'merge' ? sidOf(a.into) : ''; if (verdict === 'merge' && (!into || into === sid)) verdict = 'keep';
-      return {sid, verdict, text: verdict === 'reword' ? trunc(a.text, 180) : '', into, why: trunc(a.why, 100), drop: list(a.drop).map(String).filter(id => x.ids.includes(id)), answers: [...new Set(list(a.answers).map(pidOf).filter(Boolean))].slice(0, 6), rank: Math.max(0, Math.min(99, num(a.rank)))}; }).filter(Boolean);
+    const model = S.ai.mode === 'key' ? SONNET : HAIKU; const list = v => Array.isArray(v) ? v : []; const num = v => parseInt(String(v || '').replace(/\D/g, ''), 10) || 0;
+    const sidOf = v => (subs[num(v) - 1] || {}).sid || '', pidOf = v => (points[num(v) - 1] || {}).id || '';
+    const out = await callModel(prompt, {model, maxTokens: 1800, effort: 'medium'});
+    const rs = list(out && out.subs).map(a => ({sid: sidOf(a.sid), answers: [...new Set(list(a.answers).map(pidOf).filter(Boolean))].slice(0, 6), strength: num(a.strength), ex: list(a.ex).map(String), verdict: a.verdict === 'drop' ? 'cut' : a.verdict, text: a.text, into: sidOf(a.into), why: a.why})).filter(a => a.sid);
     if (!rs.length) throw new Error('empty');
-    const mineSids = subs.filter(x => x.who !== 'mate').map(x => x.sid); if (mineSids.length && mineSids.every(sid => (rs.find(r => r.sid === sid) || {}).verdict === 'cut')) { const best = rs.filter(r => mineSids.includes(r.sid)).sort((a, b) => (a.rank || 99) - (b.rank || 99))[0]; best.verdict = 'keep'; best.why = ''; }
-    const order = list(out.order).map(sidOf).filter(Boolean); const fix = out.claim && typeof out.claim.text === 'string' && out.claim.text.trim() ? {text: trunc(out.claim.text, 240), why: trunc(out.claim.why, 90)} : null;
-    const missed = list(out.missed).map(m => ({pid: pidOf(m && m.pid), why: trunc(m && m.why, 90)})).filter(m => m.pid).slice(0, 2);
-    emit({k: 'review', claim, fp: caseFp(claim, subs), claimFix: fix, subs: rs, missed, order: order.length === subs.length && new Set(order).size === subs.length ? order : [], thread: trunc(out.thread, 220), model});
+    emit(finishReview(derive(), {subs: rs, core: list(out.core).map(pidOf).filter(Boolean), order: list(out.order).map(sidOf).filter(Boolean), handoff: out.handoff && sidOf(out.handoff.sid) ? {sid: sidOf(out.handoff.sid), why: out.handoff.why} : null,
+      claimFix: out.claim && typeof out.claim.text === 'string' && out.claim.text.trim() ? {text: out.claim.text.trim(), why: out.claim.why} : null, thread: typeof out.thread === 'string' ? out.thread : ''}, model));
   } catch (err) { aiFailed(err, 'Check'); keywordReview(); }
   finally { S.reviewing = false; renderStrategy(); }
+}
+// ── Trim: length only, and only arithmetic. It cuts from the bottom of the last check's ranking until each
+//    part fits its time, so the same plan always gets the same answer and a trimmed plan gets none. ──
+function trimPlan(d) {
+  const {subs, counter, review} = d; const claimSec = counter && counter.text ? Math.ceil(words(counter.text) / WPS) : 0; const rk = new Map(((review && review.subs) || []).map(r => [r.sid, r])), core = new Set((review && review.core) || []);
+  const sim = placed(subs).map((x, i) => { const o = (rk.get(x.sid) || {}).ex || []; const pos = id => o.indexOf(id) < 0 ? 99 : o.indexOf(id);
+    return {sid: x.sid, who: x.who, text: x.text, notes: x.notes, ids: [...x.ids].sort((a, b) => pos(a) - pos(b)), rank: (rk.get(x.sid) || {}).rank || 50 + i, ans: [...new Set([...((rk.get(x.sid) || {}).answers || []), ...x.ans])].filter(pid => core.has(pid)), all: ((rk.get(x.sid) || {}).answers || []).length + x.ans.length}; });
+  const steps = []; let offered = subs.some(x => x.who === 'offer') || sim.some(y => y.who === 'mate'); const sole = y => y.ans.some(pid => !sim.some(z => z !== y && z.ans.includes(pid))); // the only answer to a central point of theirs
+  const worst = g => [...g].sort((a, b) => (sole(a) - sole(b)) || (b.rank - a.rank))[0];
+  const run = (who, budget, max) => {
+    const grp = () => sim.filter(y => y.who === who), total = () => grp().reduce((n, y) => n + sayTime(y), 0) + (who === 'me' ? claimSec : 0); const before = total();
+    const drop = (y, type) => { steps.push({type, sid: y.sid, save: sayTime(y)}); sim.splice(sim.indexOf(y), 1); };
+    if (who === 'me' && !offered && grp().length > max) { // too many subclaims: the best of those that do not fit is offered to the teammate, never the weakest
+      const best = [...grp()].sort((x, y) => (sole(y) - sole(x)) || (x.rank - y.rank)); const h = (review && review.handoff && grp().find(y => y.sid === review.handoff.sid)) || best.slice(max).find(y => (y.ids.length || y.notes.length) && (!review || y.all));
+      if (h) { drop(h, 'offer'); offered = true; } }
+    while (grp().length > max) drop(worst(grp()), 'cut'); // the rest go from the bottom of the ranking
+    for (const y of grp()) while (y.ids.length > 2) { const t0 = sayTime(y), cid = y.ids.pop(); steps.push({type: 'detach', sid: y.sid, cid, save: t0 - sayTime(y)}); } // a third example never fits
+    while (total() > budget) { const c = worst(grp().filter(y => y.ids.length > 1)); // still over: second examples go, weakest subclaim first, then the weakest subclaim
+      if (c) { const t0 = sayTime(c), cid = c.ids.pop(); steps.push({type: 'detach', sid: c.sid, cid, save: t0 - sayTime(c)}); } else if (grp().length > 1) drop(worst(grp()), 'cut'); else break; }
+    return {before, after: total(), budget};
+  };
+  const me = run('me', ME_SEC, ME_MAX), mate = run('mate', MATE_SEC, MATE_MAX);
+  return {steps, me, mate, unchecked: placed(subs).filter(x => statusOf(d, x) === 'open').length};
+}
+function applyTrim(step) {
+  const d = derive(); const x = d.subs.find(y => y.sid === step.sid); if (!x) return;
+  if (step.type === 'detach') { const next = {...x, ids: x.ids.filter(id => id !== step.cid)}; emit({k: 'sub', sid: x.sid, ids: next.ids, ...settle(d, x, next)}); }
+  else if (step.type === 'offer') emit({k: 'sub', sid: x.sid, who: 'offer', was: 'me'});
+  else emit({k: 'sub', sid: x.sid, del: true, cut: true});
+}
+// Applying a check's fix. Each one leaves the subclaim settled, so the next check does not reopen it.
+function applyFix(kind, sid) {
+  const d = derive(); const rv = d.review; if (!rv) return false; const x = d.subs.find(y => y.sid === sid), r = (rv.subs || []).find(y => y.sid === sid);
+  if (kind === 'claim') { if (rv.claimFix && rv.claimFix.text) { delete S.drafts.counterText; emit({k: 'counter', text: rv.claimFix.text, ok: true}); return true; } return false; }
+  if (kind === 'order') { const want = (rv.order || []).filter(id => d.subs.some(y => y.sid === id)); for (const who of ['me', 'mate']) want.filter(id => d.subs.find(y => y.sid === id).who === who).forEach((id, k) => { if (d.subs.find(y => y.sid === id).ord !== k) emit({k: 'sub', sid: id, ord: k}); }); return true; }
+  if (!x || !r || r.key !== subKey(x)) return false;
+  if (kind === 'keep') { emit({k: 'sub', sid, ok: subKey(x)}); return true; }
+  if (kind === 'reword' && r.verdict === 'reword' && r.text) { delete S.drafts['subText-' + sid]; emit({k: 'sub', sid, text: r.text, ok: subKey({...x, text: r.text})}); return true; }
+  if (kind === 'merge' && r.verdict === 'merge') { const into = d.subs.find(y => y.sid === r.into); if (!into) return false; const next = {...into, ids: [...new Set([...into.ids, ...x.ids])].slice(0, 2), notes: [...into.notes, ...x.notes].slice(0, 3)}; emit({k: 'sub', sid: into.sid, ids: next.ids, notes: next.notes, ans: [...new Set([...into.ans, ...x.ans, ...(r.answers || [])])].slice(0, 6), ok: subKey(next)}); emit({k: 'sub', sid, del: true}); return true; }
+  if (kind === 'cut' && r.verdict === 'cut') { emit({k: 'sub', sid, del: true, cut: true}); return true; }
+  return false;
+}
+function applyAllFixes() {
+  const rv = derive().review; if (!rv) return; let n = 0; const st = sid => { const d = derive(), x = d.subs.find(y => y.sid === sid); return x ? statusOf(d, x) : 'gone'; };
+  if (rv.claimFix && !derive().passed.has('claim:' + hashStr(rv.claimFix.text)) && applyFix('claim')) n++;
+  for (const v of ['reword', 'merge', 'cut']) for (const r of rv.subs || []) if (r.verdict === v && st(r.sid) === 'same' && applyFix(v, r.sid)) n++;
+  if ((rv.order || []).length && !derive().passed.has('order:' + rv.order.join(','))) { applyFix('order'); n++; }
+  toast(n ? `Applied ${n} fix${n === 1 ? '' : 'es'}. They are settled; the next check will not reopen them.` : 'Nothing left to apply.');
 }
 // Speaking plan: the speaker's subclaims share 3:00 after a short opening on the main claim; the teammate's share the last 1:00.
 const ME_SEC = 180, MATE_SEC = 60, OPEN_SEC = 20;
 const stamp = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 function speechPlan(subs, hasClaim) {
-  const mine = subs.filter(x => x.who !== 'mate'), mate = subs.filter(x => x.who === 'mate'), at = new Map();
+  const mine = subs.filter(x => x.who === 'me'), mate = subs.filter(x => x.who === 'mate'), at = new Map();
   const open = hasClaim ? OPEN_SEC : 0, eachMe = mine.length ? Math.floor((ME_SEC - open) / mine.length) : 0, eachMate = mate.length ? Math.floor(MATE_SEC / mate.length) : 0;
   mine.forEach((x, i) => at.set(x.sid, {at: open + i * eachMe, dur: eachMe, label: String(i + 1)}));
   mate.forEach((x, i) => at.set(x.sid, {at: ME_SEC + i * eachMate, dur: eachMate, label: 'T' + (i + 1)}));
@@ -843,7 +957,7 @@ function renderLogMode(points, nodes) {
 }
 function renderLog() {
   if (hold) { pend = true; return; }
-  const {points, nodes, subs, counter, reset} = derive(); const host = el('logList'); const ctx = {subs, at: speechPlan(subs, !!(counter && counter.text)).at};
+  const {points, nodes, subs, counter, reset} = derive(); const host = el('logList'); const ctx = {subs: placed(subs), at: speechPlan(subs, !!(counter && counter.text)).at};
   const gaps = points.reduce((s, p) => s + (p.gap ? 1 : 0) + p.items.filter(i => i.gap).length, 0);
   el('logCount').innerHTML = points.length ? `${points.length} point${points.length === 1 ? '' : 's'}${gaps ? ` · <span class="red">${gaps} gap${gaps === 1 ? '' : 's'}</span>` : ''}` : '';
   renderLogMode(points, nodes);
@@ -883,7 +997,7 @@ function renderBoard() {
   const items = filtered(), host = el('board');
   if (!CORPUS.length) { host.innerHTML = `<p class="empty">The corpus has not been embedded yet.</p>`; return; }
   if (!items.length) { host.innerHTML = `<p class="empty">No cards match.</p>`; return; }
-  const {subs, counter} = derive(); const ctx = {subs, at: speechPlan(subs, !!(counter && counter.text)).at};
+  const {subs, counter} = derive(); const ctx = {subs: placed(subs), at: speechPlan(subs, !!(counter && counter.text)).at};
   let html = '', last = '';
   const counts = new Map(); for (const c of items) { const g = groupLabel(c); counts.set(g, (counts.get(g) || 0) + 1); }
   for (const c of items) { const g = groupLabel(c); if (!S.q && g !== last) { html += `<div class="group-h">${esc(g)} <span class="muted mono">${counts.get(g)}</span></div>`; last = g; } const open = S.open.has('b:' + c.id); html += cardHTML(c, {open, key: 'b:' + c.id, foot: open && c.kind !== 'fallacy' ? useInHTML(c.id, ctx) : ''}); }
@@ -891,64 +1005,81 @@ function renderBoard() {
 }
 function renderStrategy() {
   if (hold) { pend = true; return; }
-  const {points, counter, closing, subs, suggest, review, clock} = derive(); const host = el('strategy'); S.clockAt = clock; const pnum = new Map(points.map((p, i) => [p.id, i + 1]));
-  const claim = counter ? counter.text : ''; const {mine, mate, at} = speechPlan(subs, !!claim);
-  const val = (id, saved) => esc(S.drafts[id] != null ? S.drafts[id] : saved);
-  // Check results: a fix shows only while it still applies, so applied fixes clear themselves. Speaking time is counted live.
-  const rv = review && review.id !== S.hideRv ? review : null; const lab = sid => at.has(sid) ? at.get(sid).label : '?'; const rvRows = new Map(); let rvCount = 0;
-  if (rv) { const live = (rv.subs || []).filter(r => subs.some(y => y.sid === r.sid)).length;
-    for (const r of rv.subs || []) { const x = subs.find(y => y.sid === r.sid); if (!x) continue; const rows = [], info = []; const why = r.why ? `<span>${esc(r.why)}</span>` : '';
-      if (r.verdict === 'reword' && r.text && r.text !== x.text) rows.push(`<span class="ck">reword</span><span class="is">${esc(r.text)}</span>${why}<button class="lnk" data-rvuse="${x.sid}">use</button>`);
-      else if (r.verdict === 'merge' && at.has(r.into)) rows.push(`<span class="ck">overlaps ${esc(lab(r.into))}</span>${why}<button class="lnk" data-rvmerge="${x.sid}">merge into ${esc(lab(r.into))}</button>`);
-      else if (r.verdict === 'cut' || r.verdict === 'drop') rows.push(`<span class="ck">cut</span>${why}<button class="lnk" data-rvdrop="${x.sid}">remove</button>`);
-      else if (r.warn && !x.ids.length && !x.notes.length) rows.push(`<span class="ck">${esc(r.why)}</span>`);
-      for (const id of r.drop || []) if (x.ids.includes(id)) rows.push(`<span class="ck">${esc(id)} repeats, or is one example too many</span><button class="lnk" data-rvdetach="${x.sid}:${esc(id)}">detach</button>`);
-      const est = sayTime(x), slot = at.get(x.sid).dur; if (est > slot * 1.15) rows.push(`<span class="ck">rushed</span><span>about ${est} s to say in a ${slot} s slot</span>`);
-      if (Array.isArray(r.answers)) { const ans = r.answers.filter(pid => pnum.has(pid)).map(pid => 'P' + pnum.get(pid)); if (ans.length) info.push(`<span>answers ${ans.join(', ')}</span>`); else if (points.length) info.push(`<span class="ck">answers nothing they said</span>`); }
-      if (r.rank) info.push(`<span>ranked ${r.rank} of ${live}</span>`);
-      rvCount += rows.length; const html = (info.length ? `<div class="sgx">${info.join('')}</div>` : '') + rows.map(h => `<div class="sgx">${h}</div>`).join(''); if (html) rvRows.set(x.sid, html); } }
+  const d = derive(); const {points, counter, closing, subs, suggest, review, clock, passed} = d; const host = el('strategy'); S.clockAt = clock;
+  const pnum = new Map(points.map((p, i) => [p.id, i + 1])); const claim = counter ? counter.text : ''; const {mine, mate, at} = speechPlan(subs, !!claim); const offers = subs.filter(x => x.who === 'offer');
+  const val = (id, saved) => esc(S.drafts[id] != null ? S.drafts[id] : saved); const lab = sid => at.has(sid) ? at.get(sid).label : '?';
+  const rv = review && review.id !== S.hideRv ? review : null; const rvBy = new Map(((review && review.subs) || []).map(r => [r.sid, r])); const rankList = review ? (review.subs || []).filter(r => r.rank && subs.some(x => x.sid === r.sid && x.who !== 'offer')).sort((a, b) => a.rank - b.rank).map(r => r.sid) : []; // rank among what is still in the plan
   const sg = suggest && suggest.id !== S.hideSg ? suggest : null; const perBy = new Map(((sg && sg.per) || []).map(x => [x.sid, x]));
   const idsText = ids => (ids || []).map(id => { const c = BY_ID.get(id); return c ? `<span class="mono" title="${esc(c.title + ': ' + c.say)}">${esc(id)}</span>` : ''; }).join(' ');
+  const pText = pids => (pids || []).filter(pid => pnum.has(pid)).map(pid => 'P' + pnum.get(pid)).join(', ');
+  let fixes = 0;
   const subRow = (x, i, list) => {
-    const a = at.get(x.sid), per = perBy.get(x.sid), fresh = per ? (per.ids || []).filter(id => BY_ID.has(id) && !x.ids.includes(id)) : [];
+    const a = at.get(x.sid), r = rvBy.get(x.sid), st = statusOf(d, x), per = perBy.get(x.sid); const fresh = per && x.ids.length < 2 ? (per.ids || []).filter(id => BY_ID.has(id) && !x.ids.includes(id)).slice(0, 2 - x.ids.length) : [];
+    // what the last check said about this subclaim; a finding shows only while the subclaim is exactly as it was checked
+    let info = '', row = '';
+    if (rv) { const ans = pText([...new Set([...((r && r.answers) || []), ...x.ans])]);
+      info = `<div class="sgx"><span>${ans ? 'answers ' + ans : points.length ? '<span class="ck">answers nothing they said</span>' : ''}</span>${rankList.includes(x.sid) ? `<span>ranked ${rankList.indexOf(x.sid) + 1} of ${rankList.length}</span>` : ''}${st === 'open' ? '<span>changed since the last check</span>' : st === 'ok' ? '<span>settled</span>' : ''}</div>`;
+      if (r && st === 'same') { const why = r.why ? `<span>${esc(r.why)}</span>` : '', keep = t => `<button class="lnk" data-rvkeep="${x.sid}">${t}</button>`;
+        if (r.verdict === 'reword' && r.text) row = `<span class="ck">reword</span><span class="is">${esc(r.text)}</span>${why}<button class="lnk" data-fix="reword:${x.sid}">use</button>${keep('keep mine')}`;
+        else if (r.verdict === 'merge' && at.has(r.into)) row = `<span class="ck">same point as ${esc(lab(r.into))}</span>${why}<button class="lnk" data-fix="merge:${x.sid}">merge into ${esc(lab(r.into))}</button>${keep('keep both')}`;
+        else if (r.verdict === 'cut') row = `<span class="ck">cut</span>${why}<button class="lnk" data-fix="cut:${x.sid}">remove</button>${keep('keep it')}`;
+        else if (r.warn && !x.ids.length && !x.notes.length) row = `<span class="ck">${esc(r.why)}</span>`;
+        if (row) { if (r.verdict !== 'keep') fixes++; row = `<div class="sgx">${row}</div>`; } } }
     return `<div class="sub${i === 0 ? ' first' : ''}" data-sid="${x.sid}">
       <div class="sh"><span class="t">${a.label}<small>${stamp(a.at)}</small></span><textarea class="txt auto" id="subText-${x.sid}" rows="1" maxlength="200" placeholder="This subclaim, in your words" aria-label="Subclaim ${a.label}">${val('subText-' + x.sid, x.text)}</textarea>
-        <span class="ctl">${i > 0 ? `<button class="lnk" data-mvsub="${x.sid}:-1" title="Move up">↑</button>` : ''}${i < list.length - 1 ? `<button class="lnk" data-mvsub="${x.sid}:1" title="Move down">↓</button>` : ''}<button class="lnk" data-who="${x.sid}">${x.who === 'mate' ? 'to me' : 'to teammate'}</button><button class="lnk" data-delsub="${x.sid}" title="Remove this subclaim">×</button></span></div>
+        <span class="ctl">${i > 0 ? `<button class="lnk" data-mvsub="${x.sid}:-1" title="Move up">↑</button>` : ''}${i < list.length - 1 ? `<button class="lnk" data-mvsub="${x.sid}:1" title="Move down">↓</button>` : ''}${x.who === 'me' ? `<button class="lnk" data-offer="${x.sid}" title="Suggest this one to your teammate, who decides">offer to teammate</button>` : `<button class="lnk" data-tome="${x.sid}">to me</button>`}<button class="lnk" data-delsub="${x.sid}" title="Remove this subclaim">×</button></span></div>
       <div class="body">
         ${x.ids.map(id => cardHTML(BY_ID.get(id), {open: S.open.has('s:' + x.sid + ':' + id), key: 's:' + x.sid + ':' + id, cite: true, tail: `<button class="lnk" data-rmex="${x.sid}:${esc(id)}" title="Detach">×</button>`})).join('')}
         ${x.notes.map((n, j) => `<div class="own"><span class="id">own</span><span class="grow">${esc(n.text)}${n.url ? ` <a href="${esc(n.url)}" target="_blank" rel="noopener">link</a>` : ''}</span><button class="lnk" data-rmnote="${x.sid}:${j}" title="Remove">×</button></div>`).join('')}
-        ${rvRows.get(x.sid) || ''}
-        ${per && per.sharper && per.sharper !== x.text ? `<div class="sgx"><span>sharper</span><span class="is">${esc(per.sharper)}</span><button class="lnk" data-usesharp="${x.sid}">use</button></div>` : ''}
+        ${info}${row}
         ${fresh.map(id => { const c = BY_ID.get(id); return `<div class="sgx"><span>suggested</span><span class="mono">${esc(id)}</span><span class="is" title="${esc(c.say)}">${esc(c.title)}</span><span>${citeOf(c)}</span>${c.flagged ? '<span class="red">check source</span>' : ''}<button class="lnk" data-attachex="${x.sid}:${esc(id)}">attach</button></div>`; }).join('')}
         <form data-exform="${x.sid}"><input class="txt exin" id="ex-${x.sid}" maxlength="300" autocomplete="off" placeholder="Add an example: search the cards, or write your own" aria-label="Add an example to subclaim ${a.label}" value="${val('ex-' + x.sid, '')}"></form><div class="exres" id="exres-${x.sid}"></div>
       </div></div>`;
   };
   const newSub = (who, ph) => `<form class="newsub" data-newsub="${who}"><input class="txt" id="newSub-${who}" maxlength="200" autocomplete="off" placeholder="${ph}" aria-label="${ph}" value="${val('newSub-' + who, '')}"></form>`;
-  const sgHtml = sg && ((sg.alts || []).length || (sg.subs || []).length) ? `<div class="sg"><div class="row muted"><span>Suggestions · ${esc(sg.by)} · ${sg.model === 'keyword' ? 'keyword match, no model' : sg.model === SONNET ? 'Sonnet' : 'Haiku'}${sg.claim && claim && sg.claim.slice(0, 200) !== claim.slice(0, 200) ? ' · for an earlier main claim' : ''}</span><span class="spacer"></span><button class="lnk" data-hidesg="${sg.id}">hide</button></div>
-      ${(sg.alts || []).length ? `<div class="k">Other main claims</div>${sg.alts.map((a, i) => `<div class="sgl"><span>${esc(a.text)}</span>${a.why ? `<span class="muted">${esc(a.why)}</span>` : ''}<button class="lnk" data-usealt="${i}">use</button></div>`).join('')}` : ''}
-      ${(sg.subs || []).length ? `<div class="k">Subclaims to add</div>${sg.subs.map((a, i) => `<div class="sgl"><span>${esc(a.text)}</span>${idsText(a.ids)}${a.why ? `<span class="muted">${esc(a.why)}</span>` : ''}<button class="lnk" data-addsub="${i}">add</button></div>`).join('')}` : ''}</div>` : '';
+  const mineHtml = mine.map(subRow).join(''), mateHtml = mate.map(subRow).join('');
+  // Teammate: everything the system or the speaker puts forward for his minute is an offer. He includes it or declines it.
+  const opt = (text, meta, key) => `<div class="opt"><div class="row"><span class="grow is">${text}</span><button class="btn" data-inc="${key}">include</button><button class="lnk" data-dec="${key}">decline</button></div><div class="sgx">${meta}</div></div>`;
+  const opts = offers.map(x => opt(esc(x.text) || '(not worded yet)', `<span>${x.was === 'me' ? 'offered by the speaker' : 'suggested'}</span>${idsText(x.ids)}<span>about ${sayTime(x)} s</span>`, 'offer:' + x.sid));
+  if (!mate.length) {
+    if (!offers.length && rv && rv.handoff && mine.some(x => x.sid === rv.handoff.sid) && !passed.has('handoff:' + rv.handoff.sid)) { const x = subs.find(y => y.sid === rv.handoff.sid); opts.push(opt(`Take over ${esc(lab(x.sid))}: ${esc(x.text)}`, `<span>from the check</span>${rv.handoff.why ? `<span>${esc(rv.handoff.why)}</span>` : ''}${idsText(x.ids)}<span>about ${sayTime(x)} s</span>`, 'handoff:' + x.sid)); }
+    if (sg) (sg.mate || []).forEach((m, i) => { if (passed.has('mate:' + hashStr(m.text)) || subs.some(x => x.text === m.text)) return; opts.push(opt(esc(m.text), `<span>suggested</span>${idsText(m.ids)}${pText(m.ans) ? `<span>answers ${pText(m.ans)}</span>` : ''}${m.why ? `<span>${esc(m.why)}</span>` : ''}`, 'mate:' + i)); });
+  }
+  const tot = xs => xs.reduce((n, x) => n + sayTime(x), 0), meSec = tot(mine) + (claim ? Math.ceil(words(claim) / WPS) : 0), mateSec = tot(mate);
+  const secNote = (sec, budget) => sec ? `<span class="${sec > budget ? 'red' : 'muted'}">about ${stamp(sec)} of material</span>` : '';
+  // Check block: what concerns the whole plan. Every finding can be applied or declined, and either way it does not come back.
   let rvHtml = '';
-  if (rv) { const want = (rv.order || []).filter(sid => at.has(sid)); const seq = [...want.filter(sid => mine.some(x => x.sid === sid)), ...want.filter(sid => mate.some(x => x.sid === sid))]; const reorder = seq.length === subs.length && seq.join() !== subs.map(x => x.sid).join();
-    const fix = rv.claimFix && rv.claimFix.text && rv.claimFix.text !== claim ? rv.claimFix : null; const total = xs => xs.reduce((n, x) => n + sayTime(x), 0); const meSec = total(mine) + (claim ? Math.ceil(words(claim) / WPS) : 0), mateSec = total(mate);
-    const notes = [mine.length > ME_MAX ? `${mine.length} subclaims share your 3:00, about ${at.get(mine[0].sid).dur} s each. Three is the most that fits without rushing.` : '', mate.length > MATE_MAX ? `Your teammate has ${mate.length} subclaims for 1:00. One fits.` : '',
-      meSec > ME_SEC * 1.1 ? `Your part is about ${stamp(meSec)} of material for 3:00.` : '', mateSec > MATE_SEC * 1.1 ? `Your teammate's part is about ${stamp(mateSec)} of material for 1:00.` : '', subs.length && !mate.length ? 'Your teammate has no subclaim yet.' : ''].filter(Boolean);
-    const missed = (rv.missed || []).filter(m => pnum.has(m.pid) && !S.rvDone.has(rv.id + m.pid)).map(m => { const p = points.find(q => q.id === m.pid); return `<div class="sgl"><span class="ck">unanswered</span><span>P${pnum.get(m.pid)} ${esc(trunc(p.text, 70))}</span>${m.why ? `<span class="muted">${esc(m.why)}</span>` : ''}<button class="lnk" data-rvanswer="${m.pid}">answer it</button></div>`; });
-    rvHtml = `<div class="sg"><div class="row muted"><span>Check · ${esc(rv.by)} · ${rv.model === 'keyword' ? 'no model: counted from matching words, shared cards and speaking time' : rv.model === SONNET ? 'Sonnet' : 'Haiku'}${rv.fp !== caseFp(claim, subs) ? ' · the case has changed since' : ''}</span><span class="spacer"></span><button class="lnk" data-hiderv="${rv.id}">hide</button></div>
-      ${fix ? `<div class="sgl"><span class="ck">main claim</span><span>${esc(fix.text)}</span>${fix.why ? `<span class="muted">${esc(fix.why)}</span>` : ''}<button class="lnk" data-rvclaim="1">use</button></div>` : ''}
-      ${rvCount ? `<div class="sgl"><span>${rvCount} fix${rvCount === 1 ? '' : 'es'} marked under the subclaims.</span></div>` : ''}
-      ${notes.map(n => `<div class="sgl"><span>${esc(n)}</span></div>`).join('')}
-      ${missed.join('')}
-      ${reorder ? `<div class="sgl"><span class="ck">order</span><span>say ${seq.map(sid => esc(lab(sid))).join(', then ')}</span><button class="lnk" data-rvorder="1">apply</button></div>` : ''}
-      ${!fix && !reorder && !rvCount && !notes.length && !missed.length ? `<div class="sgl"><span>${rv.fp !== caseFp(claim, subs) ? 'No fixes left from this check. Check again after further changes.' : 'Nothing to fix' + (rv.model === 'keyword' ? ' that can be counted.' : ': each subclaim earns its time, none overlap, the order holds.')}</span></div>` : ''}
+  if (rv) { const open = placed(subs).filter(x => statusOf(d, x) === 'open').length, missed = openMissed(d);
+    const want = (rv.order || []).filter(sid => at.has(sid)), seq = [...want.filter(sid => mine.some(x => x.sid === sid)), ...want.filter(sid => mate.some(x => x.sid === sid))], cur = placed(subs).map(x => x.sid).filter(sid => seq.includes(sid)), okey = 'order:' + (rv.order || []).join(',');
+    const reorder = seq.length > 1 && seq.join() !== cur.join() && !passed.has(okey);
+    const fix = rv.claimFix && rv.claimFix.text && rv.claimFix.text !== claim && !(counter && counter.ok) && !passed.has('claim:' + hashStr(rv.claimFix.text)) ? rv.claimFix : null; const n = fixes + (fix ? 1 : 0) + (reorder ? 1 : 0);
+    rvHtml = `<div class="sg"><div class="row muted"><span>Check · content · ${esc(rv.by)} · ${rv.model === 'keyword' ? 'no model: counted from matching words and shared cards' : rv.model === SONNET ? 'Sonnet' : 'Haiku'}${open ? ` · ${open} subclaim${open === 1 ? '' : 's'} changed since: Check again` : ''}</span><span class="spacer"></span>${n > 1 ? `<button class="btn" data-rvall="1">Apply all ${n}</button>` : ''}<button class="lnk" data-hiderv="${rv.id}">hide</button></div>
+      ${fix ? `<div class="sgl"><span class="ck">main claim</span><span>${esc(fix.text)}</span>${fix.why ? `<span class="muted">${esc(fix.why)}</span>` : ''}<button class="lnk" data-fix="claim:">use</button><button class="lnk" data-pass="claim:${hashStr(fix.text)}">keep mine</button></div>` : ''}
+      ${fixes ? `<div class="sgl"><span>${fixes} fix${fixes === 1 ? '' : 'es'} marked under the subclaims.</span></div>` : ''}
+      ${reorder ? `<div class="sgl"><span class="ck">order</span><span>say ${seq.map(sid => esc(lab(sid))).join(', then ')}</span><button class="lnk" data-fix="order:">apply</button><button class="lnk" data-pass="${esc(okey)}">keep mine</button></div>` : ''}
+      ${missed.map(pid => { const p = points.find(q => q.id === pid); return `<div class="sgl"><span class="ck">unanswered</span><span>P${pnum.get(pid)} ${esc(trunc(p.text, 80))}</span><button class="lnk" data-pass="missed:${pid}">skip it</button></div>`; }).join('')}
+      ${missed.length ? `<div class="sgl muted"><span>Suggest proposes a subclaim for each unanswered point.</span></div>` : ''}
+      ${!n && !missed.length ? `<div class="sgl"><span>${open ? 'No fixes left from this check.' : rv.model === 'keyword' ? 'Nothing to fix that can be counted.' : 'Nothing to fix: every subclaim earns its place and the order holds.'}</span></div>` : ''}
       ${rv.thread ? `<div class="sgl"><span class="muted">thread</span><span>${esc(rv.thread)}</span></div>` : ''}</div>`; }
+  // Trim block: arithmetic on the current plan, so it is always up to date and never disagrees with itself.
+  let trHtml = '';
+  if (S.showTrim) { const t = trimPlan(d); const what = s => s.type === 'detach' ? `detach <span class="mono">${esc(s.cid)}</span> from ${esc(lab(s.sid))}` : `${s.type === 'offer' ? 'offer' : 'cut'} ${esc(lab(s.sid))} <span class="muted">${esc(trunc((subs.find(x => x.sid === s.sid) || {}).text, 50))}</span>${s.type === 'offer' ? ' to your teammate' : ''}`;
+    const fits = t.me.after <= ME_SEC && t.mate.after <= MATE_SEC;
+    trHtml = `<div class="sg"><div class="row muted"><span>Trim · length only${t.unchecked ? ` · ${t.unchecked} subclaim${t.unchecked === 1 ? ' has' : 's have'} not been checked, so the cut order is a guess: Check first` : ''}</span><span class="spacer"></span>${t.steps.length > 1 ? `<button class="btn" data-trall="1">Apply all ${t.steps.length}</button>` : ''}<button class="lnk" data-trim="0">hide</button></div>
+      <div class="sgl"><span>You: about ${stamp(t.me.before)} of material for 3:00${t.me.after !== t.me.before ? `, ${stamp(t.me.after)} after these` : ''}.</span>${mate.length ? `<span>Teammate: about ${stamp(t.mate.before)} for 1:00${t.mate.after !== t.mate.before ? `, ${stamp(t.mate.after)} after` : ''}.</span>` : ''}</div>
+      ${t.steps.map((s, i) => `<div class="sgl"><span class="ck">${s.type}</span><span>${what(s)}</span><span class="muted">saves about ${s.save} s</span><button class="lnk" data-tr="${i}">apply</button></div>`).join('')}
+      ${t.steps.length ? '' : `<div class="sgl"><span>${fits ? 'It fits. Nothing to trim.' : 'Still over, and only your own wording is left to shorten.'}</span></div>`}</div>`; }
+  const addable = a => !subs.some(x => x.text === a.text);
+  const sgHtml = sg && ((sg.alts || []).length || (sg.subs || []).some(addable)) ? `<div class="sg"><div class="row muted"><span>Suggestions · ${esc(sg.by)} · ${sg.model === 'keyword' ? 'keyword match, no model' : sg.model === SONNET ? 'Sonnet' : 'Haiku'}${sg.claim && claim && sg.claim.slice(0, 200) !== claim.slice(0, 200) ? ' · for an earlier main claim' : ''}</span><span class="spacer"></span><button class="lnk" data-hidesg="${sg.id}">hide</button></div>
+      ${(sg.alts || []).length ? `<div class="k">Other main claims</div>${sg.alts.map((a, i) => `<div class="sgl"><span>${esc(a.text)}</span>${a.why ? `<span class="muted">${esc(a.why)}</span>` : ''}<button class="lnk" data-usealt="${i}">use</button></div>`).join('')}` : ''}
+      ${(sg.subs || []).some(addable) ? `<div class="k">Subclaims to add</div>${sg.subs.map((a, i) => addable(a) ? `<div class="sgl"><span>${esc(a.text)}</span>${idsText(a.ids)}${pText(a.ans) ? `<span class="muted">answers ${pText(a.ans)}</span>` : ''}${a.instead && at.has(a.instead) ? `<span class="muted">instead of ${esc(lab(a.instead))}</span>` : ''}${a.why ? `<span class="muted">${esc(a.why)}</span>` : ''}<button class="lnk" data-addsub="${i}">add</button></div>` : '').join('')}` : ''}</div>` : '';
   const act = document.activeElement; const fid = host.contains(act) && act.id ? act.id : ''; const sel = fid && act.selectionStart != null ? [act.selectionStart, act.selectionEnd] : null;
   host.innerHTML = `<div class="clockrow" id="clockRow"></div>
     <section><h2>Main claim</h2><textarea class="txt auto" id="counterText" rows="1" maxlength="300" placeholder="The one sentence that refutes theirs" aria-label="Main claim">${val('counterText', claim)}</textarea></section>
-    <section><h2>You · 3:00</h2>${mine.map(subRow).join('')}${newSub('me', mine.length ? 'Add a subclaim' : 'A subclaim: one point that carries the main claim. Enter adds it.')}</section>
-    <section><h2>Teammate · 1:00 <span class="muted">from 3:00</span></h2>${mate.map(subRow).join('')}${newSub('mate', 'Add a subclaim for your teammate')}</section>
-    <div class="row small"><button class="btn" data-suggest="1" ${S.suggesting ? 'disabled' : ''}>${S.suggesting ? 'Thinking…' : 'Suggest'}</button><button class="btn" data-review="1" ${S.reviewing ? 'disabled' : ''}>${S.reviewing ? 'Checking…' : 'Check'}</button><span class="muted">Suggest offers options. Check edits what you have: what earns its time, what overlaps, what order.</span><span class="spacer"></span><button class="lnk" data-copy="1">Copy speech</button></div>
-    ${rvHtml}
-    ${sgHtml}
+    <section><h2>You · 3:00 ${secNote(meSec, ME_SEC)}</h2>${mineHtml}${newSub('me', mine.length ? 'Add a subclaim' : 'A subclaim: one point that carries the main claim. Enter adds it.')}</section>
+    <section><h2>Teammate · 1:00 <span class="muted">from 3:00</span> ${secNote(mateSec, MATE_SEC)}</h2>${mateHtml}${opts.length ? `<div class="k2">Offered to your teammate, who decides</div>${opts.join('')}` : ''}${newSub('mate', 'Add a subclaim for your teammate')}</section>
+    <div class="row small"><button class="btn" data-suggest="1" ${S.suggesting ? 'disabled' : ''}>${S.suggesting ? 'Thinking…' : 'Suggest'}</button><button class="btn" data-review="1" ${S.reviewing ? 'disabled' : ''}>${S.reviewing ? 'Checking…' : 'Check'}</button><button class="btn${S.showTrim ? ' on' : ''}" data-trim="${S.showTrim ? 0 : 1}">Trim</button><span class="muted">Suggest proposes. Check edits the content. Trim fits the time.</span><span class="spacer"></span><button class="lnk" data-copy="1">Copy speech</button></div>
+    ${rvHtml}${trHtml}${sgHtml}
     <section><h2>Closing · 2:00</h2><textarea class="txt auto" id="closingText" rows="2" maxlength="1200" placeholder="What the round came down to, and the line to end on" aria-label="Closing">${val('closingText', closing ? closing.text : '')}</textarea></section>`;
   if (fid) { const t = el(fid); if (t) { t.focus({preventScroll: true}); if (sel && t.setSelectionRange) try { t.setSelectionRange(sel[0], sel[1]); } catch {} } }
   autosizeAll(); renderClock();
@@ -1058,7 +1189,7 @@ function wire() {
   document.querySelectorAll('#sideSeg button').forEach(b => b.onclick = () => { S.side = b.dataset.side; document.querySelectorAll('#sideSeg button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); renderBoard(); });
   document.addEventListener('click', e => {
     if (e.target.closest('a')) return;
-    const t = e.target.closest('[data-toggle],[data-chip],[data-morechips],[data-node],[data-kind],[data-del],[data-research],[data-askresearch],[data-rcheck],[data-gapflag],[data-promote],[data-usein],[data-newsubfrom],[data-usedraft],[data-suggest],[data-review],[data-rvuse],[data-rvmerge],[data-rvdrop],[data-rvanswer],[data-undoclear],[data-rvdetach],[data-rvclaim],[data-rvorder],[data-hiderv],[data-usealt],[data-addsub],[data-usesharp],[data-attachex],[data-ownex],[data-rmex],[data-rmnote],[data-delsub],[data-mvsub],[data-who],[data-hidesg],[data-copy],[data-clock]');
+    const t = e.target.closest('[data-toggle],[data-chip],[data-morechips],[data-node],[data-kind],[data-del],[data-research],[data-askresearch],[data-rcheck],[data-gapflag],[data-promote],[data-usein],[data-newsubfrom],[data-usedraft],[data-suggest],[data-review],[data-trim],[data-tr],[data-trall],[data-fix],[data-rvkeep],[data-rvall],[data-pass],[data-hiderv],[data-undoclear],[data-offer],[data-tome],[data-inc],[data-dec],[data-usealt],[data-addsub],[data-attachex],[data-ownex],[data-rmex],[data-rmnote],[data-delsub],[data-mvsub],[data-hidesg],[data-copy],[data-clock]');
     if (!t) return; const d = t.dataset; const D = derive(); const node = id => D.nodes.get(id), sub = sid => D.subs.find(x => x.sid === sid);
     const flip = (set, key) => { set.has(key) ? set.delete(key) : set.add(key); };
     if (d.toggle) { flip(S.open, d.toggle); render(); }
@@ -1077,25 +1208,29 @@ function wire() {
     else if (d.usedraft) { const [sid, nid] = d.usedraft.split(':'); const x = sub(sid), n = node(nid); const c = n && n.research && n.research.card; if (x && c) { emit({k: 'sub', sid, notes: [...x.notes, {text: c.say, url: ((c.sources || [])[0] || {}).url || ''}].slice(0, 5)}); toast('Research draft added to the subclaim.'); } }
     else if (d.suggest) suggestCase();
     else if (d.review) reviewCase();
-    else if (d.rvuse) { const r = ((D.review || {}).subs || []).find(x => x.sid === d.rvuse); if (r && r.text) { delete S.drafts['subText-' + d.rvuse]; emit({k: 'sub', sid: d.rvuse, text: r.text}); } }
-    else if (d.rvmerge) { const r = ((D.review || {}).subs || []).find(x => x.sid === d.rvmerge); const x = sub(d.rvmerge), into = r && sub(r.into); if (x && into) { emit({k: 'sub', sid: into.sid, ids: [...new Set([...into.ids, ...x.ids])].slice(0, 5), notes: [...into.notes, ...x.notes].slice(0, 5)}); emit({k: 'sub', sid: x.sid, del: true}); toast('Merged; its examples moved across.'); } }
-    else if (d.undoclear) { undoClear(); toast('Clear undone; everything is back.'); }
-    else if (d.rvdrop) emit({k: 'sub', sid: d.rvdrop, del: true});
-    else if (d.rvanswer) { const p = node(d.rvanswer); if (p && D.review) { S.rvDone.add(D.review.id + p.id); emit({k: 'sub', sid: uid(), text: '', ids: matchesFor(p).slice(0, 1), who: 'me', ord: Date.now()}); toast('Added a subclaim with the best card for that point. Word it, then Check again.'); } }
-    else if (d.rvdetach) { const [sid, cid] = d.rvdetach.split(':'); const x = sub(sid); if (x) emit({k: 'sub', sid, ids: x.ids.filter(id => id !== cid)}); }
-    else if (d.rvclaim) { const f = D.review && D.review.claimFix; if (f && f.text) { delete S.drafts.counterText; emit({k: 'counter', text: f.text}); } }
-    else if (d.rvorder) { const want = ((D.review || {}).order || []).filter(sid => sub(sid)); for (const who of ['me', 'mate']) want.filter(sid => sub(sid).who === who).forEach((sid, k) => { if (sub(sid).ord !== k) emit({k: 'sub', sid, ord: k}); }); }
+    else if (d.trim) { S.showTrim = d.trim === '1'; renderStrategy(); }
+    else if (d.tr) { const s = trimPlan(D).steps[+d.tr]; if (s) applyTrim(s); }
+    else if (d.trall) { let n = 0; for (let i = 0; i < 20; i++) { const s = trimPlan(derive()).steps[0]; if (!s) break; applyTrim(s); n++; } toast(n ? `Applied ${n} trim${n === 1 ? '' : 's'}.` : 'Nothing to trim.'); }
+    else if (d.fix) { const [kind, sid] = d.fix.split(':'); applyFix(kind, sid); }
+    else if (d.rvkeep) applyFix('keep', d.rvkeep);
+    else if (d.rvall) applyAllFixes();
+    else if (d.pass) emit({k: 'pass', key: d.pass});
     else if (d.hiderv) { S.hideRv = d.hiderv; LS.set('rb:hiderv', S.hideRv); renderStrategy(); }
+    else if (d.undoclear) { undoClear(); toast('Clear undone; everything is back.'); }
+    else if (d.offer) { const x = sub(d.offer); if (x) { emit({k: 'sub', sid: x.sid, who: 'offer', was: 'me'}); toast('Offered to your teammate. They include it or decline it.'); } }
+    else if (d.tome) { const x = sub(d.tome); if (x) emit({k: 'sub', sid: x.sid, who: 'me', ord: Date.now()}); }
+    else if (d.inc || d.dec) { const yes = !!d.inc; const [kind, ref] = (d.inc || d.dec).split(':');
+      if (kind === 'mate') { const m = D.suggest && (D.suggest.mate || [])[+ref]; if (m) emit(yes ? {k: 'sub', sid: uid(), text: m.text, ids: m.ids || [], ans: m.ans || [], who: 'mate', ord: Date.now()} : {k: 'pass', key: 'mate:' + hashStr(m.text)}); }
+      else { const x = sub(ref); if (!x) return; if (yes) emit({k: 'sub', sid: x.sid, who: 'mate', ord: Date.now()}); else if (kind === 'handoff') emit({k: 'pass', key: 'handoff:' + x.sid}); else emit(x.was === 'me' ? {k: 'sub', sid: x.sid, who: 'me'} : {k: 'sub', sid: x.sid, del: true}); } }
     else if (d.usealt) { const a = D.suggest && (D.suggest.alts || [])[+d.usealt]; if (a) { delete S.drafts.counterText; emit({k: 'counter', text: a.text}); } }
-    else if (d.addsub) { const a = D.suggest && (D.suggest.subs || [])[+d.addsub]; if (a) emit({k: 'sub', sid: uid(), text: a.text, ids: a.ids || [], who: 'me', ord: Date.now()}); }
-    else if (d.usesharp) { const per = ((D.suggest || {}).per || []).find(x => x.sid === d.usesharp); if (per && per.sharper) { delete S.drafts['subText-' + d.usesharp]; emit({k: 'sub', sid: d.usesharp, text: per.sharper}); } }
+    else if (d.addsub) { const a = D.suggest && (D.suggest.subs || [])[+d.addsub]; if (a) { const next = {text: a.text, ids: a.ids || [], notes: []}; const asked = (a.ans || []).some(pid => openMissed(D).includes(pid)); // an answer the check asked for arrives settled
+        emit({k: 'sub', sid: uid(), text: a.text, ids: next.ids, ans: a.ans || [], who: 'me', ord: Date.now(), ...(asked ? {ok: subKey(next)} : {})}); } }
     else if (d.attachex) { const [sid, cid] = d.attachex.split(':'); const x = sub(sid); if (x) { delete S.drafts['ex-' + sid]; emit({k: 'sub', sid, ids: [...new Set([...x.ids, cid])].slice(0, 5)}); } }
     else if (d.ownex) addOwnExample(d.ownex);
     else if (d.rmex) { const [sid, cid] = d.rmex.split(':'); const x = sub(sid); if (x) emit({k: 'sub', sid, ids: x.ids.filter(id => id !== cid)}); }
     else if (d.rmnote) { const [sid, j] = d.rmnote.split(':'); const x = sub(sid); if (x) emit({k: 'sub', sid, notes: x.notes.filter((_, i) => i !== +j)}); }
-    else if (d.delsub) { if (d.confirm) emit({k: 'sub', sid: d.delsub, del: true}); else { d.confirm = '1'; t.textContent = 'remove?'; setTimeout(() => { if (t.isConnected) { delete d.confirm; t.textContent = '×'; } }, 3000); } }
+    else if (d.delsub) { if (d.confirm) emit({k: 'sub', sid: d.delsub, del: true, cut: true}); else { d.confirm = '1'; t.textContent = 'remove?'; setTimeout(() => { if (t.isConnected) { delete d.confirm; t.textContent = '×'; } }, 3000); } }
     else if (d.mvsub) { const [sid, dir] = d.mvsub.split(':'); const x = sub(sid); if (!x) return; const grp = D.subs.filter(y => y.who === x.who), i = grp.indexOf(x), j = i + (+dir); if (j < 0 || j >= grp.length) return; [grp[i], grp[j]] = [grp[j], grp[i]]; grp.forEach((y, k) => { if (y.ord !== k) emit({k: 'sub', sid: y.sid, ord: k}); }); }
-    else if (d.who) { const x = sub(d.who); if (x) emit({k: 'sub', sid: x.sid, who: x.who === 'mate' ? 'me' : 'mate', ord: Date.now()}); }
     else if (d.hidesg) { S.hideSg = d.hidesg; LS.set('rb:hidesg', S.hideSg); renderStrategy(); }
     else if (d.copy) { flushDrafts(); copyText(speechText()); }
     else if (d.clock) emit({k: 'clock', at: d.clock === '1' ? Date.now() : 0});
