@@ -410,19 +410,23 @@ async function callModel(prompt, {model = HAIKU, web = false, maxTokens = 800, e
   if (S.ai.mode !== 'key') throw new Error('no model');
   const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), web ? 170000 : 25000);
   try {
-    const body = {model, max_tokens: maxTokens, messages: [{role: 'user', content: prompt}]};
-    if (effort) body.output_config = {effort};
+    // Thinking tokens count against max_tokens on these models, so a small ceiling can return no text at all.
+    // Haiku answers these short JSON tasks without thinking; Sonnet keeps adaptive thinking with a large ceiling.
+    const body = {model, max_tokens: model === HAIKU ? Math.max(maxTokens, 1500) : Math.max(maxTokens, 6000), messages: [{role: 'user', content: prompt}]};
+    if (model === HAIKU) body.thinking = {type: 'disabled'};
+    else if (effort) body.output_config = {effort};
     if (web) body.tools = [{type: 'web_search_20260209', name: 'web_search', max_uses: 5}];
-    let text = '';
+    let text = '', stop = '';
     for (let round = 0; round < 3; round++) {
       const r = await fetch('https://api.anthropic.com/v1/messages', {method: 'POST', signal: ctl.signal, headers: {'content-type': 'application/json', 'x-api-key': S.ai.key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true'}, body: JSON.stringify(body)});
       if (!r.ok) { const err = new Error('api ' + r.status); err.status = r.status; try { err.detail = (await r.json()).error?.message; } catch {} throw err; }
-      const j = await r.json();
+      const j = await r.json(); stop = j.stop_reason || '';
       text = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
-      if (j.stop_reason !== 'pause_turn') break;
+      if (stop !== 'pause_turn') break;
       body.messages = [...body.messages, {role: 'assistant', content: j.content}, {role: 'user', content: 'Continue and finish with the JSON.'}];
     }
-    return extractJson(text);
+    if (!text.trim()) throw new Error('empty reply, stop_reason ' + stop);
+    try { return extractJson(text); } catch { throw new Error('no json in reply (stop_reason ' + stop + '): ' + text.slice(0, 60)); }
   } finally { clearTimeout(t); }
 }
 async function demoModel(prompt, web) { // plumbing test without a real key
@@ -437,7 +441,7 @@ async function demoModel(prompt, web) { // plumbing test without a real key
 function aiFailed(err, what) {
   const code = err && (err.code || err.status || err.message) || 'error';
   if (code === 'not_granted' || code === 'sampling_disabled' || code === 401 || code === 403) { S.ai.mode = 'none'; toast('Model unavailable (' + code + '). Keyword order stays.'); }
-  else toast((what || 'Model') + ' did not answer (' + code + (err && err.detail ? ': ' + String(err.detail).slice(0, 80) : '') + ').');
+  else toast((what || 'Model') + ' did not answer (' + String(code).slice(0, 120) + (err && err.detail ? ': ' + String(err.detail).slice(0, 80) : '') + ').');
   renderStatus();
 }
 const trunc = (s, n) => { s = String(s || '').replace(/\s+/g, ' '); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
