@@ -67,3 +67,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          # Pages file sync is usually seconds but took over nine minutes on 2026-11-09; the default 10-minute limit cancelled a deploy one stage short of done.
+          timeout: 1800000
