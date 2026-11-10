@@ -1,0 +1,126 @@
+\section{Boundary conditions}
+\label{sec:bcs}
+
+The Navier--Stokes equations are the same for a pipe, a bearing and a river. What makes the answers different is what happens at the edges: which surfaces are solid, which move, which are open to air. Mathematically, integrating a second-order equation leaves two unknown constants per direction, and each needs one fact about the boundary to fix it. In an exam, the boundary conditions are where most of the marks for an exact solution sit, because they are where the physics of the particular device enters. This section lists them, says why each holds, and shows the one condition that is easy to forget: at the centreline of a pipe.
+
+\begin{recognise}
+Any problem that integrates a velocity profile, which is every problem in \secref{sec:exactflows}{exact viscous flows}. ``Determine the constants in the profile''. A proposed profile, with the question whether it satisfies the conditions at the walls. A moving belt, plate, shaft, piston or cylinder. A free surface (a film, a puddle, a layer open to air). Two immiscible liquids in layers. A symmetric channel where you are told, or may choose, to solve only half.
+\end{recognise}
+
+\begin{onsheet}
+One line, in section 13: ``No slip at a wall: $V_{\text{fluid}} = V_{\text{wall}}$; use the stated profile form and wall conditions to determine constants.'' That is the most important condition. No-penetration, the free-surface conditions, the interface conditions, symmetry and the centreline condition are not printed.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{Counting.} A momentum equation like $\mu\,d^2u/dy^2 = dp/dx$ is second order in $y$: integrating twice gives $u = \frac{1}{2\mu}\frac{dp}{dx}y^2 + C_1y + C_2$, so it needs two conditions in $y$, usually one at each boundary. In cylindrical coordinates the same is true in $r$. A first-order equation such as continuity needs one. Before applying conditions, count constants and count conditions; they must match.
+
+\paragraph{Solid walls: no slip and no penetration.} At a solid surface, the fluid touching it moves with it.
+\begin{itemize}[nosep,leftmargin=*]
+\item \emph{No slip}: the tangential velocity of the fluid equals the tangential velocity of the wall. A fixed wall: $u = 0$. A plate sliding at $U$: $u = U$. A shaft of radius $a$ spinning at $\Omega$: $v_\theta = \Omega a$ at $r = a$. A rod pulled axially at $U$: $v_z = U$ at its surface.
+\item \emph{No penetration}: the normal velocity of the fluid equals the normal velocity of the wall, because fluid cannot pass through a solid. A fixed wall: $v = 0$. A wall moving toward the fluid at $W$, like the platen in \secref{sec:acceleration}{the acceleration field}: $v = -W$. A porous wall with suction: $v$ equals the given suction velocity.
+\end{itemize}
+Together: $\V_{\text{fluid}} = \V_{\text{wall}}$ at the wall. No penetration is plain geometry. No slip is an experimental fact for ordinary liquids and gases: molecules at the surface are trapped momentarily and leave with the wall's average velocity. It fails only for rarefied gases and some exotic surfaces (the ``slip flows'' at the end of White's problem list, not on this midterm). Inviscid (Euler) theory can keep only no penetration, because without viscosity the equations are lower order and there is no way to satisfy both.
+
+\paragraph{Inlet and outlet.} Where fluid enters or leaves the domain, the velocity profile or the pressure is usually given. In a long duct, exact solutions sidestep this by assuming \emph{fully developed} flow: far enough from the inlet that the profile no longer changes along the duct. Then the inlet and outlet enter only through the pressure difference between them, $\Delta p$ over the length $L$, which sets $dp/dx = -\Delta p/L$.
+
+\paragraph{Free surface.} A surface between a liquid and a gas that is free to move.
+\begin{itemize}[nosep,leftmargin=*]
+\item \emph{Pressure}: the liquid pressure equals the gas pressure, usually atmospheric. (Surface tension adds $\Upsilon/R$ on a curved surface; for a flat film it is zero.)
+\item \emph{Shear}: the shear stress in the liquid equals the shear stress applied by the gas. Air is about $50$ times less viscous than water, so unless a wind is stated, take it as zero: $\mu\,\partial u/\partial y = 0$, so $\partial u/\partial y = 0$ at the surface. The velocity profile meets a free surface with zero slope.
+\item \emph{Kinematic}: no fluid crosses the surface. For a flat steady film this is $v = 0$ there.
+\end{itemize}
+Note what is \emph{not} imposed: the velocity of the surface. It is an output.
+
+\paragraph{Liquid--liquid interface.} At the flat interface between two immiscible fluids $1$ and $2$:
+\begin{itemize}[nosep,leftmargin=*]
+\item the velocities are equal, $u_1 = u_2$ (no slip between the fluids);
+\item the shear stresses are equal, $\mu_1\,\partial u_1/\partial y = \mu_2\,\partial u_2/\partial y$, by Newton's third law on a sheet of zero mass;
+\item the pressures are equal (flat interface, no surface tension jump).
+\end{itemize}
+Because the shear stresses match and the viscosities differ, the velocity gradients jump: the less viscous fluid shears more. A free surface is the special case where fluid $2$ has negligible viscosity.
+
+\paragraph{Symmetry planes.} If the geometry and the driving are symmetric about the plane $y = 0$, the velocity is an even function of $y$, so $\partial u/\partial y = 0$ on the plane. That condition lets you solve the half-channel, $0 \le y \le h$, with no slip at $y = h$ and zero slope at $y = 0$, in place of no slip at both walls. The two give the same answer; use whichever is less algebra, and state it.
+
+\paragraph{The centreline in cylindrical coordinates.} In a pipe or around any axis, integrating the $z$ momentum equation gives
+\[
+\frac{1}{r}\frac{d}{dr}\Big(r\frac{dv_z}{dr}\Big) = \frac{1}{\mu}\frac{dp}{dz}
+\quad\Longrightarrow\quad
+v_z = \frac{1}{4\mu}\frac{dp}{dz}r^2 + C_1\ln r + C_2 .
+\]
+A pipe has only one wall, at $r = R$, but two constants. The second condition comes from the axis: at $r = 0$ the fluid is ordinary fluid, so its velocity is finite. Since $\ln r \to -\infty$ as $r \to 0$, the only way to keep $v_z$ finite is $C_1 = 0$. Equivalent statements: the shear stress $\mu\,dv_z/dr$ is finite at the axis (the $\ln r$ term would give $C_1/r$), or $dv_z/dr = 0$ at $r = 0$ by symmetry. This is the condition that finishes Hagen--Poiseuille flow.
+
+The condition holds \emph{only if the axis is in the fluid}. In an annulus, $a \le r \le b$, the axis is inside the solid core, $\ln r$ is perfectly finite over the domain, and $C_1$ is fixed by the second wall. Killing the $\ln r$ term in an annulus is a wrong answer. The same applies to $B/r$ in the swirl solution $v_\theta = Ar + B/r$: zero if the fluid fills the axis, finite and essential between two cylinders.
+
+\begin{firstmoves}
+Draw the cross-section, label every boundary, and write one line per boundary: which condition, and why (``fixed wall, no slip'', ``free surface, no shear from air'', ``axis in fluid, finite velocity''). Count the constants after integrating and check the count matches. Use the wall's velocity in the fluid's coordinate direction, with its sign. After solving, substitute the profile back into every condition; it takes thirty seconds and catches most algebra slips.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}[An oil layer over water, dragged by a belt]
+In a skimmer, a belt moving at $U = 0.5\unit{m/s}$ runs along the top of a layer of oil ($\mu_2 = 0.1\unit{Pa\,s}$, thickness $h_2 = 1\unit{mm}$) that floats on water ($\mu_1 = 0.001\unit{Pa\,s}$, thickness $h_1 = 2\unit{mm}$) above a fixed floor. Find the interface velocity and the shear stress on the belt.
+
+\emph{Assumptions.} Steady, fully developed, wide, no pressure gradient along the flow, gravity normal to the flow. Then each layer obeys $\mu\,d^2u/dy^2 = 0$, so each profile is a straight line, with two constants per layer: four in all.
+
+\emph{Conditions} ($y$ up from the floor). Floor, no slip: $u_1(0) = 0$. Interface, equal velocity: $u_1(h_1) = u_2(h_1) = u_i$. Interface, equal shear: $\mu_1 u_1' = \mu_2 u_2'$. Belt, no slip: $u_2(h_1 + h_2) = U$. Four conditions.
+
+\emph{Solve.} With straight lines, $u_1' = u_i/h_1$ and $u_2' = (U - u_i)/h_2$. Shear continuity:
+\[
+\frac{\mu_1 u_i}{h_1} = \frac{\mu_2(U - u_i)}{h_2}
+\quad\Longrightarrow\quad
+u_i = U\,\frac{\mu_2/h_2}{\mu_1/h_1 + \mu_2/h_2} = 0.5\,\frac{100}{0.5 + 100} = 0.4975\unit{m/s}.
+\]
+The shear is the same in both layers: $\tau = \mu_1 u_i/h_1 = 0.001(0.4975)/0.002 = 0.249\unit{Pa}$. The belt must pull with $0.249\unit{N}$ per square metre of contact.
+
+\emph{Sanity check.} The oil is a hundred times more viscous and half as thick, so it is far stiffer in shear and moves almost as a block with the belt; nearly all the velocity change happens in the water, whose shear rate is $249\unit{s^{-1}}$ against $2.5\unit{s^{-1}}$ in the oil. The layers act like two resistors in series, $h/\mu$ each, with the same ``current'' $\tau$; the formula is the voltage divider.
+\end{example}
+
+\begin{example}[A push--pull cable in its sheath]
+The inner wire of a control cable, radius $a = 1.00\unit{mm}$, slides axially at $U = 0.3\unit{m/s}$ inside a fixed sheath of bore radius $b = 1.05\unit{mm}$, over a length $L = 0.5\unit{m}$. The gap is filled with oil, $\mu = 0.3\unit{Pa\,s}$. Find the velocity profile and the viscous force resisting the wire.
+
+\emph{Assumptions.} Steady, incompressible, fully developed ($v_z = v_z(r)$), axisymmetric, no swirl, no imposed pressure gradient (the ends are open to the same pressure), gravity neglected (horizontal, or its effect is hydrostatic only).
+
+\emph{Equation.} The $z$-momentum equation reduces to $\frac{1}{r}\frac{d}{dr}\big(r\,\frac{dv_z}{dr}\big) = 0$, so $v_z = C_1\ln r + C_2$.
+
+\emph{Conditions.} Wire, no slip: $v_z(a) = U$. Sheath, no slip: $v_z(b) = 0$. The axis is inside the wire, not in the fluid, so the $\ln r$ term stays.
+
+\emph{Solve.} $C_2 = -C_1\ln b$, then $U = C_1\ln(a/b)$:
+\[
+v_z = U\,\frac{\ln(r/b)}{\ln(a/b)} .
+\]
+\emph{Force.} The shear stress is $\tau_{rz} = \mu\,dv_z/dr = \mu U/(r\ln(a/b))$, negative because $\ln(a/b) < 0$: it opposes the wire. At the wire, $|\tau| = \mu U/(a\ln(b/a))$, and the force is $|\tau|\cdot 2\pi aL$:
+\[
+F = \frac{2\pi\mu UL}{\ln(b/a)} = \frac{2\pi(0.3)(0.3)(0.5)}{\ln 1.05} = \frac{0.2827}{0.04879} = 5.80\unit{N}.
+\]
+\emph{Sanity check.} Substituting $r = a$ and $r = b$ returns $U$ and $0$. The gap is thin ($c = 0.05\unit{mm} \ll a$), so it should behave like plane Couette flow: $\tau \approx \mu U/c = 1800\unit{Pa}$ on area $2\pi aL$ gives $5.65\unit{N}$, within $3\%$. Dropping the $\ln r$ term, as one would in a pipe, would leave $v_z = C_2$ constant, unable to meet both walls.
+\end{example}
+
+\begin{example}[Wind on a thin puddle]
+Wind exerts a steady shear stress $\tau_s = 0.02\unit{Pa}$ on a water layer $h = 2\unit{mm}$ deep on a level car park. Far from the edges, and ignoring the slight tilt of the surface that eventually builds up a back-pressure, find the surface velocity.
+
+\emph{Assumptions.} Steady, fully developed, no pressure gradient, laminar, $\mu = 0.001\unit{Pa\,s}$. Then $d^2u/dy^2 = 0$ and $u = C_1y + C_2$.
+
+\emph{Conditions.} Ground, no slip: $u(0) = 0$, so $C_2 = 0$. Free surface with an applied shear: $\mu\,du/dy = \tau_s$ at $y = h$, so $C_1 = \tau_s/\mu$. Here the free-surface shear is not zero, because the air is the driver.
+
+\emph{Answer.} $u = \tau_s y/\mu$, and the surface moves at $u(h) = \tau_s h/\mu = 0.02(0.002)/0.001 = 0.04\unit{m/s}$.
+
+\emph{Sanity check.} The shear is uniform through the layer, so the profile is linear; with $\tau_s = 0$ it gives $u = 0$, a still puddle, as it should. In a closed basin the surface tilts until a pressure gradient pushes water back along the bottom; that adds a parabola and is the Couette-with-pressure-gradient case of \secref{sec:exactflows}{exact viscous flows}.
+\end{example}
+
+\begin{trap}
+Applying ``finite at $r = 0$'' in an annulus. Putting $u = 0$ at a free surface, which is no slip at a place with no wall. Using equal velocity gradients at an interface in place of equal shear stresses. Forgetting the wall's own velocity when the wall moves, or its sign when it moves against the flow. Fewer conditions than constants, discovered only after an hour of algebra: count first.
+\end{trap}
+
+\begin{ladder}
+\item \white{P4.24}. A channel with porous walls. A nonzero normal velocity at a wall.
+\item \white{P4.80}. A film draining down a vertical wall. No slip at the wall, no shear at the free surface.
+\item \white{P4.88}. A rod sliding inside a fixed tube. A moving wall in cylindrical coordinates.
+\item \white{P4.94}. A cylinder spinning in fluid at rest far away. A condition at infinity.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+Every profile in \secref{sec:exactflows}{exact viscous flows} is a general solution plus these conditions. The no-slip condition is the reason boundary layers exist (crib sheet section 8): the wall forces the velocity to zero, and the layer is where the flow adjusts. The finite-at-the-axis argument returns wherever cylindrical coordinates do, including heat conduction in a rod. The interface condition is behind the two-fluid manometers of Chapter 2 only in the static form, equal pressure; in motion the shear matches too.
+\end{hides}

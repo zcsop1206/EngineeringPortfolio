@@ -1,0 +1,136 @@
+\section{The acceleration field}
+\label{sec:acceleration}
+
+Chapter 3 drew a box around a region and balanced what crossed its faces. Chapter 4 shrinks the box to a point, so that the balances hold everywhere in the flow and become equations for the velocity field itself. The first thing Newton's second law needs is an acceleration, and in a fluid that is less obvious than it looks: the velocity is known at fixed points in space, but Newton's law is about a fixed lump of fluid that moves through those points. This section builds the acceleration of a fluid particle out of a velocity field given at fixed points. Everything later in the chapter uses it.
+
+\begin{recognise}
+A velocity field given as a formula, $\V = u(x,y,z,t)\,\vect{i} + v(\dots)\,\vect{j} + w(\dots)\,\vect{k}$, and a question asking for ``the acceleration'' at a point, the largest acceleration in a region, the acceleration along a streamline or centreline, or whether the flow is steady. A nozzle or diffuser modelled by a one-dimensional $u(x)$. Any later question that needs the left side of the Navier--Stokes equation, because that left side is this acceleration times density.
+\end{recognise}
+
+\begin{onsheet}
+Not printed. Section 13 of the sheet gives only the notation for a 2-D field, $\V = u(x,y)\,\vect{i} + v(x,y)\,\vect{j}$. The material derivative, the split into local and convective parts and the component formulas below have to come from you. They are a chain rule; the model below rebuilds them in under a minute.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{Two ways to describe a moving fluid.} A \emph{Lagrangian} description follows individual particles: particle number $7$ is at position $\vect{r}_7(t)$, and its velocity and acceleration are $\dot{\vect{r}}_7$ and $\ddot{\vect{r}}_7$, exactly as in dynamics. A \emph{Eulerian} description stands at fixed points and records what passes: $\V(x,y,z,t)$ is the velocity of whichever particle happens to be at $(x,y,z)$ at time $t$. A weather map, a wind-tunnel probe and a CFD result are Eulerian. Fluid mechanics works almost entirely in the Eulerian picture, because tracking every particle is hopeless while a field over space is something you can measure and write down. Here a \emph{field} just means a quantity given as a function of position and time.
+
+The cost is that $\partial \V / \partial t$, the rate of change at a fixed point, is not the particle's acceleration. A fixed point sees a sequence of different particles go past.
+
+\paragraph{The material derivative, by the chain rule.} Follow one particle. At time $t$ it is at $(x,y,z)$; a short time $dt$ later it is at $(x + u\,dt,\ y + v\,dt,\ z + w\,dt)$, because it moves with the local velocity. Its velocity changes because time passed and because it moved to a place where the field is different. The chain rule for a function of four variables gives the change:
+\[
+d\V = \pd{\V}{t}\,dt + \pd{\V}{x}\,dx + \pd{\V}{y}\,dy + \pd{\V}{z}\,dz,
+\qquad dx = u\,dt,\ dy = v\,dt,\ dz = w\,dt .
+\]
+Divide by $dt$. The acceleration of the particle is
+\begin{equation}
+\vect{a} = \DDt{\V} = \underbrace{\pd{\V}{t}}_{\text{local}} + \underbrace{u\pd{\V}{x} + v\pd{\V}{y} + w\pd{\V}{z}}_{\text{convective}}
+= \pd{\V}{t} + (\V \cdot \nabla)\V .
+\label{eq:materialderivative}
+\end{equation}
+The operator $D/Dt = \partial/\partial t + u\,\partial/\partial x + v\,\partial/\partial y + w\,\partial/\partial z$ is the \emph{material derivative}: the rate of change seen by an observer riding on a particle of material. It applies to any field, not only velocity. $DT/Dt$ is how fast a particle's temperature changes, and $D\rho/Dt$ how fast its density changes. The symbol $\V \cdot \nabla$ is shorthand for $u\,\partial_x + v\,\partial_y + w\,\partial_z$, the rate of change in the direction of motion scaled by the speed.
+
+The two parts have names worth keeping straight.
+\begin{itemize}[nosep,leftmargin=*]
+\item \emph{Local} acceleration, $\partial \V/\partial t$: the field itself changing in time at a fixed point. A valve opening, a pump spinning up. It is zero in a \emph{steady} flow, which is a flow whose field does not depend on $t$.
+\item \emph{Convective} acceleration, $(\V\cdot\nabla)\V$: the particle being carried (``convected'') to a place where the velocity is different. Water speeding up through a steady nozzle has only this kind.
+\end{itemize}
+So a steady flow can accelerate. Steady means the picture does not change; it does not mean each particle keeps its velocity. Every particle going through a fixed garden-hose nozzle speeds up.
+
+\paragraph{The components.} Written out in Cartesian coordinates, with each line the material derivative of one velocity component:
+\begin{align*}
+a_x &= \pd{u}{t} + u\pd{u}{x} + v\pd{u}{y} + w\pd{u}{z}, \\
+a_y &= \pd{v}{t} + u\pd{v}{x} + v\pd{v}{y} + w\pd{v}{z}, \\
+a_z &= \pd{w}{t} + u\pd{w}{x} + v\pd{w}{y} + w\pd{w}{z}.
+\end{align*}
+Memory: the component being differentiated stays the same along a line; the multipliers $u, v, w$ go with $x, y, z$ in order.
+
+\paragraph{Along a streamline.} A \emph{streamline} is a curve everywhere tangent to the velocity. Measure distance $s$ along it and let $V$ be the speed. In a steady flow the acceleration splits into a part along the streamline and a part toward the centre of its curvature:
+\[
+a_s = V\frac{dV}{ds}, \qquad a_n = \frac{V^2}{R_c},
+\]
+where $R_c$ is the local radius of curvature of the streamline. The first is the convective term written along the path; the second is the centripetal acceleration of circular motion. On a straight streamline, such as the centreline of a symmetric nozzle, only $a_s$ survives. A particle on a curved streamline at constant speed still accelerates. (With unsteadiness, add $\partial V/\partial t$ to $a_s$.)
+
+\paragraph{Cylindrical coordinates.} With $\V = v_r\,\vect{e}_r + v_\theta\,\vect{e}_\theta + v_z\,\vect{e}_z$, the operator is $D/Dt = \partial_t + v_r\,\partial_r + (v_\theta/r)\,\partial_\theta + v_z\,\partial_z$; the $1/r$ appears because a step $d\theta$ is a distance $r\,d\theta$. The unit vectors $\vect{e}_r$ and $\vect{e}_\theta$ turn as a particle moves around, and that turning adds two terms:
+\[
+a_r = \DDt{v_r} - \frac{v_\theta^2}{r}, \qquad
+a_\theta = \DDt{v_\theta} + \frac{v_r v_\theta}{r}, \qquad
+a_z = \DDt{v_z}.
+\]
+The $-v_\theta^2/r$ is the centripetal acceleration of anything going round. The $v_r v_\theta/r$ is the same term that makes a skater spin faster when pulling in their arms. These reappear in the cylindrical Navier--Stokes equations of \secref{sec:navierstokes}{the Navier--Stokes equations}.
+
+\begin{firstmoves}
+Write the three (or two) component lines before substituting anything. Check for $t$ in the field: none means the local term is zero, say so. Compute the nine (or four) partial derivatives as a small table, then substitute the point at the end, not the start. If the question asks for a magnitude, give $|\vect{a}| = \sqrt{a_x^2 + a_y^2 + a_z^2}$ and its direction. If it asks for acceleration in $g$'s, divide by $9.81\unit{m/s^2}$. On a centreline or symmetry line, check whether the cross-velocity is zero there; it usually is, and the problem collapses to $a_s = u\,du/dx$.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}[A squeeze-film press]
+A flat platen is pressed down onto a thin layer of adhesive spread on a fixed base. The layer is a long strip, so the flow is two-dimensional: $x$ along the strip from its centre, $y$ up from the base. The platen moves down at constant speed $W = 2\unit{mm/s}$, so the gap is $h(t) = h_0 - Wt$. A plug-flow model of the squeezed-out adhesive is
+\[
+u = \frac{Wx}{h(t)}, \qquad v = -\frac{Wy}{h(t)} .
+\]
+Find the acceleration of the adhesive at $x = 20\unit{mm}$ at the instant the gap is $h = 0.5\unit{mm}$.
+
+\emph{Assumptions.} The given field is taken as exact; it ignores viscosity (it slips at both plates), which is acceptable for a kinematics question. The field depends on $t$ through $h$, so the flow is unsteady and the local term must be kept.
+
+\emph{Check the field first.} At $y = 0$, $v = 0$: no flow through the base. At $y = h$, $v = -W$: the fluid moves down with the platen. Good.
+
+\emph{Derivatives.} Since $dh/dt = -W$, $\partial(1/h)/\partial t = W/h^2$. So
+\[
+\pd{u}{t} = \frac{W^2 x}{h^2},\quad \pd{u}{x} = \frac{W}{h},\quad \pd{u}{y} = 0,\qquad
+\pd{v}{t} = -\frac{W^2 y}{h^2},\quad \pd{v}{x} = 0,\quad \pd{v}{y} = -\frac{W}{h}.
+\]
+\emph{Components.}
+\begin{align*}
+a_x &= \frac{W^2x}{h^2} + \frac{Wx}{h}\cdot\frac{W}{h} + 0 = \frac{2W^2x}{h^2}, \\
+a_y &= -\frac{W^2y}{h^2} + 0 + \Big(-\frac{Wy}{h}\Big)\Big(-\frac{W}{h}\Big) = 0 .
+\end{align*}
+\emph{Numbers.} $a_x = 2(0.002)^2(0.02)/(0.0005)^2 = 0.64\unit{m/s^2}$, directed outward along the strip, and $a_y = 0$.
+
+\emph{Sanity check.} In $x$ the local and convective parts are equal and add: the fluid is pushed out faster both because the gap is shrinking (time) and because it moves outward to where the field is faster (space). In $y$ they cancel exactly, which makes sense: a particle at height $y$ keeps the same fraction $y/h$ of the gap, so its vertical velocity is $-W y/h$ with $y/h$ fixed, a constant. The acceleration grows as $1/h^2$, which is why the last fraction of a millimetre of squeezing is violent.
+\end{example}
+
+\begin{example}[A wind-tunnel contraction, on and off the centreline]
+A steady model of the flow in a two-dimensional contraction is
+\[
+u = U_0\Big(1 + \frac{x^2}{L^2}\Big), \qquad v = -\frac{2U_0 xy}{L^2},
+\]
+with $U_0 = 5\unit{m/s}$ and $L = 0.4\unit{m}$. Find the acceleration (a) on the centreline $y = 0$ at $x = 0.2\unit{m}$, (b) at $(0.2, 0.1)\unit{m}$, and (c) at $(0, 0.1)\unit{m}$.
+
+\emph{Assumptions.} Steady: no $t$ appears, so $\partial/\partial t = 0$. Two-dimensional: $w = 0$ and nothing depends on $z$.
+
+\emph{Derivatives.} $\partial u/\partial x = 2U_0x/L^2$, $\partial u/\partial y = 0$, $\partial v/\partial x = -2U_0y/L^2$, $\partial v/\partial y = -2U_0x/L^2$.
+
+\emph{Components.}
+\begin{align*}
+a_x &= u\pd{u}{x} + v\pd{u}{y} = U_0\Big(1 + \frac{x^2}{L^2}\Big)\frac{2U_0x}{L^2} = \frac{2U_0^2 x}{L^2}\Big(1 + \frac{x^2}{L^2}\Big), \\
+a_y &= u\pd{v}{x} + v\pd{v}{y} = -\frac{2U_0^2y}{L^2}\Big(1 + \frac{x^2}{L^2}\Big) + \frac{4U_0^2x^2y}{L^4} = -\frac{2U_0^2y}{L^2}\Big(1 - \frac{x^2}{L^2}\Big).
+\end{align*}
+With $U_0^2/L^2 = 25/0.16 = 156.25\unit{s^{-2}}$:
+
+(a) $y = 0$: $a_x = 2(156.25)(0.2)(1.25) = 78.1\unit{m/s^2}$, $a_y = 0$. The centreline is a straight streamline ($v = 0$ there), so this is $a_s = u\,du/dx = (6.25)(6.25) = 78.1\unit{m/s^2}$, the same.
+
+(b) $a_x = 78.1\unit{m/s^2}$ (it does not depend on $y$), $a_y = -2(156.25)(0.1)(0.75) = -23.4\unit{m/s^2}$, so $|\vect{a}| = 81.6\unit{m/s^2}$, about $8.3g$.
+
+(c) $u = 5\unit{m/s}$, $v = 0$, $a_x = 0$, but $a_y = -2(156.25)(0.1) = -31.3\unit{m/s^2}$.
+
+\emph{Sanity check.} Part (c) is the lesson. At $x = 0$ the particle is moving purely in $x$ at a speed that is momentarily not changing, yet it accelerates toward the centreline: the streamlines converge into the contraction, so they are curved there, and $a_y$ is the centripetal $V^2/R_c$. Solving $31.25 = 25/R_c$ gives a radius of curvature of $0.8\unit{m}$ for the streamline through that point. Steady, and accelerating at three $g$.
+\end{example}
+
+\begin{trap}
+Setting the acceleration to zero because the flow is steady. Steady kills only $\partial \V/\partial t$. The reverse error: treating $\partial u/\partial t$ alone as the acceleration of an unsteady flow. Substituting the point's coordinates before differentiating, which turns every derivative into zero. Dropping the $v\,\partial u/\partial y$ term because ``the flow is mainly in $x$''; it is often the one that matters off the axis. In cylindrical coordinates, forgetting $-v_\theta^2/r$, which is the entire acceleration of a particle in a vortex.
+\end{trap}
+
+\begin{ladder}
+\item \white{P4.2}. A nozzle with linearly rising speed; the acceleration at entrance and exit. One-dimensional convective acceleration.
+\item \white{P4.4}. A 2-D converging nozzle field; the accelerations and where the largest is. Both components of the material derivative.
+\item \white{P4.10}. A linear plane field; the acceleration and its direction. Reading the acceleration vector geometrically.
+\item \white{P4.8}. Unsteady duct flow after a valve opens; local plus convective acceleration. When the local term matters.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+The left side of every momentum equation in this chapter is $\rho\,D\V/Dt$, so this section is the first line of \secref{sec:navierstokes}{the Navier--Stokes equations}, and the exact flows of \secref{sec:exactflows}{exact viscous flows} are exactly the cases where it vanishes. The material derivative of density appears in continuity (\secref{sec:continuity}{differential continuity}). The rigid-body line on the crib sheet, $\nabla P = \rho(\vect{g} - \vect{a})$, is the Navier--Stokes equation for a flow with no shear, with this $\vect{a}$. The convective term $u\,\partial u/\partial x$ is what scales as $\rho V^2/L$ in Chapter 5 and puts the density into the Reynolds number. Integrated along a streamline, $a_s = V\,dV/ds$ is where Bernoulli's $V^2/2$ comes from.
+\end{hides}

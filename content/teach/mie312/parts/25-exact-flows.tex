@@ -1,0 +1,200 @@
+\section{Exact viscous flows}
+\label{sec:exactflows}
+
+The Navier--Stokes equations are nonlinear and in general unsolvable by hand. A handful of flows are simple enough that the hard terms vanish exactly, and those are the ones examined: flow between plates, through a pipe, down a slope and between rotating cylinders. Each is solved by the same procedure, and the procedure is the thing being marked. Every term you strike needs a reason, and each reason is a modelling call: a statement about the flow that you are choosing to believe. This section sets out the procedure once, then runs it on six flows. The results are worth knowing, but the derivation is what earns the marks, and it is short enough to redo under time.
+
+\begin{recognise}
+Viscous fluid between two walls, one or both moving, with or without a pressure difference: a bearing, a seal, a slideway, a piston clearance, a belt. Flow in a long pipe or tube at low Reynolds number. A liquid film on a wall, open to air. Fluid between a rotating shaft and a housing, or in a cup viscometer. The phrases ``fully developed'', ``laminar'', ``steady'', ``derive the velocity profile'', ``find the flow rate per unit width'', ``find the torque'', ``find the force needed to pull the plate''.
+\end{recognise}
+
+\begin{onsheet}
+Only the end result for one case is printed: laminar pipe flow, $Q = \pi D^4\Delta P/(128\mu L)$, $f = 64/\text{Re}$, valid for $\text{Re} < 2300$, with the entry length $L_{e,\text{lam}} \approx 0.06\,\text{Re}\,D$ (section 6). Also printed: $\tau = \mu\,du/dy$ (section 1) and no slip (section 13). Not printed: the velocity profile of any flow, the Couette and channel results, the film, the rotating cylinders, and the Navier--Stokes equations they come from (rebuild those from \secref{sec:navierstokes}{the Navier--Stokes equations}). The pipe line on the sheet is a check on your derivation, not a substitute for it.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{The vocabulary.}
+\begin{itemize}[nosep,leftmargin=*]
+\item \emph{Laminar}: the fluid moves in smooth layers, with no random eddies. All exact solutions are laminar; turbulent flow has no exact solution.
+\item \emph{Parallel flow}: every streamline is a straight line in one direction, say $x$, so the only nonzero velocity component is $u$.
+\item \emph{Fully developed}: the velocity profile no longer changes along the flow, $\partial u/\partial x = 0$. True far from an inlet (beyond the entry length on the sheet).
+\item \emph{Two-dimensional}: nothing depends on the third coordinate $z$, because the walls are wide. \emph{Axisymmetric}: nothing depends on $\theta$.
+\end{itemize}
+
+\paragraph{The procedure.}
+\begin{enumerate}[nosep,leftmargin=*]
+\item \emph{List the assumptions}, each as a sentence: steady; incompressible; constant viscosity; laminar; fully developed; 2-D or axisymmetric; gravity included or not, and in which direction.
+\item \emph{Continuity}: show that the assumptions force the cross-stream velocity to zero.
+\item \emph{Strike terms} in each Navier--Stokes component, writing the reason under each.
+\item \emph{Pressure}: use the cross-stream equation to show $p$ varies across the flow only hydrostatically, then argue $dp/dx$ is a constant.
+\item \emph{Integrate} the remaining ordinary differential equation twice.
+\item \emph{Boundary conditions} (\secref{sec:bcs}{boundary conditions}): one per constant.
+\item \emph{Results}: the profile, then whatever is asked, flow rate, maximum and mean velocity, wall shear, force or torque, then a sanity check.
+\end{enumerate}
+
+\paragraph{Steps 2 to 4 for any plane parallel flow.} Take walls parallel to $x$, separated in $y$, wide in $z$. Two-dimensional: $w = 0$ and $\partial/\partial z = 0$. Fully developed: $\partial u/\partial x = 0$. Continuity then reads $\partial v/\partial y = 0$, so $v$ does not change across the gap; at a solid wall $v = 0$, so $v = 0$ everywhere. Hence $u = u(y)$ only.
+
+Now the $x$-momentum equation, term by term:
+\[
+\rho\Big(\underbrace{\pd{u}{t}}_{\text{steady}} + \underbrace{u\pd{u}{x}}_{\text{fully developed}} + \underbrace{v\pd{u}{y}}_{v = 0} + \underbrace{w\pd{u}{z}}_{w = 0}\Big)
+= -\pd{p}{x} + \rho g_x + \mu\Big(\underbrace{\frac{\partial^2 u}{\partial x^2}}_{\text{fully developed}} + \frac{d^2 u}{dy^2} + \underbrace{\frac{\partial^2 u}{\partial z^2}}_{\text{2-D}}\Big).
+\]
+The whole left side vanishes: this is why these flows are solvable. The fluid does not accelerate, so each layer is in equilibrium between pressure, gravity and the viscous force. The $y$-equation has every velocity term zero, leaving $\partial p/\partial y = \rho g_y$: across the gap the pressure is hydrostatic only.
+
+Why $dp/dx$ is a constant: the $x$-equation says $\partial p/\partial x - \rho g_x = \mu\,d^2u/dy^2$. The right side depends only on $y$. Differentiating $\partial p/\partial y = \rho g_y$ with respect to $x$ shows $\partial p/\partial x$ does not depend on $y$; so the left side depends only on $x$. A function of $x$ equal to a function of $y$ for all $x$ and $y$ must be a constant. So in a fully developed flow the pressure falls linearly along the duct, $dp/dx = -\Delta p/L$, and the equation to solve is
+\begin{equation}
+\mu\frac{d^2u}{dy^2} = \frac{dp}{dx} - \rho g_x .
+\label{eq:parallelflow}
+\end{equation}
+Gravity along the flow and a pressure gradient act the same way; together they are the gradient of the \emph{piezometric pressure} $p + \rho g z_{\text{elev}}$ (the crib sheet's HGL times $\gamma$). For horizontal flow, $g_x = 0$.
+
+In what follows $G = -dp/dx > 0$ when the pressure falls in the $+x$ direction. Shear stress on a wall is read off the profile: the fluid exerts on a wall below it the stress $+\mu\,du/dy$ at the wall, and on a wall above it $-\mu\,du/dy$, in the $x$ direction. Force is stress times wetted area; torque is force times radius.
+
+\paragraph{1. Plane Couette flow.} Fluid between a fixed plate at $y = 0$ and a plate at $y = c$ sliding at $U$; no pressure gradient, gravity normal to the plates. Equation \eqref{eq:parallelflow}: $d^2u/dy^2 = 0$, so $u = C_1 y + C_2$. No slip: $u(0) = 0$ gives $C_2 = 0$; $u(c) = U$ gives $C_1 = U/c$.
+\[
+u = U\frac{y}{c}, \qquad q = \int_0^c u\,dy = \frac{Uc}{2}, \qquad \tau = \mu\frac{U}{c} \text{ everywhere.}
+\]
+Here $q$ is the volume flow per unit width, in $\unit{m^2/s}$. The shear is the same at every height, which is the crib sheet's $\tau = \mu\,du/dy$ with a constant slope: the setup that defines viscosity.
+
+\paragraph{2. Plane Poiseuille flow.} Fixed plates at $y = \pm h$ (gap $c = 2h$), driven by a pressure gradient. Integrating $\mu u'' = -G$ twice: $u = -\frac{G}{2\mu}y^2 + C_1y + C_2$. No slip at $y = \pm h$, or symmetry ($u'(0) = 0$) plus no slip at $y = h$, gives $C_1 = 0$ and $C_2 = Gh^2/(2\mu)$:
+\[
+u = \frac{G}{2\mu}(h^2 - y^2), \qquad u_{\max} = \frac{Gh^2}{2\mu}, \qquad
+q = \int_{-h}^{h}u\,dy = \frac{2Gh^3}{3\mu} = \frac{Gc^3}{12\mu}, \qquad \bar u = \frac{q}{2h} = \frac{2}{3}u_{\max},
+\]
+and the wall shear $\tau_w = \mu|u'(\pm h)| = Gh$. Check by a force balance on the whole slab of fluid, length $L$, unit width: pressure force $\Delta p\cdot 2h$ equals shear on two walls $2\tau_w L$, so $\tau_w = h\,\Delta p/L = Gh$. The flow rate goes as the gap cubed: halve a leakage gap and the leak falls eightfold.
+
+\paragraph{3. Couette flow with a pressure gradient.} Fixed wall at $y = 0$, wall at $y = c$ moving at $U$, and a pressure gradient. The equation is linear, so the solution is the sum of the two above (with the plane-Poiseuille parabola rewritten for walls at $0$ and $c$):
+\[
+u = U\frac{y}{c} + \frac{G}{2\mu}\,y(c - y), \qquad q = \frac{Uc}{2} + \frac{Gc^3}{12\mu}.
+\]
+Check: $u(0) = 0$, $u(c) = U$, and $\mu u'' = -G$. The shear on the fixed wall is $\tau_0 = \mu U/c + Gc/2$, and the force per area on the moving wall is $-\mu u'(c) = -\mu U/c + Gc/2$. If the pressure rises in the direction of motion ($G < 0$) strongly enough, $u'(0) < 0$ and fluid near the fixed wall flows backward; this starts when $G = -2\mu U/c^2$. Flow rate zero needs $G = -6\mu U/c^2$: that is a dead-ended slot pumped by a moving wall, the principle of a viscous pump and of a slider bearing's pressure build-up.
+
+\paragraph{4. Hagen--Poiseuille flow in a pipe.} A round pipe of radius $R = D/2$, axis along $z$. Assumptions: steady, incompressible, laminar, fully developed, axisymmetric, no swirl; horizontal (or replace $p$ by the piezometric pressure). Continuity in cylindrical form with $\partial v_z/\partial z = 0$ and $v_\theta = 0$ gives $\frac{1}{r}\frac{d}{dr}(r v_r) = 0$, so $r v_r$ is constant; it is zero at the wall, so $v_r = 0$ everywhere. The $z$-equation (\secref{sec:navierstokes}{the Navier--Stokes equations}) loses its entire left side for the same reasons as above, and
+\[
+\frac{\mu}{r}\frac{d}{dr}\Big(r\frac{dv_z}{dr}\Big) = -G, \qquad G = \frac{\Delta p}{L}.
+\]
+Multiply by $r/\mu$ and integrate: $r\,dv_z/dr = -Gr^2/(2\mu) + C_1$. Divide by $r$ and integrate again:
+\[
+v_z = -\frac{G r^2}{4\mu} + C_1\ln r + C_2 .
+\]
+The axis is in the fluid, so $v_z$ is finite at $r = 0$: $C_1 = 0$. No slip at $r = R$: $C_2 = GR^2/(4\mu)$. So
+\[
+v_z = \frac{G}{4\mu}(R^2 - r^2), \qquad v_{\max} = \frac{GR^2}{4\mu}.
+\]
+Flow rate: add up rings of area $2\pi r\,dr$,
+\[
+Q = \int_0^R v_z\,2\pi r\,dr = \frac{\pi G R^4}{8\mu} = \frac{\pi D^4\Delta p}{128\mu L},
+\]
+which is the crib sheet's line. Mean velocity $V = Q/(\pi R^2) = GR^2/(8\mu) = \frac12 v_{\max}$. Wall shear $\tau_w = \mu|dv_z/dr|_R = GR/2 = D\Delta p/(4L)$; the force balance $\Delta p\,\pi R^2 = \tau_w\,2\pi RL$ confirms it.
+
+\emph{The friction factor.} The crib sheet's head loss is $h_L = f\,(L/D)\,V^2/2g$, and for a horizontal pipe of constant diameter the energy equation gives $\Delta p = \rho g h_L$. From $V = GR^2/(8\mu)$, $\Delta p = 32\mu L V/D^2$. Then
+\[
+f = \frac{\Delta p}{\rho g}\cdot\frac{D}{L}\cdot\frac{2g}{V^2} = \frac{2D}{\rho L V^2}\cdot\frac{32\mu LV}{D^2} = \frac{64\mu}{\rho V D} = \frac{64}{\text{Re}} .
+\]
+The other line on the sheet. Both hold only while the flow is laminar, $\text{Re} < 2300$, and fully developed.
+
+\paragraph{5. A film down an inclined plane.} A liquid layer of uniform thickness $h$ flows down a wide plate inclined at $\theta$ to the horizontal, open to air. Axes: $x$ down the slope, $y$ normal to the plate, out of it. Gravity has components $g_x = g\sin\theta$, $g_y = -g\cos\theta$. Assumptions: steady, laminar, fully developed (uniform $h$), 2-D, air shear negligible.
+
+The $y$-equation gives $\partial p/\partial y = -\rho g\cos\theta$. At the surface $p = p_a$, so $p = p_a + \rho g\cos\theta\,(h - y)$. Since $h$ does not change along $x$, neither does $p$: $\partial p/\partial x = 0$. The film is driven by gravity alone. Equation \eqref{eq:parallelflow}: $\mu u'' = -\rho g\sin\theta$. Conditions: no slip, $u(0) = 0$; free surface, no shear, $u'(h) = 0$. Integrating, $\mu u' = \rho g\sin\theta\,(h - y)$ (the constant chosen to make $u'(h) = 0$), and again,
+\[
+u = \frac{\rho g\sin\theta}{\mu}\Big(hy - \frac{y^2}{2}\Big), \qquad
+u_s = \frac{\rho g\sin\theta\,h^2}{2\mu}, \qquad
+q = \frac{\rho g\sin\theta\,h^3}{3\mu}, \qquad \bar u = \tfrac23 u_s .
+\]
+Wall shear $\tau_w = \rho g h\sin\theta$: the downslope weight of the film per unit area, as a force balance says it must be. Usually $q$ is known and $h$ is wanted: $h = (3\mu q/(\rho g\sin\theta))^{1/3}$. The profile is half of the channel parabola: the free surface acts like the centreline of a channel twice as deep.
+
+\paragraph{6. Flow between rotating cylinders.} Fluid fills the gap between an inner cylinder of radius $r_i$ rotating at $\Omega_i$ and a fixed outer cylinder of radius $r_o$, length $L$. Assumptions: steady, incompressible, laminar, long cylinders ($\partial/\partial z = 0$), axisymmetric, purely circular flow: $v_r = v_z = 0$, $v_\theta = v_\theta(r)$. Continuity is satisfied identically. The $\theta$-equation keeps only the viscous term (no $\theta$ pressure gradient by symmetry, no acceleration along the circle), in its axisymmetric form:
+\[
+0 = \mu\frac{d}{dr}\Big[\frac{1}{r}\frac{d(r v_\theta)}{dr}\Big]
+\quad\Longrightarrow\quad
+\frac{1}{r}\frac{d(rv_\theta)}{dr} = 2A
+\quad\Longrightarrow\quad
+v_\theta = Ar + \frac{B}{r} .
+\]
+The first part is rigid rotation, the second a free vortex. The axis is not in the fluid, so $B/r$ stays. No slip, $v_\theta(r_i) = \Omega_i r_i$ and $v_\theta(r_o) = 0$, gives
+\[
+v_\theta = \frac{\Omega_i r_i^2}{r_o^2 - r_i^2}\Big(\frac{r_o^2}{r} - r\Big).
+\]
+The $r$-equation then gives the pressure, $dp/dr = \rho v_\theta^2/r$: higher outward, holding each particle on its circle.
+
+\emph{Shear stress and torque.} In a swirl the shear stress is $\tau_{r\theta} = \mu\,r\,\frac{d}{dr}(v_\theta/r)$, not $\mu\,dv_\theta/dr$: the extra piece subtracts the rigid-rotation part, which deforms nothing and so carries no stress (\secref{sec:vorticity}{vorticity and irrotationality}). Here
+\[
+\tau_{r\theta} = -\frac{2\mu\Omega_i r_i^2 r_o^2}{r^2(r_o^2 - r_i^2)}, \qquad
+T = |\tau_{r\theta}|\cdot 2\pi rL\cdot r = \frac{4\pi\mu\Omega_i L\,r_i^2r_o^2}{r_o^2 - r_i^2}.
+\]
+The torque does not depend on $r$: every cylindrical layer of fluid is in rotational equilibrium, so the torque the inner cylinder applies passes undiminished to the outer one. For a narrow gap $c = r_o - r_i \ll r_i$ it reduces to plane Couette: $\tau \approx \mu\Omega_i r_i/c$ on area $2\pi r_iL$ at arm $r_i$. Measuring $T$ at known $\Omega_i$ gives $\mu$; that is the rotating-cylinder viscometer. At high enough inner speed this flow becomes unstable and forms stacked ring vortices, so, like the others, the solution is exact but not always the flow you get.
+
+\begin{firstmoves}
+Sketch the geometry with axes, gravity and wall velocities. Write the assumption list as numbered sentences, then point to them by number when striking terms. Use continuity to kill the cross-stream velocity. Write the one surviving equation, integrate twice with constants shown, count conditions, apply them, substitute back. Get $q$ or $Q$ by integrating the profile, wall shear from $\mu\,du/dy$ at the wall, force and torque from shear times area (times radius). Finish with a check: a force balance on the whole slab, a limit ($U \to 0$, $G \to 0$, thin gap), the crib sheet's pipe formula, and the Reynolds number to confirm laminar flow.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}[Leakage past a hydraulic piston]
+A hydraulic piston of diameter $D = 50\unit{mm}$ and length $L = 30\unit{mm}$ runs in its cylinder with a radial clearance $c = 20\unit{\mu m}$. Oil ($\mu = 0.04\unit{Pa\,s}$, $\rho = 870\unit{kg/m^3}$) is at $10\unit{MPa}$ (gauge) on one side and at $0$ on the other. The piston is moving toward the high-pressure side at $V = 0.1\unit{m/s}$. Find the leakage flow and the viscous force on the piston.
+
+\emph{Assumptions.} (1) Steady, (2) incompressible, constant $\mu$, (3) laminar (checked below), (4) fully developed along the piston, ignoring end effects, (5) the gap is thin, $c/R = 8\times10^{-4}$, so it is unrolled into a plane slot of width $\pi D$, (6) gravity negligible across a $20\unit{\mu m}$ gap.
+
+\emph{Set-up.} Let $x$ run along the gap from the high-pressure side toward the low, and $y$ from the cylinder wall ($y = 0$, fixed) to the piston ($y = c$, moving at $-V$ since it moves toward high pressure). Then $G = \Delta p/L = 10^7/0.03 = 3.33\times10^8\unit{Pa/m}$, and the solution is case 3 with $U = -V$:
+\[
+u = -V\frac{y}{c} + \frac{G}{2\mu}\,y(c - y), \qquad q = -\frac{Vc}{2} + \frac{Gc^3}{12\mu}.
+\]
+(Continuity, the struck terms and the constant pressure gradient are exactly as in the model, by assumptions 1, 4 and 5.)
+
+\emph{Numbers.} $Gc^3/(12\mu) = (3.33\times10^8)(8\times10^{-15})/0.48 = 5.56\times10^{-6}\unit{m^2/s}$. $Vc/2 = 1.00\times10^{-6}\unit{m^2/s}$. So $q = 4.56\times10^{-6}\unit{m^2/s}$ and
+\[
+Q = \pi D q = \pi(0.05)(4.56\times10^{-6}) = 7.16\times10^{-7}\unit{m^3/s} = 0.043\unit{L/min}.
+\]
+\emph{Force.} On the piston (the upper wall), per unit area, $-\mu u'(c) = \mu V/c + Gc/2 = 200 + 3333 = 3533\unit{Pa}$, toward the low-pressure side. Over the area $\pi DL = 4.71\times10^{-3}\unit{m^2}$: $F = 16.7\unit{N}$.
+
+\emph{Sanity check.} Reynolds number of the gap flow, $\rho q/\mu = 870(4.56\times10^{-6})/0.04 = 0.10$: deeply laminar. The piston's motion drags oil back toward the chamber and cuts the leak by $18\%$ from the $0.052\unit{L/min}$ it would be at rest; a piston speed of $2q_p/c = 0.56\unit{m/s}$ would stop it entirely. The viscous force is negligible beside the pressure force on the face, $10^7 \times \pi(0.025)^2 = 19.6\unit{kN}$. Doubling the clearance would multiply the pressure-driven leak by eight, which is why such clearances are held to microns.
+\end{example}
+
+\begin{example}[A drip-irrigation microtube]
+A polyethylene microtube of inner diameter $D = 1.0\unit{mm}$ and length $L = 0.60\unit{m}$ feeds a plant from a tank whose water surface is $H = 1.5\unit{m}$ above the tube outlet. Water at $20^\circ\mathrm{C}$: $\rho = 998\unit{kg/m^3}$, $\mu = 1.00\times10^{-3}\unit{Pa\,s}$. Estimate the delivery in litres per hour, and check the model.
+
+\emph{Assumptions.} (1) Steady, (2) incompressible, (3) laminar and fully developed over the whole length (both checked below), (4) the whole head is spent on pipe friction: the inlet loss and the kinetic energy leaving the outlet are neglected at first, (5) the tube is straight; with gravity, the driving pressure is the piezometric difference $\Delta p = \rho g H$.
+
+\emph{Model.} Hagen--Poiseuille, case 4: $Q = \pi D^4\Delta p/(128\mu L)$ with $\Delta p = 998(9.81)(1.5) = 14\,690\unit{Pa}$:
+\[
+Q = \frac{\pi(10^{-3})^4(14\,690)}{128(10^{-3})(0.60)} = 6.01\times10^{-7}\unit{m^3/s} = 2.16\unit{L/h}.
+\]
+\emph{Profile and shear.} $V = Q/(\pi D^2/4) = 0.765\unit{m/s}$, $v_{\max} = 2V = 1.53\unit{m/s}$ on the axis, $\tau_w = D\Delta p/(4L) = 6.12\unit{Pa}$.
+
+\emph{Checks.} $\text{Re} = \rho VD/\mu = 998(0.765)(0.001)/0.001 = 763 < 2300$: laminar. Then $f = 64/\text{Re} = 0.0838$ and $h_L = f(L/D)V^2/2g = 0.0838(600)(0.0298) = 1.50\unit{m}$, the head we started with: the crib sheet's two laminar lines agree with each other. Entry length $0.06\,\text{Re}\,D = 46\unit{mm}$, under $8\%$ of the tube, so ``fully developed'' is fair. The exit kinetic energy, $\alpha V^2/2g$ with $\alpha = 2$ for a laminar profile, is $0.06\unit{m}$, $4\%$ of the head; including it in the energy equation and solving the resulting quadratic in $V$ lowers the delivery to $2.08\unit{L/h}$. So the estimate is $2.1$ to $2.2\unit{L/h}$, a typical emitter rating, and the dominant uncertainty is the tube's actual bore, which enters to the fourth power.
+\end{example}
+
+\begin{example}[Rain sheeting off a solar panel]
+Rain falls at $20\unit{mm/h}$ on a panel inclined at $30^\circ$, $2.0\unit{m}$ long down the slope. Find the thickness of the water film and its surface speed at the lower edge.
+
+\emph{Assumptions.} (1) Steady rain, (2) all the rain landing on the panel runs off as a film, with the rate taken per unit panel area, (3) laminar, (4) the film thickens slowly along the panel, so at each station it is treated as locally fully developed with the local $q$ (the film model of case 5), (5) no air shear, (6) water at $20^\circ\mathrm{C}$.
+
+\emph{Flow per unit width at the lower edge.} $q = (20\times10^{-3}/3600)(2.0) = 1.11\times10^{-5}\unit{m^2/s}$.
+
+\emph{Thickness.} From $q = \rho g\sin\theta\,h^3/(3\mu)$:
+\[
+h = \Big(\frac{3\mu q}{\rho g\sin\theta}\Big)^{1/3} = \Big(\frac{3(10^{-3})(1.11\times10^{-5})}{998(9.81)(0.5)}\Big)^{1/3} = 1.90\times10^{-4}\unit{m} = 0.19\unit{mm}.
+\]
+\emph{Surface speed.} $u_s = \tfrac32\bar u = \tfrac32 q/h = 0.088\unit{m/s}$, which equals $\rho g\sin\theta\,h^2/(2\mu)$, a check on the arithmetic.
+
+\emph{Sanity check.} The film Reynolds number $q/\nu = 11$ is far below the hundreds at which films turn turbulent, so laminar holds. Real films ripple with long surface waves at Reynolds numbers this low, so the smooth film is a model of the mean thickness, not a photograph. The wall shear $\rho g h\sin\theta = 0.93\unit{Pa}$ is the film's weight per area along the slope. Since $h \propto q^{1/3}$, the film is only $2^{1/3} = 1.26$ times thicker at the bottom than halfway down: rain doubles the flow and barely thickens the film.
+\end{example}
+
+\begin{trap}
+Keeping $u\,\partial u/\partial x$ or striking $\mu\,d^2u/dy^2$; the first is zero by full development, the second is the whole physics. Sign of $G$: the flow goes toward lower pressure, so $u > 0$ needs $dp/dx < 0$. Using $\tau = \mu\,dv_\theta/dr$ in a swirl. Killing the $\ln r$ or $B/r$ term between two cylinders. Taking $\partial p/\partial x \ne 0$ in a free film, or forgetting gravity's component along a slope or a vertical pipe. Using the mean velocity where the maximum is asked, or the gap $c$ where the half-gap $h$ belongs: $q = Gc^3/(12\mu) = 2Gh^3/(3\mu)$. Applying $Q = \pi D^4\Delta P/(128\mu L)$ without checking $\text{Re} < 2300$.
+\end{trap}
+
+\begin{ladder}
+\item \white{P4.36}. A given film profile on an incline; the constant and the flux. The reduction, checked against an answer.
+\item \white{P4.80}. An oil film draining down a vertical wall; the profile. Cartesian, gravity-driven, free surface.
+\item \white{P4.88}. A rod sliding inside a fixed tube; the profile. Cylindrical, shear-driven, a $\ln r$ solution.
+\item \white{P4.92}. A tank emptying through a laminar pipe; the level history. Poiseuille inside a mass balance.
+\item \white{P4.84}. A film draining down the outside of a vertical rod; the profile and the flow. Cylindrical, gravity-driven, free surface. The mock uses it.
+\item \white{P4.82}. A cylinder spinning in still fluid; the equation, conditions and steady state. The $\theta$ equation with a condition at infinity.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+The crib sheet's laminar lines, $Q = \pi D^4\Delta P/(128\mu L)$ and $f = 64/\text{Re}$, are Hagen--Poiseuille; the left end of the Moody chart is $f = 64/\text{Re}$, and the energy correction $\alpha = 2.0$ for laminar flow comes from integrating its parabola. The hydraulic diameter $D_h = 4A/P_w$ is a way of reusing pipe results in other ducts; for a wide slot it gives $D_h = 2c$. Plane Couette flow is the definition of viscosity in Chapter 1, and the rotating cylinders are how it is measured. In Chapter 5, the Reynolds number is the ratio of the struck convective terms to the kept viscous ones; these solutions hold exactly when that ratio is small enough for the flow to stay laminar. Chapter 6 picks up from Hagen--Poiseuille for turbulent pipe flow, and the flat-plate boundary layer of Chapter 7 is what the Couette profile becomes when the plate is not confined.
+\end{hides}

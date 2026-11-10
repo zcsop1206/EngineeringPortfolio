@@ -1,0 +1,140 @@
+\section{The Reynolds transport theorem}
+\label{sec:rtt}
+
+Newton's second law and the first law of thermodynamics are statements about a fixed lump of matter. A fluid does not stay in lumps: the water in a pump at one instant is downstream a second later. Every equation in this chapter is one of those old laws rewritten for a region of space that the fluid flows through. The rewriting is done once, by the Reynolds transport theorem, and then reused for mass, momentum, angular momentum and energy. This section derives it from a one-dimensional picture, states the general form, and settles the one sign that causes most lost marks.
+
+\begin{recognise}
+Every control-volume question in chapter 3 uses it, usually silently. It appears by name when a question asks you to ``start from the Reynolds transport theorem'', when the control volume moves or changes shape (a cart, a rocket, a syringe, a balloon), when the fluid crosses a boundary with a velocity profile instead of a single speed, or when the property being tracked is unusual (kinetic energy, a concentration, angular momentum).
+\end{recognise}
+
+\begin{onsheet}
+The sheet prints
+\[
+\frac{dB_\text{sys}}{dt} = \pd{}{t}\int_\text{CV} \rho\beta \, d\forall + \int_\text{CS} \rho\beta\, (\V_r\cdot\nhat)\, dA ,
+\qquad \V_r = \V_f - \V_\text{cv},\qquad \mdot_\text{rel} = \rho A V_r .
+\]
+Here $\beta$ is the amount of the property per unit mass; this document writes it $b$, to keep $\beta$ free for the momentum correction factor in \secref{sec:momentum}{linear momentum}. The sheet does not say that $\nhat$ is the \emph{outward} normal, so that outflow counts positive; that the $\partial/\partial t$ outside the integral is only correct for a control volume that keeps its shape (a deforming one needs $d/dt$); or what $\V_\text{cv}$ means when the surface moves in different places at different speeds. Those are supplied below.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{Two ways of looking.} A \emph{system} is a fixed collection of matter: the same particles, always, wherever they go. Newton's law $\sum \vect F = d(m\V)/dt$ and the first law $dE = \delta Q - \delta W$ are written for systems. A \emph{control volume} (CV) is a region of space chosen by the analyst, such as the inside of a pipe bend or a box drawn around a jet engine. Fluid flows in and out of it. Its boundary is the \emph{control surface} (CS). The reason to switch is practical: an engineer can measure pressures and speeds at the inlet and outlet of a fixed region, but cannot follow every particle.
+
+\paragraph{Extensive and intensive.} Let $B$ be any quantity that adds up over the matter: mass, momentum, energy. Such a quantity is called \emph{extensive}. Its amount per unit mass is $b = dB/dm$, called \emph{intensive}. The four choices used in this chapter are
+\[
+B = m,\ b = 1; \qquad B = m\V,\ b = \V; \qquad B = \vect r\times m\V,\ b = \vect r\times\V; \qquad B = E,\ b = e .
+\]
+The amount of $B$ in a region is $\int b\,\rho\, d\forall$, because $\rho\,d\forall$ is the mass of a small piece of volume $d\forall$.
+
+\paragraph{The one-dimensional derivation.} Take a duct with one inlet, section 1, and one outlet, section 2. The CV is the inside of the duct between them and does not move. At time $t$, choose the system to be exactly the fluid inside the CV. In a short time $dt$ the system moves downstream. At the inlet, fluid that is \emph{not} part of the system enters the CV: a slab of length $V_1\,dt$, volume $A_1V_1\,dt$, mass $\rho_1A_1V_1\,dt$. At the outlet, a slab of the system leaves the CV, with mass $\rho_2A_2V_2\,dt$. So at $t + dt$,
+\[
+B_\text{sys}(t + dt) = B_\text{CV}(t + dt) - b_1\rho_1A_1V_1\,dt + b_2\rho_2A_2V_2\,dt .
+\]
+The first term counts everything in the CV; the second removes the inlet slab, which is in the CV but not in the system; the third adds the outlet slab, which is in the system but has left the CV. At $t$ the two coincide: $B_\text{sys}(t) = B_\text{CV}(t)$. Subtract and divide by $dt$:
+\[
+\frac{dB_\text{sys}}{dt} = \frac{dB_\text{CV}}{dt} + b_2\,\rho_2A_2V_2 - b_1\,\rho_1A_1V_1 .
+\]
+In words: the rate of change for the system equals the rate of change of what is stored in the CV, plus the rate at which the property is carried out, minus the rate at which it is carried in. The products $\rho AV = \mdot$ are mass flow rates, so the last two terms read $\mdot_2b_2 - \mdot_1b_1$.
+
+\paragraph{The general form.} On a general surface the fluid crosses at an angle, and speed varies from point to point. Let $\nhat$ be the unit vector perpendicular to the surface at each point, pointing \emph{out} of the CV. Only the component of velocity along $\nhat$ carries fluid across; the component along the surface slides past. The volume crossing a small patch $dA$ per unit time is $(\V\cdot\nhat)\,dA$, so the property carried out per unit time is $b\rho(\V\cdot\nhat)\,dA$. Summing over the surface,
+
+\begin{theorem}[Reynolds transport theorem, fixed CV]
+For a control volume fixed in space,
+\[
+\frac{dB_\text{sys}}{dt} = \pd{}{t}\int_\text{CV} b\,\rho\, d\forall + \int_\text{CS} b\,\rho\,(\V\cdot\nhat)\, dA .
+\]
+\end{theorem}
+
+The first term is the \emph{storage} term. The second is the \emph{flux} term: a \emph{flux} is an amount crossing a surface per unit time, so the momentum flux, for example, is the momentum carried across per second. The 1-D result is the case where $\V\cdot\nhat = +V_2$ at the outlet (fluid leaves along $\nhat$) and $-V_1$ at the inlet (fluid arrives against $\nhat$), with $b$ and $\rho$ uniform across each section.
+
+\paragraph{The sign of $\V\cdot\nhat$.} Because $\nhat$ points out, $\V\cdot\nhat > 0$ where fluid leaves and $< 0$ where it enters, and it is zero on solid walls, where no fluid crosses. Nobody has to remember a sign for inlets: the dot product supplies it. For sections where the properties are uniform, the flux integral becomes
+\[
+\int_\text{CS} b\,\rho\,(\V\cdot\nhat)\,dA = \sum_\text{out}\mdot\, b - \sum_\text{in}\mdot\, b, \qquad \mdot = \rho A |V_n| ,
+\]
+which is exactly how the sheet writes the mass and momentum equations. Here $V_n$ is the velocity component normal to the section.
+
+\paragraph{Moving and deforming CVs.} If the CV travels with a constant velocity $\V_\text{cv}$, such as a box riding on a cart, what crosses its surface is decided by the fluid velocity \emph{relative to the surface}, $\V_r = \V - \V_\text{cv}$. A swimmer moving at the speed of the current has no water passing her. So the flux term uses $\V_r\cdot\nhat$. If the CV also changes shape (a balloon inflating, a cylinder with a moving piston), each part of the surface has its own velocity $\V_s$, and $\V_r = \V - \V_s$ point by point. The storage term then keeps the total derivative outside:
+\[
+\frac{dB_\text{sys}}{dt} = \frac{d}{dt}\int_\text{CV} b\,\rho\, d\forall + \int_\text{CS} b\,\rho\,(\V_r\cdot\nhat)\, dA .
+\]
+The $d/dt$ is needed because the region over which you integrate is itself changing with time; for a fixed region it equals $\partial/\partial t$ moved inside. One caution for momentum: $b = \V$ in the storage term is still the velocity measured in an inertial frame. For a CV moving at constant velocity the frame of the CV is also inertial, so everything may be measured in it. For an accelerating CV it is not; \secref{sec:momentum}{linear momentum} handles that case.
+
+\paragraph{Steady flow.} Steady means nothing at a fixed point changes with time. For a fixed CV in steady flow the storage term is zero, and the theorem says the rate of change of $B$ for the system equals the net outflow of $B$. Steady is a statement about a frame: the flow over a moving vane is unsteady to the ground and steady to an observer riding the vane, which is why the vane problems in \secref{sec:momentum}{linear momentum} are done in the vane's frame.
+
+\begin{firstmoves}
+Draw the CV and say whether it is fixed, moving at constant velocity, or deforming. Mark every place fluid crosses the CS and draw $\nhat$ outward at each. Choose $B$ and write $b$. Decide whether the storage term vanishes (steady, in the chosen frame). At each crossing, find the velocity relative to the surface and take its normal component; inflow is negative. If a profile is given, keep the integral; if not, use $\mdot b$ at each section. Only then substitute the physical law for $dB_\text{sys}/dt$: zero for mass, $\sum\vect F$ for momentum, $\sum\vect M$ for angular momentum, $\dot Q - \dot W$ for energy.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+A syringe has a barrel of inside diameter $20\unit{mm}$ and a needle of inside diameter $0.8\unit{mm}$. It holds water ($\rho = 998\unit{kg/m^3}$, $20\,^\circ$C), and the plunger is pushed in at a steady $5\unit{mm/s}$. (a) Choose a control volume whose surface follows the plunger, and use the transport theorem for mass to find the jet speed at the needle exit. (b) Repeat with a fixed control volume and show that it agrees. (c) Find the mass flow rate and the time to expel a $40\unit{mm}$ column of water.
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: water incompressible; velocity uniform across the barrel and across the needle exit; the plunger seals perfectly; the needle is short enough that its entry fills it at once.
+
+(a) The CV is all the water in the syringe: its left face is glued to the plunger and moves with it at $V_p = 5\unit{mm/s}$; the rest of the surface is the barrel and needle wall, fixed, plus the needle exit plane, fixed. This CV deforms, so the storage term is $d/dt$ of the mass inside. With $B = m$, $b = 1$, and $dm_\text{sys}/dt = 0$:
+\[
+0 = \frac{d}{dt}(\rho\forall_\text{CV}) + \int_\text{CS}\rho(\V_r\cdot\nhat)\,dA .
+\]
+At the plunger face the water moves with the face, so $\V_r = 0$: nothing crosses. At the walls nothing crosses. At the exit the face is fixed and $\V_r\cdot\nhat = +V_j$. The volume shrinks at the rate $A_bV_p$, so $d(\rho\forall)/dt = -\rho A_b V_p$. Hence $0 = -\rho A_bV_p + \rho aV_j$, and
+\[
+V_j = V_p\frac{A_b}{a} = V_p\Big(\frac{D}{d}\Big)^2 = 0.005 \times \Big(\frac{20}{0.8}\Big)^2 = 0.005\times 625 = 3.125\unit{m/s}.
+\]
+
+(b) Now fix the CV in space: a cut across the barrel a little downstream of the plunger, the barrel and needle walls, and the exit plane. The water inside never changes in amount, so the storage term is zero. At the cut, water arrives at $V_p$ against the outward normal, $\V\cdot\nhat = -V_p$; at the exit $+V_j$. So $0 = -\rho A_bV_p + \rho aV_j$, the same equation. The two CVs move the same physics between the storage term and the flux term.
+
+(c) $a = \tfrac{\pi}{4}(0.8\times10^{-3})^2 = 5.027\times10^{-7}\unit{m^2}$, so $Q = aV_j = 1.571\times10^{-6}\unit{m^3/s} = 1.57\unit{mL/s}$ and $\mdot = \rho Q = 1.568\times10^{-3}\unit{kg/s}$. The column empties when the plunger has travelled $40\unit{mm}$: $t = 0.040/0.005 = 8.0\unit{s}$.
+
+Check: the column holds $\tfrac{\pi}{4}(0.020)^2(0.040) = 1.257\times10^{-5}\unit{m^3} = 12.6\unit{mL}$, and $12.6/1.571 = 8.0\unit{s}$. A jet of about $3\unit{m/s}$ from a hand-pushed syringe is the familiar squirt.
+\end{proof}
+
+\begin{example}
+A boat travels upstream at $6\unit{m/s}$ relative to the riverbank in a river whose current is $1.5\unit{m/s}$. A forward-facing intake of area $0.02\unit{m^2}$ below the waterline scoops water into an onboard pump, which discharges it rearward through a nozzle of exit area $0.012\unit{m^2}$. Take river water as $1000\unit{kg/m^3}$. Find (a) the mass flow through the intake, (b) the jet speed relative to the boat and relative to the bank, and (c) the error made by using the boat's ground speed in (a).
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: steady in the boat's frame; uniform velocity across intake and nozzle; the water ahead of the intake is undisturbed river water; incompressible.
+
+The CV is the water passage inside the boat, from the intake plane to the nozzle exit plane, moving with the boat. Take $+x$ upstream, the boat's direction of travel. In the bank's frame the boat moves at $\V_\text{cv} = +6\,\vect i\unit{m/s}$ and the river water at $\V_f = -1.5\,\vect i\unit{m/s}$.
+
+(a) Relative to the boat, the water arrives at $\V_r = \V_f - \V_\text{cv} = -1.5 - 6 = -7.5\,\vect i\unit{m/s}$, that is, at $7.5\unit{m/s}$ straight into the intake. So $\mdot = \rho A V_r = 1000 \times 0.02\times 7.5 = 150\unit{kg/s}$.
+
+(b) In the boat's frame the flow is steady, so mass in equals mass out: $150 = 1000 \times 0.012 \times V_{r,2}$, which gives $V_{r,2} = 12.5\unit{m/s}$ rearward. Relative to the bank, $\V_2 = \V_{r,2} + \V_\text{cv} = -12.5 + 6 = -6.5\unit{m/s}$: the jet moves downstream at $6.5\unit{m/s}$ as seen from the bank.
+
+(c) Using $6\unit{m/s}$ in (a) gives $120\unit{kg/s}$, which is $20\%$ low. The water crossing a moving surface is set by the velocity relative to that surface, and here both the boat and the current contribute.
+
+Check: a pump that takes in water at $7.5\unit{m/s}$ and expels it at $12.5\unit{m/s}$ relative to the boat accelerates it backward, which is what a waterjet propulsor must do to push the boat forward.
+\end{proof}
+
+\begin{example}
+Oil ($\rho = 870\unit{kg/m^3}$) flows in fully developed laminar flow through a pipe of radius $R = 25\unit{mm}$ with the profile $u(r) = U_\text{max}(1 - r^2/R^2)$, $U_\text{max} = 1.2\unit{m/s}$. Using the transport theorem flux integral with $b = u$, find the rate at which $x$-momentum crosses a section, and compare it with $\mdot\,V_\text{avg}$.
+\end{example}
+
+\begin{proof}[Solution]
+At a section the flux of $x$-momentum is $\int b\,\rho\, (\V\cdot\nhat)\,dA = \int_0^R \rho u^2\, 2\pi r\, dr$, because $b = u$ and $\V\cdot\nhat = u$ at an outlet. The area of a thin ring is $2\pi r\,dr$. Substitute $s = r^2/R^2$, so $2r\,dr = R^2\,ds$:
+\begin{align*}
+\int_0^R \rho u^2\, 2\pi r\, dr &= \rho U_\text{max}^2\, \pi R^2 \int_0^1 (1-s)^2\, ds = \frac{\rho U_\text{max}^2\pi R^2}{3}\\
+&= \frac{870\times 1.44\times \pi\times 6.25\times10^{-4}}{3} = 0.820\unit{N}.
+\end{align*}
+Momentum per second has units $\mathrm{kg\,m/s^2} = \mathrm{N}$. For the mass flow, the same substitution gives $Q = U_\text{max}\pi R^2\int_0^1(1-s)\,ds = \tfrac12 U_\text{max}\pi R^2$, so $V_\text{avg} = Q/(\pi R^2) = 0.6\unit{m/s}$, $Q = 1.178\times10^{-3}\unit{m^3/s}$ and $\mdot = 1.025\unit{kg/s}$. Then $\mdot V_\text{avg} = 0.615\unit{N}$, and the ratio is $0.820/0.615 = 4/3$.
+
+Check: the ratio is independent of the numbers, because both integrals scale the same way. It is the momentum correction factor $\beta = 4/3$ for laminar pipe flow, used in \secref{sec:momentum}{linear momentum}. It exceeds 1 because the average of $u^2$ is always at least the square of the average of $u$.
+\end{proof}
+
+\begin{trap}
+Taking $\nhat$ inward at an inlet and then subtracting the inflow again, so that inflow is counted twice with the wrong sign: either use $\V\cdot\nhat$ with $\nhat$ outward and add every term, or use $\sum_\text{out} - \sum_\text{in}$ with positive $\mdot$, not both. Using the absolute velocity to compute the flow across a moving surface. Writing $\partial/\partial t$ inside the integral for a deforming CV. Forgetting that ``steady'' depends on the frame. Treating $b$ for momentum as a scalar: the momentum flux at an inlet whose velocity points in $-x$ carries negative $x$-momentum into the CV, and the sign of the velocity component is separate from the sign of $\V\cdot\nhat$.
+\end{trap}
+
+\begin{ladder}
+\item \white{P3.8}. Three feed pipes into one outlet; the speeds from a flow clue. The transport theorem as a mass balance over several ports.
+\item \white{P3.12}. Time to fill the rest of a surge tank fed and drained by pipes. The unsteady term written as a rate of change of volume.
+\item \white{P3.38}. A disk squeezes fluid out radially; the outflow velocity. A deforming control volume.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+Every integral relation in this chapter is this theorem with a particular $b$: mass in \secref{sec:mass}{conservation of mass}, momentum in \secref{sec:momentum}{linear momentum}, angular momentum in \secref{sec:angular}{angular momentum}, energy in \secref{sec:energy}{the energy equation}. Shrink the CV to an infinitesimal box and the same bookkeeping produces the differential continuity and Navier--Stokes equations of chapter 4; the material derivative $D/Dt$ is the transport theorem for a vanishingly small system. The flux integral with a nonuniform profile is where the correction factors $\alpha$ and $\beta$ come from.
+\end{hides}

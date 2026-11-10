@@ -1,0 +1,184 @@
+\section{Modelling and similarity}
+\label{sec:similarity}
+
+A model test is a measurement on a small (or occasionally large) copy of a device, made so that the answer can be scaled to the full-size device, the \emph{prototype}. The Pi theorem says why this can work: if every independent dimensionless group has the same value in the model and the prototype, the dependent group must too, and the scaling rule is just ``hold the dependent group fixed''. The difficulty is that the groups usually cannot all be matched at once, and most of the engineering, and most of the exam marks after the arithmetic, lies in deciding which group to give up and how to correct for it.
+
+\begin{recognise}
+``A $1{:}20$ model of \dots is tested in \dots'' ``At what speed must the model be run?'' ``Predict the prototype force, power, pressure, discharge or time.'' ``Can both Froude and Reynolds similarity be achieved?'' ``What fluid would be needed?'' A ship, spillway, river or wave basin (Froude), a submerged body, pipe component or aircraft at low speed (Reynolds), a high-speed aircraft or compressor (Mach). Any question with two sets of fluid properties and two sizes.
+\end{recognise}
+
+\begin{onsheet}
+``Similarity: $\Pi_{\text{model}} = \Pi_{\text{prototype}}$'', and the groups $\mathrm{Re}$, $\mathrm{Fr}$, $\mathrm{Ma}$, $\mathrm{We}$, $\mathrm{Eu}$, $\mathrm{St}$, $\mathrm{Ca}$, the cavitation number $(p - p_v)/(\tfrac12\rho V^2)$ and $C_p$. The turbulent flat-plate drag $C_D = 0.031/\mathrm{Re}_L^{1/7}$ in section 8 is what the ship-resistance method below needs. Not on it: the scale laws for force, power, time and discharge, the Froude--Reynolds conflict and the ways round it.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{Notation.} Subscript $m$ for model and $p$ for prototype. A ``$1{:}\lambda$ model'' has every length $\lambda$ times smaller than the prototype, so the \emph{length scale ratio} is $L_p/L_m = \lambda$.
+
+\paragraph{Three levels of similarity.}
+\begin{enumerate}[nosep,leftmargin=*]
+\item \emph{Geometric similarity}: every length in the model is the prototype length divided by the same $\lambda$, and every angle is the same. This includes the lengths people forget: surface roughness heights, gaps, fillet radii, the depth of water around a ship.
+\item \emph{Kinematic similarity}: at corresponding points (points at the same position relative to the geometry), the velocities in the model and prototype point in the same direction and have the same ratio everywhere. Streamline patterns are then geometrically similar, and all times scale by one ratio, $t_p/t_m = (L_p/L_m)(V_m/V_p)$.
+\item \emph{Dynamic similarity}: at corresponding points, every type of force (pressure, viscous, gravity, surface tension, compressibility) has the same ratio between model and prototype. Since each standard group is a ratio of two force types (\secref{sec:nondimensional}{nondimensional equations}), this means every independent group is matched.
+\end{enumerate}
+Geometric plus dynamic similarity gives kinematic similarity, because the nondimensional equations and boundary conditions are then identical and so is their solution.
+
+\paragraph{From matching groups to scale laws.} The Pi analysis gives $\Pi_1 = \phi(\Pi_2, \dots, \Pi_k)$ with the measured quantity in $\Pi_1$. If $\Pi_2, \dots, \Pi_k$ are all matched, then $\Pi_{1,m} = \Pi_{1,p}$ whatever $\phi$ is. For a force, $\Pi_1$ is a force coefficient $F/(\rho V^2L^2)$, so
+\[
+\frac{F_p}{F_m} = \frac{\rho_p}{\rho_m}\left(\frac{V_p}{V_m}\right)^2\left(\frac{L_p}{L_m}\right)^2, \qquad
+\frac{P_p}{P_m} = \frac{F_pV_p}{F_mV_m} = \frac{\rho_p}{\rho_m}\left(\frac{V_p}{V_m}\right)^3\left(\frac{L_p}{L_m}\right)^2,
+\]
+\[
+\frac{\Delta p_p}{\Delta p_m} = \frac{\rho_p}{\rho_m}\left(\frac{V_p}{V_m}\right)^2, \qquad
+\frac{Q_p}{Q_m} = \frac{V_p}{V_m}\left(\frac{L_p}{L_m}\right)^2, \qquad
+\frac{f_p}{f_m} = \frac{V_p}{V_m}\,\frac{L_m}{L_p}.
+\]
+The pressure law is $\mathrm{Eu}$ (or $C_p$) matched; the frequency law is $\mathrm{St}$ matched. These hold under every kind of similarity; what changes between Reynolds, Froude and Mach scaling is only the velocity ratio.
+
+\paragraph{Reynolds scaling.} When viscosity and inertia are the only forces that matter (no free surface, no compressibility: pipes, valves, submerged bodies, low-speed aircraft), match $\mathrm{Re}$:
+\[
+\frac{V_mL_m}{\nu_m} = \frac{V_pL_p}{\nu_p} \quad\Longrightarrow\quad \frac{V_m}{V_p} = \frac{\nu_m}{\nu_p}\,\lambda .
+\]
+In the same fluid a $1{:}10$ model must run ten times faster. Substituting this into the force law gives $F_p/F_m = (\rho_p\nu_p^2)/(\rho_m\nu_m^2)$, independent of size: a Reynolds-scaled model in the same fluid feels the same force as the prototype. Ways to keep the speed reasonable: test in water instead of air ($\nu$ is about $15$ times smaller), pressurise the tunnel ($\nu = \mu/\rho$ falls as $\rho$ rises), or cool the gas.
+
+\paragraph{Froude scaling.} When a free surface is present and gravity drives the waves or the flow (ships, spillways, open channels, harbours), match $\mathrm{Fr}$. With the same $g$,
+\[
+\frac{V_m}{\sqrt{gL_m}} = \frac{V_p}{\sqrt{gL_p}} \quad\Longrightarrow\quad \frac{V_p}{V_m} = \lambda^{1/2}.
+\]
+The other scales follow from the general laws above. For the same fluid:
+\begin{center}\small
+\begin{tabular}{lccccccc}
+\toprule
+Quantity & Length & Velocity & Time & Discharge & Pressure & Force & Power \\
+\midrule
+Prototype/model & $\lambda$ & $\lambda^{1/2}$ & $\lambda^{1/2}$ & $\lambda^{5/2}$ & $\lambda$ & $\lambda^{3}$ & $\lambda^{7/2}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Each entry is a product: time is $L/V = \lambda/\lambda^{1/2}$; discharge is $VL^2 = \lambda^{1/2}\lambda^2$; pressure is $\rho V^2 = \lambda$; force is pressure times area, $\lambda \cdot \lambda^2$; power is force times velocity, $\lambda^3 \cdot \lambda^{1/2}$. Accelerations are the same in both ($g$ is), which is the physical content of Froude scaling. If the fluids differ (seawater prototype, fresh-water model), multiply force, pressure and power by $\rho_p/\rho_m$.
+
+\paragraph{Mach scaling.} When compressibility matters, roughly $\mathrm{Ma} > 0.3$ where density changes exceed about $5\%$, match $\mathrm{Ma} = V/a$: $V_m/V_p = a_m/a_p$, and the ratio of specific heats $k$ should also match (air to air does). Below $\mathrm{Ma} \approx 0.3$ the Mach number can be ignored, which is what makes low-speed wind tunnels and water tunnels interchangeable.
+
+\paragraph{The Froude--Reynolds conflict.} A ship makes waves (gravity) and has skin friction (viscosity). Matching both requires $V_m/V_p = \lambda^{-1/2}$ and $V_m/V_p = (\nu_m/\nu_p)\lambda$, so
+\[
+\frac{\nu_m}{\nu_p} = \lambda^{-3/2}.
+\]
+For a $1{:}25$ model the model fluid would need a kinematic viscosity $125$ times smaller than water's. No practical liquid comes close (mercury, one of the lowest, is about $9$ times lower than water). So in water, with water, complete similarity is impossible. What is done:
+\begin{enumerate}[leftmargin=*]
+\item \emph{Use a different fluid} where the required ratio is achievable. Only possible for mild scale ratios; rare for free-surface work, more common in Reynolds--Mach conflicts in wind tunnels (pressurised or cryogenic gas).
+\item \emph{Accept the Reynolds mismatch when the flow is insensitive to $\mathrm{Re}$.} Many flows become independent of $\mathrm{Re}$ once it is large enough: flows that separate at sharp edges (spillway crests, bluff bodies with sharp corners), and fully rough turbulent channel flow, where the friction factor depends on $\epsilon/D$ only. Then match $\mathrm{Fr}$, keep the model large enough that its $\mathrm{Re}$ is in the same independent regime (turbulent, comfortably above transition), and state the assumption. This is standard for spillways, stilling basins and rivers.
+\item \emph{Split the effect into parts that each obey one group} (Froude's hull method). Assume the total resistance coefficient is a friction part that depends on $\mathrm{Re}$ only plus a wave (residual) part that depends on $\mathrm{Fr}$ only: $C_T = C_F(\mathrm{Re}) + C_R(\mathrm{Fr})$. Test at the prototype $\mathrm{Fr}$, compute the model's friction from a flat-plate formula at the model $\mathrm{Re}$, subtract to get $C_R$, carry $C_R$ unchanged to the prototype, and add the prototype's friction at the prototype $\mathrm{Re}$. The third worked example does this.
+\end{enumerate}
+
+\paragraph{Distortion and scale effects.} A \emph{scale effect} is any difference between scaled model data and the prototype caused by a group that was not matched. The usual ones: a small model's boundary layer stays laminar where the prototype's is turbulent (cured with trip wires or sand strips near the leading edge); surface tension, negligible in the prototype, matters in water a few centimetres deep ($\mathrm{We}$ too small), and air entrainment in spillways is under-represented; surface roughness cannot be scaled down below the machining finish; cavitation depends on $(p - p_v)/(\tfrac12\rho V^2)$, which a Froude model at atmospheric pressure does not match (cavitation tunnels lower the ambient pressure to fix it).
+
+A \emph{distorted model} deliberately uses different scale ratios in different directions. River and estuary models often have a vertical scale several times less severe than the horizontal, because a geometrically exact model of a wide shallow river would have water only millimetres deep: laminar, dominated by surface tension. The cost is that slopes are exaggerated and friction must be adjusted (often by adding roughness) until the model reproduces measured prototype water levels. A distorted model is calibrated, not simply scaled.
+
+\paragraph{When a model test is the wrong tool.} Model tests answer questions whose physics is captured by a few matched groups. They are a poor choice when:
+\begin{enumerate}[nosep,leftmargin=*]
+\item the governing equations can be solved reliably by analysis or computation (laminar flows in simple geometries; much of chapter 4), so the test adds cost but not information;
+\item a group that matters cannot be matched and its effect cannot be separated or corrected, as in a small model where surface tension, laminar flow and cavitation all depart from the prototype at once;
+\item the phenomenon depends on material behaviour that does not scale with geometry: sediment and erosion (grain size and density), ice, combustion chemistry, biological growth;
+\item the required accuracy is finer than the expected scale effect.
+\end{enumerate}
+In practice models and computation are used together: the model validates the computation in a regime both can reach, and the computation extrapolates to full-scale $\mathrm{Re}$.
+
+\begin{firstmoves}
+Identify which forces matter (viscous, gravity, surface tension, compressibility) and hence which groups. Write the length ratio $\lambda$. Match the governing group to get the model velocity. Check the groups you did not match and say why they do or do not matter (evaluate the model $\mathrm{Re}$, $\mathrm{We}$ or $\mathrm{Ma}$ with numbers). Scale the measured quantity by holding its coefficient fixed. Sanity-check the direction: a bigger, faster prototype in water has larger forces.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+A remotely operated underwater vehicle, $2.0\unit{m}$ long, will cruise deeply submerged at $1.5\unit{m/s}$ in seawater at $10^\circ$C ($\rho = 1026\unit{kg/m^3}$, $\nu = 1.35\times10^{-6}\unit{m^2/s}$). A $1{:}5$ model is to be tested.
+(a) Explain why $\mathrm{Re}$ is the only group to match. Find the model speed in a fresh-water tunnel ($\rho = 998\unit{kg/m^3}$, $\nu = 1.00\times10^{-6}\unit{m^2/s}$).
+(b) The model drag at that speed is $92\unit{N}$. Find the prototype drag and the power needed to overcome it.
+(c) Find the model speed in a wind tunnel ($\rho = 1.204\unit{kg/m^3}$, $\nu = 1.51\times10^{-5}\unit{m^2/s}$, $a = 343\unit{m/s}$) and check whether compressibility spoils the test. What drag will the balance read?
+\end{example}
+
+\begin{proof}[Solution]
+(a) Deeply submerged: no free surface, so gravity only adds hydrostatic pressure and $\mathrm{Fr}$ is irrelevant (\secref{sec:nondimensional}{nondimensional equations}); no interface, so no $\mathrm{We}$; low speed, so no $\mathrm{Ma}$. Geometric similarity plus $\mathrm{Re}$ match gives dynamic similarity. $L_m = 0.40\unit{m}$.
+\[
+V_m = V_p\,\frac{L_p}{L_m}\,\frac{\nu_m}{\nu_p} = 1.5 \times 5 \times \frac{1.00}{1.35} = 5.56\unit{m/s}.
+\]
+Check: $\mathrm{Re}_p = 1.5 \times 2.0/1.35\times10^{-6} = 2.22\times10^6$ and $\mathrm{Re}_m = 5.56 \times 0.40/10^{-6} = 2.22\times10^6$.
+
+(b) Same drag coefficient $F/(\rho V^2L^2)$:
+\[
+F_p = 92 \times \frac{1026}{998} \times \left(\frac{1.5}{5.56}\right)^2 \times 5^2 = 172\unit{N}, \qquad P = F_pV_p = 172 \times 1.5 = 259\unit{W}.
+\]
+
+(c) $V_m = 1.5 \times 5 \times (1.51\times10^{-5}/1.35\times10^{-6}) = 83.9\unit{m/s}$, so $\mathrm{Ma} = 83.9/343 = 0.245 < 0.3$: density changes are a few percent at most and the test remains incompressible to good approximation. The balance would read $F_m = F_p\,(\rho_m\nu_m^2)/(\rho_p\nu_p^2) = 172 \times (1.204 \times (1.51\times10^{-5})^2)/(1026 \times (1.35\times10^{-6})^2) = 25.3\unit{N}$.
+\end{proof}
+
+Sanity check: with $\mathrm{Re}$ matched, $F_p/F_m = (\rho_p\nu_p^2)/(\rho_m\nu_m^2) = 1026 \times 1.35^2/998 = 1.87$, and $92 \times 1.87 = 172\unit{N}$: the size has cancelled, as the Reynolds-scaling paragraph promised. The model runs faster than the prototype ($5.6$ against $1.5\unit{m/s}$), which is always so for a small Reynolds model in a similar fluid; the wind-tunnel speed is larger again because air's $\nu$ is $11$ times seawater's.
+
+\begin{example}
+A $1{:}25$ model of an overflow spillway and stilling basin is built in a hydraulics laboratory with fresh water at $20^\circ$C ($\nu = 1.0\times10^{-6}\unit{m^2/s}$, $\Upsilon = 0.073\unit{N/m}$), the same water as the prototype. Measured in the model: discharge $0.085\unit{m^3/s}$, velocity $2.4\unit{m/s}$ and flow depth $40\unit{mm}$ at the toe of the spillway, a force of $38\unit{N}$ on a baffle block, and a lowest crest pressure of $-0.9\unit{kPa}$ gauge.
+(a) Which group governs, and why? (b) Find the prototype discharge, toe velocity, baffle force and crest pressure. (c) A design flood lasts $6\unit{h}$ in the prototype; how long must the model run? (d) Check the unmatched groups and comment on cavitation.
+\end{example}
+
+\begin{proof}[Solution]
+(a) The flow is driven by gravity over a free surface, so $\mathrm{Fr}$ governs. Matching $\mathrm{Re}$ as well would need $\nu_m = \nu_p/125$, impossible; we accept the $\mathrm{Re}$ mismatch because the flow separates at sharp edges and is fully turbulent, a regime where it is insensitive to $\mathrm{Re}$ (checked in (d)).
+
+(b) With $\lambda = 25$, same fluid:
+\[
+Q_p = 0.085 \times 25^{5/2} = 0.085 \times 3125 = 266\unit{m^3/s}, \qquad V_p = 2.4 \times 25^{1/2} = 12.0\unit{m/s},
+\]
+\[
+F_p = 38 \times 25^3 = 5.94\times10^5\unit{N} = 594\unit{kN}, \qquad p_p = -0.9 \times 25 = -22.5\unit{kPa}\ \text{gauge}.
+\]
+
+(c) Time scales as $\lambda^{1/2} = 5$: the model runs $6/5 = 1.2\unit{h}$.
+
+(d) Model $\mathrm{Re}$ at the toe, on depth: $2.4 \times 0.040/10^{-6} = 9.6\times10^4$, turbulent. Prototype: $12.0 \times 1.0/10^{-6} = 1.2\times10^7$, a factor $\lambda^{3/2} = 125$ higher, but both are turbulent, which is what the Re-independence assumption needs. Model Weber number on depth: $998 \times 2.4^2 \times 0.040/0.073 = 3150$, so surface tension is negligible in the main flow (it would matter for thin sheets and air entrainment). Cavitation: atmospheric pressure is the same in both, not scaled by $\lambda$. The prototype crest is at $101.3 - 22.5 = 78.8\unit{kPa}$ absolute, far above the vapour pressure of about $2.3\unit{kPa}$, so no cavitation is predicted there; but the model's cavitation number, with $p - p_v \approx 99\unit{kPa}$ against $\tfrac12\rho V^2$ twenty-five times smaller, is much larger than the prototype's, so the model could never have shown cavitation even if it occurred.
+\end{proof}
+
+Sanity check: $12\unit{m/s}$ at the toe is the free-fall speed $\sqrt{2gh}$ from $h = 7.3\unit{m}$, plausible for a spillway of this scale. The force grew by $25^3$: forces scale with volume in Froude models.
+
+\begin{example}
+A cargo hull is $60\unit{m}$ long with a wetted area of $900\unit{m^2}$ and a design speed of $7.0\unit{m/s}$ in seawater ($\rho = 1025\unit{kg/m^3}$, $\nu = 1.19\times10^{-6}\unit{m^2/s}$). A $1{:}40$ model is towed in fresh water ($\rho = 998\unit{kg/m^3}$, $\nu = 1.00\times10^{-6}\unit{m^2/s}$) at the Froude-similar speed and its total resistance is $2.2\unit{N}$.
+(a) Find the towing speed and show that Reynolds similarity is impossible.
+(b) Predict the prototype resistance and effective power by Froude's method, using the turbulent flat-plate formula $C_F = 0.031/\mathrm{Re}_L^{1/7}$ for the friction.
+(c) Compare with the prediction from Froude scaling of the total resistance, and explain the difference.
+\end{example}
+
+\begin{proof}[Solution]
+(a) $V_m = 7.0/\sqrt{40} = 1.107\unit{m/s}$ ($\mathrm{Fr} = 7.0/\sqrt{9.81 \times 60} = 0.289$ for both). Matching $\mathrm{Re}$ in fresh water instead would need $V_m = 7.0 \times 40 \times 1.00/1.19 = 235\unit{m/s}$, or, at the Froude speed, a fluid with $\nu_m = 1.19\times10^{-6} \times 40^{-3/2} = 4.7\times10^{-9}\unit{m^2/s}$; neither exists.
+
+(b) Model: $L_m = 1.5\unit{m}$, $S_m = 900/40^2 = 0.5625\unit{m^2}$, $\mathrm{Re}_m = 1.107 \times 1.5/10^{-6} = 1.66\times10^6$.
+\[
+C_{T,m} = \frac{R_m}{\tfrac12\rho_mV_m^2S_m} = \frac{2.2}{\tfrac12 \times 998 \times 1.107^2 \times 0.5625} = \frac{2.2}{343.8} = 6.40\times10^{-3}.
+\]
+Friction: $C_{F,m} = 0.031/(1.66\times10^6)^{1/7} = 4.01\times10^{-3}$. Residual: $C_R = 6.40\times10^{-3} - 4.01\times10^{-3} = 2.39\times10^{-3}$, the same for the prototype because $\mathrm{Fr}$ is matched.
+Prototype: $\mathrm{Re}_p = 7.0 \times 60/1.19\times10^{-6} = 3.53\times10^8$, $C_{F,p} = 0.031/(3.53\times10^8)^{1/7} = 1.86\times10^{-3}$, so $C_{T,p} = 2.39\times10^{-3} + 1.86\times10^{-3} = 4.25\times10^{-3}$, and
+\[
+R_p = C_{T,p}\,\tfrac12\rho_pV_p^2S_p = 4.25\times10^{-3} \times \tfrac12 \times 1025 \times 7.0^2 \times 900 = 96.2\unit{kN}, \qquad P_E = R_pV_p = 673\unit{kW}.
+\]
+
+(c) Scaling the total resistance as a Froude force: $R_p = 2.2 \times (1025/998) \times 40^3 = 145\unit{kN}$, $50\%$ too high. That treats the whole coefficient $6.40\times10^{-3}$ as if it depended on $\mathrm{Fr}$ alone, but the friction part falls as $\mathrm{Re}$ rises, and the prototype's $\mathrm{Re}$ is $200$ times the model's. The model's friction coefficient is more than twice the prototype's, and Froude scaling carries that excess to full size.
+
+Assumptions to state: the resistance separates into independent friction and wave parts; the friction of the hull equals that of a flat plate of the same length and wetted area; the model boundary layer is turbulent from near the bow (towing tanks fit a trip wire to ensure it); and the sheet's formula is used at $\mathrm{Re}_p = 3.5\times10^8$, beyond the range it was fitted to. Towing tanks use a dedicated correlation line for this step; the method is the same.
+\end{proof}
+
+Sanity check: $C_T \approx 4\times10^{-3}$ is in the usual range for a full-scale hull, and a residual of about $40\%$ of the model total at $\mathrm{Fr} = 0.29$ is a moderate wave-making share. The $0.67\unit{MW}$ is before propeller losses.
+
+\begin{trap}
+Matching $\mathrm{Re}$ for a ship or spillway, or $\mathrm{Fr}$ for a submerged body. Scaling force as $\lambda^2$ by habit: it is $\lambda^3$ under Froude scaling and size-independent under Reynolds scaling in the same fluid. Forgetting the density ratio between seawater and fresh water, or air and water. Using $\lambda$ for model/prototype in one line and prototype/model in the next; write the ratio out. Assuming atmospheric pressure scales in a Froude model (it does not, so cavitation and gas effects are not modelled). Claiming similarity because the dominant group is matched without checking the others with numbers.
+\end{trap}
+
+\begin{ladder}
+\item \white{P5.80}. A ship and its towing-tank model; speed, drag and power ratios. Froude scaling laws.
+\item \white{P5.4}. A sphere in water scaled to a balloon in air; speed and force. Reynolds matching across fluids.
+\item \white{P5.84}. A wave-tank model of a platform; current, period and wave height. Froude scaling for time and length.
+\item \white{P5.62}. A small wind-turbine test scaled to a large machine. Speed and power together.
+\item \white{P5.66}. A torpedo's cavitation speed at a new depth. Cavitation number as the matched group.
+\item \white{P5.60}. Model propeller data reduced to coefficients; the prototype at altitude. A full reduce-then-predict.
+\item \white{P5.76}. Ship model drag split into a Reynolds part and a Froude part. The Froude and Reynolds conflict. Needs a flat-plate drag law from Chapter 7; read it, solve it only if time.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+In every pump and turbine scaling question, where the similarity laws for head, flow and power at fixed specific speed are this section with $\omega D$ as the velocity scale. In drag problems (chapter 7): a drag coefficient measured at one speed and used at another is a model-to-prototype scaling. In pipe flow (chapter 6), where a friction factor read at one $\mathrm{Re}$ serves another fluid.
+\end{hides}

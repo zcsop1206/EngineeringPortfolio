@@ -1,0 +1,39 @@
+\section{Reading a question, and the call}
+\label{sec:call}
+
+Almost every question in this midterm is decided before any algebra, by four choices. The rest is execution. Those four choices are the call.
+
+\begin{enumerate}[nosep,leftmargin=*]
+\item \textbf{Which law.} Mass, linear momentum, angular momentum, energy, or Bernoulli; or, in Chapter 4, continuity and Navier--Stokes; or, in Chapter 5, a Pi analysis and a scaling. A question can need two, as in Bernoulli for a velocity and then momentum for a force.
+\item \textbf{Which control volume, or which coordinates.} For an integral question: where the control surface cuts, which forces cross it, whether it moves. For a differential question: Cartesian or cylindrical, which velocity components are zero.
+\item \textbf{Which assumptions.} Steady or not; incompressible or not; frictionless or not; uniform velocity at a cut or a profile; fully developed or not; gravity kept or dropped. Each one is a sentence in the answer and a term struck in the equation.
+\item \textbf{Which variables.} For dimensional analysis: the list of variables the result depends on, and which three to repeat. A missing variable gives a wrong answer that looks right.
+\end{enumerate}
+
+\subsection*{The call line}
+
+During practice, before solving a problem, write one line in \texttt{calls.md}, domain \texttt{fluids}:
+
+\begin{quote}\small
+\texttt{fluids: White P3.62, x-momentum on a CV cutting the flange and the jet, steady, uniform exit, gauge p, 20 min. 60}
+\end{quote}
+
+The problem, the law, the control volume, the assumptions that matter, the time box, and how sure you are, from 0 to 100. Then solve. Then check the answer in the back of White and settle the line in the same sitting: \emph{held} if the law and control volume you named carried it; \emph{missed} if another choice from the four above was the right one; \emph{blind} if the solution used something you did not consider. A right number reached by a different control volume than the one you named is a miss. That is the point of writing the line first.
+
+The call is the part this midterm marks most and the crib sheet helps with least, so it is the part worth practising in isolation. On the evening before, a useful drill is ten problems from the ladders read for two minutes each, the call written, and nothing solved. Then read each answer in the back of White and ask whether its form agrees with the law you named: a force usually means momentum, a power means energy, a velocity profile means Navier--Stokes, a list of groups means the Pi theorem. Settle those calls that the answer decides, and leave the rest open for a full solve.
+
+\subsection*{Choosing the control volume}
+
+Three rules decide most control volumes in Chapter 3.
+
+\begin{itemize}[nosep,leftmargin=*]
+\item Cut where you know things, and cut where you want to know things. A cut where the pressure and velocity are known (a free jet at atmospheric pressure, a reservoir surface) is cheap. A cut through a support, a bolt or a flange exposes the force you are asked for.
+\item Cut perpendicular to the flow. Then $\V\cdot\nhat$ is just the speed, the mass flux is $\rho V A$, and the pressure force on the cut is the pressure times the area along the normal.
+\item Keep the control volume fixed unless something moves at constant speed and you want the force on it. For a moving vane, a control volume moving with the vane makes the flow steady; the price is that every velocity at the surface becomes relative.
+\end{itemize}
+
+For a differential question the corresponding call is the coordinate system and the list of velocity components that are zero. Pipe, annulus, rotating shaft: cylindrical. Channel, plate, film: Cartesian. Then continuity tells you which derivatives vanish before you touch Navier--Stokes.
+
+\subsection*{Time boxes}
+
+Thirty minutes is the exam's own box per question. In practice use twenty for a ladder rung marked easy and thirty for anything else. When the box runs out, stop, write what you would do next in one line, and read the answer. The settle line records whether the call was right even when the arithmetic was not finished.

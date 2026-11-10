@@ -1,0 +1,58 @@
+% Shared preamble for mie312.tex and the wrappers in split/. Written by a model for Adit.
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,array,longtable}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
+\pagestyle{fancy}\fancyhf{}
+\rhead{\small MIE312 Midterm 2. Written by a model for Adit; not Adit's words.}
+\cfoot{\small\thepage}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem*{trap}{Trap}
+\newtheorem*{firstmoves}{First moves}
+\newtheorem*{recognise}{Recognise it}
+\newtheorem*{hides}{Where it hides}
+\newenvironment{ladder}{\paragraph{Ladder.}\begin{enumerate}[nosep,leftmargin=*]}{\end{enumerate}}
+\newcommand{\putnam}[1]{\textsf{#1}}
+\newcommand{\seminar}[1]{\textsf{#1}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathbb{E}}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\lcm}{lcm}
+% A section reference that still reads when the target is not in this build (the weekly and per-topic PDFs).
+\newcommand{\secref}[2]{\ifcsname r@#1\endcsname Section~\ref{#1}\else the section on #2 in the full document\fi}
+\newtheorem*{onsheet}{On the crib sheet}
+% Problems from the course textbook, named by number only: \white{P3.40}.
+\newcommand{\white}[1]{\textsf{White #1}}
+% Vectors, the material derivative, partial derivatives, units.
+\newcommand{\V}{\mathbf{V}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\nhat}{\mathbf{n}}
+\newcommand{\DDt}[1]{\frac{D#1}{Dt}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\unit}[1]{\,\mathrm{#1}}
+\newcommand{\mdot}{\dot m}

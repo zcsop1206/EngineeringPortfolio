@@ -1,0 +1,136 @@
+\section{Angular momentum}
+\label{sec:angular}
+
+Linear momentum gives forces; angular momentum gives moments. It is needed whenever the question asks for a torque or a bending moment, and whenever something rotates: sprinklers, pump impellers, turbine runners, fans. For rotating machines it produces the Euler turbomachine equation, the single formula behind every pump and turbine head on the crib sheet. The new ingredients are the cross product, which supplies the lever arm and the sense of rotation, and the velocity of a fluid leaving a moving outlet, which is the relative velocity plus the velocity of the outlet itself.
+
+\begin{recognise}
+``Find the moment (or torque) at the base'', ``the bending moment at the support'', ``the torque to hold the sprinkler stationary'', ``the rotation rate of the sprinkler'', ``the torque and power of the pump impeller'', ``the head developed by the pump'', ``blade angle'', ``velocity triangle''. A pipe that discharges at a distance from its support, especially if the jet is not aimed at the support.
+\end{recognise}
+
+\begin{onsheet}
+The sheet prints the stationary-CV form $\sum\vect M_o = \pd{}{t}\int(\vect r\times\V)\rho\,d\forall + \sum(\vect r\times\V)_\text{out}\mdot_\text{out} - \sum(\vect r\times\V)_\text{in}\mdot_\text{in}$, the steady 1-D form about an axis $M_z = \sum_\text{out}\mdot\,rV_\theta - \sum_\text{in}\mdot\,rV_\theta$, $\V = \V_r + \vect U$ with $\vect U = \boldsymbol\omega\times\vect r$ at a rotating outlet, and, in its turbomachinery section, Euler's head $H = (U_2V_{t2} - U_1V_{t1})/g$ and torque $T = \mdot(r_2V_{t2} - r_1V_{t1})$, with $P = \omega T_o$ under pipe flow. The same section also prints the system curve $H_\text{sys} = \Delta z + \Delta P/\gamma + h_L(Q)$, the affinity laws, the dimensionless specific speed and $\mathrm{NPSH_A}$, which belong to pump selection rather than to this section. The nomenclature table gives the units of torque ($\mathrm{N\,m}$) and power ($\mathrm{W}$). It leaves out: that $\V$ in all of these is the \emph{absolute} velocity (measured in the fixed frame), that $V_\theta$ and $V_t$ are the tangential components with a sign fixed by the sense of rotation, that $\sum\vect M_o$ includes moments of the pressure forces and weights about the same point, and how to find $V_{t2}$ from the blade angle.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{Moment and angular momentum.} The \emph{moment} of a force $\vect F$ applied at position $\vect r$ about a point $O$ is $\vect M = \vect r\times\vect F$. In a plane with $\vect r = (x, y)$ and $\vect F = (F_x, F_y)$ it points along $z$ with $M_z = xF_y - yF_x$; positive is counterclockwise looking down the $z$-axis. Its size is the force times the perpendicular distance from $O$ to the force's line of action. The \emph{angular momentum} of a mass $m$ moving with $\V$ at $\vect r$ is $\vect r\times m\V$, built the same way from momentum instead of force. Newton's law for a system, crossed with $\vect r$, gives $d(\vect H)_\text{sys}/dt = \sum\vect M_o$, where $\vect H = \int\vect r\times\V\,dm$.
+
+\paragraph{The CV equation.} With $B = \vect H$, $b = \vect r\times\V$ in the transport theorem, for a fixed CV,
+\[
+\sum\vect M_o = \pd{}{t}\int_\text{CV}(\vect r\times\V)\rho\,d\forall + \int_\text{CS}(\vect r\times\V)\rho(\V\cdot\nhat)\,dA .
+\]
+The flux $\int(\vect r\times\V)\rho(\V\cdot\nhat)\,dA$ is the angular momentum carried out per second. With uniform jets it is $\sum_\text{out}\mdot(\vect r\times\V) - \sum_\text{in}\mdot(\vect r\times\V)$, where $\vect r$ runs from $O$ to the centre of each section. The left side is the moment, about the same $O$, of everything that acts on the CV: the support moment you want, the support force (choose $O$ at the support so its moment is zero), pressure forces at the cuts, weights acting at their centres of mass. As in \secref{sec:momentum}{linear momentum}, gauge pressure may be used and a free jet carries none.
+
+\paragraph{Choosing the point.} Put $O$ where the unknown force acts, often the base of a pipe or the axis of a rotor. Then the unknown force has no moment, and an inlet that passes through $O$ contributes neither flux nor pressure moment because its $\vect r$ is zero or parallel to $\V$.
+
+\paragraph{The steady 1-D form about an axis.} In a rotating machine everything is measured about the shaft axis $z$. Use polar coordinates: at radius $r$, the velocity has a radial part $V_r$ (away from the axis), a tangential part $V_\theta$ (around the axis, positive in the sense of rotation) and an axial part. Only $V_\theta$ has a moment about $z$: $(\vect r\times\V)_z = rV_\theta$. So for steady flow
+\[
+\sum M_z = \sum_\text{out}\mdot\,rV_\theta - \sum_\text{in}\mdot\,rV_\theta .
+\]
+This is the sheet's equation. The CV is a fixed cylinder around the rotor: the rotor turns inside it, but in steady operation the angular momentum inside does not change, so the storage term vanishes.
+
+\paragraph{Absolute velocity at a moving outlet.} An observer riding on a rotor sees the fluid leave a nozzle or blade with the \emph{relative} velocity $\V_r$, set by the nozzle or blade geometry and by mass conservation in the rotor. The nozzle itself moves with the \emph{blade speed} $U = \omega r$ tangentially. The velocity in the fixed frame, the \emph{absolute} velocity, is the vector sum
+\[
+\V = \V_r + \vect U .
+\]
+The angular momentum equation is written in the fixed frame, so it needs $\V$, not $\V_r$. For a sprinkler arm of radius $R$ whose jet leaves backward relative to the arm at $V_r$, the absolute tangential velocity is $V_\theta = -(V_r - \omega R)$, measured in the sense of rotation; the water leaves backward more slowly than it does from a stationary arm.
+
+\paragraph{Velocity triangles.} The vector sum $\V = \V_r + \vect U$ drawn as a triangle at a blade's outlet is the \emph{velocity triangle}. At the outer radius $r_2$ of a pump impeller of width $b_2$, mass conservation gives the radial (normal) part, the same in both frames: $V_{n2} = Q/(2\pi r_2b_2)$. The relative velocity runs along the blade, which leaves at angle $\beta_2$ measured from the tangent, so its tangential part is $V_{n2}\cot\beta_2$, pointing backward against the rotation for a backward-curved blade. Then
+\[
+V_{t2} = U_2 - V_{n2}\cot\beta_2 .
+\]
+The same construction at the inlet gives $V_{t1}$; often the inlet has no swirl, so $V_{t1} = 0$.
+
+\paragraph{Euler's turbomachine equation.} For a pump, the torque the shaft applies to the fluid is the only moment about the axis (pressure acts radially on a cylinder, and gravity is parallel to the axis or symmetric). So
+\[
+T = \mdot(r_2V_{t2} - r_1V_{t1}) .
+\]
+The shaft turns at $\omega$, so the power delivered to the fluid is $P = T\omega = \mdot(U_2V_{t2} - U_1V_{t1})$, using $U = \omega r$. The head added, energy per unit weight, is power divided by the weight flow $\mdot g$:
+\[
+H = \frac{U_2V_{t2} - U_1V_{t1}}{g} .
+\]
+This is the ideal head: it assumes the fluid leaves exactly along the blades and that no energy is lost. Real pumps deliver less, and the ratio is the \emph{hydraulic efficiency}. For a turbine, the fluid gives up angular momentum and the same equations give a negative $T$ on the fluid, which is a positive torque on the shaft.
+
+\begin{firstmoves}
+Choose $O$ at the support or the axis. Draw axes and fix the positive sense of rotation. List every crossing with its $\vect r$ and its absolute $\V$; at a moving outlet build $\V = \V_r + \vect U$ first. Compute $\mdot$ from mass conservation, with relative velocities in the rotor. List every moment on the CV: the unknown, weights at their centroids, pressure forces at cuts not through $O$. Write $\sum M_z = \sum_\text{out}\mdot rV_\theta - \sum_\text{in}\mdot rV_\theta$ with signs. For a machine, write $T = \mdot(r_2V_{t2} - r_1V_{t1})$, then $P = T\omega$ and $H = P/(\mdot g)$, and say that $H$ is ideal.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+A pipe rises vertically from a flange $O$ at floor level to a height of $1.0\unit{m}$, turns horizontal and runs $1.5\unit{m}$ to a nozzle of exit diameter $25\unit{mm}$ that points straight down, discharging $8\unit{L/s}$ of water ($998\unit{kg/m^3}$) to the air. The horizontal run, with its water, weighs $6\unit{kg}$ per metre. (a) Find the moment the flange must exert on the pipe. (b) and (c) Repeat with the nozzle pointing horizontally away from the riser, then straight up.
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: steady; incompressible; uniform jet at zero gauge pressure; the riser's weight and the inlet's pressure and momentum act along the vertical through $O$, so they have no moment about $O$; the nozzle's own length is negligible.
+
+Axes: $x$ along the horizontal run, $y$ up, $z$ out of the plane, counterclockwise positive. $a = \tfrac{\pi}{4}(0.025)^2 = 4.909\times10^{-4}\unit{m^2}$, $V = Q/a = 16.30\unit{m/s}$, $\mdot = 998\times0.008 = 7.984\unit{kg/s}$. The exit is at $\vect r = (1.5, 1.0)\unit{m}$.
+
+Moments on the CV (pipe and its water) about $O$: the flange moment $M_O$; the weight of the run, $6\times9.81\times1.5 = 88.3\unit{N}$ at $x = 0.75\unit{m}$, moment $-0.75\times88.3 = -66.2\unit{N\,m}$. The inlet has $\vect r = 0$, so its flux is zero.
+
+(a) $\V = (0, -16.30)$, so $(\vect r\times\V)_z = xV_y - yV_x = 1.5(-16.30) = -24.45\unit{m^2/s}$, and
+\[
+M_O - 66.2 = 7.984\times(-24.45) = -195.2\quad\Rightarrow\quad M_O = -129.0\unit{N\,m}.
+\]
+The flange holds the pipe down with $129\unit{N\,m}$ clockwise. The jet acts like a rocket: it pushes the tip up with $\mdot V = 130.1\unit{N}$, more than the weight of the run.
+
+(b) $\V = (16.30, 0)$: $(\vect r\times\V)_z = -1.0\times16.30$, flux $-130.1\unit{N\,m}$, so $M_O = -130.1 + 66.2 = -63.9\unit{N\,m}$. The lever arm is now the height, $1.0\unit{m}$.
+
+(c) $\V = (0, 16.30)$: flux $+195.2\unit{N\,m}$, so $M_O = 195.2 + 66.2 = +261.4\unit{N\,m}$, counterclockwise: the jet now pushes the tip down, adding to the weight.
+
+Check: in each case the jet's reaction is $130.1\unit{N}$ opposite to the jet, and its moment is that force times the perpendicular distance from $O$ to the jet line ($1.5$, $1.0$, $1.5\unit{m}$). Momentum and moment agree.
+\end{proof}
+
+\begin{example}
+A lawn sprinkler has two arms, each $0.2\unit{m}$ from the vertical axis to the nozzle. Each nozzle has a $5\unit{mm}$ exit and points horizontally, perpendicular to its arm, so the jets leave tangentially in opposite senses. Water ($998\unit{kg/m^3}$) enters along the axis at $0.5\unit{L/s}$ in total. Find (a) the torque to hold the rotor still, (b) the rotation rate with no friction, (c) the rotation rate when the bearing exerts a friction torque of $0.2\unit{N\,m}$, and the absolute tangential speed of the jets in that case.
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: steady operation at constant $\omega$; incompressible; uniform jets at zero gauge pressure; flow divides equally; water enters along the axis, so it brings in no angular momentum.
+
+CV: a fixed cylinder enclosing the rotor, cut by the inlet pipe on the axis and by the jets. Positive sense: the direction the rotor turns, opposite to the jets. Each nozzle area $a = \tfrac{\pi}{4}(0.005)^2 = 1.963\times10^{-5}\unit{m^2}$. Relative to the arm, $V_r = Q/(2a) = 0.0005/(3.927\times10^{-5}) = 12.73\unit{m/s}$, which does not depend on $\omega$ because the rotor's volume is fixed. Total $\mdot = 0.499\unit{kg/s}$. The absolute tangential velocity at each nozzle is $V_\theta = -(V_r - \omega R)$. The only moment on the CV about the axis is the torque $T$ from the stand or bearing, positive in the rotation sense. Angular momentum:
+\[
+T = \mdot R V_\theta = -\mdot R(V_r - \omega R).
+\]
+
+(a) $\omega = 0$: $T = -0.499\times0.2\times12.73 = -1.271\unit{N\,m}$. The stand must apply $1.27\unit{N\,m}$ against the rotation sense.
+
+(b) No friction, $T = 0$: $\omega = V_r/R = 63.7\unit{rad/s} = 608\unit{rpm}$. The jets leave with zero absolute velocity, since the nozzle runs forward exactly as fast as the water leaves it backward, and the water simply drops, carrying no angular momentum.
+
+(c) $T = -0.2\unit{N\,m}$: $V_r - \omega R = 0.2/(0.499\times0.2) = 2.004\unit{m/s}$, so $\omega = (12.73 - 2.00)/0.2 = 53.6\unit{rad/s} = 512\unit{rpm}$, and each jet moves backward at $2.00\unit{m/s}$ in the fixed frame. The friction absorbs $0.2\times53.6 = 10.7\unit{W}$.
+
+Check: a sprinkler at several hundred rpm without friction is why real ones have brakes. The friction torque is $16\%$ of the stall torque and slows the rotor by $16\%$, as the linear relation between $T$ and $\omega$ requires.
+\end{proof}
+
+\begin{example}
+A centrifugal water pump ($998\unit{kg/m^3}$) has an impeller with inlet radius $50\unit{mm}$, outlet radius $150\unit{mm}$, outlet width $20\unit{mm}$, and backward-curved blades at $30^\circ$ to the tangent at the outlet. It turns at $1750\unit{rpm}$ and delivers $0.03\unit{m^3/s}$ with no swirl at the inlet. (a) Draw the outlet velocity triangle in words and find $V_{t2}$. (b) Find the ideal head, torque and power. (c) A test at this flow measures a head of $52\unit{m}$ and a shaft power of $22\unit{kW}$. Find the pump efficiency and the hydraulic efficiency.
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: steady; incompressible; flow leaves exactly along the blades; uniform around the circumference; no inlet swirl, $V_{t1} = 0$.
+
+(a) $\omega = 1750\times2\pi/60 = 183.3\unit{rad/s}$, so $U_2 = \omega r_2 = 27.49\unit{m/s}$. The radial component, by mass conservation through the outlet cylinder: $V_{n2} = Q/(2\pi r_2b_2) = 0.03/(2\pi\times0.15\times0.02) = 1.592\unit{m/s}$. The relative velocity leans back along the blade at $30^\circ$ to the tangent, so its tangential part is $V_{n2}\cot30^\circ = 2.757\unit{m/s}$ against the rotation. The triangle: $\vect U_2$ tangential, forward, $27.49\unit{m/s}$; $\V_{r2}$ from its tip, backward and outward at $30^\circ$; $\V_2$ closing the triangle. So $V_{t2} = 27.49 - 2.76 = 24.73\unit{m/s}$.
+
+(b) $\mdot = 29.94\unit{kg/s}$. Torque $T = \mdot r_2V_{t2} = 29.94\times0.15\times24.73 = 111.1\unit{N\,m}$. Power $= T\omega = 111.1\times183.3 = 20.36\unit{kW}$. Head $H = U_2V_{t2}/g = 27.49\times24.73/9.81 = 69.3\unit{m}$. Check: $\rho gQH = 998\times9.81\times0.03\times69.3 = 20.36\unit{kW}$, the same.
+
+(c) Power to the water at the measured head: $\rho gQH = 998\times9.81\times0.03\times52 = 15.27\unit{kW}$. Pump efficiency $= 15.27/22 = 69.4\%$. Hydraulic efficiency $= 52/69.3 = 75.0\%$. The remaining gap, $20.36$ ideal versus $22$ shaft, is friction in bearings and seals and leakage.
+
+Check: the ideal head is below $U_2^2/g = 77\unit{m}$, the limit for radial blades, as it must be for backward blades.
+\end{proof}
+
+\begin{trap}
+Using the relative velocity in the angular momentum flux of a rotating outlet. Mixing signs: fix the positive sense once and give $V_\theta$ a sign relative to it. Taking moments about a point other than the support, which brings in the unknown support force. Forgetting the moments of weights and of pressure at cuts not through $O$. Using $\vect r$ to the wrong point: it runs from $O$ to the centre of the exit section, and only the perpendicular distance to the jet line matters. Using the blade angle from the radial direction when it was given from the tangent, or the reverse. Converting rpm to $\mathrm{rad/s}$ with $60$ but not $2\pi$. Calling the Euler head the measured head.
+\end{trap}
+
+\begin{ladder}
+\item \white{P3.150}. The moment about the inlet flange of an angled elbow. The moment arm of each momentum flux.
+\item \white{P3.162}. A many-bucket waterwheel driven by a jet; power and best speed. Relative velocity and the optimum blade speed.
+\item \white{P3.156}. A disk with two tangential exit ducts drives a load; the mass flow. Rotating outlets, absolute velocity.
+\item \white{P3.164}. A bend feeding a uniformly porous leg; the holding moment. Integrating the moment of a distributed outflow.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+Euler's equation is the source of every pump curve: with $V_{t2} = U_2 - V_{n2}\cot\beta_2$ and $V_{n2}\propto Q$, the ideal head falls linearly with flow, and the affinity laws on the sheet scale it with speed and size. The power $T\omega = \rho gQH$ joins this section to pump heads in \secref{sec:energy}{the energy equation}. In chapter 4, the angular momentum balance on an infinitesimal element is what makes the stress tensor symmetric ($\tau_{xy} = \tau_{yx}$). For a pipe held at one support, the linear momentum equation gives the support force and the angular momentum equation, with the same CV, gives the support moment; a question that asks for both needs both.
+\end{hides}

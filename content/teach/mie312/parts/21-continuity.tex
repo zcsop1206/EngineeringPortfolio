@@ -1,0 +1,136 @@
+\section{Differential continuity}
+\label{sec:continuity}
+
+Mass is neither created nor destroyed. Chapter 3 wrote that for a finite control volume: what flows in, minus what flows out, equals what accumulates inside. Apply the same sentence to a box so small that the velocity and density barely change across it, and the result is one partial differential equation that every real flow field must satisfy at every point. Its two exam uses are blunt: it finds a velocity component you were not given, and it rejects a proposed velocity field that could not exist.
+
+\begin{recognise}
+A velocity field with one component missing, ``$v = ?$'', ``find $f(y)$'', ``what must $w$ be''. ``Is this flow physically possible?'' or ``does this field satisfy conservation of mass?''. A flow between walls, in a pipe, or out between two discs where the velocity profile is proposed and one asks whether it is consistent. A gas being compressed or expanded uniformly, where the density changes in time. It is also the first step of every exact-flow problem (\secref{sec:exactflows}{exact viscous flows}), where it shows which velocity components can vary in which direction.
+\end{recognise}
+
+\begin{onsheet}
+Only the two-dimensional incompressible form is printed, in section 13: $\partial u/\partial x + \partial v/\partial y = 0$. The general compressible form, the three-dimensional form and the cylindrical form are not printed. The control-volume mass balance of Chapter 3 is printed (section 3), and the differential form is that balance on a small box, which is how to rebuild it below.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{The box.} Take a fixed box with corner at $(x,y,z)$ and sides $dx$, $dy$, $dz$. Fluid crosses its six faces. The mass flow through a face is density times the velocity component normal to the face times the area, so through the left face (at $x$, area $dy\,dz$) the mass inflow per unit time is $\rho u\,dy\,dz$, evaluated at $x$.
+
+Through the right face, at $x + dx$, the quantity $\rho u$ has changed slightly. A first-order Taylor expansion (keep the first derivative, drop the terms in $dx^2$, which vanish faster as the box shrinks) gives the outflow
+\[
+\Big(\rho u + \pd{(\rho u)}{x}\,dx\Big)\,dy\,dz .
+\]
+Net outflow in the $x$ direction is right minus left: $\partial(\rho u)/\partial x\;dx\,dy\,dz$. The $y$ and $z$ face pairs give the same form with $\rho v$ and $\rho w$.
+
+The mass inside is $\rho\,dx\,dy\,dz$, and the box is fixed, so it changes at the rate $\partial\rho/\partial t\;dx\,dy\,dz$. Mass conservation says accumulation plus net outflow is zero. Divide by the volume $dx\,dy\,dz$:
+\begin{equation}
+\pd{\rho}{t} + \pd{(\rho u)}{x} + \pd{(\rho v)}{y} + \pd{(\rho w)}{z} = 0,
+\qquad\text{or}\qquad
+\pd{\rho}{t} + \nabla\cdot(\rho\V) = 0 .
+\label{eq:continuity}
+\end{equation}
+The \emph{divergence} of a vector field, $\nabla\cdot\vect{F} = \partial F_x/\partial x + \partial F_y/\partial y + \partial F_z/\partial z$, is exactly what the box computed: the net outflow of $\vect{F}$ per unit volume at a point. So the equation reads: the density at a point drops at the rate that mass flux diverges away from it.
+
+\paragraph{Incompressible form.} Expand the products with the product rule and regroup:
+\[
+\Big(\pd{\rho}{t} + u\pd{\rho}{x} + v\pd{\rho}{y} + w\pd{\rho}{z}\Big) + \rho\Big(\pd{u}{x} + \pd{v}{y} + \pd{w}{z}\Big)
+= \DDt{\rho} + \rho\,\nabla\cdot\V = 0 .
+\]
+The bracket is the material derivative of density (\secref{sec:acceleration}{the acceleration field}): how fast a particle's density changes as it moves. A fluid is treated as \emph{incompressible} when that is zero, $D\rho/Dt = 0$: each particle keeps its density. For liquids, and for gases below a Mach number of about $0.3$, this is an excellent approximation. Then, dividing by $\rho$,
+\begin{equation}
+\nabla\cdot\V = \pd{u}{x} + \pd{v}{y} + \pd{w}{z} = 0 .
+\label{eq:incompressible}
+\end{equation}
+Read it as a volume statement: a particle's volume does not change, so whatever stretching it suffers in one direction ($\partial u/\partial x > 0$) is paid for by squeezing in the others. Note that \eqref{eq:incompressible} has no $\rho$ and no $t$ in it: it holds for unsteady incompressible flow too.
+
+\paragraph{Cylindrical form.} In $(r,\theta,z)$, the box is a wedge-shaped piece of an annulus. Its outer face at $r + dr$ is larger than its inner face at $r$, because the area of a face at radius $r$ is $r\,d\theta\,dz$. So the radial flux that is conserved is $r\rho v_r$, not $\rho v_r$; and a step $d\theta$ is a length $r\,d\theta$, which puts $1/r$ on the $\theta$ term:
+\begin{equation}
+\pd{\rho}{t} + \frac{1}{r}\pd{(r\rho v_r)}{r} + \frac{1}{r}\pd{(\rho v_\theta)}{\theta} + \pd{(\rho v_z)}{z} = 0 .
+\label{eq:continuitycyl}
+\end{equation}
+Incompressible: $\dfrac{1}{r}\pd{(r v_r)}{r} + \dfrac{1}{r}\pd{v_\theta}{\theta} + \pd{v_z}{z} = 0$. Memory hook: a purely radial outflow from a line source spreads over a circumference $2\pi r$, so $v_r \propto 1/r$; the equation must make $r v_r$ constant, so the $r$ sits inside the derivative.
+
+\paragraph{Finding a missing component.} Suppose $u(x,y)$ is known in a 2-D incompressible flow. Then $\partial v/\partial y = -\partial u/\partial x$, and integrating in $y$ \emph{at fixed $x$} gives
+\[
+v(x,y) = -\int \pd{u}{x}\,dy + f(x) .
+\]
+The ``constant'' of integration is a function $f(x)$, because anything depending only on $x$ has zero $y$-derivative and would vanish from the equation. It is fixed by a boundary condition, typically $v = 0$ on a wall at $y = 0$ (\secref{sec:bcs}{boundary conditions}). If no condition is given, the honest answer contains $f(x)$, and the simplest choice is $f = 0$; say so. Integrating with a definite integral from the wall, $v = -\int_0^y \partial u/\partial x\,dy'$, builds the wall condition in.
+
+\paragraph{Checking a proposed field.} A field is \emph{physically possible} (as far as mass goes) when it satisfies \eqref{eq:continuity}; for an incompressible fluid, when its divergence is zero at every point, not only at one. Compute the divergence as a function of position and look at it. Zero identically: possible. Anything else: impossible for an incompressible fluid, though it might describe a compressible flow with the right $\rho(x,y,z,t)$. Satisfying continuity is necessary, not sufficient: the field must also satisfy momentum (\secref{sec:navierstokes}{the Navier--Stokes equations}) and the boundary conditions.
+
+\begin{firstmoves}
+Decide compressible or incompressible and write the matching equation, in the coordinates of the problem. Mark which velocity components are zero and which derivatives vanish (2-D: no $z$; axisymmetric: no $\theta$; steady: no $t$). For a missing component, integrate with the unknown function of the remaining variables written explicitly, then name the boundary condition that fixes it. For ``is it possible'', compute the divergence as a function, not at a point, and state the conclusion in words. Check units: every term is $\unit{s^{-1}}$ (incompressible) or $\unit{kg/(m^3\,s)}$.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}[The upward velocity in a growing wall layer]
+Near a flat plate, the streamwise velocity in a thin layer is modelled as
+\[
+u = U\Big[2\frac{y}{\delta} - \Big(\frac{y}{\delta}\Big)^2\Big],\qquad 0 \le y \le \delta(x),\qquad \delta = c\sqrt{x},
+\]
+with $U = 3\unit{m/s}$ and $\delta = 5\unit{mm}$ at $x = 0.5\unit{m}$. Find $v(x,y)$, and its value at the edge of the layer at $x = 0.5\unit{m}$.
+
+\emph{Assumptions.} Steady, two-dimensional, incompressible (water or low-speed air). The wall is solid, so $v(x,0) = 0$.
+
+\emph{Continuity.} $\partial v/\partial y = -\partial u/\partial x$. Since $u$ depends on $x$ only through $\delta$, use $d\delta/dx = c/(2\sqrt x) = \delta/(2x)$:
+\[
+\pd{u}{x} = U\Big[-\frac{2y}{\delta^2} + \frac{2y^2}{\delta^3}\Big]\frac{d\delta}{dx} = -\frac{U}{x}\Big[\frac{y}{\delta} - \frac{y^2}{\delta^2}\Big].
+\]
+\emph{Integrate} from the wall, which applies $v(x,0) = 0$ and sets $f(x) = 0$:
+\[
+v = \int_0^y \frac{U}{x}\Big[\frac{y'}{\delta} - \frac{y'^2}{\delta^2}\Big]dy' = \frac{U}{x}\Big[\frac{y^2}{2\delta} - \frac{y^3}{3\delta^2}\Big].
+\]
+At $y = \delta$: $v = U\delta/(6x) = (3)(0.005)/(6 \times 0.5) = 0.0050\unit{m/s}$, that is, $5\unit{mm/s}$ upward.
+
+\emph{Sanity check.} The layer slows the fluid near the wall and thickens downstream, so fluid it has slowed must be displaced outward: $v > 0$, as found. Its size relative to $U$ is $\delta/(6x) = 1/600$, as small as the layer is thin. Independently, the flow rate inside the layer is $\int_0^\delta u\,dy = \tfrac{2}{3}U\delta$, and a mass balance on a slice $dx$ of the layer gives the same edge velocity.
+\end{example}
+
+\begin{example}[Radial flow out of a disc air bearing]
+Air at low speed is fed through the centre of a thrust bearing and flows radially outward between two parallel discs a distance $2h$ apart, $-h \le z \le h$. A designer proposes
+\[
+v_r = \frac{3Q}{8\pi r h}\Big(1 - \frac{z^2}{h^2}\Big), \qquad v_\theta = v_z = 0 .
+\]
+(a) Is this physically possible for an incompressible fluid? (b) Does it carry the volume flow $Q$? (c) A colleague proposes $v_r = C(1 - z^2/h^2)$ instead. Check it. (d) For $Q = 2\unit{L/min}$ and $h = 0.1\unit{mm}$, find the largest velocity at $r = 10\unit{mm}$.
+
+\emph{Assumptions.} Incompressible (the pressure changes are small compared with absolute pressure); steady; axisymmetric (no $\theta$ dependence).
+
+(a) With $v_\theta = v_z = 0$, continuity is $\frac{1}{r}\partial(r v_r)/\partial r = 0$. Here $r v_r = \frac{3Q}{8\pi h}(1 - z^2/h^2)$ does not depend on $r$, so its $r$-derivative is zero everywhere. Possible.
+
+(b) Flow through a cylinder of radius $r$: $\int_{-h}^{h} v_r\,2\pi r\,dz = \frac{3Q}{4h}\int_{-h}^{h}(1 - z^2/h^2)\,dz = \frac{3Q}{4h}\cdot\frac{4h}{3} = Q$. Yes, at every radius, as it must.
+
+(c) $\frac{1}{r}\partial(r v_r)/\partial r = \frac{C}{r}(1 - z^2/h^2) \ne 0$. Impossible: the same velocity spread over a larger circumference would carry more flow at larger $r$, created from nothing.
+
+(d) $Q = 2 \times 10^{-3}/60 = 3.33\times 10^{-5}\unit{m^3/s}$. The maximum is at $z = 0$: $v_r = 3(3.33\times10^{-5})/(8\pi \times 0.01 \times 10^{-4}) = 3.98\unit{m/s}$. The mean over the gap is $Q/(2\pi r\cdot 2h) = 2.65\unit{m/s}$, and the ratio $3/2$ is the parabolic profile's.
+
+\emph{Sanity check.} The proposal in (a) is the plane-channel parabola of \secref{sec:exactflows}{exact viscous flows} with an amplitude falling as $1/r$, which is what both the flow rate and continuity demand.
+\end{example}
+
+\begin{example}[Compression stroke]
+A piston moves toward the closed end of a cylinder at $V_p = 10\unit{m/s}$. At an instant when the gas column is $L = 80\unit{mm}$ long and its density is $1.2\unit{kg/m^3}$, assume the gas velocity varies linearly from zero at the closed end ($x = 0$) to $-V_p$ at the piston ($x = L$), and that the density is uniform in space. Find $\partial\rho/\partial t$.
+
+\emph{Assumptions.} One-dimensional; $u = -V_p x/L$; $\rho = \rho(t)$ only. The gas is compressible, so the full equation \eqref{eq:continuity} is needed.
+
+\emph{Continuity.} With $\partial\rho/\partial x = 0$, $\partial(\rho u)/\partial x = \rho\,\partial u/\partial x = -\rho V_p/L$. So
+\[
+\pd{\rho}{t} = \frac{\rho V_p}{L} = \frac{1.2 \times 10}{0.08} = 150\unit{kg/(m^3\,s)}.
+\]
+\emph{Sanity check.} The mass in the cylinder, $\rho L A$, must stay fixed. Then $d(\rho L)/dt = 0$ gives $L\,d\rho/dt = -\rho\,dL/dt = \rho V_p$, the same answer from the control-volume balance. Here $\nabla\cdot\V = -125\unit{s^{-1}} \ne 0$, correctly: this field would be impossible for a liquid, and is fine for a gas.
+\end{example}
+
+\begin{trap}
+Writing the integration constant as a number when it is a function of the other variables. Using the Cartesian $\partial v_r/\partial r$ in place of $\frac{1}{r}\partial(r v_r)/\partial r$, which rejects the source flow $v_r = C/r$ that is perfectly possible. Checking the divergence at one point and declaring the field possible. Using the incompressible form for a gas whose density changes in time. Forgetting the $v_\theta$ term when a field has swirl and $\theta$-dependence.
+\end{trap}
+
+\begin{ladder}
+\item \white{P4.20}. An exponential profile; the other component from continuity. Integrating continuity with a constant of integration.
+\item \white{P4.14}. The most general purely swirling incompressible motion. Polar continuity.
+\item \white{P4.22}. Axisymmetric flow with axial velocity linear in $z$; the radial velocity. The integration constant is a function.
+\item \white{P4.18}. A piston compressing a gas with a linear velocity; the density history. Compressible continuity.
+\item \white{P4.24}. A channel with porous walls; the constant fixed by the suction. Continuity plus a boundary condition.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+Every exact solution in \secref{sec:exactflows}{exact viscous flows} starts here: ``fully developed'' plus continuity forces the cross-stream velocity to zero, which is what makes the Navier--Stokes equations solvable. The crib sheet's $\sum Q_{\text{node}} = 0$ for pipe networks and the Chapter 3 mass balance are this equation integrated over a volume. The boundary-layer displacement thickness on the sheet (section 8) is the outward push found in the first example. The stream function of Section 4.7 is a device that satisfies the 2-D incompressible equation automatically; it is not on this midterm.
+\end{hides}

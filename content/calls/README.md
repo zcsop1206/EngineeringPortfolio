@@ -49,6 +49,8 @@ Working, read off the Verdict:
 
 Not working: a completed week with commits under content/projects/ and no call; open calls past the window piling up; a miss rate below the band; no arrival by 2027-01-18.
 
+MIE312 Midterm 2, 2026-11-12: three 15-mark questions in 90 minutes. Practice calls use the domain fluids; the exam's three calls go on the rough work at the start, are rewritten from memory that evening, and are kept out of the vault until the course posts solutions, then typed in with 2026-11-12 at the start of each line in the domain mie312 and settled against the solutions or the marked paper. Evidence: the mie312 and fluids rows under Domains and their lines under Misses. The study doc is content/teach/mie312.md.
+
 Putnam, 2026-12-05: four 90-minute sessions of three problems, a call per problem on the exam's scratch paper at the start of each. That paper is handed in, so the lines are rewritten from memory in the breaks and kept off the vault, which is public, because the rules forbid discussing the questions online before Tuesday 2026-12-08. From that day they are typed in with 2026-12-05 at the start of each line and settled against the published solutions. Evidence: the putnam row under Domains and its lines under Misses. ASIC, due 2027-01-18: the first asic call dated before the first tool prompt. Evidence: the asic date in the Verdict row "test domains first call", the asic row under Domains, and Arrivals.
 
 The knobs. Change one value and its date at a time; tally.mjs reads this table.
@@ -64,7 +66,7 @@ The knobs. Change one value and its date at a time; tally.mjs reads this table.
 | moot share max | 25 | 2026-11-07 |
 | dormant weeks | 4 | 2026-11-07 |
 | resemblance | 25 | 2026-11-07 |
-| test domains | putnam, asic | 2026-11-07 |
+| test domains | mie312, putnam, asic | 2026-11-10 |
 
 ## First week
 
