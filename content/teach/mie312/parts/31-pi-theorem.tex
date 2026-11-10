@@ -1,0 +1,186 @@
+\section{The Pi theorem}
+\label{sec:pitheorem}
+
+A quantity that depends on $n$ variables needs, in general, a table of experiments with $n - 1$ independent knobs. The Pi theorem says that dimensional homogeneity alone cuts the number of knobs: the relation can always be rewritten among dimensionless groups, and there are fewer of those than variables, by exactly the number of independent dimensions the variables contain. On the exam it is a procedure worth most of a 15-mark question: list the variables, find how many independent dimensions they really contain, choose the repeating variables, solve small linear systems for the exponents, check, and rename. This section explains why the procedure works, defines the rank of a matrix from scratch, and does each step with its reason.
+
+\begin{recognise}
+``Using dimensional analysis'' or ``using the Pi theorem / Buckingham's method'' followed by ``$X$ depends on $a, b, c, \dots$''. ``Find the dimensionless groups'', ``how many dimensionless parameters govern \dots'', ``show that $X$ can be written as $f(\mathrm{Re}, \dots)$''. ``Rewrite the result so that the unknown appears in only one group.'' Any list of five or more physical quantities with one singled out as depending on the rest.
+\end{recognise}
+
+\begin{onsheet}
+Section 12: the number of groups is $n - r$, where $n$ is the number of variables and $r$ the rank of the dimensional matrix; repeating variables must be dimensionally independent; and the standard groups $\mathrm{Re} = \rho VL/\mu$, $\mathrm{Fr} = V/\sqrt{gL}$, $\mathrm{Ma} = V/a$, $\mathrm{We} = \rho V^2 L/\Upsilon$, $\mathrm{Eu} = \Delta p/(\rho V^2)$, $\mathrm{St} = \omega L/V$, $\mathrm{Ca} = \mu V/\Upsilon$, the cavitation number and the pressure coefficient. Not on the sheet: how to compute the rank, the procedure itself, the dimensions of variables outside the section 16 table (see \secref{sec:homogeneity}{dimensional homogeneity}), and how to turn the groups you get into the standard ones.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{Dimensionless products.} Suppose the variables are $q_1, \dots, q_n$. A \emph{product of powers} is $\Pi = q_1^{a_1} q_2^{a_2} \cdots q_n^{a_n}$ with numbers $a_i$. Its dimensions are found by adding exponents: if $\{q_j\} = M^{m_j} L^{l_j} T^{t_j}$, then
+\[
+\{\Pi\} = M^{\sum a_j m_j}\, L^{\sum a_j l_j}\, T^{\sum a_j t_j}.
+\]
+So $\Pi$ is dimensionless exactly when three linear equations hold, one per dimension:
+\[
+\sum_j a_j m_j = 0, \qquad \sum_j a_j l_j = 0, \qquad \sum_j a_j t_j = 0.
+\]
+These are $n$ unknowns $a_j$ in three equations (four if $\Theta$ appears). Every result in this section is a statement about how many independent solutions such a system has.
+
+\paragraph{The dimensional matrix.} Write the exponents in a table with one row per dimension and one column per variable. That table is the \emph{dimensional matrix}. For a drag force $F$ on a sphere of diameter $D$ in a stream of speed $V$, density $\rho$, viscosity $\mu$:
+\begin{center}\small
+\begin{tabular}{c|rrrrr}
+ & $F$ & $V$ & $D$ & $\rho$ & $\mu$ \\
+\midrule
+$M$ & $1$ & $0$ & $0$ & $1$ & $1$ \\
+$L$ & $1$ & $1$ & $1$ & $-3$ & $-1$ \\
+$T$ & $-2$ & $-1$ & $0$ & $0$ & $-1$ \\
+\end{tabular}
+\end{center}
+The three equations above are ``each row, weighted by the $a_j$, sums to zero''.
+
+\paragraph{Rank, in plain words.} The \emph{rank} of a matrix is the number of its rows that are genuinely different pieces of information: the number left after you throw away every row that can be built by adding multiples of the other rows. (Counting independent columns instead gives the same number; that is a theorem of linear algebra, and it is why ``rank'' needs no ``row'' or ``column'' in front of it.) For the dimensional matrix, the rank $r$ is the number of the balance equations that really constrain the exponents. If one row is a combination of the others, its equation is automatically satisfied whenever the others are, and it removes no freedom.
+
+Two ways to compute it, both enough for exam-sized matrices.
+\begin{enumerate}[nosep,leftmargin=*]
+\item \emph{Elimination.} Add multiples of one row to another to create zeros, as when solving simultaneous equations. A row that becomes all zeros was redundant. The rank is the number of rows that do not vanish.
+\item \emph{Determinants.} The rank is the size of the largest square block, made of any chosen rows and columns, whose determinant is not zero. With three dimensions, find three columns whose $3 \times 3$ determinant is nonzero and the rank is $3$. If every $3\times3$ determinant is zero, try $2 \times 2$ blocks.
+\end{enumerate}
+
+Worked, for the sphere. Take the columns $\rho, V, D$:
+\[
+\det\begin{pmatrix} 1 & 0 & 0 \\ -3 & 1 & 1 \\ 0 & -1 & 0 \end{pmatrix}
+= 1 \cdot \bigl(1 \cdot 0 - 1 \cdot (-1)\bigr) - 0 + 0 = 1 \ne 0 .
+\]
+A nonzero $3\times3$ determinant means rank $3$, the most possible with three rows. So $n - r = 5 - 3 = 2$ groups ($C_D$ and $\mathrm{Re}$, as expected).
+
+Worked, for a case where the rank is less than the number of dimensions. The force $F$ needed to pull a thin wire ring of mean diameter $D$ and wire diameter $d$ off a liquid surface of surface tension $\Upsilon$:
+\begin{center}\small
+\begin{tabular}{c|rrrr}
+ & $F$ & $\Upsilon$ & $D$ & $d$ \\
+\midrule
+$M$ & $1$ & $1$ & $0$ & $0$ \\
+$L$ & $1$ & $0$ & $1$ & $1$ \\
+$T$ & $-2$ & $-2$ & $0$ & $0$ \\
+\end{tabular}
+\end{center}
+Add twice the $M$ row to the $T$ row: $(-2+2, -2+2, 0, 0) = (0,0,0,0)$. The $T$ row was $-2$ times the $M$ row: mass and time appear only in the fixed combination $MT^{-2}$, so balancing $M$ automatically balances $T$. Two rows survive, so $r = 2$, even though three dimensions appear. The determinant test agrees: every $3\times3$ block contains the dependent rows and has determinant zero, while the block from rows $M, L$ and columns $\Upsilon, D$ is $\det\begin{pmatrix}1&0\\0&1\end{pmatrix} = 1$. Here $n - r = 4 - 2 = 2$ groups, not $1$.
+
+\paragraph{Why the theorem is true (a sketch).} Let $r$ be the rank and pick $r$ of the variables, say $q_1, \dots, q_r$, that are \emph{dimensionally independent}: no product of powers of them is dimensionless, which is the same as saying their columns have a nonzero $r \times r$ determinant. Because these columns already account for all $r$ independent dimensions, every other variable $q_k$ can be divided by a suitable product $q_1^{x_1}\cdots q_r^{x_r}$ to make it dimensionless; call the result $\Pi_k$. There are $n - r$ such $\Pi_k$. The physical relation $f(q_1, \dots, q_n) = 0$ can therefore be rewritten as
+\[
+g(q_1, \dots, q_r, \Pi_{r+1}, \dots, \Pi_n) = 0 .
+\]
+Now use the fact that the relation is a law of nature and holds in every system of units. Changing the size of the units of $M$, $L$ and $T$ changes the numerical values of $q_1, \dots, q_r$ and, because they are independent, can be chosen to make each of them equal to $1$, while every $\Pi_k$ keeps its value (it has no dimensions to rescale). So $g$ cannot depend on $q_1, \dots, q_r$ at all, and the relation is $G(\Pi_{r+1}, \dots, \Pi_n) = 0$, or, solving for the one containing the dependent variable, $\Pi_1 = \phi(\Pi_2, \dots, \Pi_{n-r})$. The count $n - r$ is the number of independent solutions of the balance equations: $n$ unknowns, $r$ genuine constraints.
+
+\paragraph{The repeating-variable method, step by step.}
+\begin{enumerate}[leftmargin=*]
+\item \emph{List all $n$ variables}, the dependent one included. The list is physics, not algebra: leave out a variable that matters and no algebra will put it back. Include $g$ only if a free surface or buoyancy is involved; include $\Upsilon$ only if an interface curves; include the speed of sound (or the bulk modulus) only if the flow is compressible.
+\item \emph{Write each variable's dimensions} from its definition, and assemble the dimensional matrix.
+\item \emph{Find $r$, the rank}, by elimination or determinants. Do not just count the dimensions that appear: the ring shows they can differ. Then $n - r$ is the number of groups.
+\item \emph{Choose $r$ repeating variables.} They must be dimensionally independent (check with a determinant), must between them contain every dimension that appears, and must not include the dependent variable (otherwise it would be smeared across every group, and you could not solve for it). Good habit: one geometric length, one velocity (or rate), one fluid property such as $\rho$.
+\item \emph{Form one group per remaining variable}: $\Pi = q_k \, q_1^{a} q_2^{b} q_3^{c}$. Write the $M$, $L$, $T$ balances, which are $r$ linear equations, and solve for $a, b, c$.
+\item \emph{Check each group is dimensionless} by substituting dimensions. It takes ten seconds and catches sign slips.
+\item \emph{Rename and rearrange} into standard groups, and write the result as $\Pi_1 = \phi(\Pi_2, \dots)$ with the dependent variable in $\Pi_1$ only.
+\end{enumerate}
+
+\paragraph{When the rank is less than the number of dimensions.} Use $r$ repeating variables, not the number of dimensions. With fewer than $r$ you cannot make every group dimensionless; with more, you will find that no set of that size is independent (in the ring, any three of $F, \Upsilon, D, d$ contain either two lengths or a dimensionless product such as $F/(\Upsilon D)$). The balance equations for the redundant dimension are then satisfied automatically, which is a useful check. Equivalent shortcut: treat the fixed combination ($MT^{-2}$ in the ring) as a single dimension.
+
+\paragraph{Different repeating variables, same count.} Any valid choice gives $n - r$ groups, but different groups. The two sets are always related by products and powers, so they contain the same information. Two rules make this precise and give you freedom.
+\begin{enumerate}[nosep,leftmargin=*]
+\item Any power of a group is a group: $\mathrm{Re}^{-1}$ or $\sqrt{\mathrm{We}}$ is as good as $\mathrm{Re}$ or $\mathrm{We}$.
+\item A group may be replaced by its product with powers of the others, provided the set stays independent (each old group can still be recovered from the new set). For example $\Pi_1' = \Pi_1 \Pi_2^2$ may replace $\Pi_1$.
+\end{enumerate}
+Standard combinations made this way: $\mathrm{Ca} = \mathrm{We}/\mathrm{Re}$; the Ohnesorge number $\mathrm{Oh} = \mu/\sqrt{\rho \Upsilon L} = \sqrt{\mathrm{We}}/\mathrm{Re}$; the Bond number $\mathrm{Bo} = \rho g L^2/\Upsilon = \mathrm{We}/\mathrm{Fr}^2$; and the drag group $F\rho/\mu^2 = C_F \mathrm{Re}^2$, which is useful when the velocity is the unknown because $V$ no longer appears in it.
+
+\paragraph{Recognising standard groups.} After solving, invert or take powers until the group matches the sheet. A group with $\mu$ and $\rho V L$ is a Reynolds number; one with $g$ is a Froude number (often appearing as $gL/V^2 = \mathrm{Fr}^{-2}$); one with $\Upsilon$ and $\rho V^2L$ is a Weber number; one with a pressure difference over $\rho V^2$ is an Euler number or pressure coefficient; one with a frequency times $L/V$ is a Strouhal number; one with the speed of sound or $K/\rho$ is a Mach number ($V/\sqrt{K/\rho}$). Ratios of lengths, angles and roughness ratios $\epsilon/L$ are groups on their own.
+
+\paragraph{The inspection method.} For short lists you can write the groups down by knowing the standard ones: pick groups that each introduce one new variable not in the earlier ones (that guarantees independence), until there are $n - r$ of them, then check each is dimensionless. It is fast and acceptable on an exam if you state the count first, so the marker sees that you know how many to look for. White also describes a variant that removes one dimension at a time by dividing variables into each other; it lands on the same groups.
+
+\begin{firstmoves}
+List every variable with its dimensions in a table. Build the dimensional matrix and compute the rank, showing the determinant or the elimination. State $n$, $r$ and $n - r$. Choose repeating variables, show they are independent, and keep the dependent variable out. Solve the exponent equations one dimension at a time (start with the dimension that appears in only one repeating variable). Check every group. Rename to standard groups and write $\Pi_1 = \phi(\dots)$.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+In a drop-on-demand inkjet head, the diameter $d$ of the main drop depends on the nozzle diameter $D$, the jet speed $V$, and the ink's density $\rho$, viscosity $\mu$ and surface tension $\Upsilon$.
+(a) Find the dimensionless groups by the repeating-variable method and express them with standard names.
+(b) Evaluate them for $\rho = 1050\unit{kg/m^3}$, $\mu = 0.010\unit{Pa\,s}$, $\Upsilon = 0.035\unit{N/m}$, $D = 30\unit{\mu m}$, $V = 6\unit{m/s}$.
+(c) A new ink has twice the viscosity and the same $\rho$ and $\Upsilon$. What nozzle diameter and jet speed reproduce the same drop shape, and how large is the new drop if the old one was $d = 33\unit{\mu m}$?
+\end{example}
+
+\begin{proof}[Solution]
+(a) Variables: $d$ ($L$), $D$ ($L$), $V$ ($LT^{-1}$), $\rho$ ($ML^{-3}$), $\mu$ ($ML^{-1}T^{-1}$), $\Upsilon$ ($MT^{-2}$). $n = 6$. The columns $\rho, V, D$ have the determinant $1$ computed in the model above, so $r = 3$ and there are $3$ groups. Repeating variables $\rho, V, D$ (independent, cover $M, L, T$, exclude $d$).
+
+$\Pi_1 = d\,\rho^aV^bD^c$: $M$: $a = 0$; $T$: $-b = 0$; $L$: $1 + c = 0$. So $\Pi_1 = d/D$.
+
+$\Pi_2 = \mu\,\rho^aV^bD^c$: $M$: $1 + a = 0$, $a = -1$; $T$: $-1 - b = 0$, $b = -1$; $L$: $-1 + 3 - 1 + c = 0$, $c = -1$. So $\Pi_2 = \mu/(\rho V D) = 1/\mathrm{Re}$.
+
+$\Pi_3 = \Upsilon\,\rho^aV^bD^c$: $M$: $a = -1$; $T$: $-2 - b = 0$, $b = -2$; $L$: $0 + 3 - 2 + c = 0$, $c = -1$. So $\Pi_3 = \Upsilon/(\rho V^2 D) = 1/\mathrm{We}$.
+
+Checks: $\{\mu/(\rho VD)\} = ML^{-1}T^{-1}/(ML^{-3}\cdot LT^{-1}\cdot L) = 1$; $\{\Upsilon/(\rho V^2D)\} = MT^{-2}/(ML^{-3}\cdot L^2T^{-2}\cdot L) = 1$. Result: $d/D = \phi(\mathrm{Re}, \mathrm{We})$. Since $\mathrm{Re}$ contains $V$ and so does $\mathrm{We}$, the printing community prefers a speed-free fluid group, $\mathrm{Oh} = \sqrt{\mathrm{We}}/\mathrm{Re} = \mu/\sqrt{\rho\Upsilon D}$, giving the equivalent $d/D = \psi(\mathrm{We}, \mathrm{Oh})$.
+
+(b) $\mathrm{Re} = 1050 \times 6 \times 30\times10^{-6}/0.010 = 18.9$; $\mathrm{We} = 1050 \times 36 \times 30\times10^{-6}/0.035 = 32.4$; $\mathrm{Oh} = 0.010/\sqrt{1050 \times 0.035 \times 30\times10^{-6}} = 0.301$, and $\sqrt{32.4}/18.9 = 0.301$ agrees.
+
+(c) Same drop shape means the same $\mathrm{Re}$ and $\mathrm{We}$. With $\rho$ and $\Upsilon$ unchanged, $\mathrm{We}$ fixed means $V_2^2D_2 = V_1^2D_1$, and $\mathrm{Re}$ fixed with $\mu_2 = 2\mu_1$ means $V_2D_2 = 2V_1D_1$. Divide the first by the second: $V_2 = V_1/2 = 3\unit{m/s}$. Then $D_2 = 2V_1D_1/V_2 = 4D_1 = 120\unit{\mu m}$. Since $d/D$ is unchanged, $d_2 = 4 \times 33 = 132\unit{\mu m}$.
+\end{proof}
+
+Sanity check: $\mathrm{Oh} = \mu/\sqrt{\rho\Upsilon D}$ with $\mu$ doubled and $D$ quadrupled is unchanged, as it must be. A thicker ink needs a bigger, slower jet to behave the same, which costs resolution: the dimensional analysis has turned a material change into a design trade-off in one line.
+
+\begin{example}
+The ring example from the model: the force $F$ to detach a horizontal wire ring of mean diameter $D$ and wire diameter $d$ from a liquid depends on $\Upsilon$, $D$, $d$ and the contact angle $\theta$.
+(a) Find the rank and the groups.
+(b) A ring with $D = 20\unit{mm}$, $d = 0.4\unit{mm}$ needs $F = 9.1\unit{mN}$ in water ($\Upsilon = 0.0728\unit{N/m}$). Predict $F$ for ethanol ($\Upsilon = 0.022\unit{N/m}$) with the same ring, both liquids wetting fully ($\theta = 0$).
+(c) In reality the ring also lifts a little meniscus of liquid, so $\rho$ and $g$ enter. Redo the count, find the new group and evaluate it for both liquids ($\rho = 998$ and $789\unit{kg/m^3}$). What does it say about the prediction in (b)?
+\end{example}
+
+\begin{proof}[Solution]
+(a) $n = 5$: $F, \Upsilon, D, d, \theta$. The angle is dimensionless, a column of zeros, which does not change the rank. The rank is $2$, as computed in the model ($T$ row $= -2 \times M$ row). So $5 - 2 = 3$ groups. Repeating variables $\Upsilon, D$ (independent: $\det\begin{pmatrix}1&0\\0&1\end{pmatrix}$ from the $M, L$ rows).
+
+$\Pi_1 = F\,\Upsilon^aD^b$: $M$: $1 + a = 0$; $L$: $1 + b = 0$; $T$: $-2 - 2a = 0$, which holds automatically with $a = -1$, as the rank said it would. $\Pi_1 = F/(\Upsilon D)$. $\Pi_2 = d/D$. $\Pi_3 = \theta$. Result: $F/(\Upsilon D) = \phi(d/D, \theta)$.
+
+(b) Same ring and same $\theta$, so $d/D$ and $\theta$ are unchanged and so is $\Pi_1$: $F/(\Upsilon D) = 0.0091/(0.0728 \times 0.020) = 6.25$. For ethanol, $F = 6.25 \times 0.022 \times 0.020 = 2.75\unit{mN}$, the water force scaled by the ratio of surface tensions.
+
+(c) Adding $\rho$ ($ML^{-3}$) and $g$ ($LT^{-2}$): the $\rho$ column has $M$ without $T^{-2}$ and $g$ has $T$ without $M$, so the $M$ and $T$ rows are no longer proportional. The block of columns $\Upsilon, D, \rho$ has determinant $\det\begin{pmatrix}1&0&1\\0&1&-3\\-2&0&0\end{pmatrix} = 1\cdot(0) - 0 + 1\cdot(0 + 2) = 2 \ne 0$, so $r = 3$ and $n - r = 7 - 3 = 4$ groups. The new one, with repeating $\Upsilon, D, \rho$: $\Pi_4 = g\,\Upsilon^aD^b\rho^c$; $T$: $-2 - 2a = 0$, $a = -1$; $M$: $a + c = 0$, $c = 1$; $L$: $1 + b - 3c = 0$, $b = 2$. So $\Pi_4 = \rho g D^2/\Upsilon$, the Bond number. Water: $998 \times 9.81 \times 0.020^2/0.0728 = 53.8$. Ethanol: $789 \times 9.81 \times 0.020^2/0.022 = 141$. The Bond numbers differ by a factor of $2.6$, so the two tests are not fully similar; the prediction in (b) holds only to the extent that $\phi$ is insensitive to $\mathrm{Bo}$.
+\end{proof}
+
+Sanity check: the ideal pull is surface tension along two contact circles, $F = 2\pi D\Upsilon$, so $\Pi_1 = 2\pi = 6.28$; the measured $6.25$ is within $1\%$. Real ring tensiometers apply a correction table indexed by exactly the extra groups found in (c), which is why the count matters.
+
+\begin{example}
+The pressure drop $\Delta p$ across a perforated plate in a duct depends on the approach velocity $V$, the fluid's $\rho$ and $\mu$, the hole diameter $d$, the plate thickness $t$ and the open-area fraction $\phi$.
+(a) Find the groups with repeating variables $\rho, V, d$.
+(b) Repeat with $\rho, \mu, d$ and show how the two sets are related.
+(c) A water test ($\rho = 998\unit{kg/m^3}$, $\mu = 1.0\times10^{-3}\unit{Pa\,s}$) with $d = 3\unit{mm}$ gives $\Delta p = 1.9\unit{kPa}$ at $V = 0.8\unit{m/s}$. Assuming the loss coefficient is independent of $\mathrm{Re}$ in this range, find the velocity for $\Delta p = 5.0\unit{kPa}$ and check the assumption is self-consistent.
+\end{example}
+
+\begin{proof}[Solution]
+(a) $n = 7$, the dimensions $M, L, T$ all appear, and $\rho, V, d$ are independent (determinant $1$), so $r = 3$ and there are $4$ groups. $\phi$ is already dimensionless; $t/d$ is a length ratio.
+$\Pi_1 = \Delta p\,\rho^aV^bd^c$: $M$: $a = -1$; $T$: $-2 - b = 0$, $b = -2$; $L$: $-1 + 3 - 2 + c = 0$, $c = 0$. $\Pi_1 = \Delta p/(\rho V^2) = \mathrm{Eu}$.
+$\Pi_2 = \mu\,\rho^aV^bd^c$ gives $\mu/(\rho V d) = 1/\mathrm{Re}$ exactly as in the first example.
+So $\mathrm{Eu} = \phi_1(\mathrm{Re}, t/d, \phi)$.
+
+(b) With $\rho, \mu, d$ (determinant of columns $(1,-3,0), (1,-1,-1), (0,1,0)$ is $\det\begin{pmatrix}1&1&0\\-3&-1&1\\0&-1&0\end{pmatrix} = 1\cdot(0+1) - 1\cdot(0-0) + 0 = 1$, independent):
+$\Pi_1' = \Delta p\,\rho^a\mu^bd^c$: $T$: $-2 - b = 0$, $b = -2$; $M$: $1 + a + b = 0$, $a = 1$; $L$: $-1 - 3a - b + c = 0$, $c = 2$. $\Pi_1' = \Delta p\,\rho d^2/\mu^2$.
+$\Pi_2' = V\rho^a\mu^bd^c$: $T$: $-1 - b = 0$, $b = -1$; $M$: $a + b = 0$, $a = 1$; $L$: $1 - 3 + 1 + c = 0$, $c = 1$. $\Pi_2' = \rho V d/\mu = \mathrm{Re}$.
+Still four groups. The relation: $\Pi_1' = \frac{\Delta p}{\rho V^2}\left(\frac{\rho V d}{\mu}\right)^2 = \mathrm{Eu}\,\mathrm{Re}^2$. The second set has $V$ only in $\mathrm{Re}$, which is the form to use when $V$ is the unknown and $\Delta p$ is given.
+
+(c) Test: $\mathrm{Re} = 998 \times 0.8 \times 0.003/10^{-3} = 2395$, $\mathrm{Eu} = 1900/(998 \times 0.8^2) = 2.97$. With $\mathrm{Eu}$ constant, $V = \sqrt{\Delta p/(\rho\,\mathrm{Eu})} = \sqrt{5000/(998 \times 2.97)} = 1.30\unit{m/s}$, at $\mathrm{Re} = 3890$. The new $\mathrm{Re}$ is $60\%$ above the tested one and of the same order, so the assumption is a modest extrapolation rather than a jump across regimes; it is self-consistent, but only a test at $1.3\unit{m/s}$ can confirm it. Sharp-edged holes approach a constant loss coefficient as $\mathrm{Re}$ grows, which makes the error, if any, small.
+\end{proof}
+
+Sanity check: $\Delta p \propto V^2$ at constant $\mathrm{Eu}$, so $V_2/V_1 = \sqrt{5.0/1.9} = 1.62$ and $0.8 \times 1.62 = 1.30\unit{m/s}$. In the second form, the new condition is $\Pi_1' = 5000 \times 998 \times (0.003)^2/(10^{-3})^2 = 4.49\times10^7$, against $1.71\times10^7$ for the test; if a full $\Pi_1'$ versus $\mathrm{Re}$ curve were available, $V$ could be read off directly without iteration.
+
+\begin{trap}
+Taking $r$ as the number of dimensions that appear instead of the rank: the ring has three dimensions and rank $2$. Including the dependent variable among the repeating variables. Choosing repeating variables that are not independent, such as two lengths, or $\rho$, $V$ and $\rho V^2$. Leaving out $g$ in a free-surface problem or including it in a closed duct (there it only adds hydrostatic pressure). Forgetting that an angle or a ratio is already a group and counts toward $n$. Solving exponents with a sign slip and not checking. Writing $\phi(\mathrm{Re}, \mathrm{We})$ and then claiming $\phi$ is known: the theorem gives the form of the relation, never the function.
+\end{trap}
+
+\begin{ladder}
+\item \white{P5.18}. Laminar flow in a triangular pore; the effect of doubling its size. One group is a scaling law.
+\item \white{P5.32}. Weir flow, given to be proportional to the width. A known proportionality removes a group.
+\item \white{P5.38}. Spray droplet size; Reynolds and Weber appear. Repeating variables with a surface tension.
+\item \white{P5.20}. Lift on a spinning cylinder in a crossflow. A rotation rate as a variable.
+\item \white{P5.28}. Beam deflection in a crossflow, simplified with given facts. Using physics to cut the group count.
+\item \white{P5.24}. Missile lift; the dimensional matrix and its rank. Rank and Mach.
+\item \white{P5.26}. A pendulum's period; what the analysis cannot say about amplitude. Where dimensional analysis stops.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+In every similarity question (\secref{sec:similarity}{modelling and similarity}), whose first step is a Pi analysis. In ``find the form of the law'' questions where the count gives a single group, so the group is a constant: a pendulum period $\propto\sqrt{\ell/g}$, a capillary wave speed. In chapter 6 pipe flow, where $f = \phi(\mathrm{Re}, \epsilon/D)$ is a Pi result, and in drag and lift coefficients. In heat-transfer and mixing problems with $\Theta$ in the matrix, where the rank may become $4$.
+\end{hides}

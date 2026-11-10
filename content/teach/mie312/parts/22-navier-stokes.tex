@@ -1,0 +1,194 @@
+\section{The Navier-Stokes equations}
+\label{sec:navierstokes}
+
+The Navier--Stokes equations are Newton's second law, $m\vect{a} = \sum\vect{F}$, written for a tiny particle of fluid and divided by its volume. Mass becomes density, acceleration is the material derivative of \secref{sec:acceleration}{the acceleration field}, and the forces are of three kinds: pressure pushing on the faces, gravity pulling on the volume, and viscous friction between neighbouring layers that move at different speeds. Nothing deeper is going on. What makes the equations look hard is only that the friction term needs a law connecting stress to how the fluid deforms, and that cylindrical coordinates add a few terms. This section builds them so that they can be written from memory, then uses them in the most common exam question: given a velocity field, find the pressure.
+
+\begin{recognise}
+``Find the pressure field'', ``find $\partial p/\partial x$'', ``what pressure gradient drives this flow'', ``does this velocity field satisfy the Navier--Stokes equations''. Anything that names viscosity together with a velocity profile. A rotating flow where you need $p(r)$. ``Neglect viscosity'' or ``inviscid'' with a velocity field given: that is Euler's equation, the same thing with $\mu = 0$. Every problem in \secref{sec:exactflows}{exact viscous flows} uses this section's equations.
+\end{recognise}
+
+\begin{onsheet}
+Not printed: no material derivative, no Navier--Stokes equation in any form, no Euler equation. The sheet prints the one-dimensional shear law $\tau = \mu\,du/dy$ (section 1), the angular deformation rate $\dot\gamma_{xy} = \partial u/\partial y + \partial v/\partial x$ (section 13), the rigid-body result $\nabla P = \rho(\vect{g} - \vect{a})$ (section 2), and the laminar pipe flow rate (section 6). The course has said the equations need not be memorised; it is possible the paper prints them, but plan on writing them yourself. The recipe at the end of the model takes under two minutes.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{Newton's law on a particle.} Take a fluid particle of volume $dx\,dy\,dz$ and mass $\rho\,dx\,dy\,dz$. Its acceleration is $D\V/Dt$. Newton's law per unit volume is
+\[
+\rho\DDt{\V} = \vect{f}_{\text{body}} + \vect{f}_{\text{surface}},
+\]
+where $\vect{f}$ means force per unit volume. The only body force here is gravity, $\vect{f}_{\text{body}} = \rho\vect{g}$, with $\vect{g}$ pointing down: $\vect{g} = -g\,\vect{k}$ if $z$ is up, or $g\sin\theta$ down a slope at angle $\theta$.
+
+\paragraph{Stresses on the faces.} A \emph{stress} is a force per unit area on a surface. On each face of the box the neighbouring fluid pushes and drags. Name the stresses with two subscripts: $\sigma_{ij}$ acts on a face whose outward normal points in direction $i$, and pushes in direction $j$. When $i = j$ it is a \emph{normal stress} (push or pull straight on the face), written $\sigma_{xx}$; when $i \ne j$ it is a \emph{shear stress} (drag along the face), written $\tau_{yx}$ and so on.
+
+The $x$-force on the box comes from the three face pairs. On the pair of faces normal to $x$, the stress $\sigma_{xx}$ acts at $x + dx$ and the opposite stress at $x$; by the same Taylor expansion as in \secref{sec:continuity}{differential continuity}, the net force is $\partial\sigma_{xx}/\partial x\;dx\,dy\,dz$. The $y$-faces contribute $\partial\tau_{yx}/\partial y$ and the $z$-faces $\partial\tau_{zx}/\partial z$. So the net surface force per volume in $x$ is
+\[
+f_{x,\text{surface}} = \pd{\sigma_{xx}}{x} + \pd{\tau_{yx}}{y} + \pd{\tau_{zx}}{z} .
+\]
+Note what this says: a uniform stress produces no net force, because it pushes equally on opposite faces. Only differences across the particle accelerate it. That is why a pressure \emph{gradient}, not a pressure, drives a flow.
+
+\paragraph{The Newtonian fluid.} A fluid at rest carries only pressure, which pushes inward on every face equally: $\sigma_{xx} = \sigma_{yy} = \sigma_{zz} = -p$, shear zero. When it moves, extra stresses appear that resist deformation. A \emph{Newtonian} fluid is one in which those extra stresses are proportional to the \emph{rate} of deformation, with one constant of proportionality, the viscosity $\mu$. Water, air and oils are Newtonian; paint, blood and ketchup are not (the power law on the crib sheet is for them). The law is
+\[
+\tau_{xy} = \tau_{yx} = \mu\Big(\pd{u}{y} + \pd{v}{x}\Big), \qquad
+\sigma_{xx} = -p + 2\mu\pd{u}{x},
+\]
+and the same with $(y,z)$ and $(z,x)$. The shear stress is $\mu$ times the angular deformation rate printed on the crib sheet: the rate at which a right angle drawn in the fluid closes up. For a plain shear flow $u(y)$ it is the sheet's $\tau = \mu\,du/dy$. The normal part says that stretching a particle ($\partial u/\partial x > 0$) adds a tension. The factor $2$ is not a separate assumption: a shear seen in axes turned $45^\circ$ is a stretch along one diagonal and a squeeze along the other, and the law must give the same stresses in both sets of axes, which fixes the $2$.
+
+\paragraph{Substitute.} Put the Newtonian stresses into the $x$-surface force and take $\mu$ constant:
+\[
+f_{x,\text{surface}} = -\pd{p}{x} + \mu\Big(2\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} + \frac{\partial^2 v}{\partial x\,\partial y} + \frac{\partial^2 u}{\partial z^2} + \frac{\partial^2 w}{\partial x\,\partial z}\Big).
+\]
+Split one $\partial^2 u/\partial x^2$ off the first term and regroup:
+\[
+f_{x,\text{surface}} = -\pd{p}{x} + \mu\Big(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} + \frac{\partial^2 u}{\partial z^2}\Big) + \mu\pd{}{x}\Big(\pd{u}{x} + \pd{v}{y} + \pd{w}{z}\Big).
+\]
+The last bracket is $\nabla\cdot\V$, which is zero for an incompressible fluid. What remains uses the \emph{Laplacian}, $\nabla^2 u = \partial^2 u/\partial x^2 + \partial^2 u/\partial y^2 + \partial^2 u/\partial z^2$, the sum of the second derivatives. In plain words it measures how much $u$ at a point differs from the average of $u$ around it: positive where $u$ is lower than its surroundings. Viscosity drags each particle toward the velocity of its neighbours, and $\mu\nabla^2 u$ is that drag per unit volume.
+
+\begin{theorem}[Navier--Stokes, incompressible, constant viscosity]
+\[
+\rho\DDt{\V} = -\nabla p + \rho\vect{g} + \mu\nabla^2\V,
+\qquad \nabla\cdot\V = 0 .
+\]
+In Cartesian components,
+\begin{align*}
+\rho\Big(\pd{u}{t} + u\pd{u}{x} + v\pd{u}{y} + w\pd{u}{z}\Big) &= -\pd{p}{x} + \rho g_x + \mu\Big(\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} + \frac{\partial^2 u}{\partial z^2}\Big), \\
+\rho\Big(\pd{v}{t} + u\pd{v}{x} + v\pd{v}{y} + w\pd{v}{z}\Big) &= -\pd{p}{y} + \rho g_y + \mu\Big(\frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2} + \frac{\partial^2 v}{\partial z^2}\Big), \\
+\rho\Big(\pd{w}{t} + u\pd{w}{x} + v\pd{w}{y} + w\pd{w}{z}\Big) &= -\pd{p}{z} + \rho g_z + \mu\Big(\frac{\partial^2 w}{\partial x^2} + \frac{\partial^2 w}{\partial y^2} + \frac{\partial^2 w}{\partial z^2}\Big).
+\end{align*}
+\end{theorem}
+
+Four equations (three momentum, one continuity) for four unknowns ($u, v, w, p$). They are nonlinear because of the convective terms $u\,\partial u/\partial x$, which is why few exact solutions exist and why the ones that do are the flows where those terms vanish.
+
+\paragraph{Euler's equation.} Set $\mu = 0$: $\rho\,D\V/Dt = -\nabla p + \rho\vect{g}$. This is the frictionless case, good away from walls in high-Reynolds-number flows. Integrated along a streamline it gives Bernoulli. With $\vect{a} = D\V/Dt$ uniform it is the crib sheet's rigid-body line $\nabla P = \rho(\vect{g} - \vect{a})$. One fact connects the two: in an incompressible flow with no vorticity (\secref{sec:vorticity}{vorticity and irrotationality}), $\nabla^2\V = 0$ identically, so the viscous term vanishes even when $\mu \ne 0$, and Euler and Navier--Stokes give the same pressure.
+
+\paragraph{Cylindrical forms.} For pipes, annuli and rotating flows, use $(r,\theta,z)$ with velocities $(v_r, v_\theta, v_z)$. Write
+\[
+\DDt{} = \pd{}{t} + v_r\pd{}{r} + \frac{v_\theta}{r}\pd{}{\theta} + v_z\pd{}{z}, \qquad
+\nabla^2 = \frac{1}{r}\pd{}{r}\Big(r\pd{}{r}\Big) + \frac{1}{r^2}\frac{\partial^2}{\partial\theta^2} + \frac{\partial^2}{\partial z^2} .
+\]
+Then
+\begin{align*}
+r:\quad &\rho\Big(\DDt{v_r} - \frac{v_\theta^2}{r}\Big) = -\pd{p}{r} + \rho g_r + \mu\Big(\nabla^2 v_r - \frac{v_r}{r^2} - \frac{2}{r^2}\pd{v_\theta}{\theta}\Big), \\
+\theta:\quad &\rho\Big(\DDt{v_\theta} + \frac{v_r v_\theta}{r}\Big) = -\frac{1}{r}\pd{p}{\theta} + \rho g_\theta + \mu\Big(\nabla^2 v_\theta - \frac{v_\theta}{r^2} + \frac{2}{r^2}\pd{v_r}{\theta}\Big), \\
+z:\quad &\rho\DDt{v_z} = -\pd{p}{z} + \rho g_z + \mu\nabla^2 v_z .
+\end{align*}
+Where the extra terms come from: the unit vectors $\vect{e}_r$ and $\vect{e}_\theta$ rotate as a particle moves around the axis, so differentiating $v_r\vect{e}_r + v_\theta\vect{e}_\theta$ produces terms the components alone miss. On the left they are the centripetal $-v_\theta^2/r$ and the angular-momentum term $v_r v_\theta/r$ of \secref{sec:acceleration}{the acceleration field}. On the right they are the corrections that stop the viscous term from charging friction to motions that do not deform the fluid. The $z$ equation has none, because $\vect{e}_z$ never turns.
+
+\emph{Memory hook.} Two motions involve no deformation of the fluid, so their viscous term must be zero, and the extra terms are exactly what makes it so. Rigid rotation, $v_\theta = \Omega r$: $\nabla^2(\Omega r) = \Omega/r$, and subtracting $v_\theta/r^2 = \Omega/r$ gives zero. Radial outflow from a line source, $v_r = C/r$: $\nabla^2(C/r) = C/r^3$, and subtracting $v_r/r^2$ gives zero. If you forget the sign or the power, check it on these two. The $\partial/\partial\theta$ cross terms vanish in every axisymmetric problem on this midterm.
+
+For axisymmetric flows ($\partial/\partial\theta = 0$) the viscous terms combine into a form that integrates directly:
+\[
+\nabla^2 v_\theta - \frac{v_\theta}{r^2} = \pd{}{r}\Big[\frac{1}{r}\pd{(r v_\theta)}{r}\Big] + \frac{\partial^2 v_\theta}{\partial z^2},
+\qquad
+\nabla^2 v_z = \frac{1}{r}\pd{}{r}\Big(r\pd{v_z}{r}\Big) + \frac{\partial^2 v_z}{\partial z^2}.
+\]
+
+\paragraph{Pressure from a given velocity field.} Rearrange each component as a formula for the pressure gradient:
+\[
+\pd{p}{x} = -\rho a_x + \rho g_x + \mu\nabla^2 u, \qquad \pd{p}{y} = -\rho a_y + \rho g_y + \mu\nabla^2 v, \qquad \pd{p}{z} = \cdots
+\]
+Then:
+\begin{enumerate}[nosep,leftmargin=*]
+\item Check continuity. If the divergence is not zero, stop: the field is not an incompressible flow.
+\item Compute $a_x, a_y, a_z$ (\secref{sec:acceleration}{the acceleration field}) and the Laplacians of each component.
+\item Write $\partial p/\partial x$, $\partial p/\partial y$, $\partial p/\partial z$.
+\item Check \emph{compatibility}: $\partial/\partial y$ of $\partial p/\partial x$ must equal $\partial/\partial x$ of $\partial p/\partial y$, because mixed partial derivatives of a smooth $p$ are equal. If they differ, no pressure field exists, so the given velocity field does not satisfy Navier--Stokes.
+\item Integrate $\partial p/\partial x$ in $x$, adding an unknown $f(y,z)$. Differentiate the result in $y$, set it equal to $\partial p/\partial y$, and solve for $f$; repeat for $z$.
+\item Fix the remaining constant with the pressure given at one point.
+\end{enumerate}
+
+\paragraph{Writing it down from nothing, in under two minutes.}
+\begin{enumerate}[nosep,leftmargin=*]
+\item Say the sentence: density times particle acceleration equals pressure-gradient force plus gravity plus viscous force. $\rho\,D\V/Dt = -\nabla p + \rho\vect{g} + \mu\nabla^2\V$.
+\item Left side, $x$ line: $\partial u/\partial t$ plus $u, v, w$ times $\partial u/\partial x, \partial u/\partial y, \partial u/\partial z$.
+\item Right side, $x$ line: $-\partial p/\partial x + \rho g_x + \mu$ times the three second derivatives of $u$. Copy for $v$ and $w$.
+\item Check the sign of the pressure term: flow goes from high to low pressure, so with everything else zero, $\partial p/\partial x < 0$ must push fluid toward $+x$.
+\item Cylindrical: the $z$ line is the Cartesian one with the cylindrical $D/Dt$ and $\nabla^2$. For $r$ and $\theta$ add $-v_\theta^2/r$ and $+v_rv_\theta/r$ on the left and $-v_r/r^2$ or $-v_\theta/r^2$ inside the viscous bracket on the right. That is the whole correction when nothing depends on $\theta$; otherwise add the $\pm(2/r^2)\,\partial/\partial\theta$ terms of the full forms above. Check on rigid rotation.
+\end{enumerate}
+
+\begin{firstmoves}
+State incompressible, constant $\mu$, and the direction of gravity in your axes; write $g_x, g_y, g_z$ explicitly. Write the full component equations once, then strike terms with a reason under each. For a pressure question, follow the six steps above and do the compatibility check before integrating. Give the pressure as $p(x,y,z)$ with the constant fixed, then the number asked for, in $\unit{Pa}$. If the field has no $t$ and is linear in $x, y$, the viscous terms vanish; say so.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}[Pressure in a corner flow]
+Water ($\rho = 1000\unit{kg/m^3}$) flows in the horizontal plane inside a $60^\circ$ corner with
+\[
+u = a(x^2 - y^2), \qquad v = -2axy, \qquad w = 0, \qquad a = 0.5\unit{m^{-1}s^{-1}} .
+\]
+The pressure at the corner $(0,0)$ is $p_0$. Find $p(x,y)$ and the pressure difference $p - p_0$ at $(2, 1)\unit{m}$.
+
+\emph{Assumptions.} Steady, incompressible, constant $\mu$; the plane is horizontal, so gravity acts only in $z$ and $p$ has a hydrostatic part in $z$ that is the same at every $(x,y)$ and can be left out.
+
+\emph{Walls.} On $y = 0$, $v = 0$. On the line $y = \sqrt3\,x$, $v/u = -2\sqrt3x^2/(x^2 - 3x^2) = \sqrt3$, so the flow is along the line. Both are streamlines, and the field fits a $60^\circ$ corner.
+
+\emph{Continuity.} $\partial u/\partial x + \partial v/\partial y = 2ax - 2ax = 0$. Possible.
+
+\emph{Acceleration.} $a_x = u\,\partial u/\partial x + v\,\partial u/\partial y = a(x^2 - y^2)(2ax) + (-2axy)(-2ay) = 2a^2x(x^2 + y^2)$. Likewise $a_y = 2a^2y(x^2 + y^2)$.
+
+\emph{Viscous terms.} $\nabla^2 u = 2a - 2a = 0$ and $\nabla^2 v = 0$. Viscosity does not affect the pressure in this flow, even though the fluid is viscous.
+
+\emph{Pressure gradient.} $\partial p/\partial x = -2\rho a^2 x(x^2 + y^2)$, $\partial p/\partial y = -2\rho a^2 y(x^2 + y^2)$. Compatibility: $\partial/\partial y$ of the first is $-4\rho a^2 xy$, and $\partial/\partial x$ of the second is $-4\rho a^2 xy$. Equal, so a pressure exists.
+
+\emph{Integrate.} In $x$: $p = -\rho a^2\big(\tfrac{x^4}{2} + x^2y^2\big) + f(y)$. Then $\partial p/\partial y = -2\rho a^2x^2y + f'(y)$, which must equal $-2\rho a^2 x^2 y - 2\rho a^2 y^3$, so $f' = -2\rho a^2 y^3$ and $f = -\rho a^2 y^4/2 + p_0$. Together:
+\[
+p = p_0 - \frac{\rho a^2}{2}(x^2 + y^2)^2 .
+\]
+At $(2,1)$: $p - p_0 = -\tfrac{1000(0.25)}{2}(25) = -3125\unit{Pa}$.
+
+\emph{Sanity check.} The speed squared is $u^2 + v^2 = a^2(x^2 + y^2)^2$, so the answer is $p_0 - \tfrac12\rho V^2$, Bernoulli from a stagnation point at the corner, as it must be for a flow with no viscous force. At $(2,1)$, $V = 2.5\unit{m/s}$ and $\tfrac12\rho V^2 = 3125\unit{Pa}$.
+\end{example}
+
+\begin{example}[A vertical slot: what the gauge reads]
+A water--glycol mixture ($\rho = 1100\unit{kg/m^3}$, $\mu = 0.010\unit{Pa\,s}$) flows upward between two vertical plates $h = 2\unit{mm}$ apart. A measured profile fits $u = 6\bar U(y/h)(1 - y/h)$, $v = w = 0$, with mean velocity $\bar U = 0.05\unit{m/s}$; $x$ is vertical (up) and $y$ across the gap. Find the pressure gradient, the pressure difference between two taps $0.5\unit{m}$ apart vertically, and how much of it is friction.
+
+\emph{Assumptions.} Steady, incompressible, constant $\mu$, plates wide (no $z$ dependence). $g_x = -g$, $g_y = 0$.
+
+\emph{Continuity.} $\partial u/\partial x = 0$ since $u = u(y)$; with $v = 0$ it is satisfied.
+
+\emph{$x$-momentum, term by term.} $\partial u/\partial t = 0$ (steady); $u\,\partial u/\partial x = 0$ ($u$ does not change with $x$); $v\,\partial u/\partial y = 0$ ($v = 0$); $w\,\partial u/\partial z = 0$. So the left side is zero and
+\[
+0 = -\pd{p}{x} - \rho g + \mu\frac{d^2u}{dy^2}, \qquad \frac{d^2u}{dy^2} = -\frac{12\bar U}{h^2} = -1.5\times10^5\unit{s^{-1}m^{-1}} .
+\]
+So $\partial p/\partial x = -\rho g - 12\mu\bar U/h^2 = -10\,791 - 1500 = -12\,291\unit{Pa/m}$.
+
+\emph{$y$-momentum.} Every term is zero except $-\partial p/\partial y$, so $\partial p/\partial y = 0$: the pressure is uniform across the gap.
+
+\emph{Answer.} The lower tap reads $12\,291 \times 0.5 = 6150\unit{Pa}$ more than the upper one. Of this, $\rho g(0.5) = 5400\unit{Pa}$ is just the weight of the column and $750\unit{Pa}$ is friction.
+
+\emph{Sanity check.} With no flow the gauge would read the hydrostatic $5400\unit{Pa}$; flow upward needs extra, and the extra is positive. The wall shear is $\mu\,du/dy|_0 = 6\mu\bar U/h = 1.5\unit{Pa}$ on each plate; two plates over $0.5\unit{m}$ of height give $1.5\unit{N}$ per metre of width, and the friction pressure difference times the gap, $750 \times 0.002 = 1.5\unit{N}$ per metre, balances it.
+\end{example}
+
+\begin{example}[A drain vortex]
+Water swirls into a bathtub drain. Away from the drain core the swirl fits $v_\theta = K/r$ with $K = 0.02\unit{m^2/s}$, $v_r$ and $v_z$ negligible. Far from the drain the free surface is flat at atmospheric pressure. Find how far the surface dips at $r = 10\unit{mm}$.
+
+\emph{Assumptions.} Steady, axisymmetric, incompressible; $z$ up, so $g_r = 0$, $g_z = -g$; radial and vertical velocities neglected.
+
+\emph{$\theta$-equation.} The left side $v_r v_\theta/r$ and $D v_\theta/Dt$ vanish (no $v_r$, no $t$, no $\theta$ dependence); $\partial p/\partial\theta = 0$ by symmetry. Viscous: $\partial_r[\frac1r\partial_r(r v_\theta)] = \partial_r[\frac1r\partial_r K] = 0$. Satisfied identically.
+
+\emph{$r$-equation.} Only the centripetal term and the pressure survive: $-\rho v_\theta^2/r = -\partial p/\partial r$ (the viscous term is the same zero). So $\partial p/\partial r = \rho K^2/r^3$.
+
+\emph{$z$-equation.} $\partial p/\partial z = -\rho g$, hydrostatic.
+
+\emph{Integrate.} $p = -\rho K^2/(2r^2) - \rho g z + C$. On the free surface $p = p_{\text{atm}}$; far away the surface is at $z = 0$, so $C = p_{\text{atm}}$. Then the surface is $z_s = -K^2/(2gr^2)$. At $r = 0.01\unit{m}$: $z_s = -(0.02)^2/(2 \times 9.81 \times 10^{-4}) = -0.204\unit{m}$.
+
+\emph{Sanity check.} The speed there is $2\unit{m/s}$, and $V^2/2g = 0.204\unit{m}$: the dip is the velocity head, Bernoulli along the surface, because this flow has no vorticity away from the axis (\secref{sec:vorticity}{vorticity and irrotationality}). A $20\unit{cm}$ dip at $1\unit{cm}$ means the core is air: the model fails before $r = 0$, where it predicts infinite speed.
+\end{example}
+
+\begin{trap}
+Sign of the pressure term: it is $-\nabla p$ on the right. Forgetting gravity, or putting it in the wrong component when $x$ is vertical or along a slope. Dropping $\mu\nabla^2\V$ because ``the flow is inviscid'' when the problem gives $\mu$. Integrating $\partial p/\partial x$ and adding a constant instead of $f(y)$. Skipping the compatibility check and reporting a pressure for a field that has none. In cylindrical coordinates, using the Cartesian Laplacian $\partial^2/\partial r^2$, which misses $\frac1r\partial/\partial r$, or forgetting $-v_\theta^2/r$.
+\end{trap}
+
+\begin{ladder}
+\item \white{P4.28}. A linear plane field: continuity, Navier--Stokes, the pressure field. Pressure from a given velocity field.
+\item \white{P4.30}. A nozzle field: the same three questions. The same, with convective terms that survive.
+\item \white{P4.36}. A given parabolic film profile on an incline; the constant and the flux. Checking a profile against the equations.
+\item \white{P4.32}. Which swirl profiles solve the equations exactly, and what they mean. The $\theta$ equation in cylindrical coordinates.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+Every result in \secref{sec:exactflows}{exact viscous flows}, including the crib sheet's laminar $Q = \pi D^4\Delta P/(128\mu L)$ and $f = 64/\text{Re}$, is this equation with most terms struck. Making it dimensionless in Chapter 5 divides the convective term by the viscous one and produces the Reynolds number; the pressure term gives the Euler number and gravity the Froude number, all on the sheet. The boundary-layer equations behind the sheet's flat-plate correlations are this equation with the small terms dropped. The rigid-body and hydrostatic lines of section 2 are the case $\V$ uniform or zero.
+\end{hides}

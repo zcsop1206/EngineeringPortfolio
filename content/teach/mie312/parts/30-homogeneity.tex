@@ -1,0 +1,161 @@
+\section{Dimensional homogeneity}
+\label{sec:homogeneity}
+
+Every term of a physical equation must carry the same dimensions, because adding a pressure to a velocity is as meaningless as adding metres to seconds. That one rule is the whole of this section and the foundation of the rest of chapter 5. It checks algebra in seconds, it tells you the units of a constant in a formula someone else fitted to data, and it exposes the formulas that only work in the units they were written in. The marks on an exam come from writing dimensions down cleanly, one quantity at a time, from its definition.
+
+\begin{recognise}
+``Show that the equation is dimensionally consistent (homogeneous).'' ``What are the dimensions (or SI units) of the constant $C$?'' ``Convert this formula to other units.'' A formula with a strange exponent such as $V^{1.85}$ or $h^{3/2}$ and a constant with no units stated. A list of quantities with ``give the dimensions of each in the $\{MLT\Theta\}$ system''. Any derived result you want to check before moving on, which is every derived result.
+\end{recognise}
+
+\begin{onsheet}
+Section 16, the nomenclature table, gives SI units and dimensions for mass, area, diameter, second moment of area, velocity, acceleration, force, torque, pressure, power, specific weight, density, dynamic and kinematic viscosity, shear stress and surface tension. Not on it: flow rate, mass flow, angular velocity, frequency, energy, specific heat or bulk modulus, nor how to get a dimension from a definition when a question introduces a quantity the table lacks. The table below covers those and shows the derivation for each. The sheet uses $\Upsilon$ for surface tension, as White does; many books write $\sigma$.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{Primary dimensions.} A \emph{dimension} is the kind of quantity a number measures (length, time), as opposed to the \emph{unit}, which is the particular yardstick (metre, foot). Mechanics needs three \emph{primary dimensions}: mass $M$, length $L$ and time $T$. Heat transfer adds temperature $\Theta$. Every other dimension is built from these by multiplying and dividing, because every other quantity is defined from them by a formula. The notation $\{q\}$ means ``the dimensions of $q$''; for example $\{V\} = LT^{-1}$. Pure numbers, ratios of two lengths, and angles in radians (an arc length divided by a radius) have dimensions $M^0L^0T^0$ and are called \emph{dimensionless}.
+
+\paragraph{The table, derived.} Each line takes its definition and substitutes the dimensions already found. Read it as a chain: force needs acceleration, pressure needs force, viscosity needs pressure.
+
+\begin{center}\small
+\begin{tabular}{>{\raggedright}p{3.3cm}>{\raggedright}p{6.6cm}l}
+\toprule
+Quantity & Definition used & Dimensions \tabularnewline
+\midrule
+Velocity $V$ & distance / time & $LT^{-1}$ \tabularnewline
+Acceleration $a$ & change of velocity / time & $LT^{-2}$ \tabularnewline
+Force $F$ & $F = ma$ & $MLT^{-2}$ \tabularnewline
+Pressure, stress $p, \tau$ & force / area & $ML^{-1}T^{-2}$ \tabularnewline
+Density $\rho$ & mass / volume & $ML^{-3}$ \tabularnewline
+Specific weight $\gamma$ & weight / volume $= \rho g$ & $ML^{-2}T^{-2}$ \tabularnewline
+Dynamic viscosity $\mu$ & $\tau = \mu\, du/dy$, so $\mu = \tau / (du/dy)$; $\{du/dy\} = T^{-1}$ & $ML^{-1}T^{-1}$ \tabularnewline
+Kinematic viscosity $\nu$ & $\nu = \mu/\rho$ & $L^2T^{-1}$ \tabularnewline
+Surface tension $\Upsilon$ & force / length of the line it pulls along & $MT^{-2}$ \tabularnewline
+Energy, work $E$ & force $\times$ distance & $ML^2T^{-2}$ \tabularnewline
+Power $P$ & energy / time, or force $\times$ velocity & $ML^2T^{-3}$ \tabularnewline
+Torque $\mathcal{T}$ & force $\times$ lever arm & $ML^2T^{-2}$ \tabularnewline
+Volume flow rate $Q$ & volume / time & $L^3T^{-1}$ \tabularnewline
+Mass flow $\mdot$ & mass / time $= \rho Q$ & $MT^{-1}$ \tabularnewline
+Angular velocity $\Omega$ & angle / time; the radian is dimensionless & $T^{-1}$ \tabularnewline
+Frequency $f$ & cycles / time & $T^{-1}$ \tabularnewline
+Specific heat $c_p, c_v$ & energy / (mass $\times$ temperature change) & $L^2T^{-2}\Theta^{-1}$ \tabularnewline
+Gas constant $R$ & $p = \rho R T$, so $R = p/(\rho T)$ & $L^2T^{-2}\Theta^{-1}$ \tabularnewline
+Bulk modulus $K$ & $K = -dp / (d\mathcal{V}/\mathcal{V})$; the volume ratio is dimensionless & $ML^{-1}T^{-2}$ \tabularnewline
+Thermal conductivity $k$ & heat flux $= -k\, dT/dx$; heat flux is power/area & $MLT^{-3}\Theta^{-1}$ \tabularnewline
+\bottomrule
+\end{tabular}
+\end{center}
+
+Three consequences. Torque and energy share dimensions but are different things (force times a perpendicular arm, force times a parallel displacement), so matching dimensions do not prove two quantities the same. Specific heat and the gas constant are velocity squared per degree, which is why $\sqrt{kRT}$ is a speed (the speed of sound; $k = c_p/c_v$ is dimensionless). Bulk modulus is a pressure, so $\sqrt{K/\rho}$ is also a speed. The SI unit of $\mu$, $\mathrm{kg/(m\,s)}$, is the same as $\mathrm{Pa\,s} = \mathrm{N\,s/m^2}$; the unit of $\Upsilon$, $\mathrm{N/m}$, is the same as $\mathrm{kg/s^2}$.
+
+\paragraph{The principle.} An equation is \emph{dimensionally homogeneous} when every additive term has the same dimensions. Every equation derived from physical laws is homogeneous, because the laws themselves are statements that hold whatever units are used: if an equation held in metres but not in feet, it would be a statement about the metre, not about the fluid. Two rules follow and both are used on exams.
+\begin{enumerate}[nosep,leftmargin=*]
+\item Terms added, subtracted or set equal must match. Factors multiplied together just combine their exponents.
+\item The argument of a function that is not a power ($\exp$, $\ln$, $\sin$) must be dimensionless, and so is its value. The reason: $e^x = 1 + x + x^2/2 + \cdots$ adds $x$ to $x^2$, which is only legal if $x$ has no dimensions. A logarithm of a dimensional quantity, such as $\ln(p)$, only appears legitimately as a difference $\ln p_2 - \ln p_1 = \ln(p_2/p_1)$.
+\end{enumerate}
+Derivatives and integrals carry the dimensions of what they divide or multiply by: $\{\partial u/\partial x\} = \{u\}/L$, $\{\partial^2 u/\partial y^2\} = \{u\}/L^2$, $\{\int p \, dA\} = \{p\} L^2$. Operators such as $\nabla$ count as $L^{-1}$ and $D/Dt$ as $T^{-1}$.
+
+\paragraph{Checking an equation.} Write the dimensions of each term separately, simplify each to a single $M^aL^bT^c$, and compare. Take the steady Bernoulli equation per unit volume, $p + \tfrac12 \rho V^2 + \rho g z = \text{const}$. The three terms have dimensions $ML^{-1}T^{-2}$; $ML^{-3} \cdot L^2T^{-2} = ML^{-1}T^{-2}$; and $ML^{-3} \cdot LT^{-2} \cdot L = ML^{-1}T^{-2}$. They match, so each term is a pressure, an energy per unit volume. The factor $\tfrac12$ is invisible to this check: homogeneity says nothing about pure numbers, signs, or whether a term that should be there is missing. It catches a wrong power of a variable, which is the commonest algebra slip.
+
+\paragraph{The units of an empirical constant.} An \emph{empirical formula} is one fitted to measurements rather than derived. If someone writes $y = C x^n$ and states the units of $x$ and $y$, then $C$ carries whatever units make the equation balance:
+\[
+\{C\} = \frac{\{y\}}{\{x\}^n}.
+\]
+If the formula is a correct physical law, the units of $C$ will reduce to a combination of physical properties the problem should contain (for example $\{C\} = \{\rho\}$ or $\{C\} = \{\mu\}/L$), and $C$ is really those properties times a pure number. If the units come out as something like $\mathrm{kg\,m^{-2.8}\,s^{-0.2}}$, the formula is dimensionally inconsistent: the constant has absorbed fluid properties and geometry that were held fixed in the test.
+
+\paragraph{The pitfalls of inconsistent formulas.} Such a formula is not wrong, but it is narrow.
+\begin{enumerate}[nosep,leftmargin=*]
+\item \emph{It is tied to its units.} Changing from SI to US units changes the numerical value of $C$, by a factor that you compute by substituting the unit conversions. Using the SI constant with feet gives a wrong number with no warning.
+\item \emph{It is tied to its fluid and geometry.} The properties absorbed into $C$ were those of the test. Using the formula for a different fluid, temperature or size silently assumes those properties did not matter, which is usually false.
+\item \emph{It cannot be extrapolated.} A fitted exponent such as $1.8$ is the local slope of a curve over the tested range. Outside that range the physics may change (laminar to turbulent, for example) and the slope with it.
+\end{enumerate}
+The cure, when you know which properties matter, is to rewrite the formula in a homogeneous form with those properties shown and the constant made dimensionless. The first worked example does exactly this.
+
+\begin{firstmoves}
+Write $\{\cdot\}$ for every symbol before doing anything else, building each from its definition. Reduce each additive term to one $M^aL^bT^c\Theta^d$. For an empirical constant, solve $\{C\} = \{y\}/\{x\}^n$, then state it in base SI units. For a unit conversion, substitute $x_{\text{SI}} = (\text{factor}) \times x_{\text{other}}$ into the formula and collect the number. Say in one line whether the formula is homogeneous; if not, say what it has absorbed. Remember that homogeneity is necessary, not sufficient.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+A supplier's datasheet for a woven-wire strainer in a water line gives the clean pressure drop as
+\[
+\Delta p = 410\, V^{1.8}, \qquad \Delta p \text{ in Pa}, \; V \text{ (approach velocity) in m/s},
+\]
+fitted to tests with water at $20^\circ$C ($\rho = 998\unit{kg/m^3}$, $\mu = 1.0\times10^{-3}\unit{Pa\,s}$). The wire diameter is $d = 0.20\unit{mm}$.
+(a) Find the SI units of the constant $410$ and say whether the formula is homogeneous.
+(b) Rewrite the formula for $\Delta p$ in psi with $V$ in ft/s.
+(c) Assuming $\Delta p$ depends only on $\rho$, $\mu$, $V$ and $d$ for a given weave, write the formula in a dimensionally homogeneous form and find the dimensionless constant.
+(d) Predict $\Delta p$ at $V = 1.2\unit{m/s}$ for a glycol coolant with $\rho = 1040\unit{kg/m^3}$, $\mu = 3.5\times10^{-3}\unit{Pa\,s}$, and compare with the datasheet formula used naively.
+\end{example}
+
+\begin{proof}[Solution]
+(a) $\{C\} = \{\Delta p\}/\{V\}^{1.8}$, so in units $C$ is $\mathrm{Pa}/(\mathrm{m/s})^{1.8} = \mathrm{kg\,m^{-1}s^{-2}} \cdot \mathrm{m^{-1.8}s^{1.8}} = \mathrm{kg\,m^{-2.8}\,s^{-0.2}}$. The fractional powers of metres and seconds are the fingerprint of a constant that has silently absorbed fluid properties and a size (part (c) shows which). As written, with a bare number $410$, the formula is not homogeneous: it is valid only in Pa and m/s, and only for water at $20^\circ$C on this weave.
+
+(b) Substitute $V_{\text{SI}} = 0.3048\, V_{\text{ft/s}}$ and $\Delta p_{\text{Pa}} = 6894.76\, \Delta p_{\text{psi}}$:
+\[
+6894.76\, \Delta p_{\text{psi}} = 410\, (0.3048)^{1.8} V_{\text{ft/s}}^{1.8}
+\quad\Longrightarrow\quad
+\Delta p_{\text{psi}} = 0.00701\, V_{\text{ft/s}}^{1.8}.
+\]
+Check at $V = 1\unit{m/s} = 3.281\unit{ft/s}$: $0.00701 \times 3.281^{1.8} = 0.0595\unit{psi} = 410\unit{Pa}$, the SI value. The number changed by a factor of about $58\,000$; that is what ``tied to its units'' means.
+
+(c) A homogeneous relation among $\Delta p, \rho, \mu, V, d$ can be written (by the Pi theorem of the next section, or simply by forming the obvious groups) as $\Delta p/(\rho V^2) = f(\mathrm{Re})$ with $\mathrm{Re} = \rho V d/\mu$. At fixed fluid and wire, $\mathrm{Re} \propto V$. The datasheet says $\Delta p \propto V^{1.8}$, so $f(\mathrm{Re})\, V^2 \propto V^{1.8}$, which forces $f(\mathrm{Re}) = K\,\mathrm{Re}^{-0.2}$ with $K$ a pure number. Therefore
+\[
+\Delta p = K \rho V^2 \left(\frac{\rho V d}{\mu}\right)^{-0.2} = K \rho^{0.8} \mu^{0.2} d^{-0.2} V^{1.8}.
+\]
+Dimension check of the right side: $M^{0.8}L^{-2.4} \cdot M^{0.2}L^{-0.2}T^{-0.2} \cdot L^{-0.2} \cdot L^{1.8}T^{-1.8} = ML^{-1}T^{-2}$, a pressure. Matching to the datasheet, $410 = K (998)^{0.8} (1.0\times10^{-3})^{0.2} (2.0\times10^{-4})^{-0.2}$, which gives $K = 1.18$. The dimensional constant $410$ was this pure number times $\rho^{0.8}\mu^{0.2}d^{-0.2}$ for water and this wire.
+
+(d) Homogeneous form, glycol: $\Delta p = 1.18 \times 1040^{0.8} \times (3.5\times10^{-3})^{0.2} \times (2.0\times10^{-4})^{-0.2} \times 1.2^{1.8} = 756\unit{Pa}$. Naive datasheet: $410 \times 1.2^{1.8} = 569\unit{Pa}$. The naive use underestimates by about $25\%$, mostly because the coolant is $3.5$ times more viscous.
+
+Assumption to state: the power law fitted for water still holds in the glycol's Reynolds-number range. The water tests at $1\unit{m/s}$ had $\mathrm{Re} = 998 \times 1 \times 2\times10^{-4}/10^{-3} \approx 200$; the glycol case has $\mathrm{Re} = 1040 \times 1.2 \times 2\times10^{-4}/3.5\times10^{-3} \approx 71$, lower than the tested range if the tests stayed near $1\unit{m/s}$. The prediction is an extrapolation in $\mathrm{Re}$ and should be reported as such.
+\end{proof}
+
+Sanity check: a more viscous fluid at the same speed should give a larger drop, and the homogeneous form does; the naive form cannot respond to viscosity at all. The exponent $0.2$ on $\mu$ is small because the flow is mostly inertial ($\Delta p \propto V^{1.8}$ is close to $V^2$); a purely viscous drop would go as $V^1$ and $\mu^1$.
+
+\begin{example}
+A rotating-disk viscometer has a flat disk of radius $R$ turning at angular velocity $\Omega$ a gap $h$ above a fixed plate, with the gap filled by oil of viscosity $\mu$ and density $\rho$. Three students offer formulas for the torque needed to turn it:
+\[
+\text{(A) } \mathcal{T} = \frac{\pi \mu \Omega R^4}{2h}, \qquad
+\text{(B) } \mathcal{T} = \frac{\pi \mu \Omega R^3}{2h^2}, \qquad
+\text{(C) } \mathcal{T} = \frac{\pi}{2}\rho \Omega^2 R^5 .
+\]
+(a) Check each for homogeneity. (b) Of those that pass, which can be the viscous torque, and why? (c) For SAE 30 oil ($\mu = 0.29\unit{Pa\,s}$), $R = 40\unit{mm}$, $h = 0.50\unit{mm}$ at $300\unit{rpm}$, find the torque and the power dissipated. (d) The manufacturer instead quotes $\mathcal{T} = 2.53 \times 10^{-4}\, N$ with $\mathcal{T}$ in N\,m and $N$ in rpm for this oil and disk. Find the units of the constant and check it against your answer.
+\end{example}
+
+\begin{proof}[Solution]
+(a) The target is $\{\mathcal{T}\} = ML^2T^{-2}$.
+(A) $\{\mu\Omega R^4/h\} = ML^{-1}T^{-1} \cdot T^{-1} \cdot L^4 \cdot L^{-1} = ML^2T^{-2}$. Homogeneous.
+(B) $\{\mu\Omega R^3/h^2\} = ML^{-1}T^{-1} \cdot T^{-1} \cdot L^3 \cdot L^{-2} = MT^{-2}$. This is a force per length, not a torque; (B) is wrong. Its error is two lengths short, the signature of a slipped power of $R$ or $h$.
+(C) $\{\rho\Omega^2R^5\} = ML^{-3} \cdot T^{-2} \cdot L^5 = ML^2T^{-2}$. Homogeneous.
+
+(b) Only (A). Formula (C) is homogeneous but contains no viscosity, so it predicts the same torque in air and in honey; a viscous torque must vanish when $\mu \to 0$. Homogeneity is necessary, not sufficient. (A) also has the right physics: shear stress $\tau = \mu \Omega r/h$ at radius $r$ (linear velocity profile across the thin gap), acting on a ring of area $2\pi r\,dr$ with arm $r$, integrates to $\int_0^R \mu\Omega r/h \cdot 2\pi r^2 \, dr = \pi\mu\Omega R^4/(2h)$.
+
+(c) $\Omega = 300 \times 2\pi/60 = 31.4\unit{rad/s}$. Then
+\[
+\mathcal{T} = \frac{\pi (0.29)(31.4)(0.040)^4}{2 (5.0\times10^{-4})} = 0.0733\unit{N\,m}, \qquad
+P = \mathcal{T}\Omega = 0.0733 \times 31.4 = 2.30\unit{W}.
+\]
+Units: $\mathrm{Pa\,s} \cdot \mathrm{s^{-1}} \cdot \mathrm{m^4}/\mathrm{m} = \mathrm{N\,m^{-2}} \cdot \mathrm{m^3} = \mathrm{N\,m}$, and $\mathrm{N\,m} \cdot \mathrm{rad/s} = \mathrm{W}$.
+
+(d) $\{C\} = \mathrm{N\,m}/\mathrm{rpm}$. Since $1\unit{rpm} = (2\pi/60)\unit{rad/s}$ and the radian is dimensionless, $\mathrm{N\,m/rpm} = (60/2\pi)\unit{N\,m\,s} = 9.55\unit{N\,m\,s}$, so in base units the constant is $2.53\times10^{-4} \times 9.55 = 2.42\times10^{-3}\unit{kg\,m^2/s}$. Physically it is $\pi\mu R^4/(2h)$ for this oil and disk, which is $\pi (0.29)(0.040)^4/(2 \times 5\times10^{-4}) = 2.33\times10^{-3}\unit{kg\,m^2/s}$; the quoted value is $4\%$ higher, plausibly an edge correction measured at calibration. At $300\unit{rpm}$ the quoted formula gives $0.0759\unit{N\,m}$, against $0.0733\unit{N\,m}$ from (A).
+\end{proof}
+
+Sanity check: the torque is fingertip-sized, and $2.3\unit{W}$ into a few cubic centimetres of oil is why such instruments control temperature.
+
+\begin{trap}
+Treating torque and energy as the same because they share $ML^2T^{-2}$. Giving $\mu$ the dimensions of $\nu$, or forgetting that $\{\Upsilon\} = MT^{-2}$ has no length in it. Forgetting that rpm and degrees must become rad/s before any formula with $\Omega$ is used, even though radians carry no dimension. Using a fitted constant in other units, or for another fluid, without converting. Declaring a formula correct because it is homogeneous: pure numbers, signs and missing terms are invisible to the check. Writing $\ln p$ or $e^{t}$ with a dimensional argument.
+\end{trap}
+
+\begin{ladder}
+\item \white{P5.10}. The dimensions of four composite expressions. Dimensions from definitions.
+\item \white{P4.20}. The dimensions of the constants in a velocity profile. Units of constants in a formula.
+\item \white{P5.12}. Five variables, one group; a ratio of familiar groups. Building a group by hand.
+\item \white{P5.8}. Build the Archimedes number from four quantities. Same, with a density difference.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+Inside every other check on the exam: a control-volume momentum balance where one term has an extra $\rho$ (chapter 3), a Navier--Stokes term with the wrong number of derivatives (chapter 4), a velocity profile whose constant must carry units of $\mathrm{s^{-1}}$ or $\mathrm{m^{-1}s^{-1}}$. In the Pi theorem (\secref{sec:pitheorem}{the Pi theorem}), where the table above is the first step. In pipe-flow and pump formulas quoted in US units with $g_c$ or with ``$Q$ in gpm'', which are inconsistent formulas in disguise.
+\end{hides}

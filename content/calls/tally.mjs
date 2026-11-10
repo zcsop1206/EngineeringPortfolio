@@ -433,7 +433,7 @@ export function parseCommitWeeks(logText) {
 
 const MATH_FROM = '2026-11-09';
 const ARRIVAL_BY = '2027-01-18';
-const TEST_DOMAIN_DATES = { putnam: '2026-12-05', asic: '2027-01-18' };
+const TEST_DOMAIN_DATES = { mie312: '2026-11-12', putnam: '2026-12-05', asic: '2027-01-18' };
 const SYSTEM_DOMAIN = 'system'; // calls about the system itself; never dormant, never a test domain
 const MIN_N = 5;
 

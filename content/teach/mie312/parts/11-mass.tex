@@ -1,0 +1,135 @@
+\section{Conservation of mass}
+\label{sec:mass}
+
+Mass is neither made nor destroyed in a flow, so whatever enters a region either leaves it or accumulates in it. That one sentence is the whole physics of this section. The work in an exam question is bookkeeping: deciding where the boundaries are, which crossings carry fluid in and which out, whether the amount stored is changing, and how to turn a velocity that varies across a pipe into a single flow rate. It is also usually the first line of a longer momentum or energy question, where a slip costs every mark after it.
+
+\begin{recognise}
+A tank filling or draining, a level rising or falling, a pressure in a rigid vessel changing as gas leaks out, a pipe junction (a tee, a manifold, a leak), a change of pipe diameter, a velocity profile given as a formula, ``find the average velocity'' or ``find the flow rate'', and any question with two unknown speeds where one equation is clearly missing. In momentum, Bernoulli and energy problems, mass conservation is the equation that links the inlet speed to the outlet speed.
+\end{recognise}
+
+\begin{onsheet}
+The sheet prints $\sum\mdot_\text{in} = \sum\mdot_\text{out} + \partial m_\text{cv}/\partial t$, the transport theorem, $\mdot_\text{rel} = \rho AV_r$, and, under pipe networks, $\sum Q_\text{node} = 0$. It leaves out: that $\mdot = \rho AV$ holds only with $V$ the velocity component \emph{normal} to the section and uniform across it (otherwise integrate); that $\sum Q_\text{in} = \sum Q_\text{out}$ needs constant density; that the stored mass of a liquid tank is $\rho\int A(h)\,dh$, so the rate of change is $\rho A(h)\,dh/dt$; and that for a gas in a rigid tank the stored mass changes through its density, which is where the ideal gas law $P = \rho RT$ (printed under properties, with $R_\text{air} = 287\unit{J/(kg\,K)}$) enters. Water densities by temperature are in its water table.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{From the transport theorem.} Take $B = m$, so $b = 1$. A system has fixed mass, so $dm_\text{sys}/dt = 0$, and for a fixed CV
+\[
+0 = \pd{}{t}\int_\text{CV}\rho\, d\forall + \int_\text{CS}\rho\,(\V\cdot\nhat)\, dA .
+\]
+The first term is the rate of increase of the mass stored in the CV, $dm_\text{cv}/dt$. The second is the net rate at which mass leaves. Where the fluid crosses at sections with uniform properties, $\int\rho(\V\cdot\nhat)\,dA = \sum_\text{out}\mdot - \sum_\text{in}\mdot$, which rearranges to the sheet's form
+\[
+\sum\mdot_\text{in} = \sum\mdot_\text{out} + \frac{dm_\text{cv}}{dt}.
+\]
+
+\paragraph{Mass flow and volume flow.} The \emph{mass flow rate} $\mdot$ is the mass crossing a surface per second, in $\mathrm{kg/s}$. The \emph{volume flow rate} $Q$ is the volume crossing per second, in $\mathrm{m^3/s}$. Through a section of area $A$,
+\[
+Q = \int_A (\V\cdot\nhat)\, dA, \qquad \mdot = \int_A \rho(\V\cdot\nhat)\, dA .
+\]
+The \emph{mean} (or average) velocity is defined as the uniform speed that would carry the same volume flow: $V_\text{avg} = Q/A$. With constant density, $\mdot = \rho Q = \rho AV_\text{avg}$ exactly, whatever the profile. That is why the 1-D formulas work for real, nonuniform pipe flow as long as $V$ means the average. Only when a product of velocities is carried, as in momentum ($\rho u^2$) or kinetic energy ($\rho u^3$), does the profile matter again; that is the job of $\beta$ and $\alpha$.
+
+\paragraph{Steady flow.} If nothing changes in time, $dm_\text{cv}/dt = 0$ and $\sum\mdot_\text{in} = \sum\mdot_\text{out}$. For one inlet and one outlet, $\rho_1A_1V_1 = \rho_2A_2V_2$.
+
+\paragraph{Incompressible flow.} If the density is constant (liquids, and gases below a Mach number of about $0.3$, where Mach number is speed divided by the speed of sound), $\rho$ cancels and volume is conserved too. For a rigid CV completely full of liquid the stored mass cannot change, so $\sum Q_\text{in} = \sum Q_\text{out}$ even if the flow is unsteady. For one inlet and one outlet, $A_1V_1 = A_2V_2$: halve the diameter and the speed rises fourfold.
+
+\paragraph{Tanks with a free surface.} A \emph{free surface} is a liquid surface open to a gas, such as the top of the water in a tank. If the tank has cross-sectional area $A(h)$ at height $h$ above the bottom, the liquid volume is $\forall = \int_0^h A(z)\,dz$, and by the fundamental theorem of calculus $d\forall/dt = A(h)\,dh/dt$. With constant density the mass equation becomes the tank ODE
+\[
+A(h)\,\frac{dh}{dt} = Q_\text{in} - Q_\text{out} .
+\]
+The CV here is the whole tank up to and including a lid above the surface; air crosses the lid but the analysis tracks only the liquid. If $Q_\text{in}$ and $Q_\text{out}$ are constant and $A$ is constant, $h$ changes linearly. If $Q_\text{out}$ depends on $h$, as it does for a hole in the bottom ($Q_\text{out} = a\sqrt{2gh}$ from \secref{sec:bernoulli}{Bernoulli}), separate the variables and integrate.
+
+\paragraph{Gas in a rigid tank.} A rigid tank of volume $\forall$ holds $m = \rho\forall$. If $\rho$ is uniform inside, $dm_\text{cv}/dt = \forall\,d\rho/dt$. With the ideal gas law at constant temperature, $\rho = P/(RT)$, so
+\[
+\frac{\forall}{RT}\frac{dP}{dt} = \sum\mdot_\text{in} - \sum\mdot_\text{out}.
+\]
+Constant temperature is an assumption that holds for slow leaks from a tank that exchanges heat with its surroundings; a fast blowdown cools the gas, and then the energy equation is needed as well.
+
+\paragraph{Nonuniform profiles.} When the velocity varies across a section, integrate. In a round pipe the natural area element is a thin ring of radius $r$ and width $dr$, with area $dA = 2\pi r\,dr$. In a rectangular channel of width $w$ with velocity varying with height $y$, $dA = w\,dy$. Two profiles appear repeatedly: laminar pipe flow, $u = U_\text{max}(1 - r^2/R^2)$, with $V_\text{avg} = U_\text{max}/2$; and the turbulent power law $u = U_\text{max}(1 - r/R)^{1/n}$ with $n \approx 7$, worked out in an example below.
+
+\begin{firstmoves}
+Draw the CV and label every crossing. Decide: steady or not, constant density or not. Write $\sum\mdot_\text{in} = \sum\mdot_\text{out} + dm_\text{cv}/dt$ before putting in numbers. For a tank, write the stored mass as $\rho\int A\,dh$ (liquid) or $\rho\forall$ with $\rho = P/RT$ (gas). For a profile, write $dA$ first and integrate. Convert $\mathrm{L/s}$ and $\mathrm{mm}$ to SI at the start. At the end, check that the units of every term are $\mathrm{kg/s}$, or $\mathrm{m^3/s}$ if density was cancelled.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+A hopper is an inverted cone with its vertex at the bottom and its wall at $30^\circ$ to the vertical axis. It is filled from empty with water at a constant $2\unit{L/s}$; the outlet at the vertex is closed. (a) Write the ODE for the depth $h$. (b) Find $dh/dt$ when $h = 0.5\unit{m}$. (c) Find the time to reach $h = 0.8\unit{m}$. (d) At $0.8\unit{m}$ the outlet opens and drains $3\unit{L/s}$ while the inflow continues. Find $dh/dt$ at that instant.
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: water incompressible; the surface stays flat; flow rates are as stated.
+
+(a) CV: the hopper interior up to a fixed lid above the water. At depth $h$ the surface radius is $r = h\tan 30^\circ$, so $A(h) = \pi h^2\tan^2 30^\circ = \pi h^2/3$. Mass conservation with constant density: $A(h)\,dh/dt = Q_\text{in} - Q_\text{out}$, so
+\[
+\frac{\pi h^2}{3}\frac{dh}{dt} = Q_\text{in}\qquad(\text{outlet closed}).
+\]
+
+(b) At $h = 0.5\unit{m}$, $A = \pi(0.25)/3 = 0.2618\unit{m^2}$, so $dh/dt = 0.002/0.2618 = 7.64\times10^{-3}\unit{m/s} = 7.64\unit{mm/s}$.
+
+(c) Separate and integrate from $h = 0$ at $t = 0$: $\pi h^3/9 = Q_\text{in}t$. At $h = 0.8\unit{m}$ the volume is $\pi(0.512)/9 = 0.1787\unit{m^3}$, so $t = 0.1787/0.002 = 89.4\unit{s}$, about $1.5\unit{min}$.
+
+(d) Now $Q_\text{in} - Q_\text{out} = 2 - 3 = -1\unit{L/s}$ and $A(0.8) = \pi(0.64)/3 = 0.6702\unit{m^2}$, so $dh/dt = -0.001/0.6702 = -1.49\unit{mm/s}$: the level falls.
+
+Check: the level rises quickly when the cone is narrow and slowly when it is wide; $7.6\unit{mm/s}$ at $0.5\unit{m}$ and $2\unit{L/s}/0.67\unit{m^2} = 3.0\unit{mm/s}$ at $0.8\unit{m}$ fits that. The volume of a cone, $\tfrac13\pi r^2h$ with $r = 0.8/\sqrt3$, is again $0.1787\unit{m^3}$.
+\end{proof}
+
+\begin{example}
+A rigid $0.4\unit{m^3}$ tank holds air at $600\unit{kPa}$ absolute and $300\unit{K}$. A valve releases air at $0.012\unit{kg/s}$ at that instant. The tank stays at $300\unit{K}$. (a) Find the mass and density of the air. (b) Find the rate of change of tank pressure. (c) The valve is choked, so its mass flow is proportional to the tank pressure. How long until the pressure reaches $400\unit{kPa}$? Use $R = 287\unit{J/(kg\,K)}$.
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: air an ideal gas; uniform pressure, density and temperature in the tank; isothermal as stated; the only crossing is the valve.
+
+(a) $\rho = P/(RT) = 600\,000/(287\times300) = 6.969\unit{kg/m^3}$, and $m = \rho\forall = 2.787\unit{kg}$.
+
+(b) CV: the inside of the tank, fixed and rigid. Mass: $dm_\text{cv}/dt = -\mdot_\text{out}$. With $m = P\forall/(RT)$ and $T$ constant,
+\[
+\frac{dP}{dt} = -\frac{RT}{\forall}\mdot_\text{out} = -\frac{287\times 300}{0.4}\times 0.012 = -2583\unit{Pa/s} = -2.58\unit{kPa/s}.
+\]
+
+(c) Write $\mdot_\text{out} = kP$ with $k = 0.012/600\,000 = 2.0\times10^{-8}\unit{kg/(s\,Pa)}$. Then $dP/dt = -(kRT/\forall)P = -P/\tau$ with $\tau = \forall/(kRT) = 0.4/(2.0\times10^{-8}\times287\times300) = 232.3\unit{s}$. So $P = P_0e^{-t/\tau}$ and
+\[
+t = \tau\ln\frac{P_0}{P} = 232.3\ln\frac{600}{400} = 94.2\unit{s}.
+\]
+
+Check: at the initial rate of $2.58\unit{kPa/s}$ the $200\unit{kPa}$ drop would take $77.4\unit{s}$. The real rate falls as the pressure falls, so the answer must be longer, and $94\unit{s}$ is.
+\end{proof}
+
+\begin{example}
+Water ($998\unit{kg/m^3}$) flows in a pipe of diameter $D = 0.10\unit{m}$ with the turbulent profile $u = U_\text{max}(1 - r/R)^{1/7}$; a probe on the centreline reads $U_\text{max} = 2.4\unit{m/s}$. (a) Find $V_\text{avg}/U_\text{max}$ by integration, then $Q$ and $\mdot$. (b) The pipe reduces to $60\unit{mm}$; find the mean velocity there. (c) What error results from taking the centreline reading as the mean?
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: steady, incompressible, axisymmetric profile as given.
+
+(a) $Q = \int_0^R u\,2\pi r\,dr$. Put $y = 1 - r/R$, so $r = R(1-y)$ and $dr = -R\,dy$; the limits $r = 0, R$ become $y = 1, 0$:
+\[
+Q = 2\pi R^2U_\text{max}\int_0^1 y^{1/7}(1 - y)\,dy = 2\pi R^2 U_\text{max}\Big(\frac{7}{8} - \frac{7}{15}\Big) = 2\pi R^2U_\text{max}\cdot\frac{49}{120}.
+\]
+Dividing by $\pi R^2$: $V_\text{avg}/U_\text{max} = 98/120 = 0.817$. So $V_\text{avg} = 1.96\unit{m/s}$, $Q = \tfrac{\pi}{4}(0.1)^2(1.96) = 0.01539\unit{m^3/s}$ and $\mdot = 998\times0.01539 = 15.36\unit{kg/s}$.
+
+(b) Steady and incompressible, so $Q$ is the same: $V = 0.01539/(\tfrac{\pi}{4}(0.06)^2) = 5.44\unit{m/s}$. Equivalently $1.96\times(100/60)^2 = 5.44\unit{m/s}$.
+
+(c) Using $2.4\unit{m/s}$ as the mean overestimates $Q$ by $2.4/1.96 - 1 = 22\%$.
+
+Check: for general $n$ the same integral gives $V_\text{avg}/U_\text{max} = 2n^2/[(n+1)(2n+1)]$; $n = 7$ gives $0.817$, and $n \to \infty$ (a flat profile) gives $1$, as it should. A numerical integration of the profile gives the same $Q$ to four figures.
+\end{proof}
+
+\begin{trap}
+Using the diameter where the area belongs, or forgetting to square the diameter ratio. Using $Q_\text{in} = Q_\text{out}$ for a gas whose density changes. Dropping $dm_\text{cv}/dt$ in a tank problem because the word ``steady'' appeared elsewhere in the question. Writing $A\,dh/dt$ with a constant $A$ for a cone or sphere. Taking $\mdot = \rho AV$ with a velocity that is not normal to the section: a jet crossing a plane at an angle carries $\rho AV\cos\theta$ through that plane. Integrating a pipe profile with $dA = dr$ instead of $2\pi r\,dr$. Mixing gauge and absolute pressure in $P = \rho RT$; the ideal gas law needs absolute pressure.
+\end{trap}
+
+\begin{ladder}
+\item \white{P3.10}. A porous pipe wall sucks or injects radially; exit and wall speeds. Mass flow through a wall as well as the ends.
+\item \white{P3.14}. A tank with one inlet and two outlets; the level rate. Signs of inflow and outflow in the unsteady balance.
+\item \white{P3.16}. A plate with a cubic exit profile; the flow leaving through the top. Integrating a nonuniform profile.
+\item \white{P3.36}. A fast jet entrains a slow annular stream; the fully mixed speed. Mass with two inlets of different speeds.
+\item \white{P3.38}. A disk squeezes fluid out radially; the outflow velocity. Deforming control volume.
+\item \white{P3.24}. A cone filled from its tip with a ramping inflow; the height history. Separating and integrating the level equation.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+Mass conservation is the first equation in every momentum, Bernoulli and energy problem, where it sets the outlet speed. Shrunk to a point it becomes the continuity equation $\partial\rho/\partial t + \nabla\cdot(\rho\V) = 0$ of chapter 4, and for incompressible flow $\nabla\cdot\V = 0$, which the sheet prints in 2-D. The tank ODE reappears in the draining problems of \secref{sec:bernoulli}{Bernoulli}, and junction balances $\sum Q = 0$ are the node equations of pipe networks.
+\end{hides}

@@ -1,0 +1,159 @@
+\section{Bernoulli and the grade lines}
+\label{sec:bernoulli}
+
+Bernoulli's equation trades pressure for speed for height along the path of a fluid particle. It is the quickest tool in the chapter and the most misused, because it is easy to remember and its assumptions are not. This section derives it from Newton's second law so that each assumption appears at the step where it is used, then applies it to the standard devices: the Pitot tube, the Venturi meter, the draining tank and the siphon. The grade lines at the end turn the equation into a picture of where the energy of a pipe flow is.
+
+\begin{recognise}
+A question that gives a pressure at one point and asks for a speed at another, or the reverse. A Pitot or Pitot-static tube, a manometer across a flow meter, a Venturi or a nozzle with gauges, a jet from a hole in a tank, a siphon, a free jet's height. ``Neglect losses'' or ``frictionless'' in the statement is an invitation. A request to sketch the HGL and EGL. Also the step inside a momentum question where an unknown pressure at a flange must be found.
+\end{recognise}
+
+\begin{onsheet}
+The sheet prints
+\[
+P_0 = P + \tfrac12\rho V^2,\quad V = \sqrt{\frac{2(P_0 - P)}{\rho}},\quad V = \sqrt{2gh\Big(\frac{\rho_m}{\rho_f} - 1\Big)},\quad Q = C_dA_t\sqrt{\frac{2\Delta P/\rho}{1 - \beta^4}},
+\]
+with $C_d \approx 0.98$ (Venturi) and $0.61$ (orifice), $\mathrm{HGL} = z + P/\gamma$, $\mathrm{EGL} = \mathrm{HGL} + \alpha V^2/2g$, and six drawing rules for the grade lines. Its water table gives the vapour pressure $P_\text{vap}$ by temperature (needed for siphons and cavitation), its properties section gives $a = \sqrt{kRT}$ for the Mach-number check, and its turbomachinery section prints $\mathrm{NPSH_A}$. It does not print Bernoulli's equation itself, $P + \tfrac12\rho V^2 + \rho gz = \text{const}$; you get it from the energy equation on the sheet by setting $h_p = h_t = h_L = 0$ and $\alpha = 1$. It prints none of the assumptions, and nothing about the difference between ``along a streamline'' and ``everywhere''.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{Streamlines.} A \emph{streamline} is a curve drawn in the flow that is tangent to the velocity at every point along it, so that fluid moves along streamlines and never across them. In steady flow, the pattern does not change, and a streamline is the actual path of a particle. A bundle of neighbouring streamlines forms a \emph{streamtube}: a pipe with walls made of flow, through which no fluid crosses the sides.
+
+\paragraph{Newton's law along a streamline.} Let $s$ measure distance along a streamline, and take a small cylinder of fluid lying along it, with cross-section $dA$ and length $ds$. Its mass is $\rho\,dA\,ds$. Three things could push it along $s$.
+\begin{itemize}[nosep,leftmargin=*]
+\item Pressure: $P$ on the back face and $P + (\partial P/\partial s)ds$ on the front, so a net $-(\partial P/\partial s)\,ds\,dA$. Pressure on the side walls is perpendicular to $s$ and does not contribute.
+\item Gravity: the weight $\rho g\,dA\,ds$ has the component $-\rho g\,dA\,ds\,(dz/ds)$ along $s$, where $z$ is height and $dz/ds$ is the sine of the streamline's slope.
+\item Shear from viscosity on the side walls. \emph{Assume it is zero}: the flow is \emph{frictionless}, also called inviscid.
+\end{itemize}
+The particle's acceleration along $s$ is $a_s = \partial V/\partial t + V\,\partial V/\partial s$: the first part is the speed changing in time at a fixed point, the second the particle moving to where the speed is different. \emph{Assume the flow is steady}, so the first part is zero. Newton's law, divided by the volume $dA\,ds$:
+\[
+\rho V\frac{dV}{ds} = -\frac{dP}{ds} - \rho g\frac{dz}{ds} .
+\]
+Since $V\,dV/ds = d(V^2/2)/ds$, \emph{assume $\rho$ constant} (incompressible) and move it inside the derivative:
+\[
+\frac{d}{ds}\Big(P + \tfrac12\rho V^2 + \rho gz\Big) = 0 .
+\]
+Integrating along the streamline gives
+
+\begin{theorem}[Bernoulli]
+In steady, incompressible, frictionless flow, along a streamline,
+\[
+P + \tfrac12\rho V^2 + \rho gz = \text{const}, \qquad\text{or}\qquad \frac{P_1}{\rho g} + \frac{V_1^2}{2g} + z_1 = \frac{P_2}{\rho g} + \frac{V_2^2}{2g} + z_2 .
+\]
+\end{theorem}
+
+The fourth assumption, \emph{along a streamline}, is that both points lie on the same streamline, since the integration was along one. A fifth is implicit: between the two points there is no pump or turbine adding or removing energy (no \emph{shaft work}) and no heat transfer. A pump is a device that pushes on the fluid with blades, a force that was not in the list above.
+
+\paragraph{Head.} Dividing by $\rho g = \gamma$, the \emph{specific weight}, makes every term a length. Each is energy per unit weight of fluid, called a \emph{head}: $P/\gamma$ is the \emph{pressure head}, $V^2/2g$ the \emph{velocity head}, $z$ the \emph{elevation head}. A pressure head of $10\unit{m}$ means the pressure could lift the fluid $10\unit{m}$. Heads are the natural units for pipes and pumps.
+
+\paragraph{Across streamlines.} Bernoulli says nothing about how the constant changes from one streamline to the next. Two facts fill the gap. If the streamlines are straight and parallel, the pressure across them varies hydrostatically, $P + \rho gz = $ const across, because there is no acceleration across. So the pressure across a straight free jet in air is atmospheric, and across a straight pipe section it is hydrostatic. And if every streamline starts in the same uniform reservoir, the constant is the same on all of them; this is the usual justification for using Bernoulli ``anywhere'' in a tank-fed flow. (A flow with no rotation of fluid elements, called irrotational, has the same constant everywhere; chapter 4 proves this.)
+
+\paragraph{Static, dynamic and stagnation pressure.} The \emph{static pressure} $P$ is the thermodynamic pressure of the fluid, the one a gauge flush with a wall reads, since it does not disturb the flow. The \emph{dynamic pressure} $\tfrac12\rho V^2$ is the kinetic energy per unit volume. A \emph{stagnation point} is a point where the flow is brought to rest, such as the nose of a body or the open end of a tube facing the flow. Bernoulli from far upstream to a stagnation point at the same height gives the \emph{stagnation pressure}
+\[
+P_0 = P + \tfrac12\rho V^2 .
+\]
+A \emph{Pitot tube} is a tube facing into the flow; its open end is a stagnation point and it reads $P_0$. A \emph{Pitot-static tube} also has holes in its side, which read $P$. The difference gives $V = \sqrt{2(P_0 - P)/\rho}$. Connected to a U-tube manometer with liquid of density $\rho_m$ and reading $h$, the hydrostatics of the two legs give $P_0 - P = (\rho_m - \rho)gh$, which is the sheet's form. The $-1$ in it matters when both fluids are liquids and not when the flowing fluid is air.
+
+\paragraph{Venturi meter.} A \emph{Venturi meter} is a smooth contraction to a throat of area $A_t$ and back. Bernoulli from the pipe (area $A$, speed $V$) to the throat (speed $V_t$), with mass conservation $AV = A_tV_t$ and $\beta = d/D$, gives $P - P_t = \tfrac12\rho V_t^2(1 - \beta^4)$, so
+\[
+Q = A_tV_t = A_t\sqrt{\frac{2(P - P_t)}{\rho(1 - \beta^4)}} .
+\]
+A real meter delivers a little less; the discharge coefficient $C_d$ on the sheet corrects for friction and for the profile. (The $\beta$ here is a diameter ratio, unrelated to the momentum factor.)
+
+\paragraph{Draining tanks.} A tank with a free surface at height $h$ above a small hole in the bottom or side. Take a streamline from the surface (pressure atmospheric, speed $V_s$) to the jet just outside the hole (pressure atmospheric, speed $V$). Bernoulli gives $V^2 - V_s^2 = 2gh$; mass gives $AV_s = aV$; so $V = \sqrt{2gh/(1 - a^2/A^2)} \approx \sqrt{2gh}$ when $a \ll A$. This is \emph{Torricelli's result}: the jet leaves as fast as a stone dropped from the surface. The flow is not steady, since $h$ falls, but if the hole is small the level falls slowly and the steady formula holds at each instant; this is called \emph{quasi-steady}. Feeding it into the tank ODE of \secref{sec:mass}{conservation of mass} gives the draining time.
+
+\paragraph{Siphons.} A \emph{siphon} is a tube that lifts liquid over a high point and discharges below the free surface. Bernoulli from the free surface to the outlet sets the speed: $V = \sqrt{2g\Delta z}$ with $\Delta z$ the drop to the outlet. Bernoulli from the surface to the summit then sets the summit pressure, which is below atmospheric. If it falls to the vapour pressure $P_v$ the liquid boils, the column breaks, and the siphon stops. This is \emph{cavitation}; $P_v$ is on the sheet's water table.
+
+\paragraph{Grade lines.} Plot two heights along a pipe. The \emph{hydraulic grade line} (HGL) is $P/\gamma + z$: the height to which liquid would rise in a thin vertical tube (a piezometer) tapped into the pipe. The \emph{energy grade line} (EGL) is $P/\gamma + V^2/2g + z$, the total head; it lies $V^2/2g$ above the HGL (with $\alpha$ for a real profile, \secref{sec:energy}{energy}). In Bernoulli flow the EGL is horizontal. Real pipes lose head to friction, so the EGL slopes down in the direction of flow; it jumps up at a pump and down at a turbine. Where the pipe narrows, $V$ rises and the gap between the lines grows. At a free surface or free jet the pressure is atmospheric, so the HGL is at the surface or the jet centreline. Wherever the HGL falls below the pipe, the pressure is below atmospheric.
+
+\paragraph{When Bernoulli is the wrong model.} Across a pump, fan or turbine (shaft work; use the energy equation). Along a long pipe, through a valve, a sudden expansion or any region where the flow separates from a wall (friction is not negligible; add a head loss). Between points on different streamlines in a flow with rotation, such as across a boundary layer or a wake. In gases above a Mach number of about $0.3$ (density changes). In flows that change quickly in time: start-up, valve closure, oscillation (the $\partial V/\partial t$ term). And with heat addition. Bernoulli holds in a contraction (accelerating flow is well-behaved); it fails in an expansion, where the decelerating flow separates. That is why a Venturi recovers its pressure only with a long, gentle diffuser.
+
+\begin{firstmoves}
+Pick two points where most quantities are known: a free surface ($P = 0$ gauge, $V \approx 0$ for a large tank), a free jet ($P = 0$ gauge), a stagnation point ($V = 0$). Check they are on one streamline, or that both streamlines start in the same reservoir. Write the four assumptions and check each: steady (or quasi-steady), incompressible, frictionless between the points, no pump or turbine between them. Pick a datum for $z$ and say where it is. Add mass conservation for the second unknown speed. Use gauge or absolute consistently; use absolute when comparing with vapour pressure. For a manometer, do the hydrostatics leg by leg.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+A Pitot-static tube on the centreline of a ventilation duct carries air at $25\,^\circ$C and $101.3\unit{kPa}$. Its two pressure lines go to a U-tube manometer filled with water ($998\unit{kg/m^3}$), which shows a level difference of $32\unit{mm}$. (a) Find the air density. (b) Find the air speed. (c) Justify the incompressible assumption. (d) What error comes from dropping the $-1$ in the manometer formula?
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: steady, frictionless along the stagnation streamline, incompressible (checked below); air an ideal gas with $R = 287\unit{J/(kg\,K)}$; the static holes read the free-stream pressure; manometer lines filled with air.
+
+(a) $\rho = P/(RT) = 101\,300/(287\times298.15) = 1.184\unit{kg/m^3}$.
+
+(b) Manometer: the higher pressure $P_0$ pushes the water in its leg down by $h$ relative to the other leg. Equate pressures at the level of that lower meniscus. On the stagnation side it is $P_0$ plus the weight of the air column above. On the static side it is $P$ plus the same air column, less a height $h$ of air, plus a height $h$ of water. So $P_0 - P = (\rho_m - \rho)gh = (998 - 1.184)(9.81)(0.032) = 312.9\unit{Pa}$. Then
+\[
+V = \sqrt{\frac{2(P_0 - P)}{\rho}} = \sqrt{\frac{2\times312.9}{1.184}} = 23.0\unit{m/s}.
+\]
+
+(c) The speed of sound is $a = \sqrt{kRT} = \sqrt{1.4\times287\times298.15} = 346\unit{m/s}$, so the Mach number is $23.0/346 = 0.066$, far below $0.3$. Density changes are of order $\tfrac12\mathrm{Ma}^2 \approx 0.2\%$.
+
+(d) Without the $-1$, $V = \sqrt{2gh\rho_m/\rho} = 23.006\unit{m/s}$, a $0.06\%$ difference: negligible for air over water, but not for water over mercury, where $\rho_m/\rho - 1 = 12.6$ instead of $13.6$.
+
+Check: $23\unit{m/s}$ in a duct is a fast but normal ventilation speed, and $313\unit{Pa}$ is about $3\unit{cm}$ of water, which matches the reading.
+\end{proof}
+
+\begin{example}
+A siphon of inside diameter $25\unit{mm}$ draws water ($20\,^\circ$C: $998\unit{kg/m^3}$, $P_v = 2.34\unit{kPa}$) from a large open tank. The highest point of the tube is $1.8\unit{m}$ above the tank's free surface, and the tube discharges into the air $3.0\unit{m}$ below the free surface. Atmospheric pressure is $101.3\unit{kPa}$. Neglecting friction, find (a) the flow rate, (b) the absolute and gauge pressure at the summit, (c) the greatest summit height, with the outlet unchanged, before the water cavitates.
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: steady (the tank is large, so its level is fixed), incompressible, frictionless, one streamline from the free surface through the tube; uniform speed in the tube; surface speed negligible. Datum $z = 0$ at the free surface.
+
+(a) Surface ($P = P_a$, $V = 0$, $z = 0$) to outlet jet ($P = P_a$, $z = -3.0$): $V = \sqrt{2g(3.0)} = 7.672\unit{m/s}$. $Q = \tfrac{\pi}{4}(0.025)^2(7.672) = 3.77\times10^{-3}\unit{m^3/s} = 3.77\unit{L/s}$.
+
+(b) Surface to summit ($z = 1.8$, the same $V$ by mass conservation in a uniform tube):
+\[
+P_s = P_a - \rho gz_s - \tfrac12\rho V^2 = 101\,300 - 998(9.81)(1.8) - \tfrac12(998)(58.86) = 54.3\unit{kPa}\text{ abs},
+\]
+which is $-47.0\unit{kPa}$ gauge.
+
+(c) Set $P_s = P_v$ with $V$ fixed by the outlet:
+\[
+z_{s,\max} = \frac{P_a - P_v}{\rho g} - \frac{V^2}{2g} = \frac{101\,300 - 2340}{998\times9.81} - 3.0 = 10.11 - 3.0 = 7.11\unit{m}.
+\]
+
+Check: the summit pressure is lowered both by height and by speed; the $10.1\unit{m}$ is the familiar limit of a water barometer, less the $3.0\unit{m}$ of velocity head. Friction would lower the flow; the frictionless answer is an upper bound.
+\end{proof}
+
+\begin{example}
+An open cylindrical tank of diameter $1.5\unit{m}$ drains through a hole of diameter $40\unit{mm}$ in its flat bottom. (a) Find the time for the depth to fall from $2.0\unit{m}$ to $0.5\unit{m}$, treating the hole as ideal. (b) Repeat for a sharp-edged orifice with $C_d = 0.61$. (c) Find the initial flow rate in case (a).
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: incompressible; quasi-steady (justified because the area ratio $A/a = (1500/40)^2 = 1406$ makes the surface fall over a thousand times slower than the jet); frictionless from the surface to the jet; jet at atmospheric pressure; surface velocity head negligible ($a^2/A^2 \approx 5\times10^{-7}$).
+
+Bernoulli, surface to jet: $V = \sqrt{2gh}$. Mass, CV the tank (\secref{sec:mass}{conservation of mass}): $A\,dh/dt = -aV = -a\sqrt{2gh}$. Separate:
+\[
+\int_{h_0}^{h_1}\frac{dh}{\sqrt h} = -\frac{a}{A}\sqrt{2g}\,t\quad\Rightarrow\quad t = \frac{A}{a}\sqrt{\frac{2}{g}}\big(\sqrt{h_0} - \sqrt{h_1}\big).
+\]
+
+(a) $t = 1406\times\sqrt{2/9.81}\times(1.414 - 0.707) = 449\unit{s} = 7.5\unit{min}$.
+
+(b) The real discharge is $C_d a\sqrt{2gh}$, so the time divides by $C_d$: $449/0.61 = 736\unit{s} = 12.3\unit{min}$.
+
+(c) $V_0 = \sqrt{2\times9.81\times2.0} = 6.26\unit{m/s}$, $Q_0 = \tfrac{\pi}{4}(0.04)^2(6.26) = 7.87\times10^{-3}\unit{m^3/s} = 7.87\unit{L/s}$.
+
+Check: draining from $2.0\unit{m}$ to empty would take $898\unit{s}$, so the first $1.5\unit{m}$ takes exactly half the total time, because $\sqrt2 - \sqrt{0.5} = \sqrt{0.5}$. The flow slows as the head falls, so the last half metre is slow. The volume drained, $\tfrac{\pi}{4}(1.5)^2(1.5) = 2.65\unit{m^3}$, over $449\unit{s}$ is an average of $5.9\unit{L/s}$, between the initial $7.87$ and the final $3.94\unit{L/s}$.
+\end{proof}
+
+\begin{trap}
+Applying Bernoulli across a pump, fan or turbine. Applying it between points on different streamlines in a flow with rotation, for example from the free stream to a point inside a boundary layer. Applying it through a sudden expansion or a partly closed valve. Forgetting that the outlet speed in a siphon or nozzle is set by mass conservation, not chosen. Using gauge pressure when comparing with vapour pressure. Dropping the $-1$ in a liquid-over-liquid manometer. Taking the jet pressure as the tank pressure. Using $V = \sqrt{2gh}$ with $h$ measured from the bottom of the tank instead of from the free surface to the hole. Forgetting the hydrostatic change in pressure across a pipe when the two taps are at different heights.
+\end{trap}
+
+\begin{ladder}
+\item \white{P3.130}. A gasoline nozzle with an elevation rise and no losses; the upstream pressure. Bernoulli with mass, nothing else.
+\item \white{P3.116}. A jet from a hole in a tank wall; the landing distance and the best hole height. Torricelli plus projectile motion.
+\item \white{P3.114}. A nozzle jet on a plate with a known force; speeds and a manometer reading. Bernoulli and momentum together.
+\item \white{P3.122}. A tank filled steadily while draining; the limiting depth. Bernoulli inside an unsteady mass balance.
+\item \white{P3.142}. A tank drains through a bottom plug, keeping the surface speed; the drain time. Quasi-steady Bernoulli, then an ODE.
+\item \white{P3.144}. A hose jet rises to a ceiling with a growing area; the flow from a measured force. Bernoulli along the jet, then momentum.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+Bernoulli is the energy equation of \secref{sec:energy}{the energy equation} with no pump, turbine or loss and $\alpha = 1$; it is also the momentum equation of \secref{sec:momentum}{linear momentum} applied to a streamtube. In chapter 4 it comes out of the Navier--Stokes equations with the viscous term dropped (Euler's equation), and for irrotational flow it holds everywhere, which is the basis of potential flow. Inside a momentum problem it supplies the flange pressure; inside a pump problem it supplies the suction pressure and the cavitation check (NPSH on the sheet). The stagnation pressure reappears in the drag and pressure coefficients of external flow.
+\end{hides}

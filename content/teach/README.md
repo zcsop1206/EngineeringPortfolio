@@ -4,7 +4,7 @@ Docs that rewrite themselves to Adit's level, and a record of that level per top
 
 ## What a doc is
 
-A pair. The detailed document is LaTeX, `<name>/<name>.tex` with one file per section in `<name>/parts/` and a shared `_preamble.tex`, built to `<name>/<name>.pdf`; read the PDF in Obsidian on either device. Each technique section is also built on its own from a wrapper in `<name>/split/` to `<name>/split/topic-<slug>.pdf`, for reading one technique on the iPad without the whole document. The summary is `<name>.md` beside it, one compact paragraph per section under the same headings, with the PDF embedded at the top. Marks go on the summary; the pass rewrites both. The first doc is [putnam.md](putnam.md) with [putnam/putnam.pdf](putnam/putnam.pdf).
+A pair. The detailed document is LaTeX, `<name>/<name>.tex` with one file per section in `<name>/parts/` and a shared `_preamble.tex`, built to `<name>/<name>.pdf`; read the PDF in Obsidian on either device. Each technique section is also built on its own from a wrapper in `<name>/split/` to `<name>/split/topic-<slug>.pdf`, for reading one technique on the iPad without the whole document. The summary is `<name>.md` beside it, one compact paragraph per section under the same headings, with the PDF embedded at the top. Marks go on the summary; the pass rewrites both. The first doc is [putnam.md](putnam.md) with [putnam/putnam.pdf](putnam/putnam.pdf); the second is [mie312.md](mie312.md) with [mie312/mie312.pdf](mie312/mie312.pdf), for MIE312 Midterm 2.
 
 ## Marking
 

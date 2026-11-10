@@ -1,0 +1,134 @@
+\section{The energy equation}
+\label{sec:energy}
+
+The first law of thermodynamics for a control volume, written in the units pipe engineers use, is the equation for every pipe system with a pump or turbine in it. It looks like Bernoulli with three extra terms, and that is exactly what it is: Bernoulli plus the head a pump adds, minus the head a turbine takes, minus the head lost to friction. This section derives it from the first law so that each extra term has a physical meaning, explains the kinetic energy correction factor $\alpha$, and connects heads to power.
+
+\begin{recognise}
+A pump or turbine between two points. ``Find the pump head'', ``the power required'', ``the shaft power'', ``the efficiency'', ``the power generated'', ``the head loss'', ``the temperature rise''. Two reservoirs joined by a pipe. Pressure gauges on the inlet and outlet of a machine. Any Bernoulli-shaped question where the statement mentions friction, losses or a machine. A laminar flow where kinetic energy terms matter ($\alpha = 2$).
+\end{recognise}
+
+\begin{onsheet}
+The sheet prints the steady head form
+\[
+\frac{P_1}{\gamma} + \alpha_1\frac{V_1^2}{2g} + z_1 + h_p = \frac{P_2}{\gamma} + \alpha_2\frac{V_2^2}{2g} + z_2 + h_t + h_L ,
+\]
+$\alpha = 2.0$ (laminar), $\alpha\approx1.05$ (turbulent), $\mathrm{EGL} = \mathrm{HGL} + \alpha V^2/2g$, $P = \gamma Qh$, $P = \omega T_o$, $\eta = P_\text{pump}/P_\text{input}$, the head loss formula $h_L = (fL/D + \sum K_L)V^2/2g$ from chapter 6, and, under turbomachinery, the system curve $H_\text{sys} = \Delta z + \Delta P/\gamma + h_L(Q)$ and Euler's head. It leaves out the assumptions (steady, one inlet and one outlet, incompressible, uniform properties across each section apart from $\alpha$), that point 1 must be upstream of point 2 for $h_L$ to be positive, that $\alpha$ multiplies the \emph{mean} velocity, that $h_p$ is the head given to the fluid (not the motor's), and that a turbine's efficiency multiplies rather than divides.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{The first law for a system.} The \emph{first law} says the energy $E$ of a fixed mass rises by the heat added minus the work done by it: $dE/dt = \dot Q - \dot W$. Per unit mass the energy is $e = \hat u + \tfrac12V^2 + gz$: \emph{internal energy} $\hat u$ (the molecular kinetic and potential energy, which shows as temperature), kinetic energy, and potential energy.
+
+\paragraph{For a control volume.} Put $B = E$, $b = e$ in the transport theorem:
+\[
+\dot Q - \dot W = \pd{}{t}\int_\text{CV}e\rho\,d\forall + \int_\text{CS}e\rho(\V\cdot\nhat)\,dA .
+\]
+Now split the work done by the fluid in the CV on its surroundings into three kinds. \emph{Shaft work} $\dot W_s$ is work through a rotating shaft that crosses the CS: a turbine takes it out ($\dot W_s > 0$), a pump puts it in ($\dot W_s < 0$). \emph{Pressure work} is done where fluid crosses the CS: the fluid inside pushes the fluid ahead of it out of the outlet against pressure $P$, which costs $P(\V\cdot\nhat)\,dA$ per unit time, and the upstream fluid pushes fluid in at the inlet, which is negative work. \emph{Viscous work} is done by shear at the CS; it is zero on walls, where the fluid does not move, and negligible on inlet and outlet cuts perpendicular to the flow. Moving the pressure work to the right side, where it joins the flux, gives
+\[
+\dot Q - \dot W_s = \pd{}{t}\int_\text{CV}e\rho\,d\forall + \int_\text{CS}\Big(\hat u + \frac{P}{\rho} + \frac{V^2}{2} + gz\Big)\rho(\V\cdot\nhat)\,dA .
+\]
+The term $P/\rho$ is the \emph{flow work} per unit mass, the cost of pushing fluid across a boundary. Combined with $\hat u$ it is the enthalpy $h = \hat u + P/\rho$ of thermodynamics.
+
+\paragraph{The steady 1-D form.} Assume steady flow, one inlet 1 and one outlet 2 with the same $\mdot$, and $P$, $\hat u$ and $z$ uniform across each section (true for $z$ and $P$ in a straight pipe up to the small hydrostatic change). Velocity is the one property that varies strongly across a section. The kinetic energy flux is $\int\tfrac12\rho u^3\,dA$, and the \emph{kinetic energy correction factor} is defined by
+\[
+\int_A\tfrac12\rho u^3\,dA = \alpha\,\mdot\frac{V_\text{avg}^2}{2},\qquad \alpha = \frac1A\int_A\Big(\frac{u}{V_\text{avg}}\Big)^3dA .
+\]
+For laminar pipe flow, $u/V_\text{avg} = 2(1 - r^2/R^2)$; with $s = r^2/R^2$, $dA = \pi R^2\,ds$, so $\alpha = 8\int_0^1(1 - s)^3\,ds = 2$. Turbulent profiles are flatter, and $\alpha$ is $1.03$ to $1.1$, commonly $1.05$ or simply $1$. Divide the energy balance by $\mdot g$:
+\[
+\frac{P_1}{\gamma} + \alpha_1\frac{V_1^2}{2g} + z_1 = \frac{P_2}{\gamma} + \alpha_2\frac{V_2^2}{2g} + z_2 + \frac{\dot W_s}{\mdot g} + \frac{(\hat u_2 - \hat u_1) - \dot Q/\mdot}{g} .
+\]
+Every term is now a head, in metres. Name the last two.
+
+\paragraph{Pump and turbine heads.} Split the shaft term as $\dot W_s/(\mdot g) = h_t - h_p$, where $h_p \ge 0$ is the head a pump adds to the fluid and $h_t \ge 0$ the head a turbine extracts. Moving $h_p$ to the left gives the sheet's form. Since $\mdot g = \rho gQ = \gamma Q$, the power is
+\[
+\dot W_\text{to fluid} = \gamma Qh_p,\qquad \dot W_\text{from fluid} = \gamma Qh_t .
+\]
+Machines are not perfect. A pump's motor delivers shaft power $\dot W_\text{shaft} = \gamma Qh_p/\eta_p$: the shaft must supply more than the fluid receives. A turbine's shaft delivers $\dot W_\text{shaft} = \eta_t\gamma Qh_t$: the shaft receives less than the fluid gives up. In both, $\eta < 1$, and a generator or motor efficiency multiplies on top.
+
+\paragraph{Head loss.} The last term, $h_L = [(\hat u_2 - \hat u_1) - \dot Q/\mdot]/g$, is the \emph{head loss}. Friction in the fluid converts mechanical energy (pressure, kinetic and potential) into internal energy, which either warms the fluid or leaves as heat. The second law of thermodynamics says this conversion runs one way only, so $h_L \ge 0$ in the direction of flow: friction is an \emph{irreversibility}. The energy is not destroyed, but it is no longer available to do work. Because a head of a few metres corresponds to a temperature rise of thousandths of a kelvin ($\Delta T = gh_L/c$), the loss is computed from friction correlations in chapter 6, not measured as heating.
+
+\paragraph{The relation to Bernoulli.} With $h_p = h_t = h_L = 0$ and $\alpha = 1$, the energy equation is Bernoulli. So the energy equation is the general statement: Bernoulli plus pump, minus turbine, minus loss. It holds between two \emph{sections} of a pipe (averaged over each), not along one streamline; it carries the shaft work that Bernoulli forbids; and it carries friction. Conversely, wherever the energy equation's extra terms are zero, the two give the same answer.
+
+\paragraph{Grade lines with machines.} The EGL is now $P/\gamma + \alpha V^2/2g + z$. It slopes down along pipes at the rate of head loss per length, falls suddenly at a fitting or a turbine, and rises suddenly by $h_p$ at a pump. Between two free surfaces open to the air, $P = 0$ and $V\approx0$ at each, and the equation becomes the system equation on the sheet: $h_p = (z_2 - z_1) + h_L$.
+
+\begin{firstmoves}
+Number the points in the direction of flow. Prefer free surfaces ($P = 0$ gauge, $V\approx0$) and free jets ($P = 0$ gauge). Write the assumptions: steady, incompressible, one inlet and one outlet, $\alpha$ value (2 laminar, about 1 or 1.05 turbulent: check Reynolds number if the fluid is viscous). Write the full head equation with every term, then strike the ones that vanish and say why. Get speeds from mass conservation. Convert pressures to heads with $\gamma = \rho g$. Solve for the unknown head, then power $\gamma Qh$, then shaft or electrical power with the efficiency on the correct side. Check that $h_L$ came out positive.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+A pump moves $0.04\unit{m^3/s}$ of water ($998\unit{kg/m^3}$) from a $150\unit{mm}$ suction pipe to a $100\unit{mm}$ discharge pipe. A gauge on the suction pipe reads $-25\unit{kPa}$ (a vacuum) and one on the discharge pipe reads $310\unit{kPa}$; the discharge gauge is $0.4\unit{m}$ higher. (a) Find the head added by the pump. (b) Find the power given to the water and the shaft power at a pump efficiency of $72\%$. (c) The pump lifts water from an open sump to an open tank whose surface is $26\unit{m}$ higher. Find the total head loss in the pipes.
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: steady, incompressible, turbulent flow with $\alpha = 1$ (using $1.05$ changes the kinetic term by $0.05\unit{m}$), no loss between the gauges other than inside the pump, which is counted in $h_p$ as the head actually given to the water.
+
+(a) Speeds: $V_s = 0.04/(\tfrac{\pi}{4}0.15^2) = 2.264\unit{m/s}$, $V_d = 0.04/(\tfrac{\pi}{4}0.10^2) = 5.093\unit{m/s}$. Energy from suction gauge (1) to discharge gauge (2):
+\[
+h_p = \frac{P_2 - P_1}{\gamma} + \frac{V_2^2 - V_1^2}{2g} + (z_2 - z_1) = \frac{335\,000}{998\times9.81} + \frac{25.94 - 5.124}{19.62} + 0.4 .
+\]
+The terms are $34.22 + 1.06 + 0.40 = 35.68\unit{m}$.
+
+(b) $\dot W = \gamma Qh_p = 998\times9.81\times0.04\times35.68 = 13.97\unit{kW}$. Shaft power $= 13.97/0.72 = 19.41\unit{kW}$.
+
+(c) Energy from the sump surface to the tank surface: both at zero gauge pressure and negligible speed, so $h_p = (z_2 - z_1) + h_L$, and $h_L = 35.68 - 26 = 9.68\unit{m}$.
+
+Check: the pressure rise dominates the head, as it should for a pump with nearly equal pipe sizes. A loss of $9.7\unit{m}$ out of $35.7\unit{m}$ is large; it would come from long or rough pipes. Using absolute pressures gives the same $h_p$, since only the difference enters.
+\end{proof}
+
+\begin{example}
+A small hydroelectric plant takes water ($1000\unit{kg/m^3}$) from a reservoir whose surface is $60\unit{m}$ above the tailwater surface. The flow is $2.0\unit{m^3/s}$. Friction in the intake and penstock costs $4.0\unit{m}$ of head, and the water leaves the draft tube into the tailwater at $3.0\unit{m/s}$, its kinetic energy then being lost. The turbine is $92\%$ efficient and the generator $95\%$. Find the turbine head, the power extracted from the water, the electrical output, and the overall efficiency relative to the gross head.
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: steady, incompressible, $\alpha = 1$, both surfaces at atmospheric pressure and at rest, exit kinetic energy fully lost (an exit loss with $K = 1$).
+
+Energy from reservoir surface (1) to tailwater surface (2): $z_1 = h_t + h_L$, with $h_L = 4.0 + V^2/2g = 4.0 + 9/19.62 = 4.0 + 0.459\unit{m}$. So $h_t = 60 - 4.459 = 55.54\unit{m}$.
+
+Power from the water: $\gamma Qh_t = 1000\times9.81\times2.0\times55.54 = 1.090\unit{MW}$. Electrical: $0.92\times0.95\times1.090 = 0.952\unit{MW}$.
+
+Gross available, $\gamma Qz_1 = 1.177\unit{MW}$, so the overall efficiency is $0.952/1.177 = 80.9\%$.
+
+Check: the penstock costs $4.0/60 = 6.7\%$, the exit $0.8\%$, the machines $1 - 0.874 = 12.6\%$; the product $0.926\times0.874$ is $0.809$. Efficiencies multiply here because the turbine receives less than the water gives.
+\end{proof}
+
+\begin{example}
+Oil ($870\unit{kg/m^3}$, $\mu = 0.1\unit{Pa\,s}$, $c = 1900\unit{J/(kg\,K)}$) flows at $0.1\unit{L/s}$ through a horizontal pipe that contracts gradually from $20\unit{mm}$ to $10\unit{mm}$ diameter. Pressure taps in the fully developed regions upstream and downstream show $P_1 - P_2 = 2.4\unit{kPa}$. (a) Show the flow is laminar. (b) Find the head loss between the taps. (c) Find the error made by taking $\alpha = 1$. (d) Find the power dissipated and the temperature rise of the oil.
+\end{example}
+
+\begin{proof}[Solution]
+Assumptions: steady, incompressible, fully developed laminar profile at both taps, no heat transfer, taps at the same height.
+
+(a) $V_1 = 10^{-4}/(\tfrac{\pi}{4}0.02^2) = 0.318\unit{m/s}$, $V_2 = 1.273\unit{m/s}$. Reynolds number $\mathrm{Re} = \rho VD/\mu$: $870(0.318)(0.02)/0.1 = 55$ and $870(1.273)(0.01)/0.1 = 111$, both far below $2300$. So $\alpha_1 = \alpha_2 = 2$.
+
+(b) Energy, 1 to 2, no machines, same height:
+\[
+h_L = \frac{P_1 - P_2}{\gamma} + \alpha\frac{V_1^2 - V_2^2}{2g} = \frac{2400}{870\times9.81} + 2\times\frac{0.1013 - 1.6211}{19.62} = 0.2812 - 0.1549 = 0.126\unit{m}.
+\]
+
+(c) With $\alpha = 1$: $h_L = 0.2812 - 0.0775 = 0.204\unit{m}$, which is $61\%$ too high. The pressure drop pays both for friction and for accelerating the oil; with the real profile, accelerating it costs twice as much as the mean speed suggests, so less is left for friction.
+
+(d) Power dissipated: $\gamma Qh_L = 870\times9.81\times10^{-4}\times0.126 = 0.108\unit{W}$. Temperature rise: $\Delta T = gh_L/c = 9.81\times0.126/1900 = 6.5\times10^{-4}\unit{K}$.
+
+Check: $h_L > 0$ in the direction of flow, as the second law requires. The temperature rise is far too small to measure, which is why losses are found from pressures, not thermometers.
+\end{proof}
+
+\begin{trap}
+Putting the efficiency on the wrong side: pump shaft power is $\gamma Qh_p/\eta$, turbine shaft power is $\eta\gamma Qh_t$. Numbering the points against the flow, which makes $h_L$ negative. Dropping the velocity heads at gauges on pipes of different sizes. Using $\alpha = 1$ for laminar flow. Treating $h_p$ as the motor's power divided by $\gamma Q$. Mixing gauge pressure at one point with absolute at the other. Forgetting the exit loss when a pipe discharges into a reservoir: the kinetic energy of the jet is not recovered. Applying Bernoulli across the pump, which gives $h_p = 0$. Using $\gamma = 9.81$ for a fluid that is not water.
+\end{trap}
+
+\begin{ladder}
+\item \white{P3.178}. A horizontal pump between two pipe sizes, no losses; the power. Pump head from the change in pressure and speed.
+\item \white{P3.180}. A pump between reservoirs with a loss coefficient and an efficiency. Head form with losses and efficiency.
+\item \white{P3.174}. Pumped storage: turbine output by day, pump input by night. Losses add to a pump's head and subtract from a turbine's.
+\item \white{P3.176}. A fireboat pump; the motor power. Elevation, nozzle speed, loss and efficiency together.
+\item \white{P3.126}. Kerosene from an air-pressurized tank, with and without pipe loss. Pressurized surface; the loss as a known head.
+\item \white{P3.184}. A dam turbine with a loss rising as speed squared; the two flows for a target power. A cubic in the flow rate and choosing a root.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+Bernoulli (\secref{sec:bernoulli}{Bernoulli}) is the special case with no machines, no loss and $\alpha = 1$. Euler's turbomachine equation (\secref{sec:angular}{angular momentum}) supplies $h_p$ from the impeller geometry, and $\gamma Qh = T\omega$ connects the two. Chapter 6 supplies $h_L$: Darcy's $fL/D$ for straight pipe and $K_L$ for fittings, which turns this equation into the three pipe-problem types on the sheet. The pump's system curve, $H_\text{sys} = \Delta z + \Delta P/\gamma + h_L(Q)$, is this equation between two reservoirs. In chapter 4, the differential energy equation includes the viscous dissipation function, the local version of $h_L$.
+\end{hides}

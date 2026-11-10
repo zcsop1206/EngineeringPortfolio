@@ -1,0 +1,180 @@
+\section{Nondimensional equations}
+\label{sec:nondimensional}
+
+The Pi theorem finds groups from a list of variables you guessed. The second route starts from the equations of motion themselves: measure every length, speed, time and pressure in units natural to the problem, and the equations rewrite themselves with a few dimensionless numbers in front of their terms. Those numbers are the Reynolds, Froude, Euler and Strouhal numbers, and their sizes tell you which terms matter before you solve anything. This is how one decides that a flow is creeping, inviscid, quasi-steady or gravity-free, and it is the justification for every model test in \secref{sec:similarity}{modelling and similarity}.
+
+\begin{recognise}
+``Nondimensionalize the equation (or boundary condition) using the scales $L$, $U$, \dots'' ``Show that the flow depends only on $\mathrm{Re}$ and $\mathrm{Fr}$.'' ``Which terms can be neglected when $\dots$?'' ``Estimate the thickness of the region where viscosity matters.'' A flow with a very small or very large Reynolds number and a question about what simplifies. A pulsating or oscillating flow with a given frequency. A free surface, droplet or wave and a question about the role of gravity or surface tension.
+\end{recognise}
+
+\begin{onsheet}
+The groups: $\mathrm{Re}$, $\mathrm{Fr}$, $\mathrm{Eu}$, $\mathrm{St} = \omega L/V$, $\mathrm{We}$, $\mathrm{Ca}$, and the Stokes drag of a sphere in the form $C_D = 24/\mathrm{Re}$. Section 13 of the sheet prints only 2-D incompressible continuity and the vorticity and strain-rate definitions; the Navier--Stokes equations themselves are not on it, so start from the form in \secref{sec:navierstokes}{the Navier--Stokes equations}. Not on it either: the scaled equation, which group multiplies which term, the change of pressure scale at low $\mathrm{Re}$, and the free-surface conditions.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{The starting equations.} For an incompressible Newtonian fluid with constant $\rho$ and $\mu$ (derived in \secref{sec:navierstokes}{the Navier--Stokes equations}):
+\[
+\nabla\cdot\V = 0, \qquad
+\rho\left(\pd{\V}{t} + (\V\cdot\nabla)\V\right) = -\nabla p + \rho\vect{g} + \mu\nabla^2\V .
+\]
+The left side is mass times acceleration per unit volume: the local (unsteady) part and the convective part. The right side is the pressure force, the weight and the net viscous force, each per unit volume.
+
+\paragraph{Choosing scales.} A \emph{reference scale} is a constant with dimensions that sets the typical size of a variable in this problem: a length $L$ (a diameter, a channel height), a speed $U$ (the free-stream or mean velocity), a frequency $\omega$ if something oscillates, and a pressure difference $\Delta p_0$ if one is imposed. Define the starred, dimensionless variables
+\[
+\vect{x}^* = \frac{\vect{x}}{L}, \quad \V^* = \frac{\V}{U}, \quad t^* = \omega t, \quad p^* = \frac{p - p_\infty}{\Delta p_0}, \quad \nabla^* = L\nabla .
+\]
+The aim is that each starred quantity and each starred derivative is of order one where the action is, so that the size of each term is carried entirely by its coefficient. That is the only rule for choosing scales, and when it is broken the conclusions are wrong (see the Stokes limit below).
+
+\paragraph{Substituting.} By the chain rule, $\partial/\partial t = \omega\,\partial/\partial t^*$, $\nabla = \nabla^*/L$ and $\nabla^2 = \nabla^{*2}/L^2$. Write $\vect{g} = g\,\hat{\vect{g}}$ with $\hat{\vect{g}}$ a unit vector pointing down. Then
+\[
+\rho U\omega\,\pd{\V^*}{t^*} + \frac{\rho U^2}{L}(\V^*\cdot\nabla^*)\V^*
+= -\frac{\Delta p_0}{L}\nabla^* p^* + \rho g\,\hat{\vect{g}} + \frac{\mu U}{L^2}\nabla^{*2}\V^* .
+\]
+Divide through by $\rho U^2/L$, the size of the convective inertia, so that term has coefficient $1$:
+\[
+\boxed{\;\mathrm{St}\,\pd{\V^*}{t^*} + (\V^*\cdot\nabla^*)\V^* = -\mathrm{Eu}\,\nabla^*p^* + \frac{1}{\mathrm{Fr}^2}\,\hat{\vect{g}} + \frac{1}{\mathrm{Re}}\nabla^{*2}\V^*\;}
+\]
+with
+\[
+\mathrm{St} = \frac{\omega L}{U}, \quad \mathrm{Eu} = \frac{\Delta p_0}{\rho U^2}, \quad \mathrm{Fr} = \frac{U}{\sqrt{gL}}, \quad \mathrm{Re} = \frac{\rho U L}{\mu} .
+\]
+Continuity becomes $\nabla^*\cdot\V^* = 0$, with no coefficient at all: it has only one kind of term. Each group is a ratio of two force sizes per unit volume. $\mathrm{Re}$ is convective inertia ($\rho U^2/L$) over viscous force ($\mu U/L^2$); $\mathrm{Fr}^2$ is inertia over weight; $\mathrm{Eu}$ is the imposed pressure force over inertia; $\mathrm{St}$ is unsteady inertia over convective inertia.
+
+The conclusion is the theorem behind model testing: two flows with geometrically similar boundaries and the same $\mathrm{St}$, $\mathrm{Eu}$, $\mathrm{Fr}$ and $\mathrm{Re}$ obey the same dimensionless equation with the same dimensionless boundary conditions, so they have the same dimensionless solution $\V^*(\vect{x}^*, t^*)$, $p^*(\vect{x}^*, t^*)$.
+
+\paragraph{Three groups that often drop out.}
+\begin{enumerate}[nosep,leftmargin=*]
+\item \emph{Strouhal.} If nothing imposes a frequency, the natural time scale is $L/U$, so $\omega = U/L$ and $\mathrm{St} = 1$. In steady flow the term vanishes.
+\item \emph{Euler.} If the pressure is not imposed but is whatever the flow makes it (flow past a body), the natural pressure scale is $\Delta p_0 = \rho U^2$, so $\mathrm{Eu} = 1$ in the equation and the measured $\mathrm{Eu}$ (or the pressure coefficient $C_p$) is an \emph{output}, a function of the other groups.
+\item \emph{Froude, when there is no free surface.} Weight per unit volume is $\rho\vect{g} = -\nabla(\rho g z)$ with $z$ upward. Combine it with pressure into the \emph{modified pressure} $\mathcal{P} = p + \rho g z$: then $-\nabla p + \rho\vect{g} = -\nabla\mathcal{P}$ and gravity has vanished from the equation. In a pipe or around a submerged body, gravity only adds the hydrostatic pressure and does not change the velocity field, so $\mathrm{Fr}$ is irrelevant. It comes back only through a boundary condition where $p$ itself, not $\mathcal{P}$, is prescribed: a free surface.
+\end{enumerate}
+
+\paragraph{Small Reynolds number: Stokes (creeping) flow.} If $\mathrm{Re} \ll 1$, the boxed equation seems to say the viscous term is huge and nothing balances it. The fault is the pressure scale: $\rho U^2$ is the pressure inertia can create, and inertia is now negligible. Pressure is set by viscosity instead, so rescale with $\Delta p_0 = \mu U/L$. Writing $p^{**} = (p - p_\infty)L/(\mu U)$, using modified pressure, and multiplying the equation by $\mathrm{Re}$:
+\[
+\mathrm{Re}\left[\mathrm{St}\,\pd{\V^*}{t^*} + (\V^*\cdot\nabla^*)\V^*\right] = -\nabla^*p^{**} + \nabla^{*2}\V^* .
+\]
+As $\mathrm{Re} \to 0$ the left side disappears: $\nabla\mathcal{P} = \mu\nabla^2\V$, the \emph{Stokes equations}. Consequences that exam questions test: the equation is linear, so doubling the speed doubles every velocity, pressure and force; density has dropped out, so forces scale as $\mu U L$ times a shape factor (for a sphere, $F = 3\pi\mu U D$, which is the sheet's $C_D = 24/\mathrm{Re}$); and reversing the motion of the boundaries reverses the flow exactly. Examples: microfluidics, lubrication films, sedimenting fine particles, swimming bacteria, flow of very viscous resins and glass.
+
+\paragraph{Large Reynolds number: inviscid flow and boundary layers.} If $\mathrm{Re} \gg 1$, the viscous term looks negligible and the equation becomes Euler's equation, $\rho\,D\V/Dt = -\nabla p + \rho\vect{g}$, from which Bernoulli follows along streamlines. But this limit is \emph{singular}: dropping the viscous term removes the highest derivatives, and with them the ability to satisfy no-slip at a wall. Near a wall the velocity changes over a thin distance $\delta$, not $L$, so the true size of the viscous term there is $\mu U/\delta^2$. Balancing it against inertia $\rho U^2/L$ gives
+\[
+\frac{\delta}{L} \sim \mathrm{Re}^{-1/2} .
+\]
+So at large $\mathrm{Re}$ the flow is inviscid almost everywhere, with viscosity confined to thin boundary layers and wakes (chapter 7). The lesson generalises: whenever a term looks negligible, check whether some region has a smaller length scale that makes it large again.
+
+\paragraph{Nondimensional boundary conditions.} Boundary conditions must be scaled with the same scales, and they can bring their own groups.
+\begin{enumerate}[nosep,leftmargin=*]
+\item \emph{No slip} at a wall moving with velocity $\V_w$: $\V^* = \V_w/U$. No new group, only a velocity ratio.
+\item \emph{Kinematic free-surface condition}: a fluid particle on the surface $z = \eta(x, y, t)$ stays on it, $w = \partial\eta/\partial t + u\,\partial\eta/\partial x + v\,\partial\eta/\partial y$. Scaled with $\eta^* = \eta/L$ it gives $w^* = \mathrm{St}\,\partial\eta^*/\partial t^* + u^*\,\partial\eta^*/\partial x^* + v^*\,\partial\eta^*/\partial y^*$. No new group.
+\item \emph{Dynamic free-surface condition}: across a curved interface, surface tension makes the liquid pressure exceed the air pressure $p_a$ by $\Upsilon(1/R_1 + 1/R_2)$, where $R_1, R_2$ are the principal radii of curvature (positive when the centre of curvature is on the liquid side) and viscous normal stresses are neglected. Write the curvature as $\kappa = 1/R_1 + 1/R_2$. In terms of the modified pressure with $p_\infty = p_a$, at $z = \eta$,
+\[
+\mathcal{P} - p_a = \rho g \eta + \Upsilon\kappa .
+\]
+Scale with $\rho U^2$, $\eta^* = \eta/L$ and $\kappa^* = L\kappa$:
+\[
+\mathcal{P}^* = \frac{gL}{U^2}\,\eta^* + \frac{\Upsilon}{\rho U^2 L}\,\kappa^* = \frac{\eta^*}{\mathrm{Fr}^2} + \frac{\kappa^*}{\mathrm{We}} .
+\]
+\end{enumerate}
+This is where gravity re-enters a flow whose interior equation lost it, and where surface tension enters at all. Their relative importance is the ratio of the two coefficients, the Bond number $\mathrm{Bo} = \mathrm{We}/\mathrm{Fr}^2 = \rho g L^2/\Upsilon$. For water, $\mathrm{Bo} = 1$ at $L = \sqrt{\Upsilon/(\rho g)} = 2.7\unit{mm}$, the \emph{capillary length}: surface tension dominates below it, gravity above.
+
+\begin{firstmoves}
+State the dimensional equation you start from. List the scales and say why each is the natural one. Define every starred variable, convert each derivative by the chain rule, divide by the coefficient of the term you choose as reference, and name each resulting group. Then evaluate the groups with numbers and order the terms by size. If a term you keep looks absurdly large, the pressure or length scale is wrong; rescale. For any free surface, scale the boundary condition as well and look for $\mathrm{Fr}$ and $\mathrm{We}$ there.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}
+A diaphragm pump drives water ($\nu = 1.0\times10^{-6}\unit{m^2/s}$) through a long cooling channel between parallel plates a distance $h = 2.0\unit{mm}$ apart, with mean speed $U = 0.30\unit{m/s}$ and a pulsation at $f = 25\unit{Hz}$.
+(a) Nondimensionalize the $x$-momentum equation using $h$, $U$ and $\omega = 2\pi f$, and name the groups.
+(b) Evaluate $\mathrm{Re}$, $\mathrm{St}$, and the ratio of unsteady inertia to viscous force.
+(c) Which terms dominate in the core of the channel? Estimate the thickness of the wall layer in which viscosity matters.
+(d) Below what pulsation frequency would the flow be quasi-steady, that is, at each instant the steady laminar profile for the instantaneous pressure gradient?
+\end{example}
+
+\begin{proof}[Solution]
+(a) Far from the inlet the flow is fully developed: $u = u(y, t)$, $v = 0$. Continuity, $\partial u/\partial x = 0$, then makes the convective term $u\,\partial u/\partial x + v\,\partial u/\partial y$ vanish identically. With gravity absorbed into modified pressure, the $x$-momentum equation is $\rho\,\partial u/\partial t = -\partial\mathcal{P}/\partial x + \mu\,\partial^2 u/\partial y^2$. Scale $y^* = y/h$, $u^* = u/U$, $t^* = \omega t$, $x^* = x/h$, $\mathcal{P}^* = \mathcal{P}/(\rho U^2)$, and divide by $\rho U^2/h$:
+\[
+\mathrm{St}\,\pd{u^*}{t^*} = -\pd{\mathcal{P}^*}{x^*} + \frac{1}{\mathrm{Re}}\,\pd{^2u^*}{y^{*2}}, \qquad \mathrm{St} = \frac{\omega h}{U}, \quad \mathrm{Re} = \frac{Uh}{\nu}.
+\]
+
+(b) $\omega = 2\pi \times 25 = 157\unit{rad/s}$. $\mathrm{Re} = 0.30 \times 0.002/10^{-6} = 600$. $\mathrm{St} = 157 \times 0.002/0.30 = 1.05$. The ratio unsteady/viscous is $\mathrm{St}/(1/\mathrm{Re}) = \mathrm{St}\,\mathrm{Re} = \omega h^2/\nu = 157 \times (0.002)^2/10^{-6} = 628$. (This product, the square of the Womersley number, is the natural single group for oscillating channel flow: it contains no $U$ at all.)
+
+(c) In the core, unsteady inertia is about $600$ times the viscous force, so the core moves as a plug, accelerated back and forth by the pressure gradient, as an inviscid fluid would. Near the walls no-slip forces $u = 0$, so viscosity must matter in a layer of thickness $\delta$ where the viscous term is as large as the unsteady one. Rescaling $y$ by $\delta$ instead of $h$: $\rho U\omega \sim \mu U/\delta^2$, so
+\[
+\delta \sim \sqrt{\nu/\omega} = \sqrt{10^{-6}/157} = 8.0\times10^{-5}\unit{m} = 0.080\unit{mm},
+\]
+about $4\%$ of the channel height. The velocity profile is flat across most of the gap with thin oscillating layers at the walls.
+
+(d) Quasi-steady means the unsteady term is negligible: $\mathrm{St}\,\mathrm{Re} = \omega h^2/\nu \ll 1$. The boundary $\omega h^2/\nu = 1$ is at $f = \nu/(2\pi h^2) = 10^{-6}/(2\pi \times 4\times10^{-6}) = 0.040\unit{Hz}$, one cycle every $25\unit{s}$. Any pulsation faster than a few hundredths of a hertz is not quasi-steady in this channel.
+
+Assumption to state: laminar flow. The Reynolds number based on the hydraulic diameter $2h$ is $1200$, below the usual transition range for a channel.
+\end{proof}
+
+Sanity check: the viscous diffusion time across the half-gap is $(h/2)^2/\nu = 1\unit{s}$, while the pulsation period is $0.04\unit{s}$; viscosity has no time to spread the wall's influence into the core, which is what $\mathrm{St}\,\mathrm{Re} = 628$ says. The scaling estimate assigned the convective term a coefficient $1$, yet it is exactly zero here: scaling bounds the size of a term, the geometry can still make it vanish.
+
+\begin{example}
+A photopolymer resin ($\rho = 1100\unit{kg/m^3}$, $\mu = 2.5\unit{Pa\,s}$) flows at $U = 5\unit{mm/s}$ past printed features of size $L = 1\unit{mm}$ during recoating.
+(a) Compute $\mathrm{Re}$ and $\mathrm{Fr}$, and say which terms of the Navier--Stokes equation matter.
+(b) Show that the pressure scale $\rho U^2$ is wrong here and give the right one, with numbers.
+(c) Estimate the force on a $1\unit{mm}$ spherical bead held fixed in this flow, two ways, and say how it changes if the speed doubles or the resin is replaced by one of the same viscosity and twice the density.
+\end{example}
+
+\begin{proof}[Solution]
+(a) $\mathrm{Re} = 1100 \times 0.005 \times 0.001/2.5 = 2.2\times10^{-3}$. $\mathrm{Fr} = 0.005/\sqrt{9.81 \times 0.001} = 0.050$. With no free surface near the feature, gravity goes into the modified pressure and $\mathrm{Fr}$ plays no role in the flow pattern. With $\mathrm{Re} \ll 1$, inertia (unsteady and convective) is negligible: the flow obeys the Stokes equations $\nabla\mathcal{P} = \mu\nabla^2\V$.
+
+(b) $\rho U^2 = 1100 \times (0.005)^2 = 0.0275\unit{Pa}$, the pressure inertia could produce. The viscous stress scale is $\mu U/L = 2.5 \times 0.005/0.001 = 12.5\unit{Pa}$, about $450$ times larger. Pressure differences must balance the viscous force, so they are of order $12.5\unit{Pa}$; scaling with $\rho U^2$ would make $p^*$ of order $450$, not $1$, violating the rule that starred variables be of order one. The ratio of the two scales is $\mathrm{Re}$ itself: $\rho U^2/(\mu U/L) = \mathrm{Re}$.
+
+(c) Stokes drag: $F = 3\pi\mu U D = 3\pi \times 2.5 \times 0.005 \times 0.001 = 1.18\times10^{-4}\unit{N}$. From the sheet's $C_D = 24/\mathrm{Re}$ with $\mathrm{Re} = 2.2\times10^{-3}$ (based on $D$): $C_D = 1.09\times10^4$, and $F = C_D \cdot \tfrac12\rho U^2 \cdot \pi D^2/4 = 1.09\times10^4 \times 0.0138 \times 7.85\times10^{-7} = 1.18\times10^{-4}\unit{N}$. The two agree because they are the same formula. Doubling $U$ doubles $F$ (linear equations), to $2.36\times10^{-4}\unit{N}$. Doubling $\rho$ at fixed $\mu$ changes nothing, since $\rho$ does not appear in the Stokes equations.
+\end{proof}
+
+Sanity check: $1.2\times10^{-4}\unit{N}$ is about the weight of a $12\unit{mg}$ mass; a $1\unit{mm}$ steel bead weighs about $4\times10^{-5}\unit{N}$, so the flow could carry such a bead along, which matches the experience that thick resin drags particles with it. The force per unit area, $F/(\pi D^2) \approx 38\unit{Pa}$, is a few times the viscous scale $12.5\unit{Pa}$, as a shape factor of order $\pi$ would predict.
+
+\begin{example}
+A harbour is to be studied in a wave tank. Prototype swell has wavelength $40\unit{m}$; local wind chop has wavelength $5\unit{m}$. Water: $\rho = 998\unit{kg/m^3}$, $\Upsilon = 0.073\unit{N/m}$.
+(a) Starting from the dynamic free-surface condition, show which group measures surface tension against gravity, and find the wavelength at which the two are equal for water.
+(b) The deep-water wave speed, including both effects, is $c^2 = g\lambda/(2\pi) + 2\pi\Upsilon/(\rho\lambda)$ (given). For models at $1{:}50$ and $1{:}400$, find the ratio of the surface-tension term to the gravity term for the scaled swell and chop, and the resulting error in the model wave speed relative to a gravity-only (Froude-scaled) wave.
+\end{example}
+
+\begin{proof}[Solution]
+(a) The scaled condition from the model above is $\mathcal{P}^* = \eta^*/\mathrm{Fr}^2 + \kappa^*/\mathrm{We}$. The ratio of the surface-tension coefficient to the gravity coefficient is $\mathrm{Fr}^2/\mathrm{We} = \Upsilon/(\rho g L^2) = 1/\mathrm{Bo}$. For a sinusoidal wave the curvature is $(2\pi/\lambda)^2$ times the amplitude, so the natural length is $\lambda/2\pi$ and the two effects are equal when $\rho g(\lambda/2\pi)^2 = \Upsilon$, that is
+\[
+\lambda_c = 2\pi\sqrt{\frac{\Upsilon}{\rho g}} = 2\pi\sqrt{\frac{0.073}{998 \times 9.81}} = 2\pi \times 2.73\unit{mm} = 17.2\unit{mm}.
+\]
+The given $c^2$ shows the same: its two terms are equal at $\lambda^2 = 4\pi^2\Upsilon/(\rho g)$.
+
+(b) The ratio of the two terms in $c^2$ is $(2\pi\Upsilon/\rho\lambda)/(g\lambda/2\pi) = (\lambda_c/\lambda)^2$, and the speed error is $\sqrt{1 + (\lambda_c/\lambda)^2} - 1$.
+
+\begin{center}\small
+\begin{tabular}{lrrr}
+\toprule
+Case & Model $\lambda$ & Capillary/gravity & Speed error \\
+\midrule
+Prototype swell & $40\unit{m}$ & $1.8\times10^{-7}$ & $0$ \\
+Swell, $1{:}50$ & $0.80\unit{m}$ & $4.6\times10^{-4}$ & $0.02\%$ \\
+Swell, $1{:}400$ & $0.10\unit{m}$ & $0.029$ & $1.5\%$ \\
+Chop, $1{:}50$ & $0.10\unit{m}$ & $0.029$ & $1.5\%$ \\
+Chop, $1{:}400$ & $12.5\unit{mm}$ & $1.88$ & $70\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+At $1{:}50$ both wave systems are gravity waves in the model, as they are in the harbour, and Froude scaling is sound. At $1{:}400$ the swell is still acceptable, but the scaled chop is shorter than $\lambda_c$: it is a capillary ripple travelling $70\%$ faster than Froude scaling assumes ($0.237$ against $0.140\unit{m/s}$), and anything that depends on it, such as wave agitation inside the harbour, is wrong in the model.
+\end{proof}
+
+Sanity check: wind ripples on a puddle, a few centimetres long, are visibly capillary (they move fast for their size and ignore gravity); ocean swell is not. The $1.5\%$ entry appears twice because the $1{:}50$ chop and the $1{:}400$ swell have the same model wavelength, as they must.
+
+\begin{trap}
+Scaling pressure with $\rho U^2$ in a creeping flow and concluding viscosity dominates ``infinitely''. Dropping the viscous term at high $\mathrm{Re}$ and then imposing no-slip. Keeping $\mathrm{Fr}$ in a closed-duct or fully submerged flow (it belongs only to free surfaces). Forgetting to scale the boundary conditions, which is where $\mathrm{We}$ and often $\mathrm{Fr}$ live. Writing $\mathrm{St}$ with a frequency in Hz when the sheet's form uses $\omega$ in rad/s (state which you use). Treating $\mathrm{Eu}$ as a parameter to match when it is the measured output.
+\end{trap}
+
+\begin{ladder}
+\item \white{P5.44}. A porous-medium energy equation; dimensions, then nondimensionalize. Choosing scales for an equation.
+\item \white{P5.66}. A torpedo's cavitation speed at a new depth. A pressure group in the boundary condition.
+\item \white{P5.56}. Square-cylinder data in water scaled to a chimney in wind. When matching the groups is enough.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+In the exact solutions of chapter 4, where the convective term vanishes for geometric reasons and the scaled equation shows why the solution depends on so few groups. In lubrication and thin-film problems, where the small group is $\mathrm{Re}\,(h/L)^2$ rather than $\mathrm{Re}$. In any ``can I use Bernoulli here'' decision, which is a judgement that $1/\mathrm{Re}$ is small away from walls. In boundary layers (chapter 7), whose thickness estimate $\delta/L \sim \mathrm{Re}^{-1/2}$ is a scaling argument. In model testing, where the groups in the scaled equations are exactly the ones to match.
+\end{hides}

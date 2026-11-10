@@ -1,0 +1,111 @@
+\section{Vorticity and irrotationality}
+\label{sec:vorticity}
+
+A small particle of fluid carried along by a flow does three things at once: it moves, it changes shape, and it spins. The spin is measured by the vorticity. It is the property that separates flows where viscosity matters from flows where it can be ignored, and its surprises are worth learning early: fluid going round in circles need not spin, and fluid moving in straight lines can. This section defines the spin of a particle from two small line segments, gives the formula, and splits the motion near a point into its pieces.
+
+\begin{recognise}
+``Find the vorticity'', ``the angular velocity of a fluid element'', ``the rate of rotation'', ``is this flow irrotational?'', ``is the flow rotational?''. Questions asking for the strain rates or the rate of angular deformation of a given field. A vortex, swirl or stirred tank, and the question whether the fluid particles rotate. A shear flow, with the question whether particles moving in straight lines rotate.
+\end{recognise}
+
+\begin{onsheet}
+Printed, in section 13: the vorticity $\zeta = \nabla\times\V$ with $\zeta_z = \partial v/\partial x - \partial u/\partial y$, the element rotation $\Omega = \frac12\zeta$ with $\Omega_z > 0$ counterclockwise, the normal strain rates $\dot\epsilon_{xx} = \partial u/\partial x$, $\dot\epsilon_{yy} = \partial v/\partial y$, and the angular deformation $\dot\gamma_{xy} = \partial u/\partial y + \partial v/\partial x$. This is the best-covered section of the chapter. Not printed: the $x$ and $y$ components of the curl, and the cylindrical form, both below.
+\end{onsheet}
+
+\subsection*{The model}
+
+\paragraph{The spin of a particle.} Draw a small cross on the fluid at a point: a segment $dx$ along $x$ and a segment $dy$ along $y$. In a time $dt$ the right end of the $x$-segment moves up, relative to its left end, by $(\partial v/\partial x)\,dx\,dt$, so the segment turns counterclockwise through the angle $(\partial v/\partial x)\,dt$. The top end of the $y$-segment moves right, relative to its bottom, by $(\partial u/\partial y)\,dy\,dt$, so that segment turns \emph{clockwise} through $(\partial u/\partial y)\,dt$. The two arms may turn by different amounts, which is deformation. Their average counterclockwise turning rate is the particle's angular velocity:
+\[
+\Omega_z = \frac12\Big(\pd{v}{x} - \pd{u}{y}\Big).
+\]
+The difference of their turning rates is the rate at which the right angle closes: $\dot\gamma_{xy} = \partial u/\partial y + \partial v/\partial x$, the crib sheet's angular deformation.
+
+\paragraph{Vorticity, the curl.} The \emph{vorticity} is twice that angular velocity, $\zeta = 2\Omega$. The factor $2$ is a convention that makes it equal to the \emph{curl} of the velocity, $\nabla\times\V$, which is the vector built from the cross-derivatives:
+\[
+\zeta = \nabla\times\V = \Big(\pd{w}{y} - \pd{v}{z}\Big)\vect{i} + \Big(\pd{u}{z} - \pd{w}{x}\Big)\vect{j} + \Big(\pd{v}{x} - \pd{u}{y}\Big)\vect{k}.
+\]
+Memory: the $z$ component is the 2-D formula; the others follow by cycling $x \to y \to z \to x$ and $u \to v \to w \to u$. In words, the curl at a point measures how much the velocity circulates around it: put a tiny paddle wheel with its axle along $\vect{k}$ at the point, and it turns at $\Omega_z = \zeta_z/2$. In cylindrical coordinates the axial component is
+\[
+\zeta_z = \frac{1}{r}\pd{(r v_\theta)}{r} - \frac{1}{r}\pd{v_r}{\theta},
+\]
+with the same $r$-inside-the-derivative pattern as cylindrical continuity.
+
+\paragraph{The motion near a point, split.} Near a point, the velocity differs from its value at the point by the velocity gradients times the displacement. In 2-D there are four gradients. Rewrite the two cross-derivatives as
+\[
+\pd{u}{y} = \tfrac12\dot\gamma_{xy} - \Omega_z, \qquad \pd{v}{x} = \tfrac12\dot\gamma_{xy} + \Omega_z .
+\]
+So every small motion is a sum of four parts: \emph{translation} (the velocity at the point), \emph{stretching} along $x$ and $y$ ($\dot\epsilon_{xx}$, $\dot\epsilon_{yy}$), \emph{shear} ($\dot\gamma_{xy}$), and \emph{rigid rotation} ($\Omega_z$). The first three are the \emph{strain rate}, the rate at which shape and size change. For an incompressible fluid $\dot\epsilon_{xx} + \dot\epsilon_{yy} + \dot\epsilon_{zz} = 0$, which is continuity again. The Newtonian stress of \secref{sec:navierstokes}{the Navier--Stokes equations} depends only on the strain rate, never on the rotation: spinning a particle without deforming it costs no friction.
+
+\paragraph{Irrotational flow.} A flow is \emph{irrotational} where $\zeta = 0$, and \emph{rotational} where it is not. Two consequences matter now. First, for an incompressible irrotational flow, $\nabla^2\V = 0$, so the viscous term in Navier--Stokes vanishes even though the fluid is viscous, and the pressure follows from Bernoulli between any two points, not just along a streamline. Second, vorticity is created only by viscous shear at walls (and by some body forces); a flow that starts from rest and stays away from walls stays irrotational. That is why the region outside a thin boundary layer is modelled as irrotational. An irrotational flow can be written as the gradient of a scalar, the velocity potential of Section 4.9; that is not on this midterm.
+
+\paragraph{Three flows that test the idea.}
+\begin{itemize}[nosep,leftmargin=*]
+\item \emph{Rigid rotation}, $v_\theta = \omega_0 r$, as in a tank spun up to steady speed: $\zeta_z = \frac{1}{r}\frac{d}{dr}(\omega_0 r^2) = 2\omega_0$. Every particle spins at the tank's angular speed, as a painted cross on the fluid would show.
+\item \emph{Free vortex}, $v_\theta = K/r$, as around a drain: $\zeta_z = \frac{1}{r}\frac{d}{dr}(K) = 0$ for $r > 0$. Particles go round in circles but do not spin: a paddle wheel carried round keeps its orientation, because the faster inner fluid turns it one way exactly as much as the curvature of the path turns it the other.
+\item \emph{Couette flow}, $u = Uy/h$ between a fixed and a sliding plate: $\zeta_z = -\partial u/\partial y = -U/h$. The streamlines are straight, yet every particle spins clockwise at $U/2h$, because its top moves faster than its bottom. Every viscous flow next to a wall is rotational.
+\end{itemize}
+Whether a flow is rotational has nothing to do with whether its streamlines are curved.
+
+\begin{firstmoves}
+Check continuity first, if the question allows it; an impossible field makes the rest moot. Write the four (2-D) or nine (3-D) velocity gradients as a small table. Then $\zeta_z = \partial v/\partial x - \partial u/\partial y$ and the other components by cycling. ``Irrotational'' needs every component zero at every point: compute them as functions. Give the element angular velocity as $\Omega = \zeta/2$ with a direction (counterclockwise for positive $\zeta_z$, with $z$ out of the page). For a swirl, use the cylindrical formula; never the Cartesian one with $r$ substituted for $x$.
+\end{firstmoves}
+
+\subsection*{Worked examples}
+
+\begin{example}[A PIV snapshot]
+Particle-image velocimetry in a mixing chamber gives, near a point taken as the origin, the linear fit
+\[
+u = 3x + 4y, \qquad v = 2x - 3y \qquad (u, v \text{ in m/s, } x, y \text{ in m}).
+\]
+(a) Is the fit consistent with an incompressible flow? (b) Find the vorticity, the element rotation, the strain rates and the angular deformation. (c) What change to the coefficient $4$ would make the flow irrotational? (d) Is $\V = yz\,\vect{i} + xz\,\vect{j} + xy\,\vect{k}$ irrotational?
+
+\emph{Gradients} (all in $\unit{s^{-1}}$). $\partial u/\partial x = 3$, $\partial u/\partial y = 4$, $\partial v/\partial x = 2$, $\partial v/\partial y = -3$.
+
+(a) $\partial u/\partial x + \partial v/\partial y = 3 - 3 = 0$. Consistent.
+
+(b) $\zeta_z = 2 - 4 = -2\unit{s^{-1}}$. $\Omega_z = -1\unit{rad/s}$: particles spin clockwise at $1\unit{rad/s}$. $\dot\epsilon_{xx} = 3\unit{s^{-1}}$ (stretching along $x$), $\dot\epsilon_{yy} = -3\unit{s^{-1}}$ (squeezing along $y$), $\dot\gamma_{xy} = 4 + 2 = 6\unit{s^{-1}}$.
+
+(c) Replace $4$ by $b$; $\zeta_z = 2 - b = 0$ needs $b = 2$. Continuity does not involve $b$, so the result is still incompressible.
+
+(d) $\zeta_x = \partial(xy)/\partial y - \partial(xz)/\partial z = x - x = 0$; $\zeta_y = \partial(yz)/\partial z - \partial(xy)/\partial x = y - y = 0$; $\zeta_z = \partial(xz)/\partial x - \partial(yz)/\partial y = z - z = 0$. Irrotational everywhere. (Its divergence is $0 + 0 + 0$, so it is also incompressible.)
+
+\emph{Sanity check.} Using the split, $\partial u/\partial y = \frac12(6) - (-1) = 4$ and $\partial v/\partial x = \frac12(6) + (-1) = 2$, which recovers the data. The shear is three times the rotation here: the particles deform much faster than they spin.
+\end{example}
+
+\begin{example}[Vorticity across a channel]
+Oil flows between parallel plates at $y = \pm h$, $h = 5\unit{mm}$, with the laminar profile $u = u_m(1 - y^2/h^2)$, $u_m = 0.3\unit{m/s}$, $v = 0$. Find the vorticity distribution and the spin of a particle at each wall and on the centreline.
+
+\emph{Vorticity.} $\zeta_z = \partial v/\partial x - \partial u/\partial y = 0 + 2u_m y/h^2$. It is linear in $y$, zero on the centreline, largest at the walls.
+
+\emph{Values.} At $y = +h$: $\zeta_z = 2u_m/h = 2(0.3)/0.005 = 120\unit{s^{-1}}$, so $\Omega_z = 60\unit{rad/s}$ counterclockwise. At $y = -h$: $60\unit{rad/s}$ clockwise. At $y = 0$: no spin.
+
+\emph{Sanity check.} Near the top wall the fluid below is faster than the fluid above, so a paddle wheel there has its bottom pushed forward and its top held back: counterclockwise, as found. The centreline is a symmetry plane with zero slope (\secref{sec:bcs}{boundary conditions}), so no spin there. The flow is rotational everywhere else even though every streamline is straight. And the wall vorticity is the wall shear divided by $\mu$, which is how the wall makes vorticity.
+\end{example}
+
+\begin{example}[A stirred tank]
+A small impeller makes a swirl modelled as rigid rotation for $r \le R$ and a free vortex outside: $v_\theta = \omega_s r$ for $r \le R$, $v_\theta = \omega_s R^2/r$ for $r > R$, with $\omega_s = 10\unit{rad/s}$ and $R = 20\unit{mm}$. Find the vorticity in each region, the speed at $r = 50\unit{mm}$, and check the circulation.
+
+\emph{Vorticity}, cylindrical, with $v_r = 0$. Core: $\zeta_z = \frac{1}{r}\frac{d}{dr}(\omega_s r^2) = 2\omega_s = 20\unit{s^{-1}}$. Outside: $\zeta_z = \frac{1}{r}\frac{d}{dr}(\omega_s R^2) = 0$. The velocity is continuous at $r = R$, where both give $\omega_s R = 0.2\unit{m/s}$, the fastest point.
+
+\emph{At $50\unit{mm}$}: $v_\theta = 10(0.02)^2/0.05 = 0.08\unit{m/s}$.
+
+\emph{Circulation.} The circulation round a closed loop is $\Gamma = \oint \V\cdot d\vect{s}$, the velocity along the loop summed round it. Stokes' theorem says it equals the total vorticity passing through the loop. For a circle of any radius $r > R$: $\Gamma = 2\pi r\,v_\theta = 2\pi\omega_s R^2 = 0.0251\unit{m^2/s}$, independent of $r$. The vorticity through it is $\zeta_z\cdot\pi R^2 = 20\pi(0.02)^2 = 0.0251\unit{m^2/s}$. They agree.
+
+\emph{Sanity check.} The circulation outside does not grow with radius because no vorticity lives outside the core. All the ``rotation'' a large loop sees is concentrated in the small core, which is the picture of a vortex in a real tank: a spinning core and an outer region that circulates without spinning.
+\end{example}
+
+\begin{trap}
+Calling a flow rotational because its streamlines are circles, or irrotational because they are straight. Dropping the factor $\frac12$ between vorticity and element rotation, or applying it twice. Sign: $\zeta_z = \partial v/\partial x - \partial u/\partial y$, not the reverse; positive is counterclockwise. Using $\zeta_z = \partial v_\theta/\partial r$ in a swirl, which misses $v_\theta/r$ and turns rigid rotation's $2\omega_0$ into $\omega_0$. Checking irrotationality at one point.
+\end{trap}
+
+\begin{ladder}
+\item \white{P4.28}. The linear field again: compute its vorticity yourself (the book's answer does not give it). The curl in two dimensions.
+\item \white{P4.60}. A drain vortex with swirl falling as $1/r$; rotational or not, then the surface depth. Irrotational, so Bernoulli across streamlines. The book's answer writes $\omega$ where the field's constant $K$ is meant.
+\item \white{P4.94}. Flow outside a spinning cylinder. A viscous flow that is irrotational.
+\item \white{P4.32}. The two exact swirl profiles. Rigid rotation against the free vortex.
+\end{ladder}
+Answers are in the back of White; settle each call the same sitting.
+
+
+\begin{hides}
+The viscous term of \secref{sec:navierstokes}{the Navier--Stokes equations} is $-\mu\nabla\times\zeta$ for an incompressible fluid, which is why irrotational flows feel no net viscous force and obey Bernoulli everywhere. The exact flows of \secref{sec:exactflows}{exact viscous flows} are all rotational, and their wall vorticity is the wall shear over $\mu$. Rigid rotation is the crib sheet's $z = \omega^2r^2/2g$ paraboloid; the free vortex is the outer part of every drain and tornado. The boundary layers of crib sheet section 8 are the thin rotational regions next to walls, with an irrotational flow outside.
+\end{hides}
