@@ -1,5 +1,6 @@
 // Astro integration: serve every non-markdown file under
-// <contentDir>/projects/<slug>/ at <base>/projects/<slug>/<relative path>.
+// <contentDir>/projects/<slug>/ at <base>/projects/<slug>/<relative path>, and
+// likewise <contentDir>/notes/<slug>/ at <base>/notes/<slug>/<relative path>.
 //
 // Build: copies into dist/ on astro:build:done. Dev: a Vite middleware serves
 // the same URLs straight from the content dir.
@@ -41,32 +42,34 @@ function isPublishable(relInProject, slug, hiddenEntries) {
   return true;
 }
 
-/** List publishable files: [{ abs, relFromContent, relFromProjects }]. */
+/**
+ * List publishable files: [{ abs, relFromContent }]. relFromContent is also the
+ * served path, "projects/<slug>/..." or "notes/<slug>/...".
+ */
 function listAssets(contentDir) {
-  const { hiddenProjects, hiddenEntries } = scanVisibility(contentDir);
-  const projectsDir = path.join(contentDir, 'projects');
+  const { hiddenProjects, hiddenEntries, hiddenNotes } = scanVisibility(contentDir);
   const out = [];
-  if (!fs.existsSync(projectsDir)) return out;
-  for (const slug of fs.readdirSync(projectsDir)) {
-    if (slug.startsWith('.') || hiddenProjects.has(slug)) continue;
-    const dir = path.join(projectsDir, slug);
-    if (!fs.statSync(dir).isDirectory()) continue;
-    const walk = (d) => {
-      for (const ent of fs.readdirSync(d, { withFileTypes: true })) {
-        if (ent.name.startsWith('.')) continue;
-        const abs = path.join(d, ent.name);
-        if (ent.isDirectory()) { walk(abs); continue; }
-        if (!ent.isFile()) continue;
-        const relInProject = toPosix(path.relative(dir, abs));
-        if (!isPublishable(relInProject, slug, hiddenEntries)) continue;
-        out.push({
-          abs,
-          relFromContent: toPosix(path.relative(contentDir, abs)),
-          relFromProjects: `${slug}/${relInProject}`,
-        });
-      }
-    };
-    walk(dir);
+  for (const [section, hidden] of [['projects', hiddenProjects], ['notes', hiddenNotes]]) {
+    const sectionDir = path.join(contentDir, section);
+    if (!fs.existsSync(sectionDir)) continue;
+    for (const slug of fs.readdirSync(sectionDir)) {
+      if (slug.startsWith('.') || hidden.has(slug)) continue;
+      const dir = path.join(sectionDir, slug);
+      if (!fs.statSync(dir).isDirectory()) continue;
+      const walk = (d) => {
+        for (const ent of fs.readdirSync(d, { withFileTypes: true })) {
+          if (ent.name.startsWith('.')) continue;
+          const abs = path.join(d, ent.name);
+          if (ent.isDirectory()) { walk(abs); continue; }
+          if (!ent.isFile()) continue;
+          const relInFolder = toPosix(path.relative(dir, abs));
+          // Notes have no log/, so the entry check never applies to them.
+          if (!isPublishable(relInFolder, slug, section === 'projects' ? hiddenEntries : new Set())) continue;
+          out.push({ abs, relFromContent: toPosix(path.relative(contentDir, abs)) });
+        }
+      };
+      walk(dir);
+    }
   }
   return out;
 }
@@ -88,14 +91,14 @@ export default function copyAssets({ contentDir, transforms = [] }) {
       'astro:server:setup': ({ server }) => {
         // Astro's dev server strips the base before later middlewares see the
         // request, so accept the URL with or without it.
-        const prefixes = [`${base}/projects/`, '/projects/'];
+        const prefixes = [`${base}/`, '/'];
         server.middlewares.use(async (req, res, next) => {
           try {
             const url = decodeURIComponent((req.originalUrl || req.url || '').split('?')[0]);
-            const prefix = prefixes.find((p) => url.startsWith(p));
+            const prefix = prefixes.find((p) => /^(projects|notes)\//.test(url.slice(p.length)) && url.startsWith(p));
             if (!prefix || url.endsWith('/')) return next();
             const rel = url.slice(prefix.length);
-            const hit = listAssets(contentDir).find((a) => a.relFromProjects === rel);
+            const hit = listAssets(contentDir).find((a) => a.relFromContent === rel);
             if (!hit) return next();
             const body = await readTransformed(hit.abs, hit.relFromContent, transforms);
             res.setHeader('Content-Type', TYPES[path.extname(hit.abs).toLowerCase()] || 'application/octet-stream');
@@ -111,7 +114,7 @@ export default function copyAssets({ contentDir, transforms = [] }) {
         const assets = listAssets(contentDir);
         let bytes = 0;
         for (const a of assets) {
-          const dest = path.join(outDir, 'projects', ...a.relFromProjects.split('/'));
+          const dest = path.join(outDir, ...a.relFromContent.split('/'));
           if (fs.existsSync(dest)) {
             throw new Error(`content-assets: ${a.relFromContent} would overwrite ${dest}`);
           }

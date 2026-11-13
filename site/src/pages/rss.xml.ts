@@ -7,7 +7,9 @@ import {
   entryUrl,
   excerpt,
   getEntries,
+  getNotes,
   getProjects,
+  noteUrl,
   projectDate,
   projectUrl,
   url,
@@ -23,6 +25,12 @@ export const GET: APIRoute = async (context) => {
       link: projectUrl(p),
       pubDate: projectDate(p),
       description: p.data.description,
+    })),
+    ...(await getNotes()).map((n) => ({
+      title: n.data.title,
+      link: noteUrl(n),
+      pubDate: n.data.date,
+      description: n.data.description,
     })),
     ...entries.map((e) => ({
       title: `${titles.get(entryProject(e))}: ${entryTitle(e)}`,

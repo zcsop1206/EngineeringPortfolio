@@ -7,7 +7,7 @@ import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 import fs from 'node:fs';
 import sharp from 'sharp';
-import { entryProject, entryStem, firstImageFile, url, type Entry, type Project } from './content';
+import { entryProject, entryStem, firstImageFile, url, type Entry, type Note, type Project } from './content';
 
 const OG_W = 1200;
 const OG_H = 630;
@@ -32,23 +32,28 @@ function coverFitsAstro(cover: ImageMetadata): boolean {
   return cover.width >= OG_W && cover.height >= OG_H;
 }
 
+/** og/ file name for a small cover: <slug>.jpg for projects, notes/<slug>.jpg for notes. */
+function smallCoverFile(p: Project | Note): string {
+  return p.collection === 'notes' ? `notes/${p.id}.jpg` : `${p.id}.jpg`;
+}
+
 /** og/ file name and source file of each cover too small for Astro, for the og/ endpoint. */
-export function smallCoverOgs(projects: Project[]): { file: string; src: string }[] {
-  return projects.flatMap((p) => {
+export function smallCoverOgs(items: (Project | Note)[]): { file: string; src: string }[] {
+  return items.flatMap((p) => {
     const cover = p.data.cover;
     if (!cover || coverFitsAstro(cover)) return [];
     // Astro's image proxy exposes the source file as fsPath.
     const src = (cover as ImageMetadata & { fsPath?: string }).fsPath;
     if (!src) throw new Error(`src/lib/og.ts: no file path for the cover of ${p.id}; read it from the frontmatter instead.`);
-    return [{ file: `${p.id}.jpg`, src }];
+    return [{ file: smallCoverFile(p), src }];
   });
 }
 
-/** Site-relative URL of a project's 1200x630 Open Graph image, made from its cover. */
-export async function coverOg(p: Project): Promise<string | undefined> {
+/** Site-relative URL of a project's or note's 1200x630 Open Graph image, made from its cover. */
+export async function coverOg(p: Project | Note): Promise<string | undefined> {
   const cover = p.data.cover;
   if (!cover) return undefined;
-  if (!coverFitsAstro(cover)) return ogUrl(`${p.id}.jpg`);
+  if (!coverFitsAstro(cover)) return ogUrl(smallCoverFile(p));
   // layout 'none': one JPEG, not the srcset the site-wide 'constrained' layout would add.
   return (await getImage({ src: cover, width: OG_W, height: OG_H, fit: 'cover', format: 'jpg', layout: 'none' })).src;
 }

@@ -1,0 +1,43 @@
+---
+// A standalone post: content/notes/<slug>/index.md. Same page as a project writeup,
+// without status, sidebar project list, deck or visuals. Not linked from the home page.
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { getNotes, isoDate, outline, type Note } from '../../../lib/content';
+import { coverOg } from '../../../lib/og';
+
+export async function getStaticPaths() {
+  const notes = await getNotes();
+  return notes.map((note) => ({ params: { slug: note.id }, props: { note } }));
+}
+
+const { note } = Astro.props as { note: Note };
+const { title, description, date, cover } = note.data;
+const { Content, headings } = await render(note);
+const showCover = cover && note.data.cover_on_page !== false;
+---
+<Base title={title} description={description} ogImage={await coverOg(note)} ogType="article" outline={outline(headings)}>
+  <article class="page" data-pagefind-body>
+    <header class="page-head">
+      <h1>{title}</h1>
+      <p class="lede">{description}</p>
+      <p class="meta mono"><time datetime={isoDate(date)}>{isoDate(date)}</time></p>
+    </header>
+    {showCover && (
+      <Image
+        src={cover}
+        alt=""
+        width={1360}
+        widths={[480, 680, 1024, 1360]}
+        sizes="(min-width: 712px) 680px, calc(100vw - 32px)"
+        format="webp"
+        loading="eager"
+        class="page-cover"
+      />
+    )}
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Base>

@@ -11,7 +11,8 @@ const base = pathToFileURL(projectsDir + path.sep);
 
 // Hidden writeups and entries are excluded at the glob, so they never enter
 // the content store or the image pipeline.
-const { hiddenProjects, hiddenEntries } = scanVisibility(contentDir);
+const { hiddenProjects, hiddenEntries, hiddenNotes } = scanVisibility(contentDir);
+const notesBase = pathToFileURL(path.join(contentDir, 'notes') + path.sep);
 const excludeProjects = [...hiddenProjects].map((slug) => `!${slug}/**`);
 const excludeEntries = [...hiddenEntries].map((id) => `!${id}.md`);
 
@@ -77,4 +78,26 @@ const entries = defineCollection({
     .passthrough(),
 });
 
-export const collections = { projects, entries };
+// Standalone posts (added 2026-11-13): an analysis or essay that is not a project.
+// content/notes/<slug>/index.md, served at /notes/<slug>/, media beside it.
+// Not on the home page or in the sidebar; reachable by URL, search, RSS and the sitemap.
+const notes = defineCollection({
+  loader: glob({
+    base: notesBase,
+    pattern: ['*/index.md', ...[...hiddenNotes].map((slug) => `!${slug}/**`)],
+    generateId: ({ entry }) => entry.split('/')[0],
+  }),
+  schema: ({ image }) =>
+    z
+      .object({
+        title: z.string(),
+        description: z.string(),
+        date: z.coerce.date(),
+        cover: image().optional(),
+        cover_on_page: z.boolean().default(true),
+        publish: z.boolean().default(true),
+      })
+      .passthrough(),
+});
+
+export const collections = { projects, entries, notes };

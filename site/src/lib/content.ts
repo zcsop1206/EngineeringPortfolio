@@ -7,6 +7,7 @@ import { homeProjects as homeOrder, navOrder, shortTitle as shortTitleOf } from 
 
 export type Project = CollectionEntry<'projects'>;
 export type Entry = CollectionEntry<'entries'>;
+export type Note = CollectionEntry<'notes'>;
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 export const SITE_NAME = 'Adit Bhargava';
@@ -123,6 +124,16 @@ export function entryUrl(e: Entry): string {
 
 export function projectUrl(p: Project | string): string {
   return url(`/projects/${typeof p === 'string' ? p : p.id}/`);
+}
+
+/** Visible notes (standalone posts), newest first. */
+export async function getNotes(): Promise<Note[]> {
+  const all = await getCollection('notes', (n) => n.data.publish !== false);
+  return all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime() || a.id.localeCompare(b.id));
+}
+
+export function noteUrl(n: Note | string): string {
+  return url(`/notes/${typeof n === 'string' ? n : n.id}/`);
 }
 
 /** A figure collected by src/build/rehype-figures.mjs; see the comment there. */

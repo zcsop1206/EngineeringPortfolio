@@ -1,5 +1,5 @@
 // Remark plugin: rewrite relative markdown image URLs that match `test` to the
-// copied-asset URL <base>/projects/<slug>/<path>, and add width and height
+// copied-asset URL <base>/projects/<slug>/<path> (or <base>/notes/<slug>/<path>), and add width and height
 // read from the file.
 //
 // By default it only matches SVG. Astro's image pipeline gains nothing on SVG
@@ -42,8 +42,8 @@ function visitImages(node, fn) {
 }
 
 export default function remarkAssetUrls({ contentDir, base, test = (url) => /\.svg$/i.test(url) }) {
-  const projectsDir = path.resolve(contentDir, 'projects');
-  const prefix = `${base.replace(/\/$/, '')}/projects/`;
+  const root = path.resolve(contentDir);
+  const prefix = `${base.replace(/\/$/, '')}/`;
   return async (tree, file) => {
     if (typeof file?.path !== 'string') return;
     const jobs = [];
@@ -54,8 +54,10 @@ export default function remarkAssetUrls({ contentDir, base, test = (url) => /\.s
       try { url = decodeURI(raw); } catch { url = raw; }
       if (!test(url)) return;
       const abs = path.resolve(path.dirname(file.path), url);
-      const rel = path.relative(projectsDir, abs);
+      // Served from copy-assets at the same path: projects/<slug>/... or notes/<slug>/...
+      const rel = path.relative(root, abs);
       if (rel.startsWith('..') || path.isAbsolute(rel)) return;
+      if (!/^(projects|notes)$/.test(rel.split(path.sep)[0])) return;
       if (!fs.existsSync(abs)) {
         throw new Error(`Image not found: ${url} in ${file.path}`);
       }

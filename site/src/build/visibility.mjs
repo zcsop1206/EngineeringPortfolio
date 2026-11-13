@@ -34,14 +34,34 @@ function isHiddenEntry(fm) {
 }
 
 /**
- * Scan <contentDir>/projects. Returns the hidden project slugs and the hidden
- * entries of visible projects (as "<slug>/log/<stem>").
+ * Scan <contentDir>/notes. A note is hidden with publish: false, or when its
+ * folder has no index.md.
+ */
+function scanNotes(contentDir) {
+  const root = path.join(contentDir, 'notes');
+  const hidden = new Set();
+  if (!fs.existsSync(root)) return hidden;
+  for (const slug of fs.readdirSync(root)) {
+    if (slug.startsWith('.')) continue;
+    const dir = path.join(root, slug);
+    if (!fs.statSync(dir).isDirectory()) continue;
+    const index = path.join(dir, 'index.md');
+    if (!fs.existsSync(index) || readFrontmatter(index).publish === false) hidden.add(slug);
+  }
+  return hidden;
+}
+
+/**
+ * Scan <contentDir>/projects and <contentDir>/notes. Returns the hidden project
+ * slugs, the hidden entries of visible projects (as "<slug>/log/<stem>"), and
+ * the hidden note slugs.
  */
 export function scanVisibility(contentDir) {
   const root = path.join(contentDir, 'projects');
   const hiddenProjects = new Set();
   const hiddenEntries = new Set();
-  if (!fs.existsSync(root)) return { hiddenProjects, hiddenEntries };
+  const hiddenNotes = scanNotes(contentDir);
+  if (!fs.existsSync(root)) return { hiddenProjects, hiddenEntries, hiddenNotes };
   for (const slug of fs.readdirSync(root)) {
     if (slug.startsWith('.')) continue;
     const dir = path.join(root, slug);
@@ -60,7 +80,7 @@ export function scanVisibility(contentDir) {
       }
     }
   }
-  return { hiddenProjects, hiddenEntries };
+  return { hiddenProjects, hiddenEntries, hiddenNotes };
 }
 
 /** Resolve the content dir: CONTENT_DIR relative to site/, else ../content. */
