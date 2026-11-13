@@ -10,7 +10,7 @@ publish: true
 
 Selective laser sintering (SLS) builds parts from powder. A roller spreads nylon 110 µm thick. A laser melts the part's cross-section. The bed drops one layer, and the roller spreads the next.
 
-The temperature must be controlled carefully within a temperature range; parts can crystallize, shrink, and warp below it, and loose powder can melt above it.
+The bed must stay inside a narrow window: below it, parts crystallize, shrink and warp; above it, loose powder melts. Formlabs' guide to SLS says the temperature must hold within 2 °C.
 
 That looked hard to square with how the machine works. Every few seconds, fresh powder lands on the bed, and it cannot arrive at exactly bed temperature. Powder is mostly air, so heat crawls through it.
 
@@ -43,7 +43,7 @@ Then speed. Powder's thermal diffusivity, its conductivity over the heat it stor
 
 $$\alpha = \frac{k}{\rho c_p} = 8.9 \times 10^{-8} \text{ m}^2/\text{s}$$
 
-Heat crosses one layer in $L^2/\alpha = 0.14$ s. A cold layer equalizes with whatever lies beneath it in a tenth of a second, faster than any heater above could plausibly respond.
+Heat crosses one layer in $L^2/\alpha = 0.14$ s. A cold layer equalizes with whatever lies beneath it in a tenth of a second. In that time, even a heater putting 2 kW/m² into the powder supplies less than a tenth of the missing heat.
 
 ## 2. When the cold layer lands
 
@@ -65,7 +65,7 @@ A step-by-step numerical calculation matches the exact solution to within 0.012 
 
 ## 3. A wrong turn
 
-A 15 K plunge blows straight through a 2 °C band. On a 168 °C bed, it lands next to the 153 °C crystallization onset. I thought this dip threatens the part, so warm the powder before it is spread, until it arrives within 4 K of the bed.
+A 15 K plunge blows straight through a 2 °C band. On a 168 °C bed, it lands next to the 153 °C crystallization onset. I thought this dip threatened the part, and that the fix was to warm the powder before spreading it, so it arrives within 4 K of the bed.
 
 For the preheater, I pictured a narrow pocket beside the bed, 4 mm wide, with walls held at bed temperature. Powder poured in at room temperature takes about 70 s to come within 4 K at its centre. With a new layer every 10 s, the pocket would need to hold about seven layers of powder.
 
@@ -75,10 +75,11 @@ Then I checked that design against published measurements. Three findings refute
 - Hotter powder fights back. On the same machine, raising the supply temperature eventually cracked the powder in its bin or rippled the bed. Hot nylon powder also degrades, one reason SLS printers blend fresh powder into used; Formlabs recommends 30% fresh for its Nylon 12.
 - A brief dip cannot crystallize the part. Held at 168 °C, nylon 12 took about 10 minutes to start crystallizing in a DSC test (NETZSCH). A dip that recovers in seconds is far too short. The 153 °C onset comes from slow cooling at 10 K per minute, not from a one-second dip.
 
-So the 2 °C figure governs the bed between layers, not the dip at each recoat. 
+So the 2 °C figure governs the bed between layers, not the dip at each recoat.
+
 ## 4. The real cost: waiting
 
-The laser cannot fuse powder that is still cold, so every layer waits until it warms. How long until the new layer's surface is within 2 K of bed temperature, and what sets that time?
+Laser settings are tuned for powder at bed temperature, so a new layer should be warm before it is scanned. How long until the new layer's surface is within 2 K of bed temperature, and what sets that time?
 
 With no heater, a 30 K layer waits 9.7 s, and a 75 K layer waits 61 s.
 
