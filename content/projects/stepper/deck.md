@@ -4,7 +4,7 @@
 
 Toronto Hacker Fab is building a maskless lithography stepper. I took on the optics column and the analysis of the stage it sits on.
 
-![The column on the stage](column.png)
+![The column cut through its axis, with the light paths](section.png)
 
 # What
 
@@ -24,7 +24,7 @@ Depth of focus at 410 nm and NA 0.25 is ±3.3 µm. Five things share it. The sta
 
 ## Difficulty
 
-Printed rods and balls are never exact, and nobody has measured by how much.
+Hand-cut rods and printed ball seats are never exact, and nobody has measured by how much.
 
 # Work
 
@@ -32,9 +32,23 @@ Printed rods and balls are never exact, and nobody has measured by how much.
 
 The firmware model, ported and checked by hand: 15 mm/rad per motor, 1.1 to 1.5 nm per encoder count, a ±8.3 mm reachable cube.
 
+## Blind spot
+
+A 10 µm mismatch in one rod pair tilts the platform by 0.59 mrad. The encoder reads the crank, so it never knows.
+
+![One rod pair, side on](#fig-2)
+
 ## Errors
 
-Every rod and ball given its own error, over three bands of print quality. Accuracy can be calibrated with the camera. Tilt, 0.2 to 3.6 mrad, cannot: the stage has no tilt axis.
+Every rod and ball given its own error, over three levels of print quality. Scale error calibrates out with the camera. Tilt, 0.4 to 3.6 mrad, cannot: the stage has no tilt axis.
+
+![The chip surface across one field for each print quality](wedge.png)
+
+## Field by field
+
+Tilt changes as the stage steps, so levelling once does not fix it.
+
+![One middling stage stepping a 5 by 5 grid](tilt.mp4)
 
 ## Test
 
