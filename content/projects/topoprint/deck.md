@@ -54,9 +54,21 @@ Written for this job. Perimeters, skins, and a triangular infill whose walls are
 
 Two sub-problems went to groups of Claude agents, scored by the solver. They converged on thickening one wall direction and turning it toward the stress. That cut deflection from 0.97 to 0.79 mm.
 
+## Drum
+
+A second part with a fixed shape: a sanding drum on a drill. The shank carries torque as shear between layers and sits near its limit even solid. Spokes and rim are below a tenth of theirs.
+
+![Stress over allowable by region](drum_utilization.png)
+
+## Taguchi
+
+Seven slicer settings, 18 runs in place of 1,458, each sliced by Bambu Studio and solved under four noise conditions. 68 g and 1 h 30 against 87 g and 2 h 06 for the default, at a safety factor of 2.
+
+![Main effects of the seven settings](drum_taguchi.png)
+
 ## Next
 
-Print the bracket and the gyroid baseline, load both on an Instron, and feed the measured stiffness back into the material law.
+Print the bracket and the gyroid baseline and load both on an Instron. Then free more variables: orientation, wall direction, pattern per region, and strength as a constraint inside the optimizer.
 
 ![Compliance and mesh size per cycle](topoprint_convergence.png)
 
@@ -66,4 +78,5 @@ Print the bracket and the gyroid baseline, load both on an Instron, and feed the
 - How infill becomes a material law
 - The overhang rule
 - What the agents got wrong
-- Strength, and why it is not in yet
+- Why the shank governs the drum
+- Strength, and where it is still missing
