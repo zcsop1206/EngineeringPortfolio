@@ -4,7 +4,7 @@ description: Toronto Hacker Fab's maskless stepper rides on a 3D-printed stage t
 status: in-progress
 start: 2026-11-13
 cover: section.png
-publish: false
+publish: true
 short: Litho stepper
 result: "Modelled the stepper's stage before building it: 1.5 nm per encoder count, but 0.4 to 3.6 mrad of tilt across a die field that the encoders cannot see, against 0.84 mrad the depth of focus allows."
 hook:
