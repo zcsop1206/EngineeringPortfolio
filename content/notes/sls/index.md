@@ -1,6 +1,6 @@
 ---
 title: Why SLS printers heat each new layer of powder
-description: Every few seconds, an SLS printer dumps a cold layer of powder onto a bed it must hold within 2 °C. This note works out, from public data, where the heat comes from, why the obvious fix is wrong, what the cold layer really costs, and how I would test it on a bench and on a real printer.
+description: Every few seconds, an SLS printer dumps a cold layer of powder onto a bed it must hold within 2 °C. This note works out, from public data, where the heat comes from, why the obvious fix is wrong, what the cold layer really costs, how thermal history shows up in Fuse X1 part dimensions, and how I would test it on a bench and on a real printer.
 date: 2026-11-13
 cover: freshlayer_wait.png
 cover_on_page: false
@@ -102,7 +102,13 @@ This fits a design Formlabs has patented. US 11,117,324 (filed 2018) mounts a he
 
 Read through this model, a heater that trails the roller hits both limits at once. It starts warming each layer the instant it lands, which cuts the wait. And it lets the powder supply run cooler, which dodges caking and degradation.
 
-## 5. Limitations
+## 5. Where thermal history shows up in parts
+
+Formlabs measured 467 test parts from 14 builds on four Fuse X1 printers. Most of the dimensional variation came from within a build, and much of it repeated at the same spot in the chamber, build after build: 56 to 80% of the variance in Z, and 35 to 43% in X and Y. Formlabs attributes this to each location's thermal history, such as its height in the build and its distance from the chamber walls. Parts printed at the same position repeated within 0.03 to 0.08 mm.
+
+So thermal history is not only a question of build time. It also sets part dimensions, and much of its effect is repeatable. The model here follows a single column of powder through repeated recoats. A natural next step is to run one such column for each chamber position, with its own height and distance from the walls, and test whether it predicts those positional offsets. The study already corrects them using measurements from a first build, so its data is a ready benchmark.
+
+## 6. Limitations
 
 - One layer is only about two powder grains thick (about 50 µm each), so anything under about 0.1 s is rough.
 - The heater is idealized. All its power reaches the surface, and its controller settings are assumed. Different settings shift the ready times.
@@ -111,7 +117,7 @@ Read through this model, a heater that trails the roller hits both limits at onc
 - Conductivity and specific heat climb with temperature, shifting the time scales by tens of percent.
 - The feed temperature, layer time and heater power of a real Fuse are assumed.
 
-## 6. Testing it
+## 7. Testing it
 
 ### On a bench
 
@@ -135,12 +141,14 @@ The model's time scale grows with the square of the layer thickness, so a 1 mm l
 1. How cold does powder arrive in a Fuse, and does caking set that limit?
 2. Is the delay before the laser scans a new layer fixed, or triggered by the infrared reading?
 3. What is a typical time between layers?
+4. Do the Fuse X1's repeatable positional offsets follow a thermal model of each position, or are they only corrected from measured builds?
 
 ## Sources
 
 - Formlabs, [Fuse 1+ 30W technical specifications](https://formlabs.com/3d-printers/fuse-1/tech-specs/): build area, layer thickness, laser.
 - Formlabs, [What is selective laser sintering](https://formlabs.com/blog/what-is-selective-laser-sintering/): the 2 °C control statement.
 - Formlabs, [Nylon 12 Powder technical data sheet](https://formlabs.com/materials/tds/nylon-12-powder/): recommended 30% fresh powder.
+- Formlabs, [Fuse X1 dimensional accuracy and repeatability study](https://formlabs.com/white-papers/fuse-x1-dimensional-accuracy-and-repeatability/): sources of dimensional variation by chamber position.
 - 3D Printing Industry, [Formlabs Fuse 1 and Fuse Sift in-depth review](https://formlabs-media.formlabs.com/rs/060-UIG-504/images/WP-EN-3d-printing-industry-formlabs-fuse-1-and-sift-in-depth-review.pdf): the infrared sensor.
 - Yuan, Bourell and Diller, [Thermal conductivity measurements of polyamide 12](https://utw10945.utweb.utexas.edu/Manuscripts/2011/2011-32-Yuan.pdf), Solid Freeform Fabrication Symposium 2011: powder properties, 50 µm powder.
 - Yuan and Bourell, [Efforts to reduce part bed thermal gradients during laser sintering processing](https://utw10945.utweb.utexas.edu/Manuscripts/2012/2012-73-Yuan.pdf), Solid Freeform Fabrication Symposium 2012: supply and bed temperatures, the drop at each recoat, the supply temperature limit.
