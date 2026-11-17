@@ -1,0 +1,177 @@
+---
+study: bank
+id: putnam
+title: Putnam problems by reference
+---
+
+> Written by a model for Adit. Not Adit's words.
+
+Putnam problems by year and number only: no statements, no solutions, no wording from the papers. Statements and solutions are in Kiran Kedlaya's archive at https://kskedlaya.org/putnam-archive/, which has every paper from 1985 and solutions from 1995; link to the solutions rather than copying them.
+
+The list holds every Putnam problem the teach docs in `content/teach/putnam/` name (ladders, where-it-hides notes, and the two mock papers: 2015 A1 to A6 and 2014 B1 to B6), plus every A1, A2, B1 and B2 from 2005 to 2025. `d` is by position (A1/B1 3, A2/B2 4, A3/B3 5.5, A4/B4 6.5, A5/B5 8, A6/B6 9.5). Tags for some rows are in `putnam.tags.md`.
+^about
+
+| id | source | d | statement | solutions |
+|---|---|---|---|---|
+| putnam-2005-a1 | Putnam 2005 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2005.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2005s.pdf) |
+| putnam-2005-a2 | Putnam 2005 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2005.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2005s.pdf) |
+| putnam-2005-b1 | Putnam 2005 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2005.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2005s.pdf) |
+| putnam-2005-b2 | Putnam 2005 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2005.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2005s.pdf) |
+| putnam-2006-a1 | Putnam 2006 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2006.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2006s.pdf) |
+| putnam-2006-a2 | Putnam 2006 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2006.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2006s.pdf) |
+| putnam-2006-b1 | Putnam 2006 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2006.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2006s.pdf) |
+| putnam-2006-b2 | Putnam 2006 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2006.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2006s.pdf) |
+| putnam-2007-a1 | Putnam 2007 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2007.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2007s.pdf) |
+| putnam-2007-a2 | Putnam 2007 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2007.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2007s.pdf) |
+| putnam-2007-b1 | Putnam 2007 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2007.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2007s.pdf) |
+| putnam-2007-b2 | Putnam 2007 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2007.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2007s.pdf) |
+| putnam-2008-a1 | Putnam 2008 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2008.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2008s.pdf) |
+| putnam-2008-a2 | Putnam 2008 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2008.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2008s.pdf) |
+| putnam-2008-b1 | Putnam 2008 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2008.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2008s.pdf) |
+| putnam-2008-b2 | Putnam 2008 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2008.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2008s.pdf) |
+| putnam-2009-a1 | Putnam 2009 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2009.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2009s.pdf) |
+| putnam-2009-a2 | Putnam 2009 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2009.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2009s.pdf) |
+| putnam-2009-b1 | Putnam 2009 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2009.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2009s.pdf) |
+| putnam-2009-b2 | Putnam 2009 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2009.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2009s.pdf) |
+| putnam-2010-a1 | Putnam 2010 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2010.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2010s.pdf) |
+| putnam-2010-a2 | Putnam 2010 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2010.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2010s.pdf) |
+| putnam-2010-b1 | Putnam 2010 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2010.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2010s.pdf) |
+| putnam-2010-b2 | Putnam 2010 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2010.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2010s.pdf) |
+| putnam-2011-a1 | Putnam 2011 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2011.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2011s.pdf) |
+| putnam-2011-a2 | Putnam 2011 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2011.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2011s.pdf) |
+| putnam-2011-b1 | Putnam 2011 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2011.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2011s.pdf) |
+| putnam-2011-b2 | Putnam 2011 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2011.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2011s.pdf) |
+| putnam-2012-a1 | Putnam 2012 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2012.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2012s.pdf) |
+| putnam-2012-a2 | Putnam 2012 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2012.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2012s.pdf) |
+| putnam-2012-b1 | Putnam 2012 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2012.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2012s.pdf) |
+| putnam-2012-b2 | Putnam 2012 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2012.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2012s.pdf) |
+| putnam-2013-a1 | Putnam 2013 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2013.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2013s.pdf) |
+| putnam-2013-a2 | Putnam 2013 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2013.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2013s.pdf) |
+| putnam-2013-b1 | Putnam 2013 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2013.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2013s.pdf) |
+| putnam-2013-b2 | Putnam 2013 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2013.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2013s.pdf) |
+| putnam-2014-a1 | Putnam 2014 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2014.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2014s.pdf) |
+| putnam-2014-a2 | Putnam 2014 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2014.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2014s.pdf) |
+| putnam-2014-b1 | Putnam 2014 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2014.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2014s.pdf) |
+| putnam-2014-b2 | Putnam 2014 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2014.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2014s.pdf) |
+| putnam-2014-b3 | Putnam 2014 B3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2014.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2014s.pdf) |
+| putnam-2014-b4 | Putnam 2014 B4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2014.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2014s.pdf) |
+| putnam-2014-b5 | Putnam 2014 B5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2014.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2014s.pdf) |
+| putnam-2014-b6 | Putnam 2014 B6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2014.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2014s.pdf) |
+| putnam-2015-a1 | Putnam 2015 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2015.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2015s.pdf) |
+| putnam-2015-a2 | Putnam 2015 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2015.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2015s.pdf) |
+| putnam-2015-a3 | Putnam 2015 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2015.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2015s.pdf) |
+| putnam-2015-a4 | Putnam 2015 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2015.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2015s.pdf) |
+| putnam-2015-a5 | Putnam 2015 A5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2015.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2015s.pdf) |
+| putnam-2015-a6 | Putnam 2015 A6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2015.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2015s.pdf) |
+| putnam-2015-b1 | Putnam 2015 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2015.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2015s.pdf) |
+| putnam-2015-b2 | Putnam 2015 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2015.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2015s.pdf) |
+| putnam-2016-a1 | Putnam 2016 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-a2 | Putnam 2016 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-a3 | Putnam 2016 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-a4 | Putnam 2016 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-a5 | Putnam 2016 A5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-a6 | Putnam 2016 A6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-b1 | Putnam 2016 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-b2 | Putnam 2016 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-b3 | Putnam 2016 B3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-b4 | Putnam 2016 B4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-b5 | Putnam 2016 B5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2016-b6 | Putnam 2016 B6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2016.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2016s.pdf) |
+| putnam-2017-a1 | Putnam 2017 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-a2 | Putnam 2017 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-a3 | Putnam 2017 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-a4 | Putnam 2017 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-a5 | Putnam 2017 A5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-a6 | Putnam 2017 A6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-b1 | Putnam 2017 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-b2 | Putnam 2017 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-b3 | Putnam 2017 B3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-b4 | Putnam 2017 B4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-b5 | Putnam 2017 B5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2017-b6 | Putnam 2017 B6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2017.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2017s.pdf) |
+| putnam-2018-a1 | Putnam 2018 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2018.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2018s.pdf) |
+| putnam-2018-a2 | Putnam 2018 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2018.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2018s.pdf) |
+| putnam-2018-a3 | Putnam 2018 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2018.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2018s.pdf) |
+| putnam-2018-a4 | Putnam 2018 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2018.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2018s.pdf) |
+| putnam-2018-a6 | Putnam 2018 A6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2018.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2018s.pdf) |
+| putnam-2018-b1 | Putnam 2018 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2018.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2018s.pdf) |
+| putnam-2018-b2 | Putnam 2018 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2018.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2018s.pdf) |
+| putnam-2018-b3 | Putnam 2018 B3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2018.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2018s.pdf) |
+| putnam-2018-b4 | Putnam 2018 B4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2018.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2018s.pdf) |
+| putnam-2018-b6 | Putnam 2018 B6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2018.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2018s.pdf) |
+| putnam-2019-a1 | Putnam 2019 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2019.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2019s.pdf) |
+| putnam-2019-a2 | Putnam 2019 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2019.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2019s.pdf) |
+| putnam-2019-a3 | Putnam 2019 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2019.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2019s.pdf) |
+| putnam-2019-a4 | Putnam 2019 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2019.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2019s.pdf) |
+| putnam-2019-b1 | Putnam 2019 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2019.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2019s.pdf) |
+| putnam-2019-b2 | Putnam 2019 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2019.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2019s.pdf) |
+| putnam-2019-b3 | Putnam 2019 B3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2019.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2019s.pdf) |
+| putnam-2019-b5 | Putnam 2019 B5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2019.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2019s.pdf) |
+| putnam-2019-b6 | Putnam 2019 B6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2019.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2019s.pdf) |
+| putnam-2020-a1 | Putnam 2020 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2020.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2020s.pdf) |
+| putnam-2020-a2 | Putnam 2020 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2020.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2020s.pdf) |
+| putnam-2020-a3 | Putnam 2020 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2020.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2020s.pdf) |
+| putnam-2020-a4 | Putnam 2020 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2020.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2020s.pdf) |
+| putnam-2020-a5 | Putnam 2020 A5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2020.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2020s.pdf) |
+| putnam-2020-b1 | Putnam 2020 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2020.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2020s.pdf) |
+| putnam-2020-b2 | Putnam 2020 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2020.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2020s.pdf) |
+| putnam-2020-b3 | Putnam 2020 B3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2020.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2020s.pdf) |
+| putnam-2020-b4 | Putnam 2020 B4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2020.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2020s.pdf) |
+| putnam-2020-b5 | Putnam 2020 B5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2020.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2020s.pdf) |
+| putnam-2021-a1 | Putnam 2021 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2021.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2021s.pdf) |
+| putnam-2021-a2 | Putnam 2021 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2021.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2021s.pdf) |
+| putnam-2021-a3 | Putnam 2021 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2021.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2021s.pdf) |
+| putnam-2021-a4 | Putnam 2021 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2021.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2021s.pdf) |
+| putnam-2021-a5 | Putnam 2021 A5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2021.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2021s.pdf) |
+| putnam-2021-b1 | Putnam 2021 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2021.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2021s.pdf) |
+| putnam-2021-b2 | Putnam 2021 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2021.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2021s.pdf) |
+| putnam-2021-b4 | Putnam 2021 B4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2021.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2021s.pdf) |
+| putnam-2021-b5 | Putnam 2021 B5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2021.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2021s.pdf) |
+| putnam-2021-b6 | Putnam 2021 B6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2021.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2021s.pdf) |
+| putnam-2022-a1 | Putnam 2022 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-a2 | Putnam 2022 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-a3 | Putnam 2022 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-a4 | Putnam 2022 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-a5 | Putnam 2022 A5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-a6 | Putnam 2022 A6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-b1 | Putnam 2022 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-b2 | Putnam 2022 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-b3 | Putnam 2022 B3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-b4 | Putnam 2022 B4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-b5 | Putnam 2022 B5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2022-b6 | Putnam 2022 B6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2022.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2022s.pdf) |
+| putnam-2023-a1 | Putnam 2023 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2023-a2 | Putnam 2023 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2023-a3 | Putnam 2023 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2023-a4 | Putnam 2023 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2023-a5 | Putnam 2023 A5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2023-a6 | Putnam 2023 A6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2023-b1 | Putnam 2023 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2023-b2 | Putnam 2023 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2023-b3 | Putnam 2023 B3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2023-b5 | Putnam 2023 B5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2023-b6 | Putnam 2023 B6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2023.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2023s.pdf) |
+| putnam-2024-a1 | Putnam 2024 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2024-a2 | Putnam 2024 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2024-a3 | Putnam 2024 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2024-a4 | Putnam 2024 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2024-a5 | Putnam 2024 A5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2024-a6 | Putnam 2024 A6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2024-b1 | Putnam 2024 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2024-b2 | Putnam 2024 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2024-b3 | Putnam 2024 B3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2024-b4 | Putnam 2024 B4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2024-b5 | Putnam 2024 B5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2024.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2024s.pdf) |
+| putnam-2025-a1 | Putnam 2025 A1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-a2 | Putnam 2025 A2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-a3 | Putnam 2025 A3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-a4 | Putnam 2025 A4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-a5 | Putnam 2025 A5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-a6 | Putnam 2025 A6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-b1 | Putnam 2025 B1 | 3 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-b2 | Putnam 2025 B2 | 4 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-b3 | Putnam 2025 B3 | 5.5 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-b4 | Putnam 2025 B4 | 6.5 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-b5 | Putnam 2025 B5 | 8 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+| putnam-2025-b6 | Putnam 2025 B6 | 9.5 | [paper](https://kskedlaya.org/putnam-archive/2025.pdf) | [solutions](https://kskedlaya.org/putnam-archive/2025s.pdf) |
+^putnam-bank
