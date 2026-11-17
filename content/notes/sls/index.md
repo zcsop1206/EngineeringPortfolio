@@ -1,6 +1,6 @@
 ---
 title: Why SLS printers heat each new layer of powder
-description: Every few seconds, an SLS printer dumps a cold layer of powder onto a bed it must hold within 2 °C. This note works out, from public data, where the heat comes from, why the obvious fix is wrong, what the cold layer really costs, how thermal history shows up in Fuse X1 part dimensions, and how I would test it on a bench and on a real printer.
+description: Every few seconds, an SLS printer dumps a cold layer of powder onto a bed it must hold within 2 °C. This note works out, from public data, where the heat comes from, why the obvious fix is wrong, what the cold layer really costs, where the model stops, and how I would test it on a bench and on a real printer.
 date: 2026-11-13
 cover: freshlayer_wait.png
 cover_on_page: false
@@ -102,11 +102,11 @@ This fits a design Formlabs has patented. US 11,117,324 (filed 2018) mounts a he
 
 Read through this model, a heater that trails the roller hits both limits at once. It starts warming each layer the instant it lands, which cuts the wait. And it lets the powder supply run cooler, which dodges caking and degradation.
 
-## 5. Where thermal history shows up in parts
+## 5. Where this model stops
 
-Formlabs measured 467 test parts from 14 builds on four Fuse X1 printers. Most of the dimensional variation came from within a build, and much of it repeated at the same spot in the chamber, build after build: 56 to 80% of the variance in Z, and 35 to 43% in X and Y. Formlabs attributes this to each location's thermal history, such as its height in the build and its distance from the chamber walls. Parts printed at the same position repeated within 0.03 to 0.08 mm.
+Formlabs measured 467 test parts from 14 builds on four Fuse X1 printers. Much of the dimensional variation repeated at the same spot in the chamber, build after build: 56 to 80% of the variance in Z. Formlabs attributes it to each location's thermal history, such as its height in the build and its distance from the chamber walls.
 
-So thermal history is not only a question of build time. It also sets part dimensions, and much of its effect is repeatable. The model here follows a single column of powder through repeated recoats. A natural next step is to run one such column for each chamber position, with its own height and distance from the walls, and test whether it predicts those positional offsets. The study already corrects them using measurements from a first build, so its data is a ready benchmark.
+That history is not what this note models. The recoat dip lasts about a second and is the same everywhere on the bed. Positional effects build up over the whole print: heat lost sideways to the walls, how long a part stays hot, and how it cools after the build. Predicting them would take a model of the full chamber, with wall losses and the cooldown, tested against the study's per-position data.
 
 ## 6. Limitations
 
