@@ -4,7 +4,7 @@ study: guide
 
 # How to use study mode
 
-Written by a model for Adit. Not Adit's words. Last updated 2026-11-17, overnight.
+Written by a model for Adit. Not Adit's words. Last updated 2026-11-17, early morning, after study mode was built and tested (Notebook 0.15.0, waiting for your release).
 
 ## The docs (work now, with or without the plugin)
 
@@ -15,16 +15,16 @@ Open any file in `study/` in Obsidian. Proofs and solutions are folded: try firs
 | basics/ | fundamentals, each proved once, ending in derive prompts and problems | the Putnam ones this week: nt-congruence, alg-polynomials, an-limits-series |
 | topics/ | Putnam first moves: recognise, first moves, traps, where it hides, try | putnam-polynomials this week, putnam-sums-limits from 11-23 |
 | bank/ | Putnam and seminar problems by number, with links to the papers | the Try sections point into it |
-| katas/ | digital-design katas with test vectors (the plugin's kata block comes later) | k-shift-out, then k-uart-tx |
+| katas/ | digital-design katas with test vectors; the study view runs your Verilog against them | k-shift-out, then k-uart-tx |
 | cards/ | numbers cards for your public projects: recall prompts, answers folded | before any interview |
 
 Without the plugin, a problem's call still goes first: write the call on paper or in calls.md before you open the solution.
 
 ## The plugin (Notebook 0.15, study mode)
 
-**Install:** BRAT updates Notebook to 0.15.0 once it is released (see the list at the bottom). Settings, Notebook: the study folder is `study`, the device name fills itself in (ipad on the iPad, desktop on the laptop).
+**Install:** once 0.15.0 is released, BRAT updates Notebook on the iPad (BRAT, check for updates, if it has not yet). Settings, Notebook, Study: the study folder is `study`; the device name fills itself in (ipad, desktop), so the two devices never share a log file; weekday minutes sets how much Today plans.
 
-**Open:** the ribbon's study icon opens the library; "Open Today" opens the day's plan; any study doc's file menu has "Open as study doc".
+**Open:** the ribbon has a study icon (the library) and a Today icon. Commands: "Open study", "Open Today", "Open study map", and "Open as study doc" in a study doc's file menu.
 
 **Reading:**
 - A finger tap on a link follows it; Back returns to where you were. A finger hold peeks at the target without leaving.
@@ -39,9 +39,11 @@ Without the plugin, a problem's call still goes first: write the call on paper o
 
 **Drills:** derive prompts and cold proofs open a blank page; Done after three strokes; then the steps; grade yourself clean, shaky or failed. Clean moves the basic up a stage (1, 2, 4, 7, 14, 30 days); failed sends it back to the start.
 
-**Problems:** ink your call first; the confidence chips unlock after ink; a timer runs; settle held, missed, blind or moot (two taps); then tick the methods you called and the ones the solution used; then the solution opens. Some of Today's problems hide their topic ("?"), to train naming the method; those are picked a little easier, and get harder as you name methods right.
+**Problems:** ink your call first; the confidence chips unlock after ink; a timer runs; settle held, held after help, missed, blind or moot (two taps); then tick the methods you called and the ones the solution used ("Skip ticks" if you must); then the solution opens. Some of Today's problems hide their topic ("?"), to train naming the method; those are picked a little easier, and get harder as you name methods right. One known gap: finish a problem where you started it. A problem begun inside its doc and reopened from Today shows an empty call band.
 
-**Today and Map:** Today lists 2 to 4 drills, the problems in your stretch band (you should solve about two in three), and the next deadline. Map shows the basics as a graph coloured by stage, your rating per area, how often you name the method, and which weak basics block each track.
+**Katas:** sketch the design call first (the Pencil alone unlocks the chips), then write the Verilog in the editor, Run, and the first mismatching cycle and signal show. Settle and tick as with problems.
+
+**Today and Map:** Today lists 2 to 4 drills, up to three problems for each area with a live deadline (you should solve about two in three), the kata slot while the ASIC track is live, and the next deadline. Map shows the basics as a graph coloured by stage, your rating per area, how often you name the method, and which weak basics block each track.
 
 ## On the laptop
 
