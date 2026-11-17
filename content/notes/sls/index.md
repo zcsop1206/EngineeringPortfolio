@@ -1,6 +1,6 @@
 ---
 title: Why SLS printers heat each new layer of powder
-description: Every few seconds, an SLS printer dumps a cold layer of powder onto a bed it must hold within 2 °C. This note works out, from public data, where the heat comes from, why my first answer was wrong, what the cold layer really costs, and how I would test it on a bench and on a real printer.
+description: Every few seconds, an SLS printer dumps a cold layer of powder onto a bed it must hold within 2 °C. This note works out, from public data, where the heat comes from, why the obvious fix is wrong, what the cold layer really costs, and how I would test it on a bench and on a real printer.
 date: 2026-11-13
 cover: freshlayer_wait.png
 cover_on_page: false
@@ -63,13 +63,13 @@ A step-by-step numerical calculation matches the exact solution to within 0.012 
 
 *Figure 2. Left: the temperature profile after a 30 K cold layer lands, with no heat from above. Right: the top of the layer below, for three starting gaps.*
 
-## 3. A wrong turn
+## 3. The obvious fix, and why it fails
 
-A 15 K plunge blows straight through a 2 °C band. On a 168 °C bed, it lands next to the 153 °C crystallization onset. I thought this dip threatened the part, and that the fix was to warm the powder before spreading it, so it arrives within 4 K of the bed.
+A 15 K plunge blows straight through a 2 °C band. On a 168 °C bed, it lands next to the 153 °C crystallization onset. The obvious reading is that the dip threatens the part, and that the fix is to warm the powder before spreading it, so it arrives within 4 K of the bed.
 
-For the preheater, I pictured a narrow pocket beside the bed, 4 mm wide, with walls held at bed temperature. Powder poured in at room temperature takes about 70 s to come within 4 K at its centre. With a new layer every 10 s, the pocket would need to hold about seven layers of powder.
+That fix is easy to size. A narrow pocket beside the bed, 4 mm wide with walls at bed temperature, brings room-temperature powder within 4 K at its centre in about 70 s. With a new layer every 10 s, the pocket would hold about seven layers of powder.
 
-Then I checked that design against published measurements. Three findings refuted it.
+Published measurements rule it out on three counts.
 
 - The dip is normal. On a 3D Systems Sinterstation 2500, the powder supply ran at 93 to 100 °C against a bed at 173 to 175 °C, about 75 K colder. The machine printed good parts anyway. An infrared camera watched the bed surface fall to 152 to 153 °C at every recoat (Yuan and Bourell 2012).
 - Hotter powder fights back. On the same machine, raising the supply temperature eventually cracked the powder in its bin or rippled the bed. Hot nylon powder also degrades, one reason SLS printers blend fresh powder into used; Formlabs recommends 30% fresh for its Nylon 12.
