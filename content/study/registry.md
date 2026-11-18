@@ -8,7 +8,7 @@ study: registry
 
 Every study doc, planned or written: its id, area, the basics it stands on, the anchors other docs may link to, and its wave. Writers link only to anchors listed here (or to a doc's top). A doc's own other anchors are its own business. Format: `obsidian-notebook/docs/study/FORMAT.md`.
 
-Wave 1 is written for the next deadlines (Putnam 2026-12-05, the ASIC entry 2027-01-18, the January application round). Wave 2 is scheduled in the timeline; wave 3 waits for a reason.
+Wave 1 is written for the next deadlines (Putnam 2026-12-05, the ASIC entry 2027-01-18, the January application round); the four circuits basics and their topic were added 2026-11-18 for MIE342 test 2 and serve the course's final too. Wave 2 is scheduled in the timeline; wave 3 waits for a reason.
 
 ## Basics, wave 1
 
@@ -61,6 +61,10 @@ Wave 1 is written for the next deadlines (Putnam 2026-12-05, the ASIC entry 2027
 | am-polymer | Photopolymer and powder-bed polymer printing | mat | th-transient mat-structure-props | photopolymer working-curve oxygen-inhibition sls-window sintering shrinkage |
 | am-metal | Laser powder bed fusion | mat | th-transient mat-structure-props | energy-density rosenthal melt-pool-modes porosity residual-stress supports |
 | el-power-batteries | Circuits, power conversion and battery cells | el | | rlc phasors buck switching-loss cell-model soc-ocv cell-thermal bms |
+| el-dc-analysis | Node voltages and mesh currents | el | | kcl kvl psc power-balance series-parallel node-method supernode mesh-method supermesh dependent-sources choose-method |
+| el-equivalents | Thevenin, Norton and superposition | el | el-dc-analysis | linearity superposition source-transform thevenin norton rth-zeroed rth-oc-sc rth-test-source dependent-only max-power |
+| el-cap-ind | Capacitors and inductors | el | el-dc-analysis | cap-law ind-law cap-integral ind-integral energy continuity dc-steady combine-c combine-l combine-ic trapped-energy |
+| el-first-order | RC and RL circuits | el | el-cap-ind el-equivalents | first-order-form tau natural step general-solution recipe zero-plus sequential dependent-tau energy-decay time-to-value |
 
 ## Topics, wave 1
 
@@ -70,6 +74,7 @@ Wave 1 is written for the next deadlines (Putnam 2026-12-05, the ASIC entry 2027
 | putnam-polynomials | Polynomials: first moves | nt | alg-polynomials nt-divisibility an-mvt-taylor |
 | putnam-sums-limits | Sums, integrals and limits: first moves | an | an-limits-series an-integration ineq-convexity |
 | putnam-counting | Counting and probability: first moves | comb | comb-binomial comb-recurrences-gf pr-expectation comb-invariants |
+| mie342-test2 | MIE342 test 2: circuits | el | el-dc-analysis el-equivalents el-cap-ind el-first-order |
 
 ## Katas, wave 1 (digital design, incremental)
 

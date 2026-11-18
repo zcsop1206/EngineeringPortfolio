@@ -4,7 +4,20 @@ study: guide
 
 # How to use study mode
 
-Written by a model for Adit. Not Adit's words. Last updated 2026-11-17, early morning, after study mode was built and tested (Notebook 0.15.0, waiting for your release).
+Written by a model for Adit. Not Adit's words. Last updated 2026-11-18, early morning, for MIE342 test 2 (Notebook 0.15.0 is released).
+
+## This morning: MIE342 test 2 (11:20 to 12:30)
+
+Open `topics/mie342-test2` ("MIE342 test 2: circuits") first. Its first paragraph is the plan:
+- about 40 minutes on the theory: down Recognise, then First moves and Traps, saying each cue's result before you open its link;
+- about 70 minutes on its six Try problems, in order, call first, with a timer;
+- 20 to 30 minutes on the linked passages for whatever you missed.
+
+The four circuits basics (el-dc-analysis, el-equivalents, el-cap-ind, el-first-order) hold the proofs and more problems. Today, open them from a link when you miss something, not cover to cover; they stay for the final. Your problem sets are in the `mie342` bank by number: the statement is in your PDF.
+
+Figures: every circuit problem has its schematic, and every waveform asked has a plot. They sit inside the passage or problem, so the Pencil writes over them in the doc; the plots that give an answer away are inside the folded solution.
+
+One 0.15.0 bug to know about: in the study view, a worked example (an `example` callout in a basic) shows no solution. To see one, open that basic from the file list instead, where the folded solution under the example opens with a tap. 0.15.1 fixes it.
 
 ## The docs (work now, with or without the plugin)
 
@@ -12,9 +25,10 @@ Open any file in `study/` in Obsidian. Proofs and solutions are folded: try firs
 
 | folder | what | start with |
 |---|---|---|
-| basics/ | fundamentals, each proved once, ending in derive prompts and problems | the Putnam ones this week: nt-congruence, alg-polynomials, an-limits-series |
-| topics/ | Putnam first moves: recognise, first moves, traps, where it hides, try | putnam-polynomials this week, putnam-sums-limits from 11-23 |
-| bank/ | Putnam and seminar problems by number, with links to the papers | the Try sections point into it |
+| basics/ | fundamentals, each proved once, ending in derive prompts and problems | today the circuits four, from links; then the Putnam ones: nt-congruence, alg-polynomials, an-limits-series |
+| topics/ | first moves for a test or a contest: recognise, first moves, traps, where it hides, try | mie342-test2 this morning; then putnam-polynomials, and putnam-sums-limits from 11-23 |
+| bank/ | course, Putnam and seminar problems by number, with links to the papers where they are public | the Try sections point into it |
+| figures/ | the schematics and plots the docs embed | nothing to open on its own |
 | katas/ | digital-design katas with test vectors; the study view runs your Verilog against them | k-shift-out, then k-uart-tx |
 | cards/ | numbers cards for your public projects: recall prompts, answers folded | before any interview |
 
@@ -22,7 +36,7 @@ Without the plugin, a problem's call still goes first: write the call on paper o
 
 ## The plugin (Notebook 0.15, study mode)
 
-**Install:** once 0.15.0 is released, BRAT updates Notebook on the iPad (BRAT, check for updates, if it has not yet). Settings, Notebook, Study: the study folder is `study`; the device name fills itself in (ipad, desktop), so the two devices never share a log file; weekday minutes sets how much Today plans.
+**Install:** 0.15.0 is released; BRAT updates Notebook on the iPad (BRAT, check for updates, if it has not yet). Settings, Notebook, Study: the study folder is `study`; the device name fills itself in (ipad, desktop), so the two devices never share a log file; weekday minutes sets how much Today plans.
 
 **Open:** the ribbon has a study icon (the library) and a Today icon. Commands: "Open study", "Open Today", "Open study map", and "Open as study doc" in a study doc's file menu.
 
@@ -51,11 +65,13 @@ Without the plugin, a problem's call still goes first: write the call on paper o
 - `node ../obsidian-notebook/scripts/study-scan.mjs content/study` shows what the iPad asked for and what you settled.
 - `node pm/timeline.mjs` writes `pm/timeline.md`: hard dates, every dated deadline week by week, then the undated ones ranked. Add a date to a line in `pm/tasks.md` and run it again.
 - `content/study/tracks.md` sets the deadlines the schedule works toward; edit it there.
+- The circuits figures come from scripts in `drafts/study-private/figures/` (laptop only, not in the repo): `python <doc-id>.py` redraws one doc's figures, and every circuit in them is solved by `circuitlib.py`, not typed in.
 
 ## The next three weeks
 
 | when | what |
 |---|---|
+| Wed 11-18 | MIE342 test 2, 11:20 to 12:30: topics/mie342-test2 this morning |
 | now to 11-22 | polynomials week: basics alg-polynomials and nt-congruence, topic putnam-polynomials, one problem a day |
 | 11-23 to 11-27 | sums, integrals and limits: an-limits-series, an-integration, ineq-convexity, topic putnam-sums-limits |
 | Sat 11-28 | timed half paper |
