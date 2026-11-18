@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 250" width="470" height="250" role="img" aria-label="Predicted centre-minus-edge temperature at 186 W: 14.1 °C for copper only, falling to 1.1 °C if the chamber adds 12 times the plate sideways conductance">
+<style>
+.bg{fill:#fff}.ink{stroke:#111;fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.grid{stroke:#e2e2e2;stroke-width:1}.axis{stroke:#9a9a9a;stroke-width:1}
+text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;fill:#111}
+.mut{fill:#5c5c5c}.lead{stroke:#9a9a9a;stroke-width:1;fill:none}
+@media (prefers-color-scheme:dark){.bg{fill:#111}.ink{stroke:#ececec}.grid{stroke:#2e2e2e}.axis{stroke:#6b6b6b}
+text{fill:#ececec}.mut{fill:#a8a8a8}.lead{stroke:#6b6b6b}}
+.bar{fill:#111}@media (prefers-color-scheme:dark){.bar{fill:#ececec}}</style>
+<rect class="bg" width="470" height="250"/>
+<text class="mut" x="16" y="24">Centre minus edge at 186 W, predicted</text>
+<text x="150" y="67" text-anchor="end">Copper only</text>
+<rect class="bar" x="160" y="52" width="140.6" height="22" rx="2"/>
+<text x="308.6" y="68">14.1 °C</text>
+<text x="150" y="111" text-anchor="end">Chamber adds 0.6×</text>
+<rect class="bar" x="160" y="96" width="88.8" height="22" rx="2"/>
+<text x="256.8" y="112">8.9 °C</text>
+<text x="150" y="155" text-anchor="end">Chamber adds 3×</text>
+<rect class="bar" x="160" y="140" width="37.0" height="22" rx="2"/>
+<text x="205.0" y="156">3.7 °C</text>
+<text x="150" y="199" text-anchor="end">Chamber adds 12×</text>
+<rect class="bar" x="160" y="184" width="11.1" height="22" rx="2"/>
+<text x="179.1" y="200">1.1 °C</text>
+<text class="mut" x="16" y="242">× the copper plate's sideways conductance</text>
+</svg>

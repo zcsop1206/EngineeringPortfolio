@@ -313,9 +313,9 @@ The ratio between the runs is better predicted than the size. With the two chann
 
 The substrate-to-condenser resistance is the number the chamber exists to lower, and there are two candidate explanations for the 0.074 to 0.080 K/W it reached.
 
-**Conduction through the liquid.** At the design geometry, water flooded to the top would conduct 0.34 K/W across the 200 µm gap over the 30 × 30 mm coating ($t/kA$, with water at 0.66 W/m·K) and 0.8 K/W across the 1.2 mm depth of the rest of the pocket. In parallel with the 0.27 K/W dry path through the copper contacts, that is 0.13 K/W. The measurement is lower. Solving the same parallel sum for the gap instead, conduction alone matches the measurement if the water layer over the coating is about 70 µm thick. The coating was sprayed to a target of 1000 µm in a 1.2 mm channel, so that is a coating about 130 µm taller than its target. Neither the coating height nor the gap was measured on this specimen.
+The first is conduction through the liquid. At the design geometry, water flooded to the top would conduct 0.34 K/W across the 200 µm gap over the 30 × 30 mm coating ($t/kA$, with water at 0.66 W/m·K) and 0.8 K/W across the 1.2 mm depth of the rest of the pocket. In parallel with the 0.27 K/W dry path through the copper contacts, that is 0.13 K/W. The measurement is lower. Solving the same parallel sum for the gap instead, conduction alone matches the measurement if the water layer over the coating is about 70 µm thick. The coating was sprayed to a target of 1000 µm in a 1.2 mm channel, so that is a coating about 130 µm taller than its target. Neither the coating height nor the gap was measured on this specimen.
 
-**Phase change.** The sawtooth structure and the 70% fill are designed for boiling and condensation. If boiling carried the heat, the resistance would fall as the power rose. In nucleate boiling the heat flux grows with roughly the cube of the wall superheat (the Rohsenow correlation), so $h \propto q''^{2/3}$, and from 73 W to 400 W the boiling coefficient should rise 3.1 times. Boiling also needs the wall above the saturation temperature. At 73 W the hottest substrate bead was 39 °C, where water boils only below 0.07 bar. If the chamber held air, as a syringe fill would leave it, evaporation and condensation are limited by vapor diffusing through that air, at a rate that follows the vapor pressure. The vapor pressure of water rises 27 times from 36 °C to 112 °C, the range of the substrate across Test 3.
+The second is phase change, which the sawtooth structure and the 70% fill are designed for. If boiling carried the heat, the resistance would fall as the power rose. In nucleate boiling the heat flux grows with roughly the cube of the wall superheat (the Rohsenow correlation), so $h \propto q''^{2/3}$, and from 73 W to 400 W the boiling coefficient should rise 3.1 times. Boiling also needs the wall above the saturation temperature. At 73 W the hottest substrate bead was 39 °C, where water boils only below 0.07 bar. If the chamber held air, as a syringe fill would leave it, evaporation and condensation are limited by vapor diffusing through that air, at a rate that follows the vapor pressure. The vapor pressure of water rises 27 times from 36 °C to 112 °C, the range of the substrate across Test 3.
 
 The measurement shows neither. The resistance is the same to within ±4% from 73 W with the substrate at 36 °C to 410 W with it at 112 °C, and the same with the inlet at 20 or 30 °C. Liquid conduction predicts that. The conductivity of water rises 9% over that temperature range, and with the liquid carrying about 70% of the conductance the resistance would fall about 6% from the lowest step to the highest, inside the scatter.
 
@@ -342,11 +342,50 @@ The flow inside the chamber and how it distributes across the plate are not answ
 
 Beyond the measurement, the chamber has a known bypass. The channel walls on the substrate do not touch the sawtooth structure, giving the vapor a lower-resistance path around the pump. That was flagged in the thesis but not fixed in the hardware tested here.
 
-## 8. Recommendations
+## 8. Next test: cooled from below, seen from above
+
+The beads cannot see the flow (Section 7.6). The original polycarbonate top could, but with it the device had no condenser and never settled. The next test keeps the polycarbonate top as a window and moves the cooling to the underside of the specimen.
+
+![Section through the proposed stack: camera above the polycarbonate top plate, the specimen with its coating, and a water-cooled aluminium frame under the specimen rim with a PTFE liner around the heater block](cact_next_test.svg)
+
+*Figure 10. The proposed stack. Only the PTFE housing is replaced; the top plate, gasket, specimen, heater block, base plate and bolts are J. Faria's.*
+
+### 8.1 Why from below
+
+The sides do not work. The specimen's side faces are 70 × 6 mm, 17 cm² in all, about 2.4 mm from the M5 bolts, and they carry the twelve thermocouple bores. A side cooler would need a new bolt pattern and would have to work around the bores.
+
+The underside does. Outside the heater block, the specimen sits on the PTFE housing, which only insulates. A water-cooled aluminium frame with the housing's 90 × 90 × 17 mm outline and bolt pattern drops into its place and carries the same clamp load. It touches the specimen rim over about 29 cm², outside a 41 × 51 mm opening. A PTFE liner with 5 mm walls fills that opening and holds the heater block as the housing did. Through PTFE the block leaks about 0.1 W/K to the frame, about 10 W at a 100 °C difference, which the dry run measures. The water runs in a drilled channel around three sides of the frame, with the inlet and outlet either side of the heater slot.
+
+### 8.2 What it measures
+
+Heat now enters at the centre and leaves at the rim, which is how a vapor chamber spreads heat: vapor carries it outward over the pocket and condenses over the cooled rim, and the sawtooth structure returns the liquid. That outward transport is what the centre-to-edge gradient reads. The plate model of Section 6.6, with its sink moved to the rim, gives 76 mK/W for copper alone. That is twice the 39 mK/W of the current top-cooled stack, and nearly the same for any contact conductance from 2000 to 10,000 W/m²K. Sideways transport through the chamber lowers it:
+
+| Sideways conductance the chamber adds, times the copper plate's | Centre minus edge, mK/W | At 186 W, °C |
+| --- | --- | --- |
+| 0, copper only | 76 | 14.1 |
+| 0.6 | 48 | 8.9 |
+| 3 | 20 | 3.7 |
+| 12 | 6 | 1.1 |
+
+Calibrated beads separate those rows at any power above about 50 W. The camera shows where the vapor forms, which way it moves, and whether the liquid comes back along the channels. With the condenser gone, its two DAQ channels move to two of the unused 17.5 mm bores, for a three-point profile from centre to edge on two sides.
+
+### 8.3 Runs
+
+1. Dry, at 73, 186 and 261 W. This sets the copper-only gradient, the leak through the liner and the contact conductance to the frame.
+2. Charged with 2.7 mL as before, air left in, at the same powers.
+3. Evacuated, then charged with degassed water, at the same powers. Runs 2 and 3 separate the effect of the air (Section 7.3).
+
+In every run: the chamber pressure logged through the second NPT port of the top plate, the water thermocouples in the stream, the power recorded at each step, and video at each steady state.
+
+### 8.4 Limits
+
+The polycarbonate touches the vapor. It softens near 145 °C and is usually kept below about 115 °C in service. The model puts the hottest point of the pocket at 90 °C, with 20 °C water, at 240 to 450 W depending on the contact conductance, so 261 W is the top step until the dry run has measured it. The 25 psi relief valve stays. Little heat leaves through 12.7 mm of polycarbonate, about 2 W, so the window runs close to the vapor temperature and should fog only lightly. If it does fog, a thin film heater on the outside clears it.
+
+## 9. Recommendations
 
 1. Log the chamber pressure, so the substrate temperatures can be placed against the saturation temperature, and record whether the chamber is evacuated before filling. With the measurement below, this decides between the two readings of Section 7.3.
 2. Measure the gap between the coating and the condenser face, by the coating height on a profilometer or by a soft-metal squash test in the assembled stack. Conduction alone explains the charged resistance if it is about 70 µm.
-3. Resolve the flow and its distribution across the plate. The beads in the copper cannot, so this needs a window insert in the condenser for visualisation, or thermocouples on the condenser face across the pocket, or a charged run on a substrate with no sawtooth structure for comparison.
+3. Resolve the flow and its distribution across the plate. The beads in the copper cannot, so this needs the window of Section 8. A charged run on a substrate with no sawtooth structure would then show what the structure itself adds.
 4. Re-make the heater-to-substrate paste joint with a paste of known conductivity under a measured clamp pressure, and measure the flatness of both faces. At 0.5 to 0.6 cm²·K/W it is three to five times a well-made paste joint (Section 7.1).
 5. Measure the flatness of the condenser's sealing face on a surface plate or with a dial indicator. Apply the thermocouple gradient correction of Section 7.7 and recompute the resistances from the existing logs.
 6. Check the chiller flow reading against a timed volume at 20 and 30 °C. Section 7.5 puts the true flow near 500 mL/min where 580 was read.
@@ -355,9 +394,9 @@ Beyond the measurement, the chamber has a known bypass. The channel walls on the
 9. Close the bypass by revising the channel boundary to contact the sawtooth structure.
 10. Sweep the chiller flow at fixed power and plumbing. The condenser-to-water part of the budget should move with the flow and the rest should not. Test 3 has already shown the second half: one channel instead of two nearly doubled the water side and left the chamber unchanged. How the water side moves with flow tells which regime it is in: as the cube root of the flow in forced laminar flow, hardly at all if buoyancy dominates, and as the 0.8 power if the flow were turbulent.
 
-## 9. Conclusions
+## 10. Conclusions
 
-The copper condenser was designed, machined and installed, and the assembly was instrumented and tested end to end. With it the device reaches steady state at every step from 73 W to 410 W and the heat arrives in the chiller water. Charging the chamber lowers the substrate-to-condenser resistance from at least 0.26 K/W to 0.074 to 0.080 K/W at the same powers, and that value does not move with power, inlet temperature or the water plumbing. Set against theory, that flat resistance is what conduction through a water layer about 70 µm thick would give, and not the falling resistance boiling would give; the chamber pressure and the gap above the coating will settle which it is. The substrate is not isothermal, and its in-plane gradient is what the copper plate alone gives. Of the rest of the stack, the heater paste joint is three to five times what a well-made joint would be, and the water side does three times better than the textbook laminar correlation. The flow inside the chamber and its distribution across the plate remain unresolved, and the recommendations start there.
+The copper condenser was designed, machined and installed, and the assembly was instrumented and tested end to end. With it the device reaches steady state at every step from 73 W to 410 W and the heat arrives in the chiller water. Charging the chamber lowers the substrate-to-condenser resistance from at least 0.26 K/W to 0.074 to 0.080 K/W at the same powers, and that value does not move with power, inlet temperature or the water plumbing. Set against theory, that flat resistance is what conduction through a water layer about 70 µm thick would give, and not the falling resistance boiling would give; the chamber pressure and the gap above the coating will settle which it is. The substrate is not isothermal, and its in-plane gradient is what the copper plate alone gives. Of the rest of the stack, the heater paste joint is three to five times what a well-made joint would be, and the water side does three times better than the textbook laminar correlation. The flow inside the chamber and its distribution across the plate remain unresolved. The next test keeps the original polycarbonate top as a window and cools the specimen from below, so the camera can see the flow and the beads can read the chamber's sideways transport.
 
 This was the first part I made to a drawing I wrote, with tolerances that came from the mating parts rather than from habit, and then had to live with in a test.
 

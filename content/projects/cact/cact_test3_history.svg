@@ -2,7 +2,7 @@
 <style>
 .bg{fill:#fff}.ink{stroke:#111;fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
 .grid{stroke:#e2e2e2;stroke-width:1}.axis{stroke:#9a9a9a;stroke-width:1}
-text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:12px;fill:#111}
+text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px;fill:#111}
 .mut{fill:#5c5c5c}.lead{stroke:#9a9a9a;stroke-width:1;fill:none}
 @media (prefers-color-scheme:dark){.bg{fill:#111}.ink{stroke:#ececec}.grid{stroke:#2e2e2e}.axis{stroke:#6b6b6b}
 text{fill:#ececec}.mut{fill:#a8a8a8}.lead{stroke:#6b6b6b}}

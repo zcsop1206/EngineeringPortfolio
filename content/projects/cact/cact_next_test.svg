@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 270" width="700" height="270" role="img" aria-label="Section through the proposed next test: polycarbonate top plate, specimen, water-cooled aluminium frame under the specimen rim, PTFE liner around the heater block, camera above">
+<style>
+.bg{fill:#fff}.cu{fill:#ececec;stroke:#111;stroke-width:1.2}.hole{fill:#fff;stroke:#111;stroke-width:1.2}
+.pocket{fill:#fff;stroke:#111;stroke-width:1}.dash{fill:none;stroke:#111;stroke-width:1;stroke-dasharray:4 3}
+.bore{stroke:#9a9a9a;stroke-width:1}.bead{fill:#111}.open{fill:#fff;stroke:#111;stroke-width:1.2}.wall{fill:#9a9a9a}.lead{stroke:#9a9a9a;stroke-width:1;fill:none}
+text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;fill:#111}
+.mut{fill:#5c5c5c}
+@media (prefers-color-scheme:dark){.bg{fill:#111}.cu{fill:#2a2a2a;stroke:#ececec}.hole,.pocket{fill:#111;stroke:#ececec}
+.dash{stroke:#ececec}.bore,.lead{stroke:#6b6b6b}.bead{fill:#ececec}.open{fill:#111;stroke:#ececec}.wall{fill:#6b6b6b}text{fill:#ececec}.mut{fill:#a8a8a8}}
+.pc{fill:#f6f6f6;stroke:#111;stroke-width:1.2}.al{fill:#d6d6d6;stroke:#111;stroke-width:1.2}.ptfe{fill:#fff;stroke:#111;stroke-width:1;stroke-dasharray:2 2}.ink{fill:#111}.coat{fill:#111}@media (prefers-color-scheme:dark){.pc{fill:#1b1b1b;stroke:#ececec}.al{fill:#3a3a3a;stroke:#ececec}.ptfe{fill:#111;stroke:#ececec}.ink,.coat{fill:#ececec}}</style>
+<rect class="bg" width="700" height="270"/>
+<rect class="al" x="12.0" y="228.0" width="360.0" height="24.0"/>
+<rect class="al" x="12.0" y="160.0" width="98.0" height="68.0"/>
+<rect class="al" x="274.0" y="160.0" width="98.0" height="68.0"/>
+<rect class="al" x="110.0" y="228.0" width="164.0" height="0.0"/>
+<rect class="ptfe" x="110.0" y="160.0" width="164.0" height="68.0"/>
+<rect class="cu" x="130.0" y="160.0" width="124.0" height="52.0"/>
+<circle class="hole" cx="192.0" cy="192.0" r="12.8"/>
+<circle class="hole" cx="60.0" cy="194.0" r="12.0"/>
+<circle class="hole" cx="324.0" cy="194.0" r="12.0"/>
+<rect class="cu" x="52.0" y="136.0" width="280.0" height="24.0"/>
+<rect class="pocket" x="72.0" y="136.0" width="240.0" height="4.0"/>
+<rect class="coat" x="132.0" y="137.6" width="120.0" height="2.4"/>
+<rect class="coat" x="54.0" y="133.6" width="18.0" height="2.4"/>
+<rect class="coat" x="314.0" y="133.6" width="18.0" height="2.4"/>
+<rect class="pc" x="12.0" y="82.8" width="360.0" height="50.8"/>
+<path class="dash" d="M22.0,252.0 L22.0,82.8"/>
+<path class="dash" d="M362.0,252.0 L362.0,82.8"/>
+<circle class="bead" cx="92.0" cy="148.0" r="2.4"/>
+<circle class="bead" cx="152.0" cy="148.0" r="2.4"/>
+<circle class="bead" cx="232.0" cy="148.0" r="2.4"/>
+<circle class="bead" cx="292.0" cy="148.0" r="2.4"/>
+<rect class="ink" x="168.0" y="20.0" width="48.0" height="24.0"/>
+<path class="dash" d="M176.0,44.0 L72.0,82.8 M208.0,44.0 L312.0,82.8"/>
+<path class="lead" d="M216.0,32.0 L392.0,26.0"/>
+<text x="398.0" y="30.0">Camera</text>
+<path class="lead" d="M332.0,100.0 L392.0,62.0"/>
+<text x="398.0" y="66.0">Polycarbonate window</text>
+<path class="lead" d="M260.0,138.8 L392.0,98.0"/>
+<text x="398.0" y="102.0">Specimen and coating</text>
+<path class="lead" d="M348.0,176.0 L392.0,134.0"/>
+<text x="398.0" y="138.0">Water-cooled aluminium frame</text>
+<path class="lead" d="M324.0,194.0 L392.0,170.0"/>
+<text x="398.0" y="174.0">Water channel</text>
+<path class="lead" d="M264.0,216.0 L392.0,206.0"/>
+<text x="398.0" y="210.0">PTFE liner</text>
+<path class="lead" d="M220.0,172.0 L392.0,242.0"/>
+<text x="398.0" y="246.0">Heater block</text>
+</svg>

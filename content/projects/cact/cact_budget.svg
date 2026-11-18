@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 300" width="470" height="300" role="img" aria-label="Temperature drop from heater block to water inlet, split into heater to substrate, across the chamber and condenser to water, for Test 1 and Test 3">
+<style>
+.bg{fill:#fff}.ink{stroke:#111;fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.grid{stroke:#e2e2e2;stroke-width:1}.axis{stroke:#9a9a9a;stroke-width:1}
+text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px;fill:#111}
+.mut{fill:#5c5c5c}.lead{stroke:#9a9a9a;stroke-width:1;fill:none}
+@media (prefers-color-scheme:dark){.bg{fill:#111}.ink{stroke:#ececec}.grid{stroke:#2e2e2e}.axis{stroke:#6b6b6b}
+text{fill:#ececec}.mut{fill:#a8a8a8}.lead{stroke:#6b6b6b}}
+.s1{fill:#111}.s2{fill:#6b6b6b}.s3{fill:#bdbdbd}.inv{fill:#fff}@media (prefers-color-scheme:dark){.s1{fill:#ececec}.s2{fill:#9a9a9a}.s3{fill:#5a5a5a}.inv{fill:#111}}</style>
+<rect class="bg" width="470" height="300"/>
+<text x="16" y="32">Test 1, 410 W, both water channels: 106 °C</text>
+<rect class="s1" x="16.0" y="40" width="113.2" height="34" rx="2"/>
+<text class="inv" x="72.6" y="62" text-anchor="middle">32</text>
+<rect class="s2" x="131.2" y="40" width="138.4" height="34" rx="2"/>
+<text class="inv" x="200.4" y="62" text-anchor="middle">39</text>
+<rect class="s3" x="271.6" y="40" width="124.0" height="34" rx="2"/>
+<text class="" x="333.6" y="62" text-anchor="middle">35</text>
+<text x="16" y="118">Test 3, 400 W, one water channel: 121 °C</text>
+<rect class="s1" x="16.0" y="126" width="106.0" height="34" rx="2"/>
+<text class="inv" x="69.0" y="148" text-anchor="middle">30</text>
+<rect class="s2" x="124.0" y="126" width="138.4" height="34" rx="2"/>
+<text class="inv" x="193.2" y="148" text-anchor="middle">39</text>
+<rect class="s3" x="264.4" y="126" width="185.2" height="34" rx="2"/>
+<text class="" x="357.0" y="148" text-anchor="middle">52</text>
+<rect class="s1" x="16" y="200" width="12" height="12" rx="2"/>
+<text class="mut" x="34" y="210">Heater to substrate</text>
+<rect class="s2" x="16" y="222" width="12" height="12" rx="2"/>
+<text class="mut" x="34" y="232">Across the chamber</text>
+<rect class="s3" x="16" y="244" width="12" height="12" rx="2"/>
+<text class="mut" x="34" y="254">Condenser to water</text>
+</svg>
