@@ -121,11 +121,22 @@ Heat enters at the centre and leaves at the rim, so the centre-to-edge gradient 
 
 Pressure, in-stream water thermocouples, power and video at every step. Top step 261 W until the dry run measures the contact, to keep the polycarbonate below 115 °C.
 
+## Vacuum
+
+Run 3 needs no new machining. The polycarbonate top already has two 1/8 NPT ports into the chamber.
+
+- Port 1: a tee to a valve to the vacuum pump, and a valve to charge the degassed water
+- Port 2: a tee to the pressure transducer and the 25 psi relief valve
+- Leak check, cold: pump down, close the pump valve, watch the pressure for 10 to 15 minutes. Holds, heat. Rises, find the leak first.
+- Never tested under vacuum: the gasket, the NPT threads in the polycarbonate (sealant), the relief valve
+
+![The two top-plate ports for run 3](cact_ports.svg)
+
 ## Decisions
 
 - Machine the aluminium frame and PTFE liner?
-- Vacuum pump and degassed water for run 3?
-- A pressure transducer on the top plate's second port?
+- A vacuum pump, two tees, two valves and degassed water for run 3?
+- A pressure transducer on port 2?
 - Which camera, and how to light through the window?
 
 ![Proposed stack, section](cact_next_test.svg)
