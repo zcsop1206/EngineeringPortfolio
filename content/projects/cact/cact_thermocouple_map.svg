@@ -11,12 +11,12 @@ text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font
 <rect class="bg" width="760" height="340"/>
 <text class="" x="24.0" y="30.0" text-anchor="start">Section through the stack</text>
 <rect class="cu" x="24.0" y="70.0" width="306.0" height="60.2" />
-<circle class="hole" cx="88.0" cy="100.1" r="20.3"/>
-<circle class="hole" cx="266.0" cy="100.1" r="20.3"/>
+<circle class="hole" cx="88.0" cy="100.1" r="18.9"/>
+<circle class="hole" cx="266.0" cy="100.1" r="18.9"/>
 <circle class="bead" cx="139.7" cy="112.5" r="3"/>
 <circle class="bead" cx="214.3" cy="112.5" r="3"/>
 <rect class="cu" x="58.0" y="130.2" width="238.0" height="20.4" />
-<rect class="pocket" x="75.0" y="130.2" width="204.0" height="3.4" />
+<rect class="pocket" x="75.0" y="130.2" width="204.0" height="4.1" />
 <circle class="bead" cx="92.0" cy="140.4" r="3"/>
 <circle class="bead" cx="262.0" cy="140.4" r="3"/>
 <circle class="bead" cx="143.0" cy="140.4" r="3"/>

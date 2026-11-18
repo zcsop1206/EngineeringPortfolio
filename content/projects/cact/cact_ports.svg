@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 330" width="700" height="330" role="img" aria-label="Port 1 on the top plate tees to a valve to the vacuum pump and a valve to charge the water; port 2 tees to the pressure transducer and the 25 psi relief valve">
+<style>
+.bg{fill:#fff}.ink{stroke:#111;fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.grid{stroke:#e2e2e2;stroke-width:1}.axis{stroke:#9a9a9a;stroke-width:1}
+text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;fill:#111}
+.mut{fill:#5c5c5c}.lead{stroke:#9a9a9a;stroke-width:1;fill:none}
+@media (prefers-color-scheme:dark){.bg{fill:#111}.ink{stroke:#ececec}.grid{stroke:#2e2e2e}.axis{stroke:#6b6b6b}
+text{fill:#ececec}.mut{fill:#a8a8a8}.lead{stroke:#6b6b6b}}
+.box{fill:none;stroke:#111;stroke-width:1.6}.pc{fill:#f6f6f6;stroke:#111;stroke-width:1.6}.line{stroke:#111;stroke-width:2;fill:none}.v{fill:#fff;stroke:#111;stroke-width:1.6}@media (prefers-color-scheme:dark){.box,.line{stroke:#ececec}.pc{fill:#1b1b1b;stroke:#ececec}.v{fill:#111;stroke:#ececec}}</style>
+<rect class="bg" width="700" height="330"/>
+<rect class="pc" x="200" y="230" width="300" height="34"/>
+<rect class="box" x="220" y="264" width="260" height="22"/>
+<text class="mut" x="350" y="252" text-anchor="middle">Polycarbonate top plate</text>
+<text class="mut" x="350" y="310" text-anchor="middle">Chamber</text>
+<path class="line" d="M260,230 L260,150 M260,150 L130,150 M260,150 L260,70"/>
+<path class="v" d="M158,141 L158,159 L182,141 L182,159 Z"/>
+<path class="v" d="M251,93 L269,93 L251,117 L269,117 Z"/>
+<text class="" x="70" y="155" text-anchor="middle">Vacuum pump</text>
+<text class="" x="260" y="52" text-anchor="middle">Charge: degassed water</text>
+<text class="mut" x="275" y="214" text-anchor="start">Port 1</text>
+<path class="line" d="M440,230 L440,150 M440,150 L560,150 M440,150 L440,90"/>
+<circle class="v" cx="440" cy="76" r="14"/><path class="line" d="M440,76 L449,67"/>
+<path class="v" d="M508,141 L508,159 L532,141 L532,159 Z"/>
+<text class="" x="440" y="46" text-anchor="middle">Pressure transducer</text>
+<text class="" x="625" y="155" text-anchor="middle">25 psi relief</text>
+<text class="mut" x="455" y="214" text-anchor="start">Port 2</text>
+</svg>

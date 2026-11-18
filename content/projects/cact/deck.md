@@ -18,7 +18,7 @@ A flat-plate vapor chamber with no wick. A wire-arc-sprayed asymmetric sawtooth 
 
 ## Requirement
 
-The condenser seals at 25 psi, mates with the existing substrate, gasket and clamp, and brings chiller water close to the vapor face.
+The condenser seals up to the 25 psi of the chamber's relief valve, mates with the existing substrate, gasket and clamp, and brings chiller water close to the vapor face.
 
 ## Question
 
@@ -68,10 +68,11 @@ Heater block to water inlet at 400 W is 121 °C:
 
 ## Mechanism
 
-- Water conducting across the design 200 µm gap would give 0.13 K/W. The measured value is lower.
-- Boiling would make the resistance fall about 3 times from 73 to 400 W. It stays flat from a 36 °C substrate to a 112 °C one.
+- Water across the design 200 µm gap, with the copper contacts, would give 0.12 K/W. The measured value is lower.
+- Boiling would make its coefficient rise about 3 times from 73 to 400 W, so the resistance would fall. It stays flat from a 36 °C substrate to a 112 °C one.
 - Water conducting across a gap of about 70 µm fits both observations.
-- The chamber pressure, whether air is inside, and the real gap will settle it.
+- The chamber was filled open and never evacuated, so it held air at about 1 atm, as in the thesis (Faria, p. 19).
+- An evacuated run and a measured gap will settle it.
 
 ![Flat with power: substrate-to-condenser resistance](cact_resistance_vs_power.svg)
 
@@ -85,9 +86,9 @@ Heater block to water inlet at 400 W is 121 °C:
 
 ## Checks
 
-- Water-side heat transfer is about 3 times the laminar textbook value: short channels, push-to-connect inlets, buoyancy
-- The water reads 13 to 18% more heat than the heater supplies, in proportion to power, so the flow reading is high: about 500 mL/min where 580 was read
-- The one-channel to two-channel ratio fits Test 1's channels being in series
+- Water-side heat transfer is about 4 times the laminar textbook value, most likely from the jet out of each push-to-connect fitting, plus some buoyancy
+- The water reads 13 to 18% more heat than the heater supplies, in proportion to power: either the flow reading (about 500 mL/min true where 580 was read) or an outlet thermocouple in the unmixed laminar stream
+- How Test 1's two channels were plumbed, series or parallel, was not recorded
 
 ![Temperature budget: the water side grew with one channel](cact_budget.svg)
 
@@ -97,7 +98,8 @@ Heater block to water inlet at 400 W is 121 °C:
 
 Keep the original polycarbonate top as a window. Cool the specimen from below with a water-cooled aluminium frame in place of the PTFE housing.
 
-- Same outline, bolts and clamp load, 29 cm² of contact on the specimen rim
+- Same outline and bolts as the PTFE housing, 19 mm tall so it meets the specimen rim, about 27 cm² of contact
+- Today the heater face stands 2 mm proud of the housing, so the specimen rim sits over air
 - PTFE liner around the heater block
 - Not from the sides: they sit 2.4 mm from the bolts and carry the thermocouple bores
 
@@ -115,17 +117,29 @@ Heat enters at the centre and leaves at the rim, so the centre-to-edge gradient 
 
 ## Runs
 
-1. Dry at 73, 186 and 261 W: copper baseline, liner leak, contact conductance
+1. Dry from 73 W up: copper baseline, liner leak, contact conductance
 2. Charged with 2.7 mL, air left in
 3. Evacuated, then charged with degassed water
 
-Pressure, in-stream water thermocouples, power and video at every step. Top step 261 W until the dry run measures the contact, to keep the polycarbonate below 115 °C.
+Pressure, in-stream water thermocouples, power and video at every step. Each step is checked against a 90 °C pocket limit before the next: with a poor frame contact, 186 W may be the top. A film heater keeps the window clear.
+
+## Vacuum
+
+Run 3 needs no new machining. The polycarbonate top already has two 1/8 NPT ports into the chamber.
+
+- Port 1: a tee to a valve to the vacuum pump, and a valve to charge the degassed water
+- Port 2: a tee to the pressure transducer and the 25 psi relief valve
+- Leak check, cold: pump down, close the pump valve, watch the pressure for 10 to 15 minutes. Holds, heat. Rises, find the leak first.
+- Weakest seal: the NPT threads in the polycarbonate, which wore out in both earlier builds (Faria, p. 30). Fit metal threaded inserts or use sealant and check them first.
+- Never tested under vacuum: the gasket and the relief valve
+
+![The two top-plate ports for run 3](cact_ports.svg)
 
 ## Decisions
 
 - Machine the aluminium frame and PTFE liner?
-- Vacuum pump and degassed water for run 3?
-- A pressure transducer on the top plate's second port?
+- A vacuum pump, two tees, two valves and degassed water for run 3?
+- A pressure transducer on port 2?
 - Which camera, and how to light through the window?
 
 ![Proposed stack, section](cact_next_test.svg)
