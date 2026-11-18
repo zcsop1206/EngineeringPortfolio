@@ -1,12 +1,12 @@
 ---
 title: "CACT: wickless flat-plate heat pipe"
-description: Machined a C110 copper condenser block to GD&T for an asymmetric-sawtooth vapor chamber. Used it in the assembly to test performance against a control setup. At 410 W the charged chamber reached steady state and passed heat to the condenser at 0.074 K/W, against 0.26 to 0.28 K/W dry.
+description: Machined a C110 copper condenser block to GD&T for an asymmetric-sawtooth vapor chamber. Used it in the assembly to test performance against a control setup. Charged, the chamber reached steady state at every step from 73 W to 410 W and passed heat to the condenser at 0.074 to 0.080 K/W, against 0.26 to 0.28 K/W dry at the same powers.
 status: in-progress
 start: 2026-05-01
 cover: cact_condenser.jpeg
 publish: true
 short: Heat pipe condenser
-result: "Machined a copper condenser for a wickless heat pipe and tested it charged and dry: 0.074 K/W against 0.26–0.28, steady at 410 W."
+result: "Machined a copper condenser for a wickless heat pipe and tested it charged and dry: 0.074–0.080 K/W against 0.26–0.28 at the same powers, steady up to 410 W."
 featured: 1
 hook:
   label: Still open
@@ -18,7 +18,7 @@ hook:
 
 ## Summary
 
-A wickless flat-plate heat pipe under development at the Centre for Advanced Coating Technologies pumps fluid with a wire-arc-sprayed asymmetric sawtooth coating instead of a capillary wick. The previous build had a polycarbonate top plate that could not condense vapor, identified as the root cause of the device never reaching steady state. This report covers the replacement: a C110 copper condenser designed and machined to a GD&T drawing, the thermocouple and DAQ instrumentation of the assembly, and two tests: one with the chamber charged with water and a control with it dry. Charged, the device reached steady state at 410 W and the chiller water carried away the electrical input, to within 7% at that point and about 20% over the run. The resistance from substrate to condenser was 0.074 K/W, against 0.26 to 0.28 K/W dry. The substrate was not uniform: the centre ran 18 °C above the edge, and that gradient per watt was the same charged and dry. The charged resistance is lower than conduction through the liquid would give, consistent with the two-phase cooling the chamber is designed for. The flow inside the chamber and its distribution across the plate are not resolved by these thermocouples. A 2-D conduction model of the plate, fitted to the eight substrate thermocouples, recovers the heater power to within 8% and is used to animate the temperature field. Two measurement corrections and a known bypass in the chamber are identified, and the next experiments are specified.
+A wickless flat-plate heat pipe under development at the Centre for Advanced Coating Technologies pumps fluid with a wire-arc-sprayed asymmetric sawtooth coating instead of a capillary wick. The previous build had a polycarbonate top plate that could not condense vapor, identified as the root cause of the device never reaching steady state. This report covers the replacement: a C110 copper condenser designed and machined to a GD&T drawing, the thermocouple and DAQ instrumentation of the assembly, and three tests: two with the chamber charged with water and a control with it dry. Charged, the device reached steady state at every step from 73 W to 410 W, and the chiller water carried away the electrical input, with the water reading 7 to 18% high. The resistance from substrate to condenser was 0.074 to 0.080 K/W at every power, against 0.26 to 0.28 K/W dry at the same powers. It did not change when the chiller inlet was raised from 20 to 30 °C, or when the water was run through one condenser channel instead of two, which nearly doubled the resistance on the water side. The substrate was not uniform: the centre ran 18 °C above the edge at 400 W, and that gradient per watt was the same charged and dry. Set against theory, the charged resistance is lower than conduction through the liquid would give at the design 200 µm gap, but it is flat with power and temperature, which conduction across a gap of about 70 µm would also give and boiling would not. The chamber pressure and the gap were not measured, and they decide it. The flow inside the chamber and its distribution across the plate are not resolved by these thermocouples. A 2-D conduction model of the plate, fitted to the eight substrate thermocouples, reproduces them with one uniform conductance to the condenser and is used to animate the temperature field. Two measurement corrections and a known bypass in the chamber are identified, and the next experiments are specified.
 
 | Item         | Detail                                                                                                                                         |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -26,7 +26,7 @@ A wickless flat-plate heat pipe under development at the Centre for Advanced Coa
 | Period       | May 2026 to present, research placement                                                                                                        |
 | Role         | Design, machining, instrumentation and testing of the condenser                                                                                |
 | Deliverables | Drawing FPHPM2601 (Appendix A), the machined block, a calibrated 14-channel thermocouple map, the charged and dry test logs                    |
-| Tools        | SolidWorks with GD&T, manual mill and drill press, NPT tapping, Omega OMB-DAQ-56 with thermocouple expansion modules, chiller, DC power supply |
+| Tools        | SolidWorks with GD&T, manual mill and drill press, NPT tapping, Omega OMB-DAQ-56 with thermocouple expansion modules, chiller, DC power supply, Python (NumPy, SciPy) for the log reduction, the plate fit and the animations |
 
 ## 1. Background
 
@@ -95,7 +95,7 @@ The Ø1.2 mm thermocouple bores, 25 mm deep, were the hardest operations. A smal
 | Acquisition | Omega OMB-DAQ-56 with thermocouple expansion modules |
 | Calibration | Two points per channel before installation: ice-water bath at 0 °C and boiling water at 100 °C |
 | Channel map | Leads labelled to channel so the spatial gradient reads straight off the log |
-| Scan rate | 0.6 Hz in the dry control. About 0.66 Hz in the charged run, where the rate was not recorded |
+| Scan rate | 0.6 Hz in the dry control, and taken as the same in Test 3. About 0.66 Hz in Test 1, where the rate was not recorded |
 
 ![Section through the heater block, substrate and condenser, and plan of the substrate, with the thermocouple beads marked](cact_thermocouple_map.svg)
 
@@ -120,7 +120,7 @@ The heater block, substrate and gasket are J. Faria's design and the positions a
 
 ### 5.2 Test rig
 
-A copper heater block stands in for the chip, driven by a DC power supply. Its contact face is 30 × 30 mm, so 410 W is 46 W/cm². The vapor chamber substrate with its gasket sits on the heater block. The condenser sits on top, plumbed to a chiller through the NPT ports. The DAQ logs all channels.
+A copper heater block stands in for the chip, driven by a DC power supply. Its contact face is 30 × 30 mm, so 410 W is 46 W/cm². The vapor chamber substrate with its gasket sits on the heater block. The condenser sits on top, plumbed to a chiller through the NPT ports, with the water through both of its channels or through one. The DAQ logs all channels.
 
 ### 5.3 Planned measurements
 
@@ -131,9 +131,19 @@ A copper heater block stands in for the chip, driven by a DC power supply. Its c
 
 ## 6. Results
 
-Two runs were logged. On 2026-05-27 the chamber was charged with water at the 70% fill ratio of the thesis, 2.7 mL in a 3.9 mL channel, and the heater was stepped up to 410 W (118 V, 3.47 A), with 380 mL/min of chiller water and the inlet raised in steps to 30 °C. On 2026-09-23 the same assembly was run dry as a control, at four heater powers from 73 W to 318 W, with the chiller set to 20 °C and the flow at 600 mL/min, falling to 580.
+Three runs were logged.
 
-### 6.1 Charged chamber, 410 W
+| Run | Chamber | Powers, W | Chiller water |
+| --- | --- | --- | --- |
+| Test 1, 2026-05-27 | Charged, 2.7 mL | Stepped up to 410 (118 V, 3.47 A); only the last step recorded | Both channels, 380 mL/min, inlet raised in steps to 30 °C |
+| Test 2, 2026-09-23 | Dry, the control | 73, 186, 261, 318 | Both channels, 600 mL/min falling to 580, chiller at 20 °C |
+| Test 3 | Charged, 2.7 mL | 73, 186, 261, 318, 400 at 20 °C inlet, then 410 at 30 °C | One channel, 580 mL/min |
+
+The 2.7 mL fill is the 70% fill ratio of the thesis, in a 3.9 mL channel. Test 3 repeats the control's powers with the chamber charged, so the two can be compared step for step.
+
+Every table, figure and video in this section is produced from the raw DAQ files by a set of Python scripts, so a corrected channel map, scan rate or power regenerates all of them together.
+
+### 6.1 Test 1: charged, 410 W
 
 ![Temperature history of the charged test: heater block, substrate centre, substrate edge, condenser, coolant out and coolant in, rising in steps to a flat plateau at 410 W](cact_test1_history.svg)
 
@@ -153,7 +163,7 @@ The chiller water rose 16.6 °C across the condenser. At 380 mL/min that is 437 
 
 Earlier in the run the balance is less tidy. Between about minutes 17 and 27 the temperature drops inside the copper did not change, so the heater power did not. Over the same period the coolant pickup went from about 300 W to about 370 W as the inlet was raised from 21 to 30 °C. On that evidence the coolant measurement is good to about 20%, not 7%.
 
-### 6.2 Dry control
+### 6.2 Test 2: dry control
 
 ![Temperature history of the dry control: four power steps, with the heater block passing 190 °C on the last step while the coolant channels stay flat](cact_control_history.svg)
 
@@ -161,94 +171,232 @@ Earlier in the run the balance is less tidy. Between about minutes 17 and 27 the
 
 The two chiller water channels did not respond in this run. They stayed at 20.7 and 24.1 °C through every step while the condenser block rose to 64 °C. At 600 mL/min, 261 W would warm the water by 6 °C. The channel labelled outlet read the chiller setpoint and the one labelled inlet read 3 °C above it, so they were not reading the water across the condenser and there is no energy balance for the control. The comparison below uses the condenser block temperature instead, which does not depend on them.
 
-### 6.3 Thermal resistance
+### 6.3 Test 3: charged, 73 to 410 W
+
+![Temperature history of Test 3: five steps at 20 °C inlet, each settling flat, then a slow rise of every channel by about 9 °C as the inlet is raised to 30 °C](cact_test3_history.svg)
+
+*Figure 8. Test 3. Five power steps with the inlet at 20 °C, then the inlet raised to 30 °C with the power at 410 W. The time axis assumes 0.6 Hz.*
+
+Every step reached steady state: over the last 100 scans of each, the heater block moved by less than 1 °C.
+
+| Power, W | Heater block, °C | Substrate centre, °C | Substrate edge, °C | Condenser, °C | Water in, °C | Water out, °C | Heat to the water, W |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 73 | 43.2 | 38.2 | 34.4 | 30.9 | 20.5 | 22.6 | 83 |
+| 186 | 78.4 | 65.0 | 56.0 | 46.3 | 20.6 | 25.9 | 214 |
+| 261 | 102.7 | 83.3 | 71.4 | 56.4 | 20.8 | 28.3 | 304 |
+| 318 | 120.5 | 96.2 | 81.7 | 63.7 | 20.6 | 29.9 | 374 |
+| 400 | 141.8 | 111.6 | 94.3 | 72.7 | 20.5 | 32.0 | 464 |
+| 410, inlet 30 °C | 151.7 | 120.3 | 102.9 | 81.3 | 30.5 | 41.7 | 452 |
+
+Each temperature is the mean of the thermocouples at that location. In this log the water channel labelled outlet reads the chiller setpoint and the one labelled inlet rises with every step, so they are used the other way round.
+
+The water picked up 13 to 18% more heat than the heater supplied at every step with the inlet at 20 °C, and 10% more at 30 °C. The excess grows in proportion to the power. An offset in a water thermocouple would add the same number of watts at every step, so the flow reading is the first suspect. Read with Test 1's 107%, the heat leaves through the condenser and the water side overstates it by 7 to 18%.
+
+Raising the inlet by 10 °C, with 10 W more power, moved the substrate and condenser by 8.2 to 9.0 °C and the heater block by 10 °C. The resistances did not change.
+
+Test 1 ran the water through both condenser channels at 380 mL/min. Test 3 ran it through one at 580 mL/min. From the condenser beads to the mean water temperature that is 0.066 K/W in Test 1 and 0.116 K/W in Test 3, so one channel nearly doubled the water-side resistance even with 50% more flow. The substrate-to-condenser resistance was 0.074 K/W in Test 1 and 0.076 K/W at 400 W in Test 3.
+
+### 6.4 Thermal resistance
 
 Each resistance is a temperature difference between location means divided by the electrical power.
 
 | Run | Power, W | Heater to substrate, K/W | Substrate to condenser, K/W | Heater to condenser, K/W |
 | --- | --- | --- | --- | --- |
-| Charged | 410 | 0.100 | 0.074 | 0.174 |
-| Dry | 73 | 0.109 | 0.260 | 0.369 |
-| Dry | 186 | 0.115 | 0.271 | 0.387 |
-| Dry | 261 | 0.124 | 0.282 | 0.406 |
+| Test 1, charged | 410 | 0.100 | 0.074 | 0.174 |
+| Test 2, dry | 73 | 0.109 | 0.260 | 0.369 |
+| Test 2, dry | 186 | 0.115 | 0.271 | 0.387 |
+| Test 2, dry | 261 | 0.124 | 0.282 | 0.406 |
+| Test 3, charged | 73 | 0.095 | 0.074 | 0.168 |
+| Test 3, charged | 186 | 0.096 | 0.076 | 0.173 |
+| Test 3, charged | 261 | 0.097 | 0.080 | 0.177 |
+| Test 3, charged | 318 | 0.099 | 0.079 | 0.179 |
+| Test 3, charged | 400 | 0.097 | 0.076 | 0.173 |
+| Test 3, charged, inlet 30 °C | 410 | 0.098 | 0.074 | 0.172 |
 
-The heater-to-substrate resistance is nearly the same charged and dry, as it should be, since the fluid is not in that path. The substrate-to-condenser resistance is 3.5 to 3.8 times lower with the chamber charged. The dry values are lower bounds: with no energy balance, some of the electrical power left to the room and did not cross to the condenser.
+![Substrate-to-condenser resistance against heater power: the dry control near 0.27 K/W at 73, 186 and 261 W, and both charged runs flat between 0.074 and 0.080 K/W from 73 to 410 W](cact_resistance_vs_power.svg)
 
-From heater block to chiller inlet the charged assembly is 0.26 K/W. The 107 °C between them at 410 W divides into three roughly equal parts.
+*Figure 9. Substrate to condenser, charged and dry. Open circles are the dry control, filled circles Test 3 at 20 °C inlet, the square Test 1.*
 
-| Step | Drop at 410 W, °C |
-| --- | --- |
-| Heater block to substrate centre | 32 |
-| Substrate centre to condenser | 39 |
-| Condenser to chiller inlet | 35 |
+At the same three powers the substrate-to-condenser resistance is 3.5 to 3.6 times lower with the chamber charged. Charged, it holds at 0.074 to 0.080 K/W from 73 W to 410 W, across both charged runs, both inlet temperatures and both water plumbings. The dry values are lower bounds: with no energy balance, some of the electrical power left to the room and did not cross to the condenser.
 
-### 6.4 Uniformity
+The fluid is not in the heater-to-substrate path. That resistance is 0.095 to 0.100 K/W in both charged runs, and dry it is 15 to 28% higher at the same powers, rising with power.
+
+Per unit of heater area, which is how a package datasheet states them: 0.67 to 0.72 cm²·K/W across the chamber charged against 2.3 to 2.5 dry, and about 0.9 cm²·K/W from the heater block to the substrate.
+
+From heater block to chiller inlet the charged assembly is 0.26 K/W with both water channels and 0.30 K/W with one. With both channels the drop divides into three roughly equal parts. With one, the water side grows and the other two do not.
+
+| Step | Test 1, 410 W, both channels, °C | Test 3, 400 W, one channel, °C |
+| --- | --- | --- |
+| Heater block to substrate centre | 32 | 30 |
+| Substrate centre to condenser | 39 | 39 |
+| Condenser to chiller inlet | 35 | 52 |
+
+### 6.5 Uniformity
 
 | Run | Power, W | Centre minus edge, °C | Per watt, mK/W | Spread over the 8 substrate channels, °C | Condenser left minus right, °C |
 | --- | --- | --- | --- | --- | --- |
-| Charged | 410 | 17.6 | 43 | 26.9 | 1.1 |
-| Dry | 73 | 3.4 | 47 | 8.5 | 1.7 |
-| Dry | 186 | 8.6 | 46 | 22.1 | 5.4 |
-| Dry | 261 | 11.4 | 44 | 29.8 | 8.0 |
+| Test 1, charged | 410 | 17.6 | 43 | 26.9 | 1.1 |
+| Test 2, dry | 73 | 3.4 | 47 | 8.5 | 1.7 |
+| Test 2, dry | 186 | 8.6 | 46 | 22.1 | 5.4 |
+| Test 2, dry | 261 | 11.4 | 44 | 29.8 | 8.0 |
+| Test 3, charged | 73 | 3.8 | 52 | 5.4 | 0.4 |
+| Test 3, charged | 186 | 9.0 | 49 | 13.5 | 1.4 |
+| Test 3, charged | 261 | 12.0 | 46 | 17.7 | 2.3 |
+| Test 3, charged | 318 | 14.4 | 45 | 21.5 | 3.1 |
+| Test 3, charged | 400 | 17.3 | 43 | 26.1 | 3.9 |
+| Test 3, charged, inlet 30 °C | 410 | 17.4 | 42 | 26.6 | 4.2 |
 
-The sub-1 °C uniformity hypothesis of Section 5.3 was not met. The centre of the substrate ran 17.6 °C above the edge at 410 W. Per watt, the centre-to-edge gradient is the same charged and dry, so the substrate did not show the spreading the sawtooth structure is meant to produce.
+The sub-1 °C uniformity hypothesis of Section 5.3 was not met. The centre of the substrate ran 17 to 18 °C above the edge at 400 and 410 W. Per watt, the centre-to-edge gradient is the same charged and dry, now at the same powers: 46 to 52 mK/W charged against 44 to 47 dry from 73 to 261 W. The substrate did not show the spreading the sawtooth structure is meant to produce. Charging did narrow the spread over all eight channels, to 18 °C at 261 W against 30 °C dry.
 
-### 6.5 Temperature field
+### 6.6 Temperature field
 
 Eight beads are enough to fit a conduction model of the plate, though not to map it directly. The substrate is treated as a 2-D copper plate, 6 mm thick and 5 mm under the pocket, with insulated edges:
 
 $$\nabla \cdot (k\,t\,\nabla T) + q'' - g\,(T - T_\text{condenser}) = 0$$
 
-The heat $Q$ enters uniformly over the 30 × 30 mm heater face. It leaves over the pocket to the condenser through one conductance per area, $g$. At every scan $Q$ and $g$ are fitted to the eight beads, with a linear tilt across the plate for whatever is not symmetric. The power is not an input. At the four steady states it comes back from the fit:
+The heat $Q$ enters uniformly over the 30 × 30 mm heater face. It leaves over the pocket to the condenser through one conductance per area, $g$. At every scan $Q$ and $g$ are fitted to the eight beads, with a linear tilt across the plate for whatever is not symmetric. The power is not an input. At the steady states it comes back from the fit:
 
 | Run | Electrical power, W | Power from the fit, W | $g$, W/m²K | RMS error at the beads, °C |
 | --- | --- | --- | --- | --- |
-| Charged | 410 | 441 | 4300 | 2.2 |
-| Dry | 73 | 74 | 1100 | 1.1 |
-| Dry | 186 | 198 | 1100 | 2.9 |
-| Dry | 261 | 262 | 1000 | 4.5 |
+| Test 1, charged | 410 | 441 | 4300 | 2.2 |
+| Test 2, dry | 73 | 74 | 1100 | 1.1 |
+| Test 2, dry | 186 | 198 | 1100 | 2.9 |
+| Test 2, dry | 261 | 262 | 1000 | 4.5 |
+| Test 3, charged | 73 | 103 | 5800 | 0.2 |
+| Test 3, charged | 186 | 227 | 4700 | 0.4 |
+| Test 3, charged | 261 | 305 | 4300 | 0.6 |
+| Test 3, charged | 318 | 367 | 4300 | 0.7 |
+| Test 3, charged | 400 | 440 | 4300 | 0.9 |
+| Test 3, charged, inlet 30 °C | 410 | 442 | 4300 | 0.8 |
 
-The fit recovers the power to within 8% from temperatures alone, and in the charged run it lands on the same value as the coolant balance. So the centre-to-edge gradient of Section 6.4 is what 5 mm of copper gives when it carries that power outward, charged or dry. The chamber changes $g$, by a factor of four.
+In Tests 1 and 2 the fit recovers the power to within 8% from temperatures alone. In Test 3 it reads high: by 8 to 22% from 186 W up, and by 41% at 73 W, where the eight beads span only 5 °C. The fitted $g$ is the steadier number. It is 4300 W/m²K at every charged step from 261 W up, in both charged runs, against 1000 to 1100 dry. The chamber changes $g$, by a factor of four, and the same plate carries the heat outward to it charged or dry. Section 7.4 works out why that leaves the centre-to-edge gradient unchanged.
 
 <video controls autoplay muted loop playsinline width="1280" height="720" style="display:block;width:100%" src="/projects/cact/cact_test1_field.mp4" aria-label="The charged run. A plan view of the substrate shows the fitted temperature field with isotherms growing outward from the heater face as the power steps up, with the eight thermocouples drawn as dots coloured by their measured value. Beside it a section of the stack shows the heater block, substrate, condenser and coolant temperatures."></video>
 
-*Video 1. The charged run. The field is the fitted model. The dots are the measurements, so a dot that stands out from the field is where the model is wrong.*
+*Video 1. Test 1, charged. The field is the fitted model. The dots are the measurements, so a dot that stands out from the field is where the model is wrong.*
 
 <video controls autoplay muted loop playsinline width="1280" height="720" style="display:block;width:100%" src="/projects/cact/cact_control_field.mp4" aria-label="The dry control. The same view through four power steps. The substrate runs much hotter than the condenser and a left-to-right tilt grows with power."></video>
 
-*Video 2. The dry control, on a wider colour scale.*
+*Video 2. Test 2, the dry control, on a wider colour scale.*
 
-The fit assumes each scan is at steady state, and $Q$ and $g$ are only loosely separated by eight beads, so between the four checked points the fitted power is less certain than the table suggests and is not shown in the videos. The tilt is 14 °C across the plate in the charged run. In the dry run it is in a different direction and grows with power, to 30 °C at 261 W.
+<video controls autoplay muted loop playsinline width="1280" height="720" style="display:block;width:100%" src="/projects/cact/cact_test3_field.mp4" aria-label="Test 3. The same view through five power steps at 20 °C inlet and then the inlet raised to 30 °C. The isotherms keep the same shape at every step while the whole plate warms, and the field fits the eight dots closely."></video>
 
-## 7. Discussion
+*Video 3. Test 3, charged, through the dry control's powers and on to 410 W.*
 
-The copper condenser did what it was built for. The previous build never reached steady state. This one held 410 W with every channel flat, and the heat arrived in the chiller water.
+The fit assumes each scan is at steady state, and $Q$ and $g$ are only loosely separated by eight beads, so between the checked points the fitted power is less certain than the table suggests and is not shown in the videos. The tilt is 14 °C across the plate in Test 1 and 12 °C in Test 3 at 400 W. In the dry run it is in a different direction and grows with power, to 30 °C at 261 W.
 
-The chamber is one third of the total. The heater block and the centre substrate beads are 4.5 mm of copper apart, which at 46 W/cm² accounts for about 5 °C. The other 27 °C of that step is the thermal paste joint between them, and it is as large as anything the chamber does.
+## 7. Analysis against theory
 
-The sawtooth structure and the 70% fill are designed for two-phase cooling, and the numbers are consistent with it. Conduction through the liquid alone would not reach the measured resistance. Flooded to the top, the water would conduct 0.37 K/W across the 200 µm gap over the 30 × 30 mm coating and 0.8 K/W across the 1.2 mm depth of the rest of the pocket. In parallel with the 0.27 K/W dry path that gives 0.13 K/W. The measured 0.074 K/W is lower, at a 70% fill. That estimate takes the coating as solid copper and the gap as the design 200 µm, and neither was measured on this specimen. The substrate was between 82 and 109 °C. Where that sits against the saturation temperature depends on the chamber pressure, which was not logged.
+The copper condenser did what it was built for. The previous build never reached steady state. This one settled at every step from 73 W to 410 W in two charged runs, and the heat arrived in the chiller water. This section takes each part of the stack in turn, sets the measurement against the theory that should describe it, and says which numbers that theory explains and which it does not. All values are at about 400 W unless stated.
 
-The unresolved question is the flow inside the chamber and how it distributes across the plate. The thermocouples cannot answer it. The eight substrate beads are in 5 mm of copper, and Section 6.5 shows that the copper sets what they read: the same conduction model fits the charged and dry runs, with only $g$ changed. One uniform $g$ over the pocket fits the charged run to 2 °C, so these beads do not resolve where on the plate the vapor forms, where it condenses, or whether the liquid circulates through the channels as designed.
+### 7.1 Heater block to substrate
 
-Two things are known to be wrong with the measurement.
+The heater beads and the centre substrate beads are 4.5 mm of copper apart. Fourier's law in one dimension gives the drop across that copper:
 
-1. Thermocouple position. Each bead sits inside the copper, not on the surface. With a known heat flux $q''$ and copper conductivity $k$ there is a linear gradient between the surface and the bead, so the surface temperature follows from the bead reading and the bead's distance $d$ from the surface on the drawing: $T_\text{surface} = T_\text{bead} + q'' d / k$. Raw bead temperatures were reported. The correction is small per channel but it is a systematic bias in the resistances of Section 6.3.
-2. Interface contact. The condenser-to-chamber contact resistance was not characterised. Flatness was not measured, and no thermal interface material or contact pressure measurement was used. The gasket is designed to compress 0.2 to 0.25 mm, which leaves the rim of the substrate at or close to the condenser face, and the sprayed channel walls are meant to reach it. In the dry run the heat crosses through those copper contacts. The dry run shows the effect: the left of the condenser ran 8 °C hotter than the right at 261 W while the left of the substrate ran cooler, which is what better contact on the left would give. Charged, the two sides agreed to 1 °C.
+$$\Delta T_\text{Cu} = \frac{q'' L}{k} = \frac{44\ \text{W/cm}^2 \times 0.45\ \text{cm}}{3.9\ \text{W/cm·K}} \approx 5\ \text{°C}$$
+
+The measured drop is 30 °C. The other 25 °C is the joint between the block and the substrate, which was made with thermal paste. Divided by the heat flux it is a specific resistance of 0.50 to 0.60 cm²·K/W, at every step of both charged runs. A conducting joint should not depend on power, and this one does not.
+
+Its size is the problem. A layer of paste has a specific resistance of its thickness over its conductivity, $t/k$. A typical paste of about 3 W/m·K, clamped to a bond line of 25 to 50 µm, gives 0.1 to 0.2 cm²·K/W. The measured value is what about 170 µm of that paste would give, or a thinner layer between faces that are not flat. Paste was applied, but its type, its thickness and the clamp pressure were not recorded. Bringing the joint to 0.15 cm²·K/W would take about 18 °C off the heater block at 400 W, which makes it the cheapest temperature in the stack to recover.
+
+### 7.2 Condenser to water
+
+Whether flow in a pipe is smooth or turbulent is set by the Reynolds number, $\text{Re} = 4\dot m/(\pi D \mu)$, the ratio of inertia to viscous forces, with turbulence above about 2300. In the Ø11.92 mm channels Re is about 500 per channel in Test 1 if the two channels shared the 380 mL/min, 1000 if they were in series, and 1200 in Test 3. All three are laminar. Each channel is only 7.5 diameters long, so the layer of water warmed by the wall is still growing when it leaves, and the heat transfer is that of the entrance region. The standard correlation for it, written with the Nusselt number $\text{Nu} = hD/k$ and the Prandtl number of water, Pr, is
+
+$$\text{Nu} = 1.86\left(\text{Re}\,\text{Pr}\,\frac{D}{L}\right)^{1/3}$$
+
+It gives a film coefficient $h$ of 650 to 930 W/m²K, and a condenser-to-water resistance $1/(hA)$ of 0.18 to 0.23 K/W for Test 1 and 0.32 K/W for Test 3. Measured, from the condenser beads to the mean water temperature, they are 0.066 and 0.116 K/W: the real $h$ is about 2300 to 2600 W/m²K, three times the correlation. The copper between the beads and the channel walls would push the measurement the other way, so the difference is in the water. Two things the correlation leaves out raise $h$. The water enters through push-to-connect fittings, so the velocity profile is still developing and the inlet is disturbed. And buoyancy is not small next to inertia. The ratio of the two, Gr/Re², is 0.2 to 1.4 in these runs, a range where warm water rising off the wall stirs a horizontal laminar flow and raises Nu severalfold.
+
+The ratio between the runs is better predicted than the size. With the two channels in series in Test 1, the correlation gives one channel at 580 mL/min a water-side resistance 1.78 times that of both at 380 mL/min. Measured, it is 1.76. With them in parallel it gives 1.41. That points to the channels having been in series in Test 1, which can be checked on the rig.
+
+### 7.3 The chamber: conduction or phase change
+
+The substrate-to-condenser resistance is the number the chamber exists to lower, and there are two candidate explanations for the 0.074 to 0.080 K/W it reached.
+
+The first is conduction through the liquid. At the design geometry, water flooded to the top would conduct 0.34 K/W across the 200 µm gap over the 30 × 30 mm coating ($t/kA$, with water at 0.66 W/m·K) and 0.8 K/W across the 1.2 mm depth of the rest of the pocket. In parallel with the 0.27 K/W dry path through the copper contacts, that is 0.13 K/W. The measurement is lower. Solving the same parallel sum for the gap instead, conduction alone matches the measurement if the water layer over the coating is about 70 µm thick. The coating was sprayed to a target of 1000 µm in a 1.2 mm channel, so that is a coating about 130 µm taller than its target. Neither the coating height nor the gap was measured on this specimen.
+
+The second is phase change, which the sawtooth structure and the 70% fill are designed for. If boiling carried the heat, the resistance would fall as the power rose. In nucleate boiling the heat flux grows with roughly the cube of the wall superheat (the Rohsenow correlation), so $h \propto q''^{2/3}$, and from 73 W to 400 W the boiling coefficient should rise 3.1 times. Boiling also needs the wall above the saturation temperature. At 73 W the hottest substrate bead was 39 °C, where water boils only below 0.07 bar. If the chamber held air, as a syringe fill would leave it, evaporation and condensation are limited by vapor diffusing through that air, at a rate that follows the vapor pressure. The vapor pressure of water rises 27 times from 36 °C to 112 °C, the range of the substrate across Test 3.
+
+The measurement shows neither. The resistance is the same to within ±4% from 73 W with the substrate at 36 °C to 410 W with it at 112 °C, and the same with the inlet at 20 or 30 °C. Liquid conduction predicts that. The conductivity of water rises 9% over that temperature range, and with the liquid carrying about 70% of the conductance the resistance would fall about 6% from the lowest step to the highest, inside the scatter.
+
+So the simplest reading of these three runs is conduction through a water layer thinner than the design gap, and the data do not show the power dependence boiling would add. They do not rule out phase change in a chamber that was evacuated before filling: there the resistance of thin evaporating and condensing films is also set by conduction through liquid, and is also nearly flat with power. Two measurements decide between them: the chamber pressure, and the gap above the coating.
+
+### 7.4 Plate uniformity
+
+A vapor chamber is meant to make the plate isothermal by carrying heat sideways as vapor. That is the hypothesis of Section 5.3, and the plate gradient tests it. Heat entering the 30 × 30 mm heater face leaves over the 60 × 60 mm pocket. The distance it spreads through the 5 mm of copper before leaving is $\lambda = \sqrt{k t / g}$, 21 mm charged and 43 mm dry. Both are longer than the 15 mm from the heater edge to the edge beads, so in both runs the condenser takes heat from the whole pocket, and about three quarters of it has to cross the copper outward from under the heater first. The centre-to-edge gradient is set by that copper and hardly by $g$. The plate model of Section 6.6 gives 44 mK/W for the dry $g$ and 39 mK/W for the charged $g$. Measured, it is 44 to 47 dry and 42 to 52 charged.
+
+The same model sets the target. To hold the centre within 1 °C of the edge at 400 W, the plate would need about 20 times the in-plane conductance of 5 mm of copper, an effective conductivity near 8000 W/m·K. That is the range commercial vapor chambers reach with vapor flowing sideways. Here the gradient is what copper alone gives, so no sideways transport through the chamber shows in these beads.
+
+### 7.5 Energy balance
+
+The heat to the water is $\rho \dot V c_p \Delta T$. At 580 mL/min that is 40 W for every kelvin of rise, and the excess over the electrical power can be traced by how it grows. An offset in a water thermocouple adds the same number of watts at every step. The excess in Test 3 is equivalent to 0.25 K at 73 W and 1.6 K at 400 W, a fixed fraction of the power, not a fixed offset. Heat lost from the hot stack to the room would push the balance below 100%, not above it. That leaves the flow: the balance closes if the true flow was about 500 mL/min where 580 was read. The excess also changes with inlet temperature, in Test 1 and here, and water viscosity falls by a fifth from 20 to 30 °C, so a flow reading that depends on viscosity would move with it.
+
+### 7.6 What the thermocouples cannot resolve
+
+The flow inside the chamber and how it distributes across the plate are not answered by these beads. They are in 5 mm of copper, and Section 6.6 shows that the copper sets what they read: the same conduction model fits the charged and dry runs, with only $g$ changed. One uniform $g$ over the pocket fits Test 3 to under 1 °C, so the beads do not resolve where on the plate the vapor forms, where it condenses, or whether the liquid circulates through the channels as designed.
+
+### 7.7 Known errors in the measurement
+
+1. Thermocouple position. Each bead sits inside the copper, not on the surface. With a known heat flux $q''$ and copper conductivity $k$ there is a linear gradient between the surface and the bead, so the surface temperature follows from the bead reading and the bead's distance $d$ from the surface on the drawing: $T_\text{surface} = T_\text{bead} + q'' d / k$. Under the heater at 400 W, 2 mm of copper is about 2 °C. Raw bead temperatures were reported, so this is a systematic bias in the resistances of Section 6.4.
+2. Interface contact. The condenser-to-chamber contact resistance was not characterised. Flatness was not measured, and no thermal interface material or contact pressure measurement was used. The gasket is designed to compress 0.2 to 0.25 mm, which leaves the rim of the substrate at or close to the condenser face, and the sprayed channel walls are meant to reach it. In the dry run the heat crosses through those copper contacts. The dry run shows the effect: the left of the condenser ran 8 °C hotter than the right at 261 W while the left of the substrate ran cooler, which is what better contact on the left would give. Charged, the two sides agreed to 1 °C with both water channels in use, and to 4 °C with one.
 
 Beyond the measurement, the chamber has a known bypass. The channel walls on the substrate do not touch the sawtooth structure, giving the vapor a lower-resistance path around the pump. That was flagged in the thesis but not fixed in the hardware tested here.
 
-## 8. Recommendations
+## 8. Next test: cooled from below, seen from above
 
-1. Log the chamber pressure, so the substrate temperatures can be placed against the saturation temperature.
-2. Resolve the flow and its distribution across the plate. The beads in the copper cannot, so this needs a window insert in the condenser for visualisation, or thermocouples on the condenser face across the pocket, or a charged run on a substrate with no sawtooth structure for comparison.
-3. Measure the flatness of the sealing face on a surface plate or with a dial indicator. Apply the thermocouple gradient correction of Section 7 and recompute the resistances from the existing logs.
-4. Repeat the dry control with the water thermocouples in the stream, so the heat crossing the dry chamber is measured and not bounded.
-5. Record the power at every step. The charged log has eleven steps and one known power.
-6. Close the bypass by revising the channel boundary to contact the sawtooth structure.
+The beads cannot see the flow (Section 7.6). The original polycarbonate top could, but with it the device had no condenser and never settled. The next test keeps the polycarbonate top as a window and moves the cooling to the underside of the specimen.
 
-## 9. Conclusions
+![Section through the proposed stack: camera above the polycarbonate top plate, the specimen with its coating, and a water-cooled aluminium frame under the specimen rim with a PTFE liner around the heater block](cact_next_test.svg)
 
-The copper condenser was designed, machined and installed, and the assembly was instrumented and tested end to end. With it the device reaches steady state at 410 W and the heat arrives in the chiller water. Charging the chamber lowers the substrate-to-condenser resistance from at least 0.26 K/W to 0.074 K/W. That is more than conduction through the liquid would give, as expected of a chamber designed for two-phase cooling. The substrate is not isothermal, and its in-plane gradient is what the copper plate alone gives. The flow inside the chamber and its distribution across the plate remain unresolved, and the recommendations start there.
+*Figure 10. The proposed stack. Only the PTFE housing is replaced; the top plate, gasket, specimen, heater block, base plate and bolts are J. Faria's.*
+
+### 8.1 Why from below
+
+The sides do not work. The specimen's side faces are 70 × 6 mm, 17 cm² in all, about 2.4 mm from the M5 bolts, and they carry the twelve thermocouple bores. A side cooler would need a new bolt pattern and would have to work around the bores.
+
+The underside does. Outside the heater block, the specimen sits on the PTFE housing, which only insulates. A water-cooled aluminium frame with the housing's 90 × 90 × 17 mm outline and bolt pattern drops into its place and carries the same clamp load. It touches the specimen rim over about 29 cm², outside a 41 × 51 mm opening. A PTFE liner with 5 mm walls fills that opening and holds the heater block as the housing did. Through PTFE the block leaks about 0.1 W/K to the frame, about 10 W at a 100 °C difference, which the dry run measures. The water runs in a drilled channel around three sides of the frame, with the inlet and outlet either side of the heater slot.
+
+### 8.2 What it measures
+
+Heat now enters at the centre and leaves at the rim, which is how a vapor chamber spreads heat: vapor carries it outward over the pocket and condenses over the cooled rim, and the sawtooth structure returns the liquid. That outward transport is what the centre-to-edge gradient reads. The plate model of Section 6.6, with its sink moved to the rim, gives 76 mK/W for copper alone. That is twice the 39 mK/W of the current top-cooled stack, and nearly the same for any contact conductance from 2000 to 10,000 W/m²K. Sideways transport through the chamber lowers it:
+
+| Sideways conductance the chamber adds, times the copper plate's | Centre minus edge, mK/W | At 186 W, °C |
+| --- | --- | --- |
+| 0, copper only | 76 | 14.1 |
+| 0.6 | 48 | 8.9 |
+| 3 | 20 | 3.7 |
+| 12 | 6 | 1.1 |
+
+Calibrated beads separate those rows at any power above about 50 W. The camera shows where the vapor forms, which way it moves, and whether the liquid comes back along the channels. With the condenser gone, its two DAQ channels move to two of the unused 17.5 mm bores, for a three-point profile from centre to edge on two sides.
+
+### 8.3 Runs
+
+1. Dry, at 73, 186 and 261 W. This sets the copper-only gradient, the leak through the liner and the contact conductance to the frame.
+2. Charged with 2.7 mL as before, air left in, at the same powers.
+3. Evacuated, then charged with degassed water, at the same powers. Runs 2 and 3 separate the effect of the air (Section 7.3).
+
+In every run: the chamber pressure logged through the second NPT port of the top plate, the water thermocouples in the stream, the power recorded at each step, and video at each steady state.
+
+### 8.4 Limits
+
+The polycarbonate touches the vapor. It softens near 145 °C and is usually kept below about 115 °C in service. The model puts the hottest point of the pocket at 90 °C, with 20 °C water, at 240 to 450 W depending on the contact conductance, so 261 W is the top step until the dry run has measured it. The 25 psi relief valve stays. Little heat leaves through 12.7 mm of polycarbonate, about 2 W, so the window runs close to the vapor temperature and should fog only lightly. If it does fog, a thin film heater on the outside clears it.
+
+## 9. Recommendations
+
+1. Log the chamber pressure, so the substrate temperatures can be placed against the saturation temperature, and record whether the chamber is evacuated before filling. With the measurement below, this decides between the two readings of Section 7.3.
+2. Measure the gap between the coating and the condenser face, by the coating height on a profilometer or by a soft-metal squash test in the assembled stack. Conduction alone explains the charged resistance if it is about 70 µm.
+3. Resolve the flow and its distribution across the plate. The beads in the copper cannot, so this needs the window of Section 8. A charged run on a substrate with no sawtooth structure would then show what the structure itself adds.
+4. Re-make the heater-to-substrate paste joint with a paste of known conductivity under a measured clamp pressure, and measure the flatness of both faces. At 0.5 to 0.6 cm²·K/W it is three to five times a well-made paste joint (Section 7.1).
+5. Measure the flatness of the condenser's sealing face on a surface plate or with a dial indicator. Apply the thermocouple gradient correction of Section 7.7 and recompute the resistances from the existing logs.
+6. Check the chiller flow reading against a timed volume at 20 and 30 °C. Section 7.5 puts the true flow near 500 mL/min where 580 was read.
+7. Repeat the dry control with the water thermocouples in the stream, so the heat crossing the dry chamber is measured and not bounded.
+8. Record the power at every step, as in Test 3, and how the water channels are plumbed. Test 1 has eleven steps and one known power.
+9. Close the bypass by revising the channel boundary to contact the sawtooth structure.
+10. Sweep the chiller flow at fixed power and plumbing. The condenser-to-water part of the budget should move with the flow and the rest should not. Test 3 has already shown the second half: one channel instead of two nearly doubled the water side and left the chamber unchanged. How the water side moves with flow tells which regime it is in: as the cube root of the flow in forced laminar flow, hardly at all if buoyancy dominates, and as the 0.8 power if the flow were turbulent.
+
+## 10. Conclusions
+
+The copper condenser was designed, machined and installed, and the assembly was instrumented and tested end to end. With it the device reaches steady state at every step from 73 W to 410 W and the heat arrives in the chiller water. Charging the chamber lowers the substrate-to-condenser resistance from at least 0.26 K/W to 0.074 to 0.080 K/W at the same powers, and that value does not move with power, inlet temperature or the water plumbing. Set against theory, that flat resistance is what conduction through a water layer about 70 µm thick would give, and not the falling resistance boiling would give; the chamber pressure and the gap above the coating will settle which it is. The substrate is not isothermal, and its in-plane gradient is what the copper plate alone gives. Of the rest of the stack, the heater paste joint is three to five times what a well-made joint would be, and the water side does three times better than the textbook laminar correlation. The flow inside the chamber and its distribution across the plate remain unresolved. The next test keeps the original polycarbonate top as a window and cools the specimen from below, so the camera can see the flow and the beads can read the chamber's sideways transport.
 
 This was the first part I made to a drawing I wrote, with tolerances that came from the mating parts rather than from habit, and then had to live with in a test.
 
