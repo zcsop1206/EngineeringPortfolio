@@ -40,9 +40,9 @@ Calibrated thermocouples in the heater block, substrate centre and edge, condens
 
 ## Charged run
 
-Steady at 410 W, 46 W/cm². The chiller water carried away the electrical input to within 7%.
+Steady at every step from 73 W to 410 W, 46 W/cm² at the top. The heat left through the chiller water.
 
-![The charged run](cact_test1_history.svg)
+![The charged run, five steps then a warmer inlet](cact_test3_history.svg)
 
 ## Dry control
 
@@ -52,11 +52,13 @@ The same assembly with no fluid, stepped to 318 W.
 
 ## Thermal resistance
 
-Substrate to condenser: 0.074 K/W charged against 0.26 to 0.28 dry. Heater to substrate is unchanged, since the fluid is not in that path.
+Substrate to condenser: 0.074 to 0.080 K/W charged against 0.26 to 0.28 dry at the same powers. Flat from 73 W to 410 W, at either inlet temperature, with one water channel or two.
+
+![Substrate-to-condenser resistance against power](cact_resistance_vs_power.svg)
 
 ## Plate gradient
 
-The centre ran 18 °C above the edge, the same per watt charged and dry. A conduction model fitted to eight thermocouples recovers the heater power to within 8%, so the gradient is the copper plate, and that is the next thing to design out.
+The centre ran 18 °C above the edge, the same per watt charged and dry. A conduction model with one uniform sink fits the eight thermocouples, so the gradient is the copper plate. Holding 1 °C at 400 W takes about 20 times its in-plane conductance, and that is the next thing to design out.
 
 ![The fitted temperature field. Dots are measurements.](cact_test1_field.mp4)
 
@@ -65,4 +67,5 @@ The centre ran 18 °C above the edge, the same per watt charged and dry. A condu
 - The drawing and its tolerances
 - Machining the block
 - The energy balance
+- Conduction or boiling in the chamber
 - Next experiments

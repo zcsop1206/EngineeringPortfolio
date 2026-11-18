@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="Substrate-to-condenser resistance against heater power, charged and dry">
+<style>
+.bg{fill:#fff}.ink{stroke:#111;fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.grid{stroke:#e2e2e2;stroke-width:1}.axis{stroke:#9a9a9a;stroke-width:1}
+text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:12px;fill:#111}
+.mut{fill:#5c5c5c}.lead{stroke:#9a9a9a;stroke-width:1;fill:none}
+@media (prefers-color-scheme:dark){.bg{fill:#111}.ink{stroke:#ececec}.grid{stroke:#2e2e2e}.axis{stroke:#6b6b6b}
+text{fill:#ececec}.mut{fill:#a8a8a8}.lead{stroke:#6b6b6b}}
+.dot{fill:#111;stroke:#fff;stroke-width:2}.open{fill:#fff;stroke:#111;stroke-width:1.6}@media (prefers-color-scheme:dark){.dot{fill:#ececec;stroke:#111}.open{fill:#111;stroke:#ececec}}</style>
+<rect class="bg" width="640" height="360"/>
+<line class="axis" x1="56" x2="490" y1="316.0" y2="316.0"/>
+<text class="mut" x="48" y="320.0" text-anchor="end">0.00</text>
+<line class="grid" x1="56" x2="490" y1="270.0" y2="270.0"/>
+<text class="mut" x="48" y="274.0" text-anchor="end">0.05</text>
+<line class="grid" x1="56" x2="490" y1="224.0" y2="224.0"/>
+<text class="mut" x="48" y="228.0" text-anchor="end">0.10</text>
+<line class="grid" x1="56" x2="490" y1="178.0" y2="178.0"/>
+<text class="mut" x="48" y="182.0" text-anchor="end">0.15</text>
+<line class="grid" x1="56" x2="490" y1="132.0" y2="132.0"/>
+<text class="mut" x="48" y="136.0" text-anchor="end">0.20</text>
+<line class="grid" x1="56" x2="490" y1="86.0" y2="86.0"/>
+<text class="mut" x="48" y="90.0" text-anchor="end">0.25</text>
+<line class="grid" x1="56" x2="490" y1="40.0" y2="40.0"/>
+<text class="mut" x="48" y="44.0" text-anchor="end">0.30</text>
+<line class="axis" x1="56.0" x2="56.0" y1="316" y2="320"/>
+<text class="mut" x="56.0" y="334" text-anchor="middle">0</text>
+<line class="axis" x1="152.4" x2="152.4" y1="316" y2="320"/>
+<text class="mut" x="152.4" y="334" text-anchor="middle">100</text>
+<line class="axis" x1="248.9" x2="248.9" y1="316" y2="320"/>
+<text class="mut" x="248.9" y="334" text-anchor="middle">200</text>
+<line class="axis" x1="345.3" x2="345.3" y1="316" y2="320"/>
+<text class="mut" x="345.3" y="334" text-anchor="middle">300</text>
+<line class="axis" x1="441.8" x2="441.8" y1="316" y2="320"/>
+<text class="mut" x="441.8" y="334" text-anchor="middle">400</text>
+<text class="mut" x="273.0" y="354" text-anchor="middle">Heater power, W</text>
+<text class="mut" x="48" y="26" text-anchor="end">K/W</text>
+<polyline class="ink" points="126.4,76.8 235.4,66.7 307.7,56.6"/>
+<circle class="open" cx="126.4" cy="76.8" r="5"/>
+<circle class="open" cx="235.4" cy="66.7" r="5"/>
+<circle class="open" cx="307.7" cy="56.6" r="5"/>
+<polyline class="ink" points="126.4,248.1 235.4,245.6 307.7,242.2 362.7,243.0 441.8,246.4"/>
+<circle class="dot" cx="126.4" cy="248.1" r="5"/>
+<circle class="dot" cx="235.4" cy="245.6" r="5"/>
+<circle class="dot" cx="307.7" cy="242.2" r="5"/>
+<circle class="dot" cx="362.7" cy="243.0" r="5"/>
+<circle class="dot" cx="441.8" cy="246.4" r="5"/>
+<rect class="open" x="445.4" y="241.9" width="12" height="12"/>
+<text class="mut" x="451.4" y="233.9" text-anchor="middle">Test 1</text>
+<text x="319.7" y="60.6">Dry, Test 2</text>
+<text x="120.4" y="272.1">Charged, Test 3</text>
+</svg>
