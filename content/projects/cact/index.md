@@ -58,7 +58,7 @@ The condenser combines two earlier designs from the lab: the polycarbonate top p
 | Feature | Specification | Purpose |
 | --- | --- | --- |
 | Block | 90 × 90 × 17.7 mm, C110 copper | Matches the substrate footprint; copper for the condensing surface |
-| Water channels | 2 × Ø11.92 mm, straight through the block on the mid-plane; each tapped 1/4 NPT at both ends, with 55.86 mm of plain bore between the ports | Chiller loop close to the vapor-side face |
+| Water channels | 2 × Ø11.13 mm as drilled, straight through the block on the mid-plane; each tapped 1/4 NPT at both ends, with 55.86 mm of plain bore between the ports. The drawing shows Ø11.92, which cannot pass through the ports' Ø11.13 tap drill, so the channels were drilled at the tap drill size | Chiller loop close to the vapor-side face |
 | Ports | 1/4 NPT: Ø11.13 mm tap drill, 17.07 mm deep, 100° countersink | Push-to-connect fittings seal on the taper without a gasket |
 | Clamp holes | 10 × Ø5.30 mm through, on an 80 mm square pattern 5 mm in from the edges | Clamps the stack against the existing plate |
 | Thermocouple bores | 2 × Ø1.20 mm, 25 mm deep | Beads on known lines between the two water channels |
@@ -83,7 +83,7 @@ The block was machined from solid on a manual mill over one week.
 | 4 | Channel bores drilled; ports tapped 1/4 NPT for push-to-connect fittings |
 | After | Thermocouple bores; sealing face finished with light, shallow passes to keep it flat |
 
-The Ø1.2 mm thermocouple bores, 25 mm deep, were the hardest operations. A small drill at that depth in gummy copper grabs. One bit broke and lodged in the part. The remaining bores were drilled on the mill with short pecks, clearing chips between each, and went through cleanly.
+The Ø1.2 mm thermocouple bores, 25 mm deep, were the hardest operations. A small drill at that depth in gummy copper grabs. One bit broke and lodged in the part. After that the bores were drilled on the mill with short pecks, clearing chips between each, and went through cleanly.
 
 ## 5. Instrumentation and test rig
 
@@ -301,13 +301,13 @@ Its size is the problem. A layer of paste has a specific resistance of its thick
 
 ### 7.2 Condenser to water
 
-Whether flow in a pipe is smooth or turbulent is set by the Reynolds number, $\text{Re} = 4\dot m/(\pi D \mu)$, the ratio of inertia to viscous forces, with turbulence above about 2300. In the Ø11.92 mm channels Re is about 500 per channel in Test 1 if the two channels shared the 380 mL/min, 1000 if they were in series, and 1200 in Test 3. All three are laminar. Each channel has only 56 mm of plain Ø11.92 mm bore between the fittings, under five diameters, so the layer of water warmed by the wall is still growing when it leaves, and the heat transfer is that of the entrance region. The standard correlation for it, written with the Nusselt number $\text{Nu} = hD/k$ and the Prandtl number of water, Pr, is
+Whether flow in a pipe is smooth or turbulent is set by the Reynolds number, $\text{Re} = 4\dot m/(\pi D \mu)$, the ratio of inertia to viscous forces, with turbulence above about 2300. In the Ø11.13 mm channels Re is about 530 per channel in Test 1 if the two channels shared the 380 mL/min, 1070 if they were in series, and 1260 in Test 3. All three are laminar. Each channel has only 56 mm of plain bore between the fittings, about five diameters, so the layer of water warmed by the wall is still growing when it leaves, and the heat transfer is that of the entrance region. The standard correlation for it, written with the Nusselt number $\text{Nu} = hD/k$ and the Prandtl number of water, Pr, is
 
 $$\text{Nu} = 1.86\left(\text{Re}\,\text{Pr}\,\frac{D}{L}\right)^{1/3}$$
 
-Over the 56 mm of plain bore it gives a film coefficient $h$ of 770 to 1090 W/m²K, and a condenser-to-water resistance $1/(hA)$ of 0.25 to 0.31 K/W for Test 1 and 0.44 K/W for Test 3. Measured, from the condenser beads to the mean water temperature, they are 0.066 and 0.116 K/W: the real $h$ is about 3600 to 4100 W/m²K, about four times the correlation. Some water also reaches the tapped ends, which this leaves out, so four times is an upper bound. The copper between the beads and the channel walls would push the measurement the other way, so the difference is in the water. The correlation already covers a developing velocity profile. What it leaves out is the jet where the narrower bore of each push-to-connect fitting opens into the channel, which is the likeliest main cause, and buoyancy: Gr/Re², its ratio to inertia, is 0.2 to 1.4 here, enough for warm water rising off the wall to stir the flow, though over so short a channel the gain should be modest. The gap is not resolved.
+Over the 56 mm of plain bore it gives a film coefficient $h$ of 820 to 1170 W/m²K, and a condenser-to-water resistance $1/(hA)$ of 0.25 to 0.31 K/W for Test 1 and 0.44 K/W for Test 3. Measured, from the condenser beads to the mean water temperature, they are 0.066 and 0.116 K/W: the real $h$ is about 3900 to 4400 W/m²K, about four times the correlation. Some water also reaches the tapped ends, which this leaves out, so four times is an upper bound. The copper between the beads and the channel walls would push the measurement the other way, so the difference is in the water. The correlation already covers a developing velocity profile. What it leaves out is the jet where the narrower bore of each push-to-connect fitting opens into the channel, which is the likeliest main cause, and buoyancy: Gr/Re², its ratio to inertia, is 0.1 to 1.0 here, enough for warm water rising off the wall to stir the flow, though over so short a channel the gain should be modest. The gap is not resolved.
 
-The ratio between the runs is 1.76: one channel at 580 mL/min against both at 380 mL/min. If forced laminar flow set $h$, that would point to the channels being in series in Test 1 (the correlation gives 1.78 in series, 1.41 in parallel). But $h$ is four times what that flow law gives, so its dependence on flow is not known, and if $h$ barely depended on flow the ratio would be about 2 either way. How Test 1 was plumbed has to be checked on the rig, not inferred.
+The ratio between the runs is 1.76: one channel at 580 mL/min against both at 380 mL/min. If forced laminar flow set $h$, that would point to the channels being in series in Test 1 (the correlation gives 1.77 in series, 1.41 in parallel). But $h$ is four times what that flow law gives, so its dependence on flow is not known, and if $h$ barely depended on flow the ratio would be about 2 either way. How Test 1 was plumbed has to be checked on the rig, not inferred.
 
 ### 7.3 The chamber: conduction or phase change
 
@@ -329,7 +329,7 @@ The same model sets the target. To hold the centre within 1 °C of the edge at 4
 
 ### 7.5 Energy balance
 
-The heat to the water is $\rho \dot V c_p \Delta T$. At 580 mL/min that is 40 W for every kelvin of rise, and the excess over the electrical power can be traced by how it grows. An offset in a water thermocouple adds the same number of watts at every step. The excess in Test 3 is equivalent to 0.25 K at 73 W and 1.6 K at 400 W, a fixed fraction of the power, not a fixed offset. Heat lost from the hot stack to the room would push the balance below 100%, not above it. Two causes grow in proportion to power. One is the flow reading: the balance closes if the true flow was about 500 mL/min where 580 was read. The other is the outlet thermocouple: at Re near 1200 the outlet stream is laminar and not mixed, so a probe in the warm layer near the wall, or one fed heat along its stem from the block, reads above the mixed mean. The inlet temperature does not separate them. Raising it moved the balance up in Test 1 and down in Test 3. A timed-volume flow check and a mixed outlet will.
+The heat to the water is $\rho \dot V c_p \Delta T$. At 580 mL/min that is 40 W for every kelvin of rise, and the excess over the electrical power can be traced by how it grows. An offset in a water thermocouple adds the same number of watts at every step. The excess in Test 3 is equivalent to 0.25 K at 73 W and 1.6 K at 400 W, a fixed fraction of the power, not a fixed offset. Heat lost from the hot stack to the room would push the balance below 100%, not above it. Two causes grow in proportion to power. One is the flow reading: the balance closes if the true flow was about 500 mL/min where 580 was read. The other is the outlet thermocouple: at Re near 1260 the outlet stream is laminar and not mixed, so a probe in the warm layer near the wall, or one fed heat along its stem from the block, reads above the mixed mean. The inlet temperature does not separate them. Raising it moved the balance up in Test 1 and down in Test 3. A timed-volume flow check and a mixed outlet will.
 
 ### 7.6 What the thermocouples cannot resolve
 
@@ -402,4 +402,4 @@ This was the first part I made to a drawing I wrote, with tolerances that came f
 
 ## Appendix A. Condenser drawing
 
-[Drawing FPHPM2601, PDF](/projects/cact/cact_condenser_drawing.pdf). The drawing defines datum A as the vapor-side face, the Ø0.5 mm positional tolerances on the bolt holes, ports and thermocouple bores, and the general tolerances of 0.1 mm and 0.5°.
+[Drawing FPHPM2601, PDF](/projects/cact/cact_condenser_drawing.pdf). The water channels are drawn at Ø11.92 mm but were drilled at Ø11.13 mm, the 1/4 NPT tap drill, so they could pass through the ports; the drawing should be revised to match. The drawing defines datum A as the vapor-side face, the Ø0.5 mm positional tolerances on the bolt holes, ports and thermocouple bores, and the general tolerances of 0.1 mm and 0.5°.
