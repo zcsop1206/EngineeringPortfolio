@@ -63,5 +63,5 @@ A retro call is a call made when the answer already exists, in a file written we
 ## Live domains
 
 Putnam practice uses the domain math; the exam itself, 2026-12-05, uses putnam. A problem archive with solutions to settle against: https://kskedlaya.org/putnam-archive/ (answered HTTP 200 on 2026-11-07).
-The Jane Street ASIC, due 2027-01-18, uses the domain asic. It has no retro questions here because no answer exists yet.
+The Jane Street ASIC, due 2026-12-21, uses the domain asic. It has no retro questions here because no answer exists yet.
 Its first call must predate the first tool prompt on the project.

@@ -318,7 +318,7 @@ test('verdict n/a thresholds on an empty ledger', () => {
 test('verdict: test domains first call', () => {
   const empty = verdictRow(tally('', README, { today: TODAY }).text, 'test domains first call');
   assert.equal(empty.value, 'putnam none; asic none');
-  assert.equal(empty.target, 'a call in each before its date (putnam 2026-12-05, asic 2027-01-18)');
+  assert.equal(empty.target, 'a call in each before its date (putnam 2026-12-05, asic 2026-12-21)');
   const one = verdictRow(tally('2026-11-20 c2 asic: x\n2026-11-01 c1 asic: y', README, { today: TODAY }).text, 'test domains first call');
   assert.equal(one.value, 'putnam none; asic 2026-11-01');
   assert.equal(one.state, 'not yet');

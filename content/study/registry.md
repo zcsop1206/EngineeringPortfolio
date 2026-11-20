@@ -8,7 +8,7 @@ study: registry
 
 Every study doc, planned or written: its id, area, the basics it stands on, the anchors other docs may link to, and its wave. Writers link only to anchors listed here (or to a doc's top). A doc's own other anchors are its own business. Format: `obsidian-notebook/docs/study/FORMAT.md`.
 
-Wave 1 is written for the next deadlines (Putnam 2026-12-05, the ASIC entry 2027-01-18, the January application round); the four circuits basics and their topic were added 2026-11-18 for MIE342 test 2 and serve the course's final too. Wave 2 is scheduled in the timeline; wave 3 waits for a reason.
+Wave 1 is written for the next deadlines (Putnam 2026-12-05, the ASIC entry 2026-12-21, the January application round); the four circuits basics and their topic were added 2026-11-18 for MIE342 test 2 and serve the course's final too. Wave 2 is scheduled in the timeline; wave 3 waits for a reason.
 
 ## Basics, wave 1
 

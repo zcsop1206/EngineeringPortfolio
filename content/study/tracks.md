@@ -12,6 +12,6 @@ Near a deadline, review intervals for the track's basics are capped at a third o
 |---|---|---|---|---|
 | mie342 | 2026-11-18 | 3 | el | basics el-dc-analysis, el-equivalents, el-cap-ind, el-first-order; topics mie342-test2; bank mie342 |
 | putnam | 2026-12-05 | 3 | nt comb an la gen | basics nt-*, alg-*, comb-*, pr-*, an-*, ineq-*, la-core, found-induction, gen-*; topics putnam-*; bank putnam |
-| asic | 2027-01-18 | 2 | dd | basics dd-*; katas k-* |
+| asic | 2026-12-21 | 2 | dd | basics dd-*; katas k-* |
 | interviews | 2027-01-11 | 2 | th mc pd sp op el mat gen | basics th-*, mc-*, pd-*, sp-*, op-*, el-*, mat-*, am-*; cards card-* |
 | exams | 2026-12-10 to 2026-12-22 | 1 | th | fluids basics (wave 2), once the MIE312 final date is known |
