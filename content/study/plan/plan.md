@@ -30,7 +30,17 @@ No plan was made for yesterday.
   - c) 30 more minutes a day from 11-22 to 12-21 (frees 15.0 h)
   Answer in a day file: `answer asic-1 a`.
 
-## Next 7 days
+## Today and the next 6 days
+
+### Sat 11-21 · 360 min
+- 30 · drills · Today's drills (nt-divisibility is 2 days overdue)
+- 30 · putnam · settle the 2 open calls (Today lists them)
+- 75 · putnam · first pass [[alg-polynomials]], part 1 of 2
+- 75 · putnam · first pass [[alg-polynomials]], part 2 of 2
+- 30 · putnam · first pass [[nt-congruence]], part 1 of 2
+- 45 · study · Notebook 0.15.0 on the iPad: the seven checks at the end of obsidian-notebook docs/stud… · due 11-20
+- 30 · study · Planner setup: confirm the ~…? estimates, the Hours table and the ready column; read no…
+- 45 · private
 
 ### Sun 11-22 · 300 min
 - 20 · drills · Today's drills
@@ -68,9 +78,3 @@ No plan was made for yesterday.
 - 15 · cact · Confirm the May scan rate (0.66 Hz used, axis marked approximate)
 - 30 · cact · Contribution line on the page and on every post: condenser, instrumentation, test and a…
 - 70 · cact · CACT page with the sweep reduced and the budget in W/cm2 and cm2 K/W, part 1 of 2
-
-### Sat 11-28 · 360 min
-- 30 · drills · Today's drills
-- 210 · putnam · **Putnam timed half paper, then settle and score it**
-- 25 · bme445 · BME445 own part of the group presentation, with one run-through, part 1 of 3
-- 95 · cact · CACT page with the sweep reduced and the budget in W/cm2 and cm2 K/W, part 2 of 2
