@@ -6,6 +6,7 @@ area: el
 needs: [el-dc-analysis, el-equivalents, el-cap-ind, el-first-order]
 build: 2
 tracks: [mie342]
+hidden: never
 ---
 
 > Written by a model for Adit. Not Adit's words.
