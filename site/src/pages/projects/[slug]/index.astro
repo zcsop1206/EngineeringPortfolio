@@ -99,3 +99,24 @@ const visuals = figuresOf(remarkPluginFrontmatter).length + (showCover ? 1 : 0);
     </section>
   )}
 </Base>
+<script>
+  // Interactive simulations (src/build/rehype-sims.mjs puts their markup in the
+  // writeup). Each one's code, and anything it loads, waits until it comes near
+  // the screen; pages without one load nothing more.
+  const sims = import.meta.glob('../../../sims/*/main.js');
+  const els = document.querySelectorAll<HTMLElement>('[data-sim]');
+  if (els.length) {
+    const io = new IntersectionObserver(
+      (seen) => {
+        for (const e of seen) {
+          if (!e.isIntersecting) continue;
+          io.unobserve(e.target);
+          const el = e.target as HTMLElement;
+          sims[`../../../sims/${el.dataset.sim}/main.js`]?.().then((m) => (m as { mount: (el: HTMLElement) => void }).mount(el));
+        }
+      },
+      { rootMargin: '600px 0px' },
+    );
+    els.forEach((el) => io.observe(el));
+  }
+</script>

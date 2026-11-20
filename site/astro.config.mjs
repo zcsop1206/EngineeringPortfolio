@@ -10,6 +10,7 @@ import rehypeA11y from './src/build/rehype-a11y.mjs';
 import rehypeFigureClass from './src/build/rehype-figure-class.mjs';
 import rehypeFigures from './src/build/rehype-figures.mjs';
 import rehypeMathLabels from './src/build/rehype-math-labels.mjs';
+import rehypeSims from './src/build/rehype-sims.mjs';
 import { resolveContentDir } from './src/build/visibility.mjs';
 import { remarkInk, inkTransform } from './src/ink/index.mjs';
 
@@ -43,7 +44,8 @@ export default defineConfig({
     remarkPlugins: [remarkMath, remarkInk({ contentDir, base }), [remarkAssetUrls, { contentDir, base }]],
     // rehypeMathLabels runs rehype-mathjax and names each formula's SVG with its TeX.
     // rehypeFigures collects a writeup's figures for its /visuals/ page.
-    rehypePlugins: [rehypeMathLabels, rehypeFigureClass, [rehypeFigures, { contentDir, base }], rehypeA11y],
+    // rehypeSims swaps a <!-- <name>-sim --> marker for that simulation's markup.
+    rehypePlugins: [rehypeMathLabels, rehypeSims, rehypeFigureClass, [rehypeFigures, { contentDir, base }], rehypeA11y],
   },
   integrations: [
     // Ink page SVGs lose their raw stroke data (<metadata>) on the way to dist/.
@@ -62,5 +64,11 @@ export default defineConfig({
   ],
   vite: {
     server: { fs: { allow: [siteRoot, contentDir] } },
+    // The largest chunk is three.js (about 620 kB, 160 kB gzipped), which only the
+    // stepper sim loads, and only once it is near the screen.
+    build: { chunkSizeWarningLimit: 700 },
+    // The dev server only meets three.js through a lazy import, too late to pre-bundle
+    // it without invalidating the page ("504 Outdated Optimize Dep"); name it up front.
+    optimizeDeps: { include: ['three', 'three/addons/loaders/GLTFLoader.js'] },
   },
 });
