@@ -357,6 +357,40 @@ body.deck.js .deck-nav { display: flex; gap: 0.5rem; padding: 0.75rem 0 1rem; }
   .ink-page { background: #111111; }
 }
 
+/* Simulations (src/sims/, placed by src/build/rehype-sims.mjs): an interactive
+   figure on the text column, in the small size, with the site's buttons. Every
+   box has its final shape before the script runs, so nothing moves when it does.
+   The panes sit side by side once the column is 640 px wide, stacked below. */
+
+.sim { margin: 0 0 1.5rem; font-size: var(--small); }
+.sim p, .sim figure { margin: 0; }
+.sim figcaption, .sim-note, .sim-label, .sim-status { color: var(--muted); }
+.sim-box { position: relative; background: var(--code-bg); }
+.sim-box canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.sim-top, .sim-views { display: grid; gap: 1rem; }
+.sim-pad { aspect-ratio: 16 / 9; touch-action: none; cursor: crosshair; }
+.sim-controls { display: flex; flex-direction: column; gap: 0.4rem; }
+.sim-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; }
+.sim-label { width: 6.5rem; }
+.sim button[aria-pressed="true"] { border-color: var(--text); font-weight: 600; }
+.sim button:disabled { cursor: default; color: var(--muted); border-color: var(--rule); }
+.sim .sim-note { margin: 0.5rem 0 1rem; }
+.sim-view { display: flex; flex-direction: column; gap: 0.5rem; }
+.sim-stage { aspect-ratio: 4 / 5; touch-action: pan-y; cursor: grab; }
+.sim-chip { aspect-ratio: 1; cursor: pointer; }
+.sim-field { aspect-ratio: 16 / 9; }
+.sim-status { position: absolute; left: 0.75rem; top: 0.5rem; }
+.sim-legend { min-height: 3em; }
+.sim-bar { display: inline-block; height: 2px; background: currentColor; vertical-align: middle; }
+.sim .sim-readout { margin-top: 1rem; min-height: 15em; }
+.sim-readout span { display: block; margin: 0 0 0.35rem; }
+@media (min-width: 672px) {
+  .sim-top, .sim-views { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .sim-view-3d .sim-stage { aspect-ratio: auto; flex: 1; }
+  .sim-legend { min-height: 1.5em; }
+  .sim .sim-readout { min-height: 7em; }
+}
+
 /* Search */
 
 #search { margin-top: 1rem; }
