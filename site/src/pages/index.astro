@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import {
   STATUS_LABEL,
@@ -11,14 +11,64 @@ import {
   projectUrl,
   shortTitle,
 } from '../lib/content';
+import armcontrollerPoster from '../assets/home/armcontroller.jpg';
+import asicPoster from '../assets/home/asicpuzzle2026.jpg';
+import bonetwinPoster from '../assets/home/bonetwin.jpg';
+import cactPoster from '../assets/home/cact.jpg';
+import stepperPoster from '../assets/home/stepper.jpg';
+import topoprintPoster from '../assets/home/topoprint.jpg';
 
 const projects = await getProjects();
 const latest = latestEntryByProject(await getEntries(projects));
-// Every project is one row in the text column: cover at left, then title, result, status.
-// The featured ones (in `featured` order) get a larger cover and a hook line; nothing else differs.
-// Parts are linked from their parent's row.
+// A wall of tiles on the text column, every current project the same size, two
+// across (one on phones). Projects started before ARCHIVE_BEFORE follow a rule as
+// smaller tiles, four across (two on phones). Each tile is a picture with the same
+// text the rows had. Parts are linked from their parent's tile.
+const ARCHIVE_BEFORE = new Date('2026-01-01');
 const { featured, rest, children } = homeProjects(projects);
-const rows = [...featured, ...rest];
+// Strongest first: built and tested with a number, then built with a number still
+// open, then modelled before building. A project not listed here goes first until
+// it is ranked, so new work is never buried.
+const RANK = [
+  'asicpuzzle2026',
+  'armcontroller',
+  'cact',
+  'openvinyl',
+  'topoprint',
+  'stepper',
+  'tubefurnace',
+  'bonetwin',
+  'neurosteady',
+  'poststrokerehab',
+  'gearbox',
+  'cameramanipulator',
+];
+const rank = (p: (typeof rest)[number]) => RANK.indexOf(p.id);
+const all = [...featured, ...rest].sort((a, b) => rank(a) - rank(b));
+const groups = [
+  { cls: 'wall', items: all.filter((p) => p.data.start >= ARCHIVE_BEFORE) },
+  { cls: 'wall archive', items: all.filter((p) => p.data.start < ARCHIVE_BEFORE) },
+].filter((g) => g.items.length);
+
+// Some tiles run a short muted clip instead of the cover: hardware running, a slow
+// 3-D turn, the one moving panel cut out of a figure video, or a figure's panels in
+// turn (those made for the home page live in site/public/home/).
+// Clips play only while mostly on screen, and never with reduced motion.
+// t is where a clip starts, matching its poster frame.
+const home = (f: string) => `${import.meta.env.BASE_URL}home/${f}`;
+const CLIPS: Record<string, { src: string; t: number; poster: ImageMetadata }> = {
+  cact: { src: home('cact.mp4'), t: 15, poster: cactPoster },
+  asicpuzzle2026: { src: projectUrl('asicpuzzle2026') + 'warmup_gds_3d.mp4', t: 10, poster: asicPoster },
+  stepper: { src: home('stepper.mp4'), t: 8, poster: stepperPoster },
+  topoprint: { src: home('topoprint.mp4'), t: 1.8, poster: topoprintPoster },
+  armcontroller: { src: projectUrl('armcontroller') + 'armcontroller_handsoff.mp4', t: 0, poster: armcontrollerPoster },
+  bonetwin: { src: projectUrl('bonetwin') + 'turntable_grid.mp4', t: 4, poster: bonetwinPoster },
+};
+const posters = new Map(
+  await Promise.all(
+    Object.entries(CLIPS).map(async ([slug, c]) => [slug, (await getImage({ src: c.poster, width: 720, format: 'webp' })).src] as const),
+  ),
+);
 ---
 <Base description="I'm a third-year Mechanical Engineering student at the University of Toronto. I build end-to-end electromechanical systems.">
   <div class="intro">
@@ -26,38 +76,50 @@ const rows = [...featured, ...rest];
     <p>I believe in first-principles empiricism: derive constraints from physics, then expand knowns through controlled iteration. This helps me design and solve problems in a grounded and quick fashion.</p>
   </div>
 
-  <section class="projects" aria-label="Projects">
-    {rows.map((p, i) => {
-      const isFeatured = i < featured.length;
-      const href = projectUrl(p);
-      const parts = children.get(p.id) ?? [];
-      const last = latest.get(p.id);
-      return (
-        <>
-          {i === featured.length && i > 0 && <hr />}
-          <article class={isFeatured ? 'project featured' : 'project'}>
-            {p.data.cover && (
-              <a href={href} class="cover-link" tabindex="-1" aria-hidden="true">
-                <Image
-                  src={p.data.cover}
-                  alt=""
-                  width={isFeatured ? 900 : 450}
-                  widths={isFeatured ? [300, 600, 900, 1360] : [150, 300, 450]}
-                  sizes={isFeatured ? '(min-width: 760px) 300px, calc(100vw - 32px)' : '(min-width: 760px) 150px, 120px'}
-                  format="webp"
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  fetchpriority={i === 0 ? 'high' : 'auto'}
-                  class="cover"
-                />
+  {groups.map((g, gi) => (
+    <>
+      {gi > 0 && <hr />}
+      <section class={g.cls} aria-label={gi ? 'Earlier projects' : 'Projects'}>
+        {g.items.map((p, i) => {
+          const href = projectUrl(p);
+          const parts = children.get(p.id) ?? [];
+          const last = latest.get(p.id);
+          const clip = CLIPS[p.id];
+          const small = gi > 0;
+          return (
+            <article class="tile">
+              <a href={href} class="tile-media" tabindex="-1" aria-hidden="true">
+                {clip ? (
+                  <video
+                    src={clip.src}
+                    data-t={clip.t}
+                    poster={posters.get(p.id)}
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    disablepictureinpicture
+                  />
+                ) : (
+                  p.data.cover && (
+                    <Image
+                      src={p.data.cover}
+                      alt=""
+                      width={small ? 340 : 680}
+                      widths={small ? [170, 340] : [340, 680]}
+                      sizes={small ? '(min-width: 760px) 164px, calc(50vw - 20px)' : '(min-width: 760px) 336px, calc(100vw - 32px)'}
+                      format="webp"
+                      loading={gi === 0 && i < 2 ? 'eager' : 'lazy'}
+                    />
+                  )
+                )}
               </a>
-            )}
-            <div class="project-text">
               <h2><a href={href}>{shortTitle(p)}</a></h2>
               {p.data.result && <p>{p.data.result}</p>}
               {parts.map((q, n) => (
                 <p>Part {n + 2}: <a href={projectUrl(q)}>{shortTitle(q)}</a></p>
               ))}
-              {isFeatured && p.data.hook && <p>{p.data.hook.label}: {p.data.hook.text}</p>}
+              {p.data.featured !== undefined && p.data.hook && <p>{p.data.hook.label}: {p.data.hook.text}</p>}
               <p class="meta mono">
                 {STATUS_LABEL[p.data.status]}
                 {last && (
@@ -67,10 +129,51 @@ const rows = [...featured, ...rest];
                   </>
                 )}
               </p>
-            </div>
-          </article>
-        </>
-      );
-    })}
-  </section>
+            </article>
+          );
+        })}
+      </section>
+    </>
+  ))}
+
+  <script>
+    // A clip plays while most of it is on screen. With reduced motion nothing moves
+    // on its own; a clip plays only while its tile is pointed at or has focus.
+    const clips = document.querySelectorAll<HTMLVideoElement>('.wall video');
+    const still = matchMedia('(prefers-reduced-motion: reduce)');
+
+    const play = (v: HTMLVideoElement) => {
+      // First play starts at the poster frame, so the picture doesn't jump.
+      if (!v.dataset.started) {
+        v.dataset.started = '1';
+        const t = Number(v.dataset.t) || 0;
+        const seek = () => (v.currentTime = t);
+        if (v.readyState >= 1) seek();
+        else v.addEventListener('loadedmetadata', seek, { once: true });
+      }
+      v.play().catch(() => {});
+    };
+
+    const io = new IntersectionObserver(
+      (seen) => {
+        for (const e of seen) {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting && !still.matches) play(v);
+          else if (!still.matches || !v.closest('.tile')!.matches(':hover, :focus-within')) v.pause();
+        }
+      },
+      { threshold: 0.6 },
+    );
+
+    clips.forEach((v) => {
+      io.observe(v);
+      const tile = v.closest('.tile')!;
+      const on = () => still.matches && play(v);
+      const off = () => still.matches && v.pause();
+      tile.addEventListener('pointerenter', on);
+      tile.addEventListener('pointerleave', off);
+      tile.addEventListener('focusin', on);
+      tile.addEventListener('focusout', off);
+    });
+  </script>
 </Base>

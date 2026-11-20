@@ -204,25 +204,33 @@ main { padding-bottom: 3rem; }
   .sidebar li { margin: 0 0 0.45rem; }
 }
 
-/* Home: the intro, then one row per project, all on the text column. The only
-   variation is the cover size: 300 px for featured projects, 150 px for the rest
-   (full width on phones for featured, 120 px for the rest). */
+/* Home: the intro, then a wall of project tiles on the text column. Pictures sit
+   close (8 px apart) and take most of the room; the text under them is set one
+   size down. Every current project is the same size, two across (one on phones);
+   earlier projects follow a rule, four across (two on phones). */
 
 .intro p { font-size: var(--lede); line-height: 1.55; }
-.projects { margin-top: 2.5rem; }
-.project { display: flex; gap: 1rem; align-items: flex-start; margin: 0 0 2rem; }
-.project.featured { display: block; margin-bottom: 2.5rem; }
-.cover-link { display: block; flex: none; width: 120px; }
-.featured .cover-link { width: 100%; margin: 0 0 1rem; }
-.project .cover { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
-.project-text { flex: 1; min-width: 0; }
-.project h2 { margin: 0 0 0.5rem; }
-.project p { margin: 0 0 0.5rem; }
+.wall {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem 8px;
+  margin-top: 2.5rem;
+  align-items: start;
+}
+.wall.archive { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0; gap: 1.5rem 8px; }
+.tile { min-width: 0; }
+.tile-media { display: block; margin: 0 0 0.6rem; }
+.tile-media img, .tile-media video {
+  display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover;
+  background: var(--code-bg);
+}
+.tile h2 { font-size: 1.0625rem; margin: 0 0 0.3rem; }
+.tile p { font-size: var(--small); line-height: 1.45; margin: 0 0 0.35rem; }
+.archive .tile-media { margin-bottom: 0.45rem; }
 
 @media (min-width: 760px) {
-  .project.featured { display: flex; gap: 1.5rem; }
-  .cover-link { width: 150px; }
-  .featured .cover-link { width: 300px; margin: 0; }
+  .wall { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.25rem 8px; }
+  .wall.archive { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 /* Project and entry pages */
