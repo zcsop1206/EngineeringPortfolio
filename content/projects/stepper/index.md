@@ -125,7 +125,7 @@ CMU measured 2 to 9 % scale error. Poor prints reach the bottom of that range, b
 
 ## Step and repeat
 
-Video 1 is one stage. Below, roll your own: pick a print quality, draw a die, and watch the stage expose it one 1.04 × 0.58 mm field at a time. Each field lands where that stage puts it, and blurs where its tilt takes it out of focus.
+Video 1 is one stage. Below, roll your own: pick a print quality, draw a die, and watch the stage expose it one 1.04 × 0.58 mm field at a time. Each field lands where that stage puts it, and blurs where its tilt uses more than the stage's share of the depth of focus.
 
 <!-- stepper-sim -->
 
