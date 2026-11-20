@@ -4,7 +4,7 @@ study: guide
 
 # How to use study mode
 
-Written by a model for Adit. Not Adit's words. Last updated 2026-11-18, early morning, for MIE342 test 2 (Notebook 0.15.0 is released).
+Written by a model for Adit. Not Adit's words. Last updated 2026-11-20: the daily plan in `plan/` replaces the three-week table.
 
 ## This morning: MIE342 test 2 (11:20 to 12:30)
 
@@ -64,20 +64,18 @@ Without the plugin, a problem's call still goes first: write the call on paper o
 - `/teach` in Claude Code (portfolio repo): answers the rebuild and rewrite requests from the iPad, keeps every anchor, bumps the doc's build, and adds a Changes line. Sync afterwards so the iPad gets the new build.
 - `node ../obsidian-notebook/scripts/study-scan.mjs content/study` shows what the iPad asked for and what you settled.
 - `node pm/timeline.mjs` writes `pm/timeline.md`: hard dates, every dated deadline week by week, then the undated ones ranked. Add a date to a line in `pm/tasks.md` and run it again.
-- `content/study/tracks.md` sets the deadlines the schedule works toward; edit it there.
+- `content/study/tracks.md` sets the deadlines the schedule works toward, and its `ready` column says what ready means for the daily plan; edit it there.
+- `node pm/plan.mjs` plans each day from `pm/tasks.md`, the hours in `pm/README.md` and this folder, and writes `pm/plan.md`. A task at 05:30 and at logon runs it with `--push`, which puts the day file and `plan/plan.md` here. `--check` prints every public row first.
 - The circuits figures come from scripts in `drafts/study-private/figures/` (laptop only, not in the repo): `python <doc-id>.py` redraws one doc's figures, and every circuit in them is solved by `circuitlib.py`, not typed in.
 
-## The next three weeks
+## Each day: plan/
 
-| when | what |
-|---|---|
-| Wed 11-18 | MIE342 test 2, 11:20 to 12:30: topics/mie342-test2 this morning |
-| now to 11-22 | polynomials week: basics alg-polynomials and nt-congruence, topic putnam-polynomials, one problem a day |
-| 11-23 to 11-27 | sums, integrals and limits: an-limits-series, an-integration, ineq-convexity, topic putnam-sums-limits |
-| Sat 11-28 | timed half paper |
-| Wed 12-02 | mock |
-| 12-03 to 12-04 | taper: drills only |
-| Sat 12-05 | Putnam |
-| 12-07 on | ASIC: dd-* basics and the katas, then the entry's own milestones (pm/timeline.md) |
+Each morning a day file appears in `plan/`, named by the date. It is one ordered list: each row has its minutes and the deliverable it serves (putnam, mie301, cact, asic and so on). Work from the top and tick each row when it is done. On a short day, stop where the time runs out; the rest moves to the next day.
 
-Interviews: drill one numbers card a day (cards/), and read the private company map (`interview-prep/companies-2027.md`, laptop only) for which basics each screen probes.
+- Study rows count themselves from the log (fogs, settles, drills, katas). Tick the other rows.
+- Write these lines at the bottom of a day file when needed: `hours 2026-12-12 60` changes that day's minutes; `answer asic-1 a` answers a decision; `- [x] 60 · mie301 · extra` records work the plan did not list.
+- `plan/plan.md` shows each deliverable as on track, tight, behind or unknown, with what that rests on, the day the work would finish at the pace measured so far, and the decisions the plan needs from you. It is rewritten on every run, so never write in it.
+- A day file is written once, by the laptop, and is yours after that. Private work shows only as "private" with its minutes, and is done on the laptop.
+- Set weekday minutes to 30 (Settings, Notebook, Study), so Today's drills match the day file's drills row: 2 on weekdays, 3 on Saturdays. Today's problem picks are extras until Today shows the day file itself.
+
+Interviews and exams are paused in `tracks.md` until the finals are dated. The numbers cards in cards/ still work any day.
