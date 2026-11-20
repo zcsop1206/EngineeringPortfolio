@@ -1,6 +1,6 @@
 ---
 title: Lithography stepper stage and optics
-description: Toronto Hacker Fab's maskless stepper rides on a 3D-printed stage that counts 1.5 nm per encoder step. The step size is not the problem. Hand-made rods and printed ball seats are never exact, and the mismatch tilts the chip by an amount the encoders cannot see. I modelled how much, against a depth of focus of ±3.3 µm, before building any of it.
+description: Toronto Hacker Fab's maskless stepper rides on a 3D-printed stage that counts 1.5 nm per encoder step. The step size is not the problem. Hand-made rods and printed parts are never exact, and the mismatch tilts the chip by an amount the encoders cannot see. I modelled how much, against a depth of focus of ±3.3 µm, before building any of it.
 status: in-progress
 start: 2026-11-13
 cover: section.png
@@ -13,23 +13,23 @@ hook:
 ---
 ![The optics column cut through its axis: the DLP light engine at the top, the projector tube, a 30 mm beamsplitter cube in a printed holder with a light trap on one side and the camera on the other, the reversed objective, and the chip on the stage. Violet lines show the 410 nm exposure going down through the cube to the chip, with its other half reflected into the trap; red lines show light from the chip reflected by the cube to the camera.](section.png)
 
-*Figure 1. The column cut through its axis, drawn from the CAD's parameters. Sizes I have not measured yet, like the objective and the tube lengths, are placeholders.*
+*Figure 1. The column cut through its axis, to show the light paths. It is drawn from my first CAD, which the chapter's CAD (Figure 4) has since replaced. The parts differ; the light paths do not.*
 
 ## Summary
 
-The Toronto Hacker Fab is building a maskless stepper. A projector shows the pattern on an array of micromirrors, and a microscope objective shrinks it onto photoresist. The chip moves underneath on the Open Micro-Manipulator, an open-source 3D-printed stage. I took on the optics column and the analysis of the stage.
+The Toronto Hacker Fab is building a maskless stepper. A projector shows the pattern on an array of micromirrors, and a microscope objective shrinks it onto photoresist. The chip moves underneath on the Open Micro-Manipulator, an open-source 3D-printed stage. I took on the analysis of the stage, and putting it into the chapter's CAD of the machine.
 
-The stage counts 1.5 nm per encoder step, and that is not the problem. Its rods are cut and crimped by hand and its ball seats are printed, so none of them is exactly the right size. The mismatch tilts the chip by different amounts at different places, and the encoders cannot see it. Tilt puts one side of an exposure out of focus. Whether that matters depends on how well the parts were printed, which nobody has measured.
+The stage counts 1.5 nm per encoder step, and that is not the problem. Its rods are cut and crimped by hand and its balls sit on printed parts, so no rod is exactly the right length and no ball exactly in the right place. The mismatch tilts the chip by different amounts at different places, and the encoders cannot see it. Tilt puts one side of an exposure out of focus. Whether that matters depends on how well the parts were printed, which nobody has measured.
 
-Nothing is built yet. Every number on this page is a prediction, paired with the measurement that will test it.
+Most of the stage is printed, none of the optics are, and nothing is measured yet. Every number on this page is a prediction, paired with the measurement that will test it.
 
 | Item | Detail |
 | --- | --- |
 | Organisation | Toronto Hacker Fab |
 | Period | November 2026 to present |
-| Role | Optics column design and the stage analysis |
-| Deliverables | Kinematics port with a six-rod error model, six parametric printed parts and the column assembly, test-print coupons with protocols, 19 hand-check tests |
-| Tools | Python, NumPy, pytest, CadQuery, Onshape FeatureScript |
+| Role | Stage analysis, and the real stage in the chapter's CAD |
+| Deliverables | Kinematics port with a six-rod error model, 19 hand-check tests, the chapter's CAD with the real stage and a clash check, a mated Onshape assembly, calibration coupons mapped to the CAD, a ball-joint preload model with a self-test |
+| Tools | Python, NumPy, pytest, CadQuery, Onshape REST API, Bambu Studio |
 
 ## The machine
 
@@ -123,6 +123,12 @@ Each value is the 95th percentile of its 60 stages. Scale error is fixable in so
 
 CMU measured 2 to 9 % scale error. Poor prints reach the bottom of that range, but 9 % does not come from the rods and balls alone. Their camera's pixel scale, which they did not measure separately, is the first suspect.
 
+## Step and repeat
+
+Video 1 is one stage. Below, roll your own: pick a print quality, draw a die, and watch the stage expose it one 1.04 × 0.58 mm field at a time. Each field lands where that stage puts it, and blurs where its tilt takes it out of focus.
+
+<!-- stepper-sim -->
+
 ## One test decides
 
 Glue a small mirror to the platform and bounce a laser pointer off it onto a wall 2 m away. Step the stage over the ±5 mm square and mark the spot each time. The spot moves twice the tilt times the distance, so a 0.5 mm reading resolves about 0.13 mrad.
@@ -136,26 +142,50 @@ Over it, the stage needs a tilt axis:
 
 A piezo stage for nanometre XY would not help yet. Run open loop, its hysteresis is coarser than the stage's own repeatability. Run closed loop on the camera, it only pays once features shrink from CMU's 2 µm toward the objective's 1 µm limit.
 
-## The column, printed
+## The chapter's machine
 
-![The printed parts: beamsplitter holder with its light trap and flange, the holder lid, one half of the camera cradle, the projector bracket, a tube clamp and the objective shroud](parts.png)
+The chapter has since drawn the whole machine in CAD: the frame, the mounts for the optics, the chip holder. It replaces the printed parts I drew. Its stage was then a few boxes, so I put in the real one from the stage's own CAD, swapped the bought tubes for Thorlabs' models, and checked where parts overlap.
 
-*Figure 4. Six of the eight printed parts, each drawn to its own scale.*
+![The chapter's machine in CAD, from the projector down. Two aluminium uprights on a base of extrusions carry the projector, with its circuit boards behind, and below it the printed beamsplitter holder, with the red camera on one side. The objective points down at a chip on the chip holder. The stage sits on its stand at the front left, its thin rods reaching across to the platform under the chip holder.](machine.png)
 
-Every printed part is parametric. Dimensions I have not measured, like the camera body, the projector's mounting holes and the objective, are named placeholders. Every fit reads from a test print, so a measurement changes one number and every part that uses it regenerates.
+*Figure 4. The chapter's CAD with the real stage and Thorlabs' tubes. The projector, camera and objective are still simple stand-ins.*
 
-Drawing the parts turned up one more tilt problem. A printed bore that slides on a 30.5 mm tube with 0.1 mm of clearance lets the tube tilt up to 10 mrad, twelve times what focus allows between objective and chip. That tilt has to come from an adjustment, not from the fit.
+One clash mattered. The chip holder is a 40 mm plate on the stage's 29 mm top face, and on one edge, a piece of the stage's joint hardware stands 0.5 mm above that face, under the plate's overhang. Resting on it, the plate would tilt the chip by over 10 mrad, twice what the whole depth of focus allows across a field. The chapter's chip holder now has a 1 mm relief pocket over that hardware.
 
-Before any final print, I'm printing:
-- ladders of bores and cube pockets in 0.05 and 0.1 mm steps;
-- heat-set insert bosses and slotted flanges;
-- a PETG cantilever loaded to 5 and 10 MPa and read with a dial indicator for a week, at room temperature and at 40 °C. Printed parts under load creep, and the focus budget is a few microns.
+I also built the machine as an assembly that moves, in Onshape, through its API: over 200 parts, each crank on a revolute joint, each rod end on a ball joint. Turned 5° there, one crank moves the platform 1.307 mm without tilting it. The firmware's kinematics give 1.31 mm. That is one model checked against another, not against the stage, but it says the CAD and the firmware describe the same linkage.
+
+## Calibration first
+
+Every printed fit in the chapter's CAD is one named value, set for a printer accurate to ±0.2 mm. Before the large parts, a plate of coupons measures what my printer actually does to each fit:
+
+| Coupon | Passes when | Value it sets |
+| --- | --- | --- |
+| Tube bore ladder, 30.5 to 30.9 mm | An SM1 tube slides through by hand, without force | `TUBE_BORE` |
+| Split-bore pair, 30.6 to 30.8 mm, printed as an arch like the cube holder | Bolted shut, it locks the tube with a 0.1 to 0.5 mm gap left between its halves | `TUBE_BORE`, or a second value for split parts |
+| Sleeve stub and ladder, 30.8 to 31.2 mm | The printed camera sleeve slides without rocking | `SLEEVE_BORE` |
+| Cube pockets, ribs 0.2 to 0.4 mm | The 30 mm cube goes in with a firm push, doesn't rock, and stays when the coupon is turned over | `CUBE_RIB` |
+| Camera bore ladder, 62.2 to 62.8 mm | The camera slides for focus without rocking | The clearance over `CAMERA_OD` |
+| Fastener plate | M2, M3 and M5 screws pass, nuts press in and stay, heads seat | Eight fastener values, `M2_HOLE` to `M5_TRAVEL` |
+| Adapter-plate slice, 2 mm | Its four M2 screws start by hand in the real projector, and its bore centres on the mirror chip | `M2_SQUARE`, `DMD_OFFSET` |
+
+The bought parts are measured first, since they are the gauges: the tubes, the cube, the camera body, the projector's lens face. Corrections go into the CAD, not the slicer, so the CAD records what the printer does. After assembly, the working machine settles what nothing else can: the focus positions, light leaks, and the tilt test above. None of it is measured yet.
+
+## Holding the joints closed
+
+Each rod end is a seat pressed onto a 1 mm steel ball by a stretch cord. A seat can push on its ball but not pull. If a rod goes into tension and its cord pulls less, the seat lifts, and a lifted seat is one more error the encoders cannot see.
+
+Each rod carries force only along its length, and six of them fix the platform, so every load has exactly one set of rod forces. I solved them for the platform with its chip holder and chip, 10 to 22 g, at poses across the exposure square, accelerating at up to 4 m/s², the most the firmware's demo moves use. The worst rod tension is 0.28 N. So each cord must pull at least 0.57 N, about 58 g, along its rod, for a 2× margin. One rod is in tension under gravity alone, so its cords hold its joints shut all the time, not only during fast moves.
+
+At that pull a joint is 2.1 N/µm stiff if the ball touches its seat at a point, and 22 to 64 N/µm if the seat conforms to it. The brass rod itself is 3.25 N/µm. More preload buys little: 2 N raises the point-contact figure only to 3.2 N/µm.
+
+No cord has been measured. Hanging weights from each joint until it lifts would do it, but the stage can also test itself. It shakes along the direction that loads one rod hardest, at rising accelerations, then returns gently to the same spot while the stepper's camera images the chip. A seat that lifted comes back somewhere else. The rod tensions at the last clean step and the first disturbed one bracket that cord's pull. The highest clean acceleration is also the number the stepper needs: half of it becomes its acceleration limit.
 
 ## Measurements, in order
 
-1. Tilt across the ±5 mm square, from the laser and mirror. It decides whether the stage needs a tilt axis.
-2. The test prints. They set the final fits and the material.
-3. Stage jitter during an exposure, from the camera at its highest frame rate.
-4. A focus-exposure series on resist, which checks the ±3.3 µm the whole budget rests on.
+1. The bought parts and the calibration coupons. They set the chapter's fits before the optics are printed.
+2. Cord pull at all twelve joints, by weights or by the self-test. Every later measurement assumes the seats stay on their balls.
+3. Tilt across the ±5 mm square, from the laser and mirror. It decides whether the stage needs a tilt axis.
+4. Stage jitter during an exposure, from the camera at its highest frame rate.
+5. A focus-exposure series on resist, which checks the ±3.3 µm the whole budget rests on.
 
-The code, derivations and CAD are in the [`hackerfab_stepper` folder of my fork of the stage](https://github.com/zcsop1206/MicroManipulatorStepper/tree/hackerfab-stepper/hackerfab_stepper).
+The kinematics, the error model and their derivations are in the [`hackerfab_stepper` folder of my fork of the stage](https://github.com/zcsop1206/MicroManipulatorStepper/tree/hackerfab-stepper/hackerfab_stepper).

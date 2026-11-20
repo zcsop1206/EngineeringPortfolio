@@ -2,7 +2,7 @@
 
 ## Origin
 
-Toronto Hacker Fab is building a maskless lithography stepper. I took on the optics column and the analysis of the stage it sits on.
+Toronto Hacker Fab is building a maskless lithography stepper. I took on the analysis of the stage it sits on, and fitting the real stage into the chapter's CAD.
 
 ![The column cut through its axis, with the light paths](section.png)
 
@@ -14,7 +14,7 @@ A DLP projector shows the pattern, a microscope objective shrinks it onto resist
 
 ## Approach
 
-Model the stage and draw the column before building, so the first measurements test predictions.
+Model the stage and check the CAD before building, so the first measurements test predictions.
 
 # Problem
 
@@ -24,7 +24,7 @@ Depth of focus at 410 nm and NA 0.25 is ±3.3 µm. Five things share it. The sta
 
 ## Difficulty
 
-Hand-cut rods and printed ball seats are never exact, and nobody has measured by how much.
+Hand-cut rods and balls on printed parts are never exact, and nobody has measured by how much.
 
 # Work
 
@@ -58,19 +58,28 @@ A mirror on the stage, a laser spot on a wall 2 m away. It resolves 0.13 mrad an
 
 A hexapod from the same parts, a piezo tripod under the chuck, piezo XY on top, or crossed-roller stages. The piezo tripod is the long-stroke / short-stroke split real steppers use.
 
-## Column
+## Assembly
 
-Six parametric printed parts. Every unknown is a named placeholder, and every fit reads from a test print.
+The chapter's CAD with the real stage and Thorlabs' tubes. The clash check found the chip holder sitting on 0.5 mm of stage hardware; it now has a 1 mm relief.
 
-![The printed parts](parts.png)
+![The chapter's CAD with the real stage](machine.png)
 
-## Prints
+## Motion
 
-Bore and pocket ladders, insert bosses, slotted flanges, and a creep coupon read over a week.
+Mated in Onshape through its API. One crank turned 5° moves the platform 1.307 mm, against 1.31 mm from the firmware's kinematics.
+
+## Calibration
+
+A plate of coupons, each setting one value in the chapter's CAD: tube bores, cube ribs, the camera fit, fasteners, the projector's screw square.
+
+## Preload
+
+Each joint is a seat held on its ball by a stretch cord. Six-rod statics give a worst rod tension of 0.28 N, so every cord must pull 0.57 N. The stage can test its own joints: shake, return, image the chip.
 
 ## Questions
 
 - How the six-rod model works
 - Why tilt, not resolution
 - The depth-of-focus budget
-- What the test prints decide
+- What the coupons set
+- How the cords keep the joints seated
