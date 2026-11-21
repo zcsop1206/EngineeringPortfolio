@@ -1,3 +1,8 @@
 {"type":"call","item":"inv-nt-even-world","conf":60,"hidden":false,"reach":false,"d":2.5,"v":1,"id":"ipad-mwl4n6yp-rlqo","t":"2026-11-17T15:10:35.137-05:00","dev":"ipad"}
 {"type":"fog","doc":"nt-divisibility","proof":"p-div-alg","build":1,"reveals":2,"steps":3,"done":true,"clean":false,"v":1,"id":"ipad-mwl5h2ot-obwy","t":"2026-11-17T15:33:49.277-05:00","dev":"ipad"}
 {"type":"call","item":"inv-nt-factorial-103","conf":50,"hidden":false,"reach":false,"d":2.5,"v":1,"id":"ipad-mwl5n0ti-1xl6","t":"2026-11-17T15:38:26.790-05:00","dev":"ipad"}
+{"type":"call","item":"inv-nt-ap-cubic","conf":70,"hidden":false,"reach":false,"d":2.5,"v":1,"id":"ipad-mwmtfnmf-p9s7","t":"2026-11-18T19:32:20.055-05:00","dev":"ipad"}
+{"type":"settle","item":"inv-nt-ap-cubic","verdict":"held","help":0,"gaveUp":false,"ms":467946,"called":[],"used":["vieta"],"hidden":false,"hook":false,"v":1,"id":"ipad-mwmttfnd-dpb7","t":"2026-11-18T19:43:02.905-05:00","dev":"ipad"}
+{"type":"fog","doc":"nt-divisibility","proof":"p-euclid","build":1,"reveals":1,"steps":3,"done":true,"clean":false,"v":1,"id":"ipad-mwmucanx-77sf","t":"2026-11-18T19:57:42.909-05:00","dev":"ipad"}
+{"type":"fog","doc":"nt-divisibility","proof":"p-bezout","build":1,"reveals":3,"steps":4,"done":true,"clean":false,"v":1,"id":"ipad-mwmwbg3z-swbt","t":"2026-11-18T20:53:02.543-05:00","dev":"ipad"}
+{"type":"fog","doc":"nt-divisibility","proof":"p-euclid-lemma","build":1,"reveals":1,"steps":3,"done":true,"clean":false,"v":1,"id":"ipad-mwo6flwk-en8b","t":"2026-11-19T18:23:59.012-05:00","dev":"ipad"}
