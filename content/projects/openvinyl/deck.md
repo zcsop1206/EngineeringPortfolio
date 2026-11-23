@@ -56,6 +56,8 @@ A tone ladder from 300 to 680 Hz that pushes the slope limit and the speed sched
 
 A servo turns the platter directly at 40 RPM. The arm balances on a pin's tip, and the headshell is designed around the measured cartridge. An Arduino records it.
 
+![The spine build](openvinyl_v2_turntable.jpg)
+
 ## First play
 
 A 7 inch test disc of tones and amplitude steps. The stylus followed the groove from the outer edge to the label, every section on time.

@@ -45,6 +45,8 @@ The noise is now the limit, and it has a shape. It comes in falling chirps, two 
 
 Built in a weekend from parts on hand.
 
+![The spine build with the test disc: servo under the platter, the arm on its pivot tower, the cartridge in the printed headshell](./openvinyl_v2_turntable.jpg)
+
 - Drive. An STS3215 bus servo in velocity mode turns the platter directly. Measured from its own encoder: 39.85 RPM against 40 commanded.
 - Arm. 135 mm effective length, pivot 119.8 mm from the spindle, 28.1° offset, ±0.69° tracking error across the groove band. It balances on one point: the tip of a sewing T-pin in the hex socket of an M3 button-head screw, steel on steel.
 - Cartridge. A ceramic CZ-800 clone with no screw holes. Measured with calipers, modelled, and a headshell designed around the model: a stepped ceiling sets the stylus height, two sprung tongues grip the body.
