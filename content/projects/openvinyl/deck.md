@@ -52,9 +52,19 @@ A tone ladder from 300 to 680 Hz that pushes the slope limit and the speed sched
 
 ![The stress disc](openvinyl_v2_preview_stress_ladder.png)
 
-## First prints
+## Turntable
 
-Print. The open risk is tracking, whether a stylus stays in the crease for 40 turns, so the first prints are small coupons with one question each.
+A servo turns the platter directly at 40 RPM. The arm balances on a pin's tip, and the headshell is designed around the measured cartridge. An Arduino records it.
+
+## First play
+
+A 7 inch test disc of tones and amplitude steps. The stylus followed the groove from the outer edge to the label, every section on time.
+
+![The first full play](openvinyl_v2_first_play.png)
+
+## Surface noise
+
+The limit now is noise from the straight infill under the groove, twice per turn. The next disc prints a spiral layer under it.
 
 ## Questions
 
@@ -62,3 +72,4 @@ Print. The open risk is tracking, whether a stylus stays in the crease for 40 tu
 - v1
 - Constant or variable platter speed
 - Play time
+- The counterweight and roll

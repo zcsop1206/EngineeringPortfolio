@@ -1,18 +1,56 @@
 ---
 title: "OpenVinyl: 3D-printed records"
-description: A hill-and-dale record printed and played on a hobby FDM printer (v1), and a lateral-cut encoder that writes the printer's G-code directly (v2, verified in software, not yet printed). Every groove parameter is derived from bead width, stylus contact and printer acceleration.
+description: A hill-and-dale record printed and played on a hobby FDM printer (v1), and a lateral-cut encoder that writes the printer's G-code directly (v2), whose first test disc tracked from the outer groove to the label on a turntable built for it. Every groove parameter is derived from bead width, stylus contact and printer acceleration.
 status: in-progress
 start: 2026-03-01
 cover: openvinyl_v1_record.jpg
 publish: true
 short: OpenVinyl
-result: A 3D-printed record that plays. v2 writes the groove as G-code and round-trips a 440 Hz tone to 100.5 µm against 100 commanded.
+result: A 3D-printed record that plays. The first v2 test disc tracked outer groove to label at 40 RPM and about 5 g.
 featured: 3
 hook:
   label: Wrong turn
   text: v1 cut depth because a 0.48 mm bead seemed too wide to wiggle. Written as G-code directly, it places to about 0.01 mm.
 ---
-OpenVinyl turns digital audio into groove geometry on records printed on a hobby FDM printer, played back on a turntable I designed with two collaborators. v1 worked, barely. This month I went back to first principles and reversed its central design decision. v2 is still a work-in-progress, and I plan to print it and run tests in October 2026.
+OpenVinyl turns digital audio into groove geometry on records printed on a hobby FDM printer, played back on a turntable I designed with two collaborators. v1 worked, barely. I went back to first principles and reversed its central design decision. On November 22, 2026 the first v2 record played: a 7 inch test disc on a new turntable, tracked from the outer groove to the label.
+
+## First play
+
+The disc is a measurement, not music. Each section asks one question.
+
+| Section | Question |
+| --- | --- |
+| Silence, outer and inner | Noise floor |
+| 333 Hz at 20 µm, outer and inner | Speed, wow and flutter; what changes toward the label |
+| Tones 698 down to 98 Hz | Frequency response |
+| 110 Hz at 10, 20, 40, 60, 80 µm | Where the stylus stops following |
+
+Every amplitude is held to 70% of the encoder's curvature limit at the radius it plays, so the limiters never touch the signal. Every tone and its first five harmonics sit at least 5 Hz from a multiple of 60 Hz, where mains hum lands.
+
+![Spectrogram of the first full play, take 4. Dashed lines mark where each section of the disc should sound](./openvinyl_v2_first_play.png)
+
+The dashed lines are where each section should be, from the disc's schedule and the measured platter speed. The tones arrive on time from the outer reference to the inner one: the stylus followed the groove for all 31 seconds.
+
+| Measured (take 4, about 5 g) | Result |
+| --- | --- |
+| Platter speed | 39.85 RPM, steady to ±0.02 |
+| 198, 147, 98 Hz at 25 µm | 44, 52, 40 mV |
+| 110 Hz ladder | Level grows to 60 µm, flat at 80 µm |
+| 698 and 627 Hz | In the noise, as the bead-smear model predicts (−33 and −41 dB) |
+| Groove noise, 80 Hz to 2 kHz | About 150 mV rms |
+
+The noise is now the limit, and it has a shape. It comes in falling chirps, two per revolution: the bursts repeat every 0.754 s, half of the 1.506 s turn. That is what straight parallel lines under the groove would sound like. The base disc's top layer is straight infill, and the groove crosses those lines at a rate that rises and falls twice per turn. The next disc prints one spiral layer under the groove first, so the stylus rides on lines that run with it.
+
+## The turntable
+
+Built in a weekend from parts on hand.
+
+- Drive. An STS3215 bus servo in velocity mode turns the platter directly. Measured from its own encoder: 39.85 RPM against 40 commanded.
+- Arm. 135 mm effective length, pivot 119.8 mm from the spindle, 28.1° offset, ±0.69° tracking error across the groove band. It balances on one point: the tip of a sewing T-pin in the hex socket of an M3 button-head screw, steel on steel.
+- Cartridge. A ceramic CZ-800 clone with no screw holes. Measured with calipers, modelled, and a headshell designed around the model: a stepped ceiling sets the stylus height, two sprung tongues grip the body.
+- Recording. An Arduino UNO's ADC at 9,615 samples/s, its input held at mid-rail by two 1 MΩ resistors. A ceramic cartridge needs no preamp.
+
+The first takes did not track. The needle slid inward off the outer grooves, then on another take climbed outward. The counterweight was on backwards. A single-point arm can roll about the line from its pivot point to the stylus, and the only thing holding it level is how far its centre of mass hangs below that line: 8.4 mm here. With the counterweight's cup on the cartridge's side, the arm rolled, and a tilted cartridge pushes the stylus sideways. The right way round, it tracked the whole disc.
 
 ## The pivot
 
@@ -131,24 +169,26 @@ Neither v1's analysis nor the first v2 plan addressed whether a stylus stays in 
 
 Level 0 is new to the validation tiers: the stylus tracks the full disc without skipping or riding out, judged before any audio content. Prints 1 and 2 only need something that spins; 3 onward need trustworthy RPM, so they wait for the rebuilt turntable rather than an improvised spinner.
 
+In the event the coupons were skipped. The turntable came first, and prints 2 to 4 became one test disc. It passed Level 0 (see First play).
+
 ## Open assumptions
 
-- The P1S accepts a spliced plain `.gcode` from the SD card. Fallback: repack into a `.gcode.3mf`.
-- Bambu Studio end-of-print markers, detected from memory, tested only against a synthetic base file.
-- A 3 mil stylus in a 1.1 $w_e$ crease actually tracks.
+- The P1S accepts the spliced file. Confirmed, repacked as a `.gcode.3mf` and printed from the SD card on the printer. Sent through Bambu Studio, it is re-sliced and the groove is dropped.
+- Bambu Studio's layer and end markers. Confirmed on a real export after three fixes: its `; CHANGE_LAYER` marker, E values with no leading zero, and the layer height taken from the first extrusion rather than the travel lift.
+- A ceramic cartridge's stylus tracks a 1.1 $w_e$ crease. Confirmed across a 7 inch disc at about 5 g.
 - XY repeatability 0.01 mm, planner 500 segments/s, extrusion width factor 1.2.
-- Bead-edge ripple spectrum, unmeasured.
+- Surface noise. Measured: about 150 mV rms, in chirps twice per turn from the straight infill under the groove.
 
 ## Phases
 
 | Phase | Deliverable | State |
 | --- | --- | --- |
 | 0 | Package, tests, docs | Done |
-| 1 | Lateral emitter, splice, first-order preview | Done, unprinted |
-| 1.5 | Tracking coupons and a coupon command | Next |
-| 2 | Deposition heightmap, sphere stylus and cartridge model simulator; per-radius lowpass | After coupons |
-| 3 | Test discs 2 to 5 through the turntable, fit the simulator | Needs turntable |
-| 4 | Turntable rebuild: closed-loop motor and encoder, RPM UI with CLV-capable ramp, ceramic preamp and line out on one PCB, printed platter, tonearm, swappable headshell | In progress |
+| 1 | Lateral emitter, splice, first-order preview | Done, printed |
+| 1.5 | Tracking coupons and a coupon command | Skipped: a test disc went first |
+| 2 | Deposition heightmap, sphere stylus and cartridge model simulator; per-radius lowpass | Next |
+| 3 | Test discs 2 to 5 through the turntable, fit the simulator | First disc played; spiral-floor disc next |
+| 4 | Turntable rebuild: closed-loop motor and encoder, RPM UI with CLV-capable ramp, ceramic preamp and line out on one PCB, printed platter, tonearm, swappable headshell | Playing: servo drive, printed platter, arm and headshell, Arduino recorder. PCB not started |
 | 5 | Variable pitch, CLV records, continuous-Z experiment branch | Later |
 
 ## v1: what was built and played
