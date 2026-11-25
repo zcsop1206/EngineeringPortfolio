@@ -6,7 +6,7 @@ start: 2026-03-01
 cover: openvinyl_v1_record.jpg
 publish: true
 short: OpenVinyl
-result: A 3D-printed record that plays. The first v2 test disc tracked outer groove to label at 40 RPM and about 5 g.
+result: "A 3D-printed record that plays music. Best so far, take 7 of a printed 7 inch song disc: 31 s of audio on 24 turns at 40 RPM."
 featured: 3
 hook:
   label: Wrong turn
