@@ -17,13 +17,13 @@ hook:
 
 ## Summary
 
-Toronto Hacker Fab's first tube furnace was built by three members of the chapter from a build video: 22 AWG nichrome wound directly on a 5/8 in quartz tube, refractory cement over the wire, ceramic fibre blanket in a carbon steel box, one type K thermocouple and a ramp-and-soak PID switching a solid-state relay. It reaches 1000 °C and glows. I took on the rework after it was built. The audit found mains wiring running unsheathed inside the earthed case, and nobody knew the furnace's temperature profile, its ramp, its losses or its oxide rate. Before running it again I wrote a 1-D simulator of the build as it stands and made it predict every number the first logged runs will produce, with a band for each from the dimensions I have not yet measured. The model is verified against analytic limits and conservation by 230 tests and cross-checked by hand. It says the ±5 °C flat zone is about 26 mm, that the furnace runs away at 2 K/s and reaches the quartz limit 48 s after a relay fails closed, that the element sits near 1150 °C at full power, and that room humidity oxidises silicon in this furnace about as fast as the oxygen in the air does. A ranked measurement list and a designed set of five experiments follow from the model's own sensitivities. The same simulator, run over 36 worst cases, chooses the heater architecture for the furnace that comes after this one. There are no measurements yet. That is the point of the page: the runs will be a test, not a survey.
+Toronto Hacker Fab's first tube furnace was built by three members of the chapter from a build video: 22 AWG nichrome wound directly on a 5/8 in quartz tube, refractory cement over the wire, ceramic fibre blanket in a carbon steel box, one type K thermocouple and a ramp-and-soak PID switching a solid-state relay. It reaches 1000 °C and glows. I took on the rework after it was built. The audit found mains wiring running unsheathed inside the earthed case, and nobody knew the furnace's temperature profile, its ramp, its losses or its oxide rate. Before running it again I wrote a 1-D simulator of the build as it stands and made it predict every number the first logged runs will produce, with a band for each from the dimensions I have not yet measured. The model is verified against analytic limits and conservation by 230 tests and cross-checked by hand. It says the ±5 °C flat zone is about 26 mm, that the furnace reaches the 1165 °C quartz limit 48 s after a relay fails closed, about 3 K/s, that the element sits near 1150 °C at full power, and that room humidity oxidises silicon in this furnace about as fast as the oxygen in the air does. A ranked measurement list and a designed set of five experiments follow from the model's own sensitivities. The same simulator, run over 36 worst cases, chooses the heater architecture for the furnace that comes after this one. There are no measurements yet. That is the point of the page: the runs will be a test, not a survey.
 
 | Item | Detail |
 | --- | --- |
 | Organisation | Toronto Hacker Fab |
 | Period | October 2026 to present |
-| Role | Furnace rework lead: the hazard audit and fix, the specification, the simulator, the measurement plan |
+| Role | Furnace rework lead: the hazard audit and the specified fix, the system specification, the simulator, the measurement plan |
 | Deliverables | The `furnace` simulator (eight physics modules, parameter store with provenance, 230 verification tests, browser UI), the hand-calculation script that pins its numbers, the first-run prediction sheet, the measurement ranking, the experiment design, the v2 architecture study |
 | Tools | Python, NumPy, SciPy, SALib, matplotlib, pytest, FastAPI, Plotly, Playwright |
 
@@ -63,6 +63,18 @@ These are the acceptance numbers I will hold the build to. Each is a furnace spe
 | Oxide at 1000 °C for 60 min in room air | predicted thickness, two runs, repeatability stated | colour chart against a bare reference, humidity logged |
 | Oxide as thermometer | temperature backed out of thickness agrees with the thermocouple | pieces at five positions against the scan |
 
+For scale, the same numbers from four commercial single-zone tube furnaces a lab would buy, read from their datasheets and distributor listings, beside the model's predictions for this build. The Carbolite has the same 150 mm heated length as this winding.
+
+| Furnace | Heated length | Flat zone, band, conditions | Ramp | Power | Over-temperature protection |
+| --- | --- | --- | --- | --- | --- |
+| MTI OTF-1200X-S | 200 mm | 60 mm at ±2 °C, at 600 °C, conditions unstated | ≤ 20 °C/min | 1.2 kW | built in, mechanism unstated |
+| Thermo Lindberg/Blue M Mini-Mite | 305 mm | ±1 °C over 56 mm, ±3 °C over 84 mm, distributor figures, conditions unstated | not stated | 800 W | deviation alarm in the controller, door switch |
+| Carbolite Gero TF1 11/32/150 | 150 mm | 58 mm at ±5 °C, plugs fitted, at 1000 °C | 27 min to 1000 °C | 575 W | optional |
+| Nabertherm RD 30/200/11 | 200 mm | 65 mm at ±5 K, outside the tube, plugs fitted | 20 min to 1000 °C | 1.7 kW | optional limiter |
+| This build, predicted | 150 mm | 26 mm at ±5 °C about the centre, open ends; 34 mm with 20 mm plugs; 52 mm worst case with a graded pitch (Section 9) | 20 °C/min set; 49 min to 1000 °C | about 750 W | none yet; limiter specified |
+
+No vendor quotes an overshoot figure, and only Nabertherm defines its flat zone: a band about the setpoint, empty, at steady state, measured outside the tube. The others leave the reference and the load unstated. The model's number is the stricter one, about the centre with open ends, so the comparison is fair only once the build is measured the vendors' way, with plugs. The full table with sources is in the simulator repository, which is not public yet.
+
 ## 4. The model
 
 The simulator is one-dimensional along the tube. Each axial cell carries the tube, the cement and the winding, with the insulation as a column of radial nodes out to the box, so the blanket's slow charging during a run is resolved rather than lumped. The square box enters through the conduction shape factor for a cylinder in a square, which replaces a 2-D solve. Bore radiation is a conductance that scales with the cube of the bore radius, small here because the bore is 12.7 mm. The wafer side (Deal-Grove with the oxidant fluxes of O₂ and H₂O in parallel, dopant diffusion, junction depth, sheet resistance) takes the furnace temperature at each position and runs separately.
@@ -77,7 +89,7 @@ An end deficit decays as $e^{-s/\ell}$ with $\ell = \sqrt{K/G}$. For this build 
 
 ![Predicted axial temperature profile of the current furnace at 700 and 1000 °C setpoints: a single arch over the winding falling to room temperature at the open ends, with ±5 °C zones of 33 and 26 mm](furnace_v1_profile.png)
 
-*Figure 2. The predicted profile at two setpoints. The grey band is the winding. At 1000 °C the winding ends sit 200 to 300 K below the centre, depending on where the open-bore radiation is taken to leave.*
+*Figure 2. The predicted profile at two setpoints. The grey band is the winding. At 1000 °C the winding ends sit 190 K below the centre on this curve, which lumps the blanket. With radial blanket nodes they sit 200 to 300 K below it, depending on where the open-bore radiation is taken to leave.*
 
 ## 5. Predictions for the first run
 
@@ -93,7 +105,7 @@ Each row is what the logged run will show, from the model at the assumed dimensi
 | Loss | 61 W | 51 to 163 W | blanket conductivity | 95 W |
 | Box surface temperature | 80 °C | 42 to 212 °C | shell film coefficient | 64 to 88 °C |
 | Time to 1000 °C from cold | 49 min | 49 to 63 min | the controller's own ramp | |
-| Overshoot at the end of the ramp | 7 °C with a plain PID, 0.2 °C with ramp feed-forward | 0 to 2 °C | blanket participation | |
+| Overshoot at the end of the ramp | 7 °C with a plain PI, 0.7 °C with ramp feed-forward | 0 to 2 °C | blanket participation | |
 | Duty at the start and end of the 30 min hold | 12% falling to 9% | | the blanket is still charging | |
 | Cool-down rate, heater off, at 900 and 700 °C | 35 and 17 °C/min | 6 to 59 at 1000 °C | box size | 18 at 1000 °C |
 | Flat zone at ±5 °C | 26 mm | 17 to 41 mm | wound length | about 30 mm |
@@ -104,11 +116,13 @@ Each row is what the logged run will show, from the model at the assumed dimensi
 | Oxide at the centre, 60 min, room air at 50% RH | 44 nm | 39 to 55 nm | room humidity | |
 | Oxide at the centre, 30 min | 35 nm | 33 to 41 nm | room humidity | |
 
+The flat zone and the winding-end drop come from the steady solve with the blanket lumped. With the radial blanket nodes behind the loss row they are 25 mm and 207 to 307 K.
+
 Three of these are findings in their own right.
 
-The relay fails closed and the heater is seven times the losses, so the furnace runs away at about 2 K/s. The limiter has to act within tens of seconds. The fault-injection test does this at a 300 °C setpoint, where a failure does no harm.
+The relay fails closed and the heater is twelve times the losses (748 W against 61 W), so the furnace climbs the 165 K to the 1165 °C quartz limit at about 3 K/s. The hand estimate is slower, about 2 K/s. The limiter has to act within tens of seconds. The fault-injection test does this at a 300 °C setpoint, where a failure does no harm.
 
-Room humidity matters as much as the oxygen. At 1000 °C the parabolic rate constant per atmosphere is about 30 times larger for water than for oxygen, and room air at 20 °C and 50% RH holds 0.012 atm of water against 0.21 atm of oxygen. The two contributions come out nearly equal, so a "dry" oxidation in this furnace depends on the weather, and a hygrometer reading per run is the cheapest valuable instrument on the list.
+Room humidity matters as much as the oxygen. At 1000 °C the parabolic rate constant per atmosphere is about 30 times larger for water than for oxygen, and room air at 20 °C and 50% RH holds 0.012 atm of water against 0.21 atm of oxygen. In the parabolic term the water comes out 1.7 times the oxygen. In the linear term, which governs a 40 nm oxide because that is well under the 150 nm where the two regimes cross, the oxygen comes out 1.6 times the water. Neither dominates, so a "dry" oxidation in this furnace depends on the weather, and a hygrometer reading per run is the cheapest valuable instrument on the list.
 
 The colour chart cannot do what I wanted it to. Its 10 nm resolution is 7% at 150 nm, but the model predicts 35 to 44 nm oxides at 1000 °C, and the position-to-position differences that would make the pieces a thermometer are 1 to 9 nm. That check needs a reflectometer or holds of four hours. Both options are in the experiment design.
 
@@ -157,22 +171,30 @@ Three pieces of physics force the result. The insulation that keeps the shell to
 
 ## 8. Status
 
-As of 2026-10-11: the simulator and the plan exist, the hazard fix is specified, and no run has been logged. Next, in order: the cold measurements, the wiring fix and the earth and insulation checks, the limiter and its fault-injection test, then the logged ramp and the scans. The oxide runs wait on silicon pieces and on a reflectometer or the long holds.
+As of 2026-11-01: the simulator and the plan exist, the hazard fix is specified, and no run has been logged. Next, in order: the cold measurements, the wiring fix and the earth and insulation checks, the limiter and its fault-injection test, then the logged ramp and the scans. The oxide runs wait on silicon pieces and on a reflectometer or the long holds.
 
-Open items only the hardware can settle: the supply voltage, where the thermocouple sits (against the winding it reads the element, in the bore it reads the process, and the oxide runs will tell which), and whether the 2 W/cm² surface-load limit I am using for the nichrome is the right vendor number. The build cost, parts list and a comparison against a commercial tube furnace's datasheet are to come with the measurements.
+Open items only the hardware can settle: the supply voltage, where the thermocouple sits (against the winding it reads the element, in the bore it reads the process, and the oxide runs will tell which), and whether the 2 W/cm² surface-load limit I am using for the nichrome is the right vendor number. The build cost and parts list come with the measurements, and so does the measured row in the Section 3 comparison.
 
 ## 9. Further work
 
-The model's next jobs, after the first logged run. The list is ordered by what each buys against the acceptance numbers of Section 3, and everything on it waits on the plant being identified from a measured ramp, a scan and a cool-down. Until then a better controller model or a better winding is a prediction about a furnace whose heat loss is known to a factor of three.
+The model's next jobs, ordered by what each buys against the acceptance numbers of Section 3. Four of them were run on 2026-10-17 at the assumed geometry, as numbers before decisions; those rows now say what the run found. The rest wait on the plant being identified from a measured ramp, a scan and a cool-down. Until then a better winding is a prediction about a furnace whose heat loss is known to a factor of three.
 
 | Item | What exists | What it adds | Waits on |
 | --- | --- | --- | --- |
 | The controller as built | A generic PI tuned from the identified plant, with continuous power per 2 s tick | The box's own algorithm from its manual: proportional band in °C, integer I and D, filtering, 1 °C resolution, its autotune; the relay as on/off time proportioning, or a number showing a 2 s cycle is invisible to a plant with minutes of time constant | the controller's model number, then the logged run |
 | Emulator over the unmeasured inputs | A Morris screening of 18 inputs, minutes per sheet | A fitted surrogate so every band on this page updates in seconds when a cold measurement lands | profiling one prediction sheet first |
-| Graded pitch for this furnace | The v2 study, where a graded winding fixes only the symmetric droop | With no gas flow the droop here is symmetric, which is the case a graded pitch fixes; the optimum pitch against the end-loss factor, and the robust choice. Rewinding under cement is a rebuild, so this is a number before it is a decision | measured $K$ and $G$ |
+| Graded pitch for this furnace | Run. Sweeping the end boost and end length on the model: the robust choice, boost 0.8 over 45 mm at each end, lifts the worst-case ±5 °C zone from 22 to 52 mm, and to 112 mm if the open-bore loss really leaves at the tube ends. The wire's own surface load does not change, the coil-envelope load at the ends rises 20%. Figure 4 | Which end-loss placement is right moves the optimum more than grading gains, so the rewind waits on the scan. A rewind alone does not fix the 6.9 W/cm² full-power load | the X2 scan |
 | Model against measurement, in time | $T(z,t)$ stored every 10 s | The scan points and the logged ramp over the predicted field, as one animation | the scan |
-| Controller comparison | Overshoot, settling and duty metrics; feed-forward already cuts the overshoot from 7 to 0.2 °C | PI, PI with feed-forward, PID and a constrained predictive controller on the identified plant under the quartz ramp and element limits. On one actuator and one sensor they should converge, because the ramp is limited by power minus loss over heat capacity, not by the algorithm; the table is there to show it. What the box can actually be set to bounds the study | the identified plant |
-| Shell temperature against insulation | Shell temperature predicted, 80 °C with a 42 to 212 °C band | One curve of shell temperature against blanket thickness for the v2 box, with the standard's touch limit drawn on | the film coefficient from the infrared survey |
-| Commercial datasheets | Nothing | Flat-zone length and tolerance, ramp and overshoot from two commercial tube furnaces beside this one's measured numbers | the measurements |
+| Controller comparison | Run on the model's own plant. PI, PI with feed-forward, PID and PI with the relay as a true 2 s on/off waveform follow the same setpoint ramp, end the hold at the same duty and peak the element at 1022 to 1045 °C, under the 1200 °C limit. Feed-forward cuts the overshoot from 7 °C to 0.7 °C and pays in the approach: the reading comes within 1 °C of the setpoint 931 s after the ramp ends instead of 25 s. The 2 s relay cycle moves the control reading by 26 mK, invisible to the loop, and the cement by 1.8 K | The same table on the identified plant, and what the box can actually be set to. A spike thermocouple against the winding is now modelled: it holds the element at the setpoint and the tube about 15 K cold, 40 nm of oxide at 60 min instead of 44 | the identified plant |
+| Shell temperature against insulation | Run. For this build the 150 mm box meets a 70 °C touch limit only if the shell film coefficient is 12 W/(m²·K); at 7.5 it needs a 168 mm box, at 5 a 220 mm box. For the v2 stack at 1150 °C the microporous outer layer has a window of 57 to 77 mm: thinner and the shell is too hot, thicker and the layer's hot face exceeds its 1000 °C rating. Figure 5 | The end faces, which the 1-D shell temperature does not cover and which exceed the limit in every v2 case; a guard, and the finite-element model that sizes it | the film coefficient from the infrared survey |
+| Commercial datasheets | Done, Section 3. Four furnaces with every number sourced; no vendor quotes overshoot, one defines flat zone | The build row filled from the scan and the logged ramp, measured the vendors' way, with plugs | the measurements |
 
-Not on the list: the room as a model (the screening says measure the film coefficient instead), and predictive control for its own sake, which earns its place with three coupled zones and hard constraints, that is, with v2.
+![Flat zone at ±5 °C against the end boost of a graded winding on the current furnace, for four end-loss factors and two placements of the open-bore loss; the curves rise steeply then collapse once the ends overshoot the band, with the robust choice at a boost of 0.8 marked](furnace_v1_graded_pitch.png)
+
+*Figure 4. A graded pitch on the current furnace. Each curve rises until the boosted ends overshoot the ±5 °C band, then collapses. The black curve puts the open-bore loss at the tube ends, the blue ones at the winding ends with the end loss ×0.5 to ×3. The robust choice is the boost that does best in the worst of them.*
+
+![Steady shell temperature against insulation: left, the v2 box with its two-layer and single-layer stacks at 1000 and 1150 °C with the points where the microporous layer exceeds its rating marked; right, the current build against the square box side at three shell film coefficients, with the 70 °C touch limit and the current 150 mm box drawn on](furnace_shell_vs_insulation.png)
+
+*Figure 5. Shell temperature against insulation. Left, the v2 box: the microporous layer buys a cool shell until its own hot face passes its rating. Right, the current build: whether the box is touch-safe turns on the shell film coefficient, which is what the infrared survey measures.*
+
+Not on the list: the room as a model (the screening says measure the film coefficient instead), and predictive control for its own sake, which earns its place with three coupled zones and hard constraints, that is, with v2. Beyond the 1-D model, three numbers it can only bound are going to finite elements: the hottest point on the shell, the stress in the quartz at the winding ends, and the load the supports put on the tube. That plan, parametric Mechanical APDL runs on Taguchi arrays with the 1-D model as the cheap screen, is written and its first phase is being built; it runs when an Ansys Student licence is installed.
