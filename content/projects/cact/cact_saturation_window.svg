@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 380" width="640" height="380" role="img" aria-label="Evacuated run with 20 C water: vapor temperature, hottest pocket floor, and the wall temperature needed to nucleate, against heater power">
+<style>
+.bg{fill:#fff}.ink{stroke:#111;fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.grid{stroke:#e2e2e2;stroke-width:1}.axis{stroke:#9a9a9a;stroke-width:1}
+text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;fill:#111}
+.mut{fill:#5c5c5c}.lead{stroke:#9a9a9a;stroke-width:1;fill:none}
+@media (prefers-color-scheme:dark){.bg{fill:#111}.ink{stroke:#ececec}.grid{stroke:#2e2e2e}.axis{stroke:#6b6b6b}
+text{fill:#ececec}.mut{fill:#a8a8a8}.lead{stroke:#6b6b6b}}
+.d{stroke:#111;stroke-width:1.6;fill:none;stroke-dasharray:6 4}.lim{stroke:#9a9a9a;stroke-width:1.4;stroke-dasharray:3 3}.band{fill:#111;opacity:.08}@media (prefers-color-scheme:dark){.d{stroke:#ececec}.band{fill:#ececec;opacity:.12}}</style>
+<rect class="bg" width="640" height="380"/>
+<line class="axis" x1="52" x2="450" y1="334.0" y2="334.0"/>
+<text class="mut" x="44" y="339.0" text-anchor="end">20</text>
+<line class="grid" x1="52" x2="450" y1="283.3" y2="283.3"/>
+<text class="mut" x="44" y="288.3" text-anchor="end">40</text>
+<line class="grid" x1="52" x2="450" y1="232.7" y2="232.7"/>
+<text class="mut" x="44" y="237.7" text-anchor="end">60</text>
+<line class="grid" x1="52" x2="450" y1="182.0" y2="182.0"/>
+<text class="mut" x="44" y="187.0" text-anchor="end">80</text>
+<line class="grid" x1="52" x2="450" y1="131.3" y2="131.3"/>
+<text class="mut" x="44" y="136.3" text-anchor="end">100</text>
+<line class="grid" x1="52" x2="450" y1="80.7" y2="80.7"/>
+<text class="mut" x="44" y="85.7" text-anchor="end">120</text>
+<line class="grid" x1="52" x2="450" y1="30.0" y2="30.0"/>
+<text class="mut" x="44" y="35.0" text-anchor="end">140</text>
+<line class="axis" x1="52.0" x2="52.0" y1="334" y2="338"/>
+<text class="mut" x="52.0" y="354" text-anchor="middle">50</text>
+<line class="axis" x1="138.5" x2="138.5" y1="334" y2="338"/>
+<text class="mut" x="138.5" y="354" text-anchor="middle">100</text>
+<line class="axis" x1="225.0" x2="225.0" y1="334" y2="338"/>
+<text class="mut" x="225.0" y="354" text-anchor="middle">150</text>
+<line class="axis" x1="311.6" x2="311.6" y1="334" y2="338"/>
+<text class="mut" x="311.6" y="354" text-anchor="middle">200</text>
+<line class="axis" x1="398.1" x2="398.1" y1="334" y2="338"/>
+<text class="mut" x="398.1" y="354" text-anchor="middle">250</text>
+<text class="mut" x="251.0" y="374" text-anchor="middle">Heater power, W</text>
+<text class="mut" x="44" y="18" text-anchor="end">°C</text>
+<rect class="band" x="173.1" y="30" width="276.9" height="304"/>
+<text class="mut" x="179.1" y="48">nucleation possible</text>
+<line class="lim" x1="52" x2="450" y1="131.3" y2="131.3"/>
+<polyline class="ink" points="52.0,289.5 69.3,280.6 86.6,271.7 103.9,262.9 121.2,254.0 138.5,245.1 155.8,236.2 173.1,227.3 190.4,218.5 207.7,209.6 225.0,200.7 242.3,191.8 259.7,183.0 277.0,174.1 294.3,165.2 311.6,156.3 328.9,147.4 346.2,138.6 363.5,129.7 380.8,120.8 398.1,111.9 415.4,103.0 432.7,94.2 450.0,85.3"/>
+<polyline class="d" points="52.0,251.7 69.3,250.7 86.6,248.3 103.9,246.3 121.2,243.5 138.5,239.7 155.8,235.3 173.1,231.2 190.4,226.5 207.7,221.3 225.0,216.0 242.3,210.7 259.7,205.0 277.0,199.1 294.3,193.2 311.6,187.2 328.9,181.0 346.2,174.7 363.5,168.4 380.8,162.0 398.1,155.5 415.4,149.0 432.7,142.5 450.0,135.9"/>
+<polyline class="ink" points="52.0,299.2 69.3,292.3 86.6,285.3 103.9,278.4 121.2,271.4 138.5,264.5 155.8,257.6 173.1,250.6 190.4,243.7 207.7,236.7 225.0,229.8 242.3,222.8 259.7,215.9 277.0,209.0 294.3,202.0 311.6,195.1 328.9,188.1 346.2,181.2 363.5,174.3 380.8,167.3 398.1,160.4 415.4,153.4 432.7,146.5 450.0,139.5" style="stroke-width:2.6"/>
+<text x="460.0" y="90.3">Hottest pocket floor</text>
+<text x="460.0" y="136.3">1 atm: 100 °C</text>
+<text x="460.0" y="154.3">Needed to nucleate</text>
+<text x="460.0" y="172.3">Vapor (saturation)</text>
+</svg>

@@ -354,11 +354,11 @@ The beads cannot see the flow (Section 7.6). The original polycarbonate top coul
 
 The sides do not work. The specimen's side faces are 70 × 6 mm, 17 cm² in all, about 2.4 mm from the M5 bolts, and they carry the twelve thermocouple bores. A side cooler would need a new bolt pattern and would have to work around the bores.
 
-The underside does. In J. Faria's drawings the heater block is 15 mm tall in a 13 mm deep pocket of the 17 mm PTFE housing, so its face stands 2 mm proud: the specimen rests on the heater block alone, with its rim over a 2 mm air gap. A water-cooled aluminium frame with the housing's 90 × 90 mm outline and bolt pattern, made 19 mm tall so its top is level with the heater face, drops into the housing's place and closes that gap. It touches the specimen rim over about 27 cm², outside a 41 × 51 mm opening, or 26 cm² with the slot for the heater cartridge. The clamp load then splits between the heater block and the frame, so their faces must be level to within the paste's bond line, or the rim joint made with a compliant thermal pad. A PTFE liner with 5 mm walls fills that opening and holds the heater block as the housing did. Through PTFE the block leaks about 0.1 W/K to the frame, about 10 W at a 100 °C difference, which the dry run measures. The water runs in a drilled channel around three sides of the frame, with the inlet and outlet either side of the heater slot.
+The underside does. In J. Faria's drawings the heater block is 15 mm tall in a 13 mm deep pocket of the 17 mm PTFE housing, so its face stands 2 mm proud: the specimen rests on the heater block alone, with its rim over a 2 mm air gap. A water-cooled aluminium frame with the housing's 90 × 90 mm outline and bolt pattern, made 19 mm tall so its top is level with the heater face, drops into the housing's place and closes that gap. It touches the specimen rim over about 27 cm², outside a 41 × 51 mm opening, or 26 cm² with the slot for the heater cartridge. The clamp load then splits between the heater block and the frame, so their faces must be level to within the paste's bond line, or the rim joint made with a compliant thermal pad. A PTFE liner with 5 mm walls and a 4 mm floor fills that opening and holds the heater block as the housing did. The water runs in a Ø8 mm channel drilled around three sides of the frame, about 240 mm long, with the inlet and outlet either side of the heater slot.
 
 ### 8.2 What it measures
 
-Heat now enters at the centre and leaves at the rim, which is how a vapor chamber spreads heat: vapor carries it outward over the pocket and condenses over the cooled rim, and the sawtooth structure returns the liquid. That outward transport is what the centre-to-edge gradient reads. The plate model of Section 6.6, with its sink moved to the rim, gives 76 mK/W for copper alone. That is twice the 39 mK/W of the current top-cooled stack, and nearly the same for any contact conductance from 2000 to 10,000 W/m²K. Sideways transport through the chamber lowers it:
+Heat now enters at the centre and leaves at the rim, which is how a vapor chamber spreads heat: vapor carries it outward over the pocket and condenses over the cooled rim, and the sawtooth structure returns the liquid. That outward transport is what the centre-to-edge gradient reads. The plate model of Section 6.6, with its sink moved to the rim, gives 76 to 78 mK/W for copper alone. That is twice the 39 mK/W of the current top-cooled stack, and nearly the same for any rim conductance from 1300 to 10,000 W/m²K. Sideways transport through the chamber lowers it:
 
 | Sideways conductance the chamber adds, times the copper plate's | Centre minus edge, mK/W | At 186 W, °C |
 | --- | --- | --- |
@@ -369,23 +369,69 @@ Heat now enters at the centre and leaves at the rim, which is how a vapor chambe
 
 The rows treat the vapor as perfectly coupled to the copper, so they are best cases for a given transport. Calibrated beads separate them at any power above about 50 W. The camera shows where the vapor forms, which way it moves, and whether the liquid comes back along the channels. With the condenser gone, its two DAQ channels move to two of the unused 17.5 mm bores, for a three-point profile from centre to edge on two sides.
 
-### 8.3 Runs
+### 8.3 Energy balance
 
-1. Dry, from 73 W up. This sets the copper-only gradient, the leak through the liner and the contact conductance to the frame, which set how far the power can go (Section 8.4).
+Every path the heat can take in the new stack, at 20 °C water and 250 mL/min:
+
+- Into the water through the specimen and the frame, the path being measured.
+- Into the water through the PTFE liner, from the heater block straight to the frame. PTFE at 0.25 W/m·K through 5 mm walls and a 4 mm floor conducts about 0.18 W/K.
+- Out through the polycarbonate window to the room: 12.7 mm at 0.2 W/m·K in series with still air at about 10 W/m²K, 0.05 W/K.
+- Out from the frame and base plate to the room, about 0.1 W/K with the base on 25 mm of foam. With the inlet at room temperature this is under 1 W.
+
+The frame's own resistance sets the temperatures. At 250 mL/min the water in the Ø8 mm channel is laminar (Re about 1000), and the entrance correlation of Section 7.2 gives about 0.22 K/W. With 0.04 K/W across a 0.5 mm thermal pad of about 5 W/m·K on the rim and 0.02 K/W through the aluminium, the frame carries heat from the rim to the water at about 0.27 K/W, a conductance of about 1300 W/m²K over the 28 cm² rim. It is the largest resistance in the new stack.
+
+Solved together with the plate model, for the evacuated run:
+
+| Heater, W | Into the water, W | Of which through the liner, W | Window to room, W | Through the specimen, W | Water rise, °C |
+| --- | --- | --- | --- | --- | --- |
+| 73 | 72 | 5 | 0.9 | 67 | 4.2 |
+| 120 | 118 | 9 | 1.6 | 110 | 6.9 |
+| 186 | 183 | 13 | 2.5 | 170 | 10.6 |
+| 261 | 257 | 18 | 3.5 | 239 | 14.9 |
+
+The water should account for 98 to 99% of the heater power, so here, unlike in Test 2, the balance closes and the water measures the power. Two things follow for the measurement. The 7% that goes through the liner reaches the water without crossing the specimen, so it is subtracted, from the heater block temperature and the liner's conductance, before the specimen is analysed; the dry run checks that number, and PTFE standoffs with air gaps between them would cut it severalfold. And the flow is lowered from 580 to 250 mL/min on purpose. In laminar flow that costs little in heat transfer, and it raises the water rise from 1.8 to 4.2 °C at 73 W, so a 0.2 °C error between the two water thermocouples is 5% of the power at the lowest step and 2% at 186 W. A run with the heater off and the water flowing, before the dry run, measures that error and the room loss directly.
+
+### 8.4 Saturation and boiling
+
+Evacuated, the chamber holds only water and its vapor. Its pressure is the saturation pressure at the vapor temperature, and the vapor temperature is set where the vapor condenses, over the cooled rim. With 20 °C water the rim floor sits at 40 °C at 73 W, 53 °C at 120 W, 71 °C at 186 W and 92 °C at 261 W, and the chamber sits between 7 and 75 kPa, below atmospheric throughout. So the cooling cannot keep the vapor from saturation: an evacuated chamber is saturated by construction. What the cooling sets is how low that saturation temperature is, and a low saturation temperature makes boiling hard to start.
+
+A bubble growing from a cavity of mouth radius $r$ needs its vapor pressure above the liquid's by $2\sigma/r$, the Young-Laplace pressure of its surface. The Clausius-Clapeyron relation turns that pressure into the wall superheat it takes:
+
+$$\Delta T_\text{nucleation} = \frac{2\,\sigma\,T_\text{sat}}{\rho_v\,h_{fg}\,r}$$
+
+The vapor density $\rho_v$ falls about nine times from 92 °C to 40 °C, so the superheat needed rises with it. For 25 µm cavities it is 14 K with the vapor at 40 °C and 1.7 K at 92 °C. The plate can offer, as the hottest pocket floor minus the vapor temperature, at most 5.6 K at 73 W, 9 K at 120 W, 14 K at 186 W and 20 K at 261 W. That is an upper bound, from copper conduction alone.
+
+![Evacuated run with 20 °C water: vapor temperature rising from 34 to 97 °C between 50 and 280 W, the hottest pocket floor above it, and the wall temperature needed to nucleate from 25 µm cavities crossing below the floor temperature near 120 W](cact_saturation_window.svg)
+
+*Figure 11. The evacuated run at 20 °C water and 250 mL/min. Where the hottest floor is above the dashed line, a 25 µm cavity can nucleate.*
+
+So the 73 W step should show evaporation without boiling. Nucleation from 25 µm cavities becomes possible near 115 W, which is why the runs add a 120 W step. The cavity size of the sprayed coating is not known: 50 µm cavities would nucleate from about 85 W, 10 µm cavities only from about 160 W. Where the camera first sees bubbles is itself a measurement of the coating.
+
+The inlet water is the knob. If the frame turns out to conduct better than modelled, at 2200 to 3400 W/m²K, the vapor at 186 W is 44 to 54 °C, and 25 µm cavities need 8 to 11 K of the 15 K available: onset moves to 140 to 170 W, still inside the runs. Warming the inlet raises the vapor temperature nearly one for one. The ceiling is a vapor at 100 °C, which keeps the chamber below atmospheric and the window well under the thesis's 135 °C. With 40 °C water, the 261 W step would put the vapor at 111 °C. So the dry run measures the frame's conductance first, and the inlet is then set so the vapor sits near 70 °C at 186 W. At 20 °C that is the modelled case.
+
+Run 2, with air, cannot boil. Its pressure is the trapped air, heated, plus the vapor. Boiling needs the wall's saturation pressure above that total, and at 20 °C water the hottest floor stays 12 to 58 °C below the saturation temperature at the chamber's total pressure, at every step. Warming the water does not help, because the gas heats too: the 25 psi relief valve opens with the gas near 109 °C, before the wall reaches saturation. That is what happened in the original build (thesis, p. 36). So run 2 is the control with no boiling, where vapor can only diffuse through the air. At 20 °C water its top step, 261 W, puts the chamber at 220 kPa, under the valve's 274 kPa.
+
+### 8.5 Runs
+
+0. Heater off, water flowing at 20 °C and 250 mL/min: the error between the water thermocouples and the room loss.
+1. Dry, at 73, 120, 186 and 261 W. This sets the copper-only gradient, the liner bypass and the frame's conductance, and from it the inlet temperature for run 3.
 2. Charged with 2.7 mL as before, air left in, at the same powers.
-3. Evacuated, then charged with degassed water, at the same powers. Runs 2 and 3 separate the effect of the air (Section 7.3).
+3. Evacuated, then charged with degassed water, at the same powers.
 
-In every run: the chamber pressure logged through the second NPT port of the top plate, the water thermocouples in the stream, the power recorded at each step, and video at each steady state.
+In every run: the chamber pressure logged through the second NPT port of the top plate, on an absolute transducer of about 0 to 50 psia (the thesis's PX2300 reads 0 to 1 psi differential, too narrow for vacuum to the relief pressure), the water thermocouples in the stream, the power recorded at each step, and video at each steady state. The stack holds about 560 J/K of heat capacity behind about 0.36 K/W from the heater block to the water, a time constant of about 200 s, so each step needs 15 to 20 minutes to settle to 1%. Four steps over three runs, with the pump-down, is about a day.
 
-### 8.4 Limits
+### 8.6 Limits
 
-The polycarbonate touches the vapor. The thesis gives about 140 °C as its limit and stopped runs at 135 °C (p. 25). Polycarbonate also crazes with long exposure to hot water, so the pocket is held below 90 °C. With 20 °C water the model reaches 90 °C at 160 W if the frame conducts 1000 W/m²K to the water, 270 W at 2000 and 450 W at 5000. That conductance lumps the rim contact, the aluminium and the laminar water side, and for a bare clamped copper-to-aluminium joint 1000 to 2000 is realistic. So the dry run starts at 73 W and each step is checked against the limit before the next, and 186 W may be the top step. The 25 psi relief valve stays. About 2 W leaves through 12.7 mm of polycarbonate, so the window's inner face sits just below the vapor temperature and will collect condensate, a few grams an hour. A thin film heater on the outside is part of the rig, not a fix to add later.
+- The window. It touches the vapor, so it runs at the vapor temperature, 92 °C at most at 261 W with 20 °C water. The thesis gives about 140 °C as the polycarbonate's limit and stopped runs at 135 °C (p. 25), and polycarbonate crazes with long exposure to hot water, so it is inspected between runs.
+- Condensate. About 2.5 W leaves through the window at 186 W, so its inner face sits just below the vapor temperature and collects about 4 g of water an hour. A thin film heater of about 5 W on the outside is part of the rig, not a fix to add later.
+- Pressure. Under vacuum the 63 mm span of the window, 12.7 mm thick, deflects about 5 µm with a stress under 1 MPa, against a polycarbonate yield near 60 MPa. At the relief pressure the window carries about 680 N, inside the roughly 2 kN preload of ten M5 bolts at the thesis's 0.2 N·m.
+- The heater block reaches about 122 °C at 261 W. The clamp load splits between it and the frame, which is what the rim pad absorbs.
 
 ## 9. Recommendations
 
 1. Log the chamber pressure, so the substrate temperatures can be placed against the saturation temperature, and record whether the chamber is evacuated before filling. With the measurement below, this decides between the two readings of Section 7.3.
 2. Measure the gap between the coating and the condenser face, by the coating height on a profilometer or by a soft-metal squash test in the assembled stack. Conduction alone explains the charged resistance if it is about 70 µm.
-3. Resolve the flow and its distribution across the plate. The beads in the copper cannot, so this needs the window of Section 8. A charged run on a substrate with no sawtooth structure would then show what the structure itself adds.
+3. Resolve the flow and its distribution across the plate. The beads in the copper cannot, so this needs the window and the runs of Section 8, at 20 °C water and 250 mL/min, with a 120 W step for the onset of boiling. A charged run on a substrate with no sawtooth structure would then show what the structure itself adds.
 4. Re-make the heater-to-substrate paste joint with a paste of known conductivity under a measured clamp pressure, and measure the flatness of both faces. At 0.5 to 0.6 cm²·K/W it is three to five times a well-made paste joint (Section 7.1).
 5. Measure the flatness of the condenser's sealing face on a surface plate or with a dial indicator. Apply the thermocouple gradient correction of Section 7.7 and recompute the resistances from the existing logs.
 6. Check the chiller flow reading against a timed volume at 20 and 30 °C, and read the outlet water after a bend or mixer so the thermocouple sees the mixed temperature. One of the two explains the 7 to 18% excess of Section 7.5.
@@ -396,7 +442,7 @@ The polycarbonate touches the vapor. The thesis gives about 140 °C as its limit
 
 ## 10. Conclusions
 
-The copper condenser was designed, machined and installed, and the assembly was instrumented and tested end to end. With it the device reaches steady state at every step from 73 W to 410 W and the heat arrives in the chiller water. Charging the chamber lowers the substrate-to-condenser resistance from at least 0.26 K/W to 0.074 to 0.080 K/W at the same powers, and that value does not move with power, inlet temperature or the water plumbing. Set against theory, that flat resistance is what conduction through a water layer about 70 µm thick would give, and not the falling resistance boiling would give; an evacuated run and a measurement of the gap above the coating will settle which it is. The substrate is not isothermal, and its in-plane gradient is what the copper plate alone gives. Of the rest of the stack, the heater paste joint is three to five times what a well-made joint would be, and the water side does about four times better than the textbook laminar correlation. The flow inside the chamber and its distribution across the plate remain unresolved. The next test keeps the original polycarbonate top as a window and cools the specimen from below, so the camera can see the flow and the beads can read the chamber's sideways transport.
+The copper condenser was designed, machined and installed, and the assembly was instrumented and tested end to end. With it the device reaches steady state at every step from 73 W to 410 W and the heat arrives in the chiller water. Charging the chamber lowers the substrate-to-condenser resistance from at least 0.26 K/W to 0.074 to 0.080 K/W at the same powers, and that value does not move with power, inlet temperature or the water plumbing. Set against theory, that flat resistance is what conduction through a water layer about 70 µm thick would give, and not the falling resistance boiling would give; an evacuated run and a measurement of the gap above the coating will settle which it is. The substrate is not isothermal, and its in-plane gradient is what the copper plate alone gives. Of the rest of the stack, the heater paste joint is three to five times what a well-made joint would be, and the water side does about four times better than the textbook laminar correlation. The flow inside the chamber and its distribution across the plate remain unresolved. The next test keeps the original polycarbonate top as a window and cools the specimen from below, so the camera can see the flow and the beads can read the chamber's sideways transport. Its energy balance should close to within 2%, and evacuated it is saturated by construction; with 20 °C water the vapor runs from 40 to 92 °C, warm enough to nucleate from about 115 W, while the air-filled run cannot boil before its relief valve opens.
 
 This was the first part I made to a drawing I wrote, with tolerances that came from the mating parts rather than from habit, and then had to live with in a test.
 
