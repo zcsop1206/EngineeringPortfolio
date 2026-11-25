@@ -66,7 +66,21 @@ A 7 inch test disc of tones and amplitude steps. The stylus followed the groove 
 
 ## Surface noise
 
-The limit now is noise from the straight infill under the groove, twice per turn. The next disc prints a spiral layer under it.
+The limit now is noise from the straight infill under the groove, twice per turn. The floor now prints as the groove's own spiral, one line centred under every crease.
+
+## Song
+
+32 seconds of music on a 7 inch disc, with a 75 Hz pilot tone underneath that clocks the playback. The encoder holds the music to the slope and acceleration the stylus was measured to follow. It plays start to finish.
+
+## Landing
+
+The arm's offset angle was drawn for the other direction of spin. Turned round on its mount, every needle drop follows the song.
+
+![Six needle drops on each mount](openvinyl_v2_landings.png)
+
+## Search
+
+One disc, nine groove designs: bead spacing, wall layers, tracking limit and floor layers at three levels each. The best groove is the one with the least error against the audio cut into it.
 
 ## Questions
 
@@ -75,3 +89,6 @@ The limit now is noise from the straight infill under the groove, twice per turn
 - Constant or variable platter speed
 - Play time
 - The counterweight and roll
+- The tracking limit
+- Cleaning the sound
+- The 2.8 Hz pulse
