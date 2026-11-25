@@ -36,7 +36,7 @@ The dashed lines are where each section should be, from the disc's schedule and 
 | Platter speed | 39.85 RPM, steady to ±0.02 |
 | 198, 147, 98 Hz at 25 µm | 44, 52, 40 mV |
 | 110 Hz ladder | Level grows to 60 µm, flat at 80 µm |
-| 698 and 627 Hz | In the noise, as the bead-smear model predicts (−33 and −41 dB) |
+| 698 and 627 Hz | Barely above the noise: 3 to 5 dB over the frequencies beside them, against 11 dB for the 333 Hz reference. The bead-smear model predicted −33 and −41 dB, so it is pessimistic |
 | Groove noise, 80 Hz to 2 kHz | About 150 mV rms |
 
 The noise is now the limit, and it has a shape. It comes in falling chirps, two per revolution: the bursts repeat every 0.754 s, half of the 1.506 s turn. That is what straight parallel lines under the groove would sound like. The base disc's top layer is straight infill, and the groove crosses those lines at a rate that rises and falls twice per turn. The next disc prints one spiral layer under the groove first, so the stylus rides on lines that run with it.
@@ -81,7 +81,7 @@ The arm was drawn for a record turning the other way. Its offset angle suits a d
 
 ![Music-band level through six needle drops on each mount. Old mount: three drops full, three bad and thumping. Turned mount: every drop follows the song, three at full level and three at half](./openvinyl_v2_landings.png)
 
-On the turned mount every drop picks up the song, but only some at full level: 5 of 11 on one wall layer, 1 of 6 on two. The weak ones pulse at about 2.8 Hz with the music still in them. That pulse is mostly loudness, with 1 to 2% of pitch. A log of the servo's own shaft position shows 0.2 to 0.4% ripple at that rate, so it is not the drive. The arm's roll, computed at 2.1 Hz and undamped, is the suspect.
+On the turned mount every drop picks up the song, but only some at full level: 5 of 11 on one wall layer, 1 of 6 on two. The weak ones pulse at about 2.8 Hz with the music still in them. That pulse is mostly loudness, with 1 to 2% of pitch. A log of the servo's own shaft position shows 0.2 to 0.4% ripple at that rate, so it is not the drive. The arm's roll, which nothing damps, is the suspect.
 
 The reprint, designed and sliced, answers it: the pin is clamped into a V by one screw so the pivot has no play, a skirt under the hub dips into a cup of liquid to damp the roll, the counterweight carries acorn nuts in fixed holes and hangs its centre of mass 13 mm under the roll axis instead of about 8, crush ribs grip the servo, and a clamp ring holds a warped disc's edge down. The arm's offset angle gets flipped in the CAD before the arm prints.
 
