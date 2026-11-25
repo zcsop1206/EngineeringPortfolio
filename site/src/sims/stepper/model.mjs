@@ -76,7 +76,7 @@ export function poseAt(g, g0, command, warm) {
 }
 
 /** Chip-top point (EE frame x, y; the chip top is the plane z = c) that sits on the optical axis, base x = y = 0. */
-function underAxis(P, Q, c) {
+export function underAxis(P, Q, c) {
   const rx = -(P[0] + Q[0][2] * c);
   const ry = -(P[1] + Q[1][2] * c);
   const det = Q[0][0] * Q[1][1] - Q[0][1] * Q[1][0];
@@ -84,7 +84,7 @@ function underAxis(P, Q, c) {
 }
 
 /** Least-squares affine map u = A [x, y] + b over the sites: { A, b }. */
-function affineFit(xs, us) {
+export function affineFit(xs, us) {
   // normal equations for each output axis with regressors [x, y, 1]
   const N = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
   const R = [[0, 0], [0, 0], [0, 0]];

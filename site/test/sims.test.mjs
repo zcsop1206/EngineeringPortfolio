@@ -33,7 +33,7 @@ test('the sim markup reserves its boxes and is not a figure for the visuals page
   assert.match(markup, /data-pagefind-ignore/);
   // rehype-figures collects raw blocks holding svg, video, img or iframe
   assert.doesNotMatch(markup, /<(svg|video|img|iframe)\b/);
-  for (const box of ['sim-pad', 'sim-stage', 'sim-chip', 'sim-field']) assert.match(markup, new RegExp(`class="sim-box ${box}"`));
+  for (const box of ['sim-wafer', 'sim-stage', 'sim-detail', 'sim-gcode']) assert.match(markup, new RegExp(`class="sim-box ${box}"`));
 });
 
 test('the die grid is 5 x 5 at 2.5 mm, visited row by row, back and forth', () => {
