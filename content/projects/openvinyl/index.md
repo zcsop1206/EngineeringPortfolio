@@ -88,6 +88,8 @@ On the turned mount every drop picks up the song, but only some at full level: 5
 
 The reprint, designed and sliced, answers it: the pin is clamped into a V by one screw so the pivot has no play, a skirt under the hub dips into a cup of liquid to damp the roll, the counterweight carries acorn nuts in fixed holes and hangs its centre of mass 13 mm under the roll axis instead of about 8, crush ribs grip the servo, and a clamp ring holds a warped disc's edge down. The arm's offset angle gets flipped in the CAD before the arm prints.
 
+All 33 takes, with what each one tested and ruled out, are in the working notes: [every take](/projects/openvinyl/log/2026-11-25-every-take/).
+
 ## Cleaning the sound
 
 Raw, the recording is the song under hum, clicks and groove noise. The cleanup notches the mains harmonics, fills clicks, takes the speed wobble out using the pilot, and band-limits to 150 to 900 Hz. A live version runs while the disc plays, with an equaliser fitted on half of the song and checked on the other half.
