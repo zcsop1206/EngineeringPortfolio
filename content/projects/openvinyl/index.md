@@ -3,7 +3,8 @@ title: "OpenVinyl: 3D-printed records"
 description: A hill-and-dale record printed and played on a hobby FDM printer (v1), and a lateral-cut encoder that writes the printer's G-code directly (v2), whose test disc and then a song disc played from the outer groove to the label on a turntable built for it. Every groove parameter is derived from bead width, stylus contact, printer acceleration and what the stylus was measured to follow.
 status: in-progress
 start: 2026-03-01
-cover: openvinyl_v1_record.jpg
+cover: openvinyl_v2_song_play.jpg
+cover_on_page: false
 publish: true
 short: OpenVinyl
 result: "A 3D-printed record that plays music. Best so far, take 18 of a printed 7 inch song disc: 31 s of audio on 24 turns at 40 RPM."
@@ -12,6 +13,8 @@ hook:
   label: Wrong turn
   text: v1 cut depth because a 0.48 mm bead seemed too wide to wiggle. Written as G-code directly, it places to about 0.01 mm.
 ---
+<video controls autoplay muted loop playsinline width="1280" height="720" style="display:block;width:100%" poster="/projects/openvinyl/openvinyl_v2_song_play.jpg" src="/projects/openvinyl/openvinyl_v2_song_play.mp4" aria-label="Take 30 of the printed song disc, filmed on a phone and muted. A hand lowers the printed arm onto the outer groove of the black printed disc, and the cartridge rides the spiral inward as the platter turns."></video>
+
 OpenVinyl turns digital audio into groove geometry on records printed on a hobby FDM printer, played back on a turntable I designed with two collaborators. v1 worked, barely. I went back to first principles and reversed its central design decision. On November 22, 2026 the first v2 record played: a 7 inch test disc on a new turntable, tracked from the outer groove to the label. Two days later a printed song disc played start to finish.
 
 ## First play
@@ -71,7 +74,7 @@ The groove got narrower too. Up close the tip touched one bead wall, not both: i
 
 Spacing, wall layers and the tracking limit all changed between the two, so the table cannot say which one helped. The groove search below is for that.
 
-There is no audio here. The song is not mine to publish.
+The clip at the top is take 30, on the turned mount below. It is muted. The song is not mine to publish.
 
 ## Landings
 
@@ -245,6 +248,10 @@ In the event the coupons were skipped. The turntable came first, and prints 2 to
 | 3 | Test discs 2 to 5 through the turntable, fit the simulator | Tone disc and two song discs played; the groove-search discs are next |
 | 4 | Turntable rebuild: closed-loop motor and encoder, RPM UI with CLV-capable ramp, ceramic preamp and line out on one PCB, printed platter, tonearm, swappable headshell | Playing: servo drive, printed platter, arm and headshell, Arduino recorder. Reprint with a rigid, damped pivot and disc clamps designed; briefcase case in progress. PCB not started |
 | 5 | Variable pitch, CLV records, continuous-Z experiment branch | Later |
+
+Where the case is going: a concept render of the briefcase build, from the CAD. Not built yet.
+
+<video controls autoplay muted loop playsinline width="1280" height="720" style="display:block;width:100%" src="/projects/openvinyl/openvinyl_concept_render.mp4" aria-label="A Blender render of the planned briefcase turntable on a desk under a lamp. The case opens, the arm lifts out and settles onto a printed disc, a close shot follows the stylus in the groove, and the case closes again."></video>
 
 ## v1: what was built and played
 

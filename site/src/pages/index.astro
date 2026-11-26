@@ -15,6 +15,7 @@ import armcontrollerPoster from '../assets/home/armcontroller.jpg';
 import asicPoster from '../assets/home/asicpuzzle2026.jpg';
 import bonetwinPoster from '../assets/home/bonetwin.jpg';
 import cactPoster from '../assets/home/cact.jpg';
+import openvinylPoster from '../assets/home/openvinyl.jpg';
 import stepperPoster from '../assets/home/stepper.jpg';
 import topoprintPoster from '../assets/home/topoprint.jpg';
 
@@ -63,6 +64,7 @@ const CLIPS: Record<string, { src: string; t: number; poster: ImageMetadata }> =
   topoprint: { src: home('topoprint.mp4'), t: 1.8, poster: topoprintPoster },
   armcontroller: { src: projectUrl('armcontroller') + 'armcontroller_handsoff.mp4', t: 0, poster: armcontrollerPoster },
   bonetwin: { src: projectUrl('bonetwin') + 'turntable_grid.mp4', t: 4, poster: bonetwinPoster },
+  openvinyl: { src: projectUrl('openvinyl') + 'openvinyl_v2_song_play.mp4', t: 5, poster: openvinylPoster },
 };
 const posters = new Map(
   await Promise.all(
