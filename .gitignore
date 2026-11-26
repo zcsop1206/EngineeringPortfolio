@@ -38,8 +38,6 @@ _spike/
 *.webm
 *.ogg
 *.mp3
-# Published on purpose (Nov 26 2026): the OpenVinyl tone-disc takes in the every-take note.
-!content/projects/openvinyl/log/*/openvinyl_tone_take*.m4a
 *.wav
 
 # OS and editor files.
