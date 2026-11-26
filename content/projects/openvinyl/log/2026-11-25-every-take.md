@@ -3,7 +3,7 @@ date: 2026-11-25
 title: Every take, and what each one ruled out
 type: test
 ---
-Thirty-three recordings on the spine turntable, November 22 to 25: the cartridge straight into an Arduino UNO's ADC at 9,615 samples/s, the platter on the servo at 39.8 to 39.9 RPM in every take. Takes 1 to 5 play the tone disc and can be heard below. Takes 6 to 33 play the song disc. They are not published, because the song is not mine.
+Thirty-three recordings on the spine turntable, November 22 to 25: the cartridge straight into an Arduino UNO's ADC at 9,615 samples/s, the platter on the servo at 39.8 to 39.9 RPM in every take. Takes 1 to 5 play the tone disc, takes 6 to 33 the song disc. No audio is published here.
 
 ## Root causes, in the order they were found
 
@@ -19,8 +19,8 @@ Thirty-three recordings on the spine turntable, November 22 to 25: the cartridge
 
 | Take | Disc | What was tested | What happened |
 | --- | --- | --- | --- |
-| 1 | Tone | First play on the spine build | Audio below |
-| 2 | Tone | No added arm weight | Audio below |
+| 1 | Tone | First play on the spine build | Not recorded beyond the file |
+| 2 | Tone | No added arm weight | Not recorded beyond the file |
 | 3, 3b | Tone | 11 g added | 3b's servo log ends in a bus error |
 | 4 | Tone | About 5 g, counterweight the right way round | The whole disc, 31 s, on time from the outer reference to the inner. 39.85 RPM |
 | 5 | Tone | New headshell | Played. Used for the noise analysis below |
@@ -45,25 +45,6 @@ Thirty-three recordings on the spine turntable, November 22 to 25: the cartridge
 | 31 | Song, two layers | Turned mount, six landings | 1 of 6 full, the rest weak with a 2.78 Hz pulse |
 | 32 | | Platter stopped: 12 V on, 12 V off, needle lifted | 6.8 to 8.9 mV. Switching the supply off helps nothing |
 | 33 | Song, one layer | Live cleanup filter while playing | 1 of 3 full |
-
-## The tone disc, raw
-
-High-passed and level-matched, nothing else. Each recording is about 65 s: silence, the 333 Hz reference, tones from 698 Hz down to 98 Hz, the 110 Hz ladder from 10 to 80 µm, then the inner reference.
-
-Take 1
-<audio controls preload="none" style="display:block;width:100%" src="/projects/openvinyl/log/2026-11-25-every-take/openvinyl_tone_take1.m4a"></audio>
-
-Take 2, no added weight
-<audio controls preload="none" style="display:block;width:100%" src="/projects/openvinyl/log/2026-11-25-every-take/openvinyl_tone_take2.m4a"></audio>
-
-Take 3, 11 g
-<audio controls preload="none" style="display:block;width:100%" src="/projects/openvinyl/log/2026-11-25-every-take/openvinyl_tone_take3.m4a"></audio>
-
-Take 4, the first full play
-<audio controls preload="none" style="display:block;width:100%" src="/projects/openvinyl/log/2026-11-25-every-take/openvinyl_tone_take4.m4a"></audio>
-
-Take 5, new headshell
-<audio controls preload="none" style="display:block;width:100%" src="/projects/openvinyl/log/2026-11-25-every-take/openvinyl_tone_take5.m4a"></audio>
 
 ## Noise by source (takes 4 and 5)
 
