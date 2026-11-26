@@ -73,6 +73,6 @@ The groove itself is the noise. Hum, the drive and the electronics sit 11 to 45 
 
 ## Landings (takes 17 to 33)
 
-![Music-band level through six landings on the old mount (take 25) and the turned mount (take 29), and the mean level of every take's full and bad landings](2026-11-25-every-take/openvinyl_landings_every_take.png)
+![Music-band level through six landings on the old mount (take 25) and the turned mount (take 29), and the mean level of the full and bad landings in every take](2026-11-25-every-take/openvinyl_landings_every_take.png)
 
 On the old mount every landing was either clean or bad. On the turned mount every landing follows the song, some at half level. The fixes tried on the old mount (lip balm damper, rigid pivot, pin out, gentle lowering) moved nothing outside the spread between landings. The reprint repeats them on the corrected arm.
