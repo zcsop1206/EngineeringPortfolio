@@ -13,6 +13,9 @@ const BINARY_EXT = new Set([
   'woff', 'woff2', 'ttf', 'zip',
 ]);
 const AUDIO_EXT = new Set(['m4a', 'webm', 'ogg', 'mp3', 'wav']);
+// Audio published on purpose, by exact path (Adit, Nov 27 2026): the OpenVinyl tone-disc takes,
+// the cartridge's own signal of test tones, no room sound.
+const PUBLISHED_AUDIO = /^content\/projects\/openvinyl\/log\/2026-11-25-every-take\/openvinyl_tone_take[1-5]\.m4a$/;
 const TOKEN_PATTERNS = [
   /\b(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b/g,
   /\bgithub_pat_[A-Za-z0-9_]{20,}\b/g,
@@ -110,7 +113,7 @@ for (const path of paths) {
   if (PRIVATE_DIR.test(path)) {
     offenders.push(['private folder', path, 'private/ is never published']);
   }
-  if (AUDIO_EXT.has(extension)) {
+  if (AUDIO_EXT.has(extension) && !PUBLISHED_AUDIO.test(path)) {
     offenders.push(['audio file', path, 'audio is not published yet']);
   }
 

@@ -13,7 +13,7 @@ Checks:
 - sync conflict copies, named `name (conflict <device> <date>).ext`;
 - `.obsidian/plugins/*/data.json`, which can hold a token;
 - anything under a `private/` folder;
-- audio files (`.m4a`, `.webm`, `.ogg`, `.mp3`, `.wav`).
+- audio files (`.m4a`, `.webm`, `.ogg`, `.mp3`, `.wav`), except the five OpenVinyl tone-disc takes named in `PUBLISHED_AUDIO`.
 
 Run it from anywhere in the repo, with Node 20 or later and no dependencies:
 
